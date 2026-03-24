@@ -60,7 +60,7 @@ export function Navbar() {
               </Link>
             </Button>
             <Button size="sm" className="shadow-lg shadow-primary/25" asChild>
-              <Link href="/inscription" data-testid="button-signup-nav">
+              <Link href="/register" data-testid="button-signup-nav">
                 Créer un compte
               </Link>
             </Button>
@@ -117,7 +117,7 @@ export function Navbar() {
               </Button>
               <Button className="w-full" asChild>
                 <Link
-                  href="/inscription"
+                  href="/register"
                   onClick={closeMobileMenu}
                   data-testid="button-mobile-signup"
                 >
