@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase, UserRole } from "@/lib/supabaseClient";
+import { authService } from "@/services/auth.service";
 
 export function useAuth() {
     const [user, setUser] = useState<User | null>(null);
@@ -28,16 +29,15 @@ export function useAuth() {
     const signUp = async (
         email: string,
         password: string,
-        metadata: { role: UserRole; firstName?: string; lastName?: string; establishment?: string; invitationToken?: string }
+        role: UserRole,
+        acceptTerms: boolean,
+        firstname?: string,
+        lastname?: string,
+        establishment?: string,
+        invitationToken?: string,
     ) => {
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                data: metadata,
-            },
-        });
-        return { data, error };
+        const response = await authService.register(email, password, role, acceptTerms, firstname, lastname, establishment, invitationToken);
+        return response;
     };
 
     const signIn = async (email: string, password: string) => {
