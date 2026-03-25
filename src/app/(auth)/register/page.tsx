@@ -25,8 +25,9 @@ import { UserRole } from "@/lib/supabaseClient";
 function translateSupabaseError(message: string): string {
   const errorTranslations: Record<string, string> = {
     "Invalid login credentials": "Identifiants de connexion invalides",
+    "An error occures. Try again later": "Une erreur est survenue. Veuillez réessayer.",
     "Email not confirmed": "Adresse e-mail non confirmée",
-    "User already registered": "Un compte existe déjà avec cette adresse e-mail",
+    "A user with this email address has already been registered": "Un compte existe déjà avec cette adresse e-mail",
     "Password should be at least 6 characters": "Le mot de passe doit contenir au moins 6 caractères",
     "Unable to validate email address: invalid format": "Format d'adresse e-mail invalide",
     "Signup requires a valid password": "Un mot de passe valide est requis",
@@ -99,63 +100,54 @@ export default function Register() {
     },
   });
 
+  const handleSignUp = async (data: FormValues) => {
+    try {
+      const response = await signUp(data.email, data.password, selectedRole as UserRole, data.acceptTerms, data.firstName, data.lastName, data.establishment, data.invitationToken);
+      return response
+    } catch (error) {
+      setIsSubmitting(false);
+      const message = error instanceof Error ? error.message : "An error occures. Try again later";
+      const translatedError = translateSupabaseError(message);
+      setErrorMessage(`Erreur lors de la création du compte : ${translatedError}`);
+      throw new Error(translatedError);
+    }
+  }
+
+  const hangleSignIn = async (email: string, password: string) => {
+    try {
+      const response = await signIn(email, password);
+      return response
+    } catch (error) {
+      setIsSubmitting(false);
+      const message = error instanceof Error ? error.message : "An error occures. Try again later";
+      const translatedError = translateSupabaseError(message);
+      setErrorMessage(`Compte créé mais erreur de connexion : ${translatedError}`);
+      throw new Error(translatedError);
+    }
+  }
+
   const onSubmit = async (data: FormValues) => {
+    const { email, password } = data;
     if (!selectedRole) return;
 
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const { error } = await signUp(data.email, data.password, {
-      role: selectedRole,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      establishment: data.establishment,
-      invitationToken: data.invitationToken,
-    });
+    await handleSignUp(data);
+    await hangleSignIn(email, password);
 
-    if (error) {
-      setIsSubmitting(false);
-      const translatedError = translateSupabaseError(error.message);
-      setErrorMessage(`Erreur lors de la création du compte : ${translatedError}`);
-      return;
-    }
-
-    try {
-      fetch("/api/notifications/welcome", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: data.email,
-          name: data.firstName,
-          role: selectedRole,
-        }),
-      }).catch((emailError) => {
-        console.error("Failed to send welcome email:", emailError);
-      });
-    } catch (emailError) {
-      console.error("Failed to send welcome email:", emailError);
-    }
-
-    const { error: signInError } = await signIn(data.email, data.password);
-    
-    setIsSubmitting(false);
-
-    if (signInError) {
-      const translatedError = translateSupabaseError(signInError.message);
-      setErrorMessage(`Compte créé mais erreur de connexion : ${translatedError}`);
-      return;
-    }
-
-    if (selectedRole === "eleve") {
-      router.push("/eleve");
+    if (selectedRole === "student") {
+      router.push("/student");
     } else {
       const planMapping: Record<string, string> = {
-        autonome: "solo",
-        professeur: "professeur",
-        etablissement: "etablissement",
+        standalone: "standalone",
+        teacher: "teacher",
+        establishment: "establishment",
       };
       router.push(`/choisir-plan?plan=${planMapping[selectedRole]}`);
     }
+    setIsSubmitting(false);
+    setErrorMessage(null);
   };
 
   const handleRoleSelect = (role: UserRole) => {
@@ -183,11 +175,10 @@ export default function Register() {
             <div>
               <p className="text-sm font-medium text-muted-foreground mb-3">Pour les particuliers</p>
               <Card
-                className={`p-6 cursor-pointer hover-elevate transition-all border-2 ${
-                  selectedRole === "autonome" ? "border-primary" : "border-transparent"
-                }`}
-                onClick={() => handleRoleSelect("autonome")}
-                data-testid="card-role-autonome"
+                className={`p-6 cursor-pointer hover-elevate transition-all border-2 ${selectedRole === "standalone" ? "border-primary" : "border-transparent"
+                  }`}
+                onClick={() => handleRoleSelect("standalone")}
+                data-testid="card-role-standalone"
               >
                 <div className="flex flex-wrap items-center gap-4">
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
@@ -207,11 +198,10 @@ export default function Register() {
               <p className="text-sm font-medium text-muted-foreground mb-3">Pour les établissements scolaires</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <Card
-                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${
-                    selectedRole === "eleve" ? "border-primary" : "border-transparent"
-                  }`}
-                  onClick={() => handleRoleSelect("eleve")}
-                  data-testid="card-role-eleve"
+                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${selectedRole === "student" ? "border-primary" : "border-transparent"
+                    }`}
+                  onClick={() => handleRoleSelect("student")}
+                  data-testid="card-role-student"
                 >
                   <div className="flex flex-col items-center text-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -227,11 +217,10 @@ export default function Register() {
                 </Card>
 
                 <Card
-                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${
-                    selectedRole === "professeur" ? "border-primary" : "border-transparent"
-                  }`}
-                  onClick={() => handleRoleSelect("professeur")}
-                  data-testid="card-role-professeur"
+                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${selectedRole === "teacher" ? "border-primary" : "border-transparent"
+                    }`}
+                  onClick={() => handleRoleSelect("teacher")}
+                  data-testid="card-role-teacher"
                 >
                   <div className="flex flex-col items-center text-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center">
@@ -247,11 +236,10 @@ export default function Register() {
                 </Card>
 
                 <Card
-                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${
-                    selectedRole === "etablissement" ? "border-primary" : "border-transparent"
-                  }`}
-                  onClick={() => handleRoleSelect("etablissement")}
-                  data-testid="card-role-etablissement"
+                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${selectedRole === "establishment" ? "border-primary" : "border-transparent"
+                    }`}
+                  onClick={() => handleRoleSelect("establishment")}
+                  data-testid="card-role-establishment"
                 >
                   <div className="flex flex-col items-center text-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -293,28 +281,27 @@ export default function Register() {
               Changer de profil
             </button>
 
-            <div className={`flex items-center gap-3 mb-6 p-3 rounded-lg ${
-              selectedRole === "autonome" 
-                ? "bg-amber-500/10 border border-amber-500/20" 
-                : selectedRole === "professeur"
-                  ? "bg-emerald-500/10 border border-emerald-500/20"
-                  : "bg-primary/5 border border-primary/20"
-            }`}>
-              {selectedRole === "eleve" ? (
+            <div className={`flex items-center gap-3 mb-6 p-3 rounded-lg ${selectedRole === "standalone"
+              ? "bg-amber-500/10 border border-amber-500/20"
+              : selectedRole === "teacher"
+                ? "bg-emerald-500/10 border border-emerald-500/20"
+                : "bg-primary/5 border border-primary/20"
+              }`}>
+              {selectedRole === "student" ? (
                 <Users className="h-5 w-5 text-primary" />
-              ) : selectedRole === "autonome" ? (
+              ) : selectedRole === "standalone" ? (
                 <Sparkles className="h-5 w-5 text-amber-600" />
-              ) : selectedRole === "professeur" ? (
+              ) : selectedRole === "teacher" ? (
                 <GraduationCap className="h-5 w-5 text-emerald-600" />
               ) : (
                 <Building2 className="h-5 w-5 text-primary" />
               )}
               <span className="font-medium">
-                {selectedRole === "eleve" 
-                  ? "Compte Élève" 
-                  : selectedRole === "autonome" 
-                    ? "Edesio Solo" 
-                    : selectedRole === "professeur"
+                {selectedRole === "student"
+                  ? "Compte Élève"
+                  : selectedRole === "standalone"
+                    ? "Edesio Solo"
+                    : selectedRole === "teacher"
                       ? "Compte Professeur"
                       : "Compte Établissement"}
               </span>
@@ -446,7 +433,7 @@ export default function Register() {
                   )}
                 />
 
-                {selectedRole !== "etablissement" && selectedRole !== "autonome" && (
+                {selectedRole !== "establishment" && selectedRole !== "standalone" && (
                   <FormField
                     control={form.control}
                     name="establishment"
@@ -469,7 +456,7 @@ export default function Register() {
                   />
                 )}
 
-                {selectedRole === "etablissement" && (
+                {selectedRole === "establishment" && (
                   <FormField
                     control={form.control}
                     name="establishment"
