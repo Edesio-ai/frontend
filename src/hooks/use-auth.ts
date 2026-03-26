@@ -22,7 +22,14 @@ export function useAuth() {
       );
 
       useEffect(() => {
-        void refreshUserSession();
+        void (async () => {
+            try {
+                await authService.initCsrf();
+            } catch (error) {
+                console.warn("CSRF initialization failed", error);
+            }
+            await refreshUserSession();
+        })();
       }, [refreshUserSession]);
 
     const signUp = async (
