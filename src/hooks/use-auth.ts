@@ -1,30 +1,29 @@
-import { useState, useEffect } from "react";
-import { User, Session } from "@supabase/supabase-js";
+import { useState, useEffect, useMemo } from "react";
 import { supabase, UserRole } from "@/lib/supabaseClient";
 import { authService } from "@/services/auth.service";
 
 export function useAuth() {
-    const [user, setUser] = useState<User | null>(null);
-    const [session, setSession] = useState<Session | null>(null);
+    const [user, setUser] = useState<any | null>(null);
+    const [role, setRole] = useState<UserRole | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
-            setUser(session?.user ?? null);
+    const refreshUserSession = useMemo(
+        () => async () => {
+          setLoading(true);
+          try {
+            const  session = await authService.getUserSession();
+            setUser(session.user ?? null);
+            setRole(session.role ?? (session.user?.user_metadata?.role as UserRole | null) ?? null);
+          } finally {
             setLoading(false);
-        });
+          }
+        },
+        [],
+      );
 
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-            setUser(session?.user ?? null);
-            setLoading(false);
-        });
-
-        return () => subscription.unsubscribe();
-    }, []);
+      useEffect(() => {
+        void refreshUserSession();
+      }, [refreshUserSession]);
 
     const signUp = async (
         email: string,
@@ -41,11 +40,8 @@ export function useAuth() {
     };
 
     const signIn = async (email: string, password: string) => {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-        return { data, error };
+        const response = await authService.signIn(email, password);
+        return response;
     };
 
     const signOut = async () => {
@@ -85,8 +81,8 @@ export function useAuth() {
 
     return {
         user,
-        session,
         loading,
+        role,
         signUp,
         signIn,
         signOut,

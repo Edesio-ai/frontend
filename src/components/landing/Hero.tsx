@@ -56,7 +56,7 @@ export function Hero() {
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-2">
                             <Button size="lg" className="gap-2 bg-white text-slate-900 hover:bg-slate-100 shadow-xl shadow-white/10" asChild>
-                                <Link href="/inscription" data-testid="button-hero-signup">
+                                <Link href="/register" data-testid="button-hero-signup">
                                     <Sparkles className="h-4 w-4" />
                                     Créer un compte gratuitement
                                 </Link>
