@@ -35,7 +35,6 @@ export default function Connexion() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(user)
     if (!loading && user) {
       const role = getUserRole();
       if (role === "teacher") {
@@ -58,32 +57,43 @@ export default function Connexion() {
     },
   });
 
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const response = await signIn(email, password);
+      return response;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Échec de la connexion. Vérifiez vos identifiants.r";
+      setErrorMessage(message);
+      setIsSubmitting(false);
+      throw new Error(message);
+    }
+  }
+
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const { data: authData, error } = await signIn(data.email, data.password);
+    const response = await handleLogin(data.email, data.password);
 
     setIsSubmitting(false);
-
-    if (error) {
-      setErrorMessage("Échec de la connexion. Vérifiez vos identifiants.");
-      return;
-    }
-
-    if (authData?.user) {
-      const role = authData.user.user_metadata?.role;
-      
-      if (role === "professeur") {
-        router.push("/professeur");
-      } else if (role === "eleve") {
-        router.push("/eleve");
-      } else if (role === "etablissement") {
-        router.push("/etablissement");
-      } else if (role === "autonome") {
-        router.push("/autonome");
-      } else {
-        router.push("/");
+    if (response?.user) {
+      const role = response.user.user_metadata?.role;
+      switch(role){
+        case "teacher":
+          router.push("/teacher");
+          break;
+        case "student":
+          router.push("/student");
+          break;
+        case "establishment":
+          router.push("/establishment");
+          break;
+        case "standalone":
+          router.push("/standalone");
+          break;
+        default:
+          router.push("/");
+          break;
       }
     }
   };
@@ -201,7 +211,7 @@ export default function Connexion() {
             <p className="text-sm text-muted-foreground">
               Vous n'avez pas de compte ?{" "}
               <Link
-                href="/inscription"
+                href="/register"
                 className="text-primary hover:underline"
                 data-testid="link-signup"
               >

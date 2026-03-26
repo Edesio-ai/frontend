@@ -25,4 +25,9 @@ export const authService = {
             body: JSON.stringify({ email, password }),
         });
     },
+    getUserSession(): Promise<any> {
+        return apiFetch<any>("/api/auth/session", {
+            method: "GET",
+        });
+    }
 };

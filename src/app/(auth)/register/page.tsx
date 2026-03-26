@@ -260,7 +260,7 @@ export default function Register() {
               <p className="text-sm text-muted-foreground">
                 Vous avez déjà un compte ?{" "}
                 <Link
-                  href="/connexion"
+                  href="/login"
                   className="text-primary hover:underline"
                   data-testid="link-login"
                 >
@@ -542,7 +542,7 @@ export default function Register() {
               <p className="text-sm text-muted-foreground">
                 Vous avez déjà un compte ?{" "}
                 <Link
-                  href="/connexion"
+                  href="/login"
                   className="text-primary hover:underline"
                   data-testid="link-login-bottom"
                 >

@@ -15,8 +15,12 @@ export async function POST(request: NextRequest) {
         const error = await response.json();
         return NextResponse.json({ success: false,  message: error.message || "An issue occurred during login; please contact customer support.", code: error.code || "UNKNOWN_ERROR"}, { status: response.status });
     }
-
-    const res = NextResponse.json({ success: true });
+    const { user } = await response.json();
+ 
+    const res = NextResponse.json({ success: true, user: user });
+    
+    const setCookie = response.headers.get("set-cookie");
+    if (setCookie) res.headers.set("set-cookie", setCookie);
     
     return res;
 }
