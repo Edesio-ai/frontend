@@ -55,7 +55,7 @@ export function Navbar() {
 
           <div className="hidden lg:flex items-center gap-2">
             <Button variant="ghost" size="sm" className="font-semibold" asChild>
-              <Link href="/connexion" data-testid="button-connexion">
+              <Link href="/login" data-testid="button-connexion">
                 Connexion
               </Link>
             </Button>
@@ -108,7 +108,7 @@ export function Navbar() {
             <div className="pt-4 space-y-3 border-t border-border">
               <Button variant="outline" className="w-full font-semibold" asChild>
                 <Link
-                  href="/connexion"
+                  href="/login"
                   onClick={closeMobileMenu}
                   data-testid="button-mobile-connexion"
                 >
