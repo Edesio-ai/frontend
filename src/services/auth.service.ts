@@ -2,7 +2,12 @@ import { apiFetch } from "@/lib/api-client";
 import { UserRole } from "@/lib/supabaseClient";
 
 export const authService = {
-    register(email: string, password: string, role: UserRole, acceptTerms: boolean, firstname?: string, lastname?: string, establishment?: string, invitationToken?: string): Promise<any> {
+    async initCsrf(): Promise<any> {
+        return apiFetch<any>("/api/auth/csrf", {
+            method: "GET",
+        });
+    },
+    async register(email: string, password: string, role: UserRole, acceptTerms: boolean, firstname?: string, lastname?: string, establishment?: string, invitationToken?: string): Promise<any> {
         const body = {
             email,
             password,
@@ -19,13 +24,13 @@ export const authService = {
             body: JSON.stringify(body),
         });
     },
-    signIn(email: string, password: string): Promise<any> {
+    async signIn(email: string, password: string): Promise<any> {
         return apiFetch<any>("/api/auth/login", {
             method: "POST",
             body: JSON.stringify({ email, password }),
         });
     },
-    getUserSession(): Promise<any> {
+    async getUserSession(): Promise<any> {
         return apiFetch<any>("/api/auth/session", {
             method: "GET",
         });
