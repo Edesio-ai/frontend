@@ -40,7 +40,7 @@ const planConfig: Record<string, { name: string; priceId: string; monthlyLink: s
 };
 
 export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps) {
-  const { user, loading: authLoading, getUserRole, signOut } = useAuth();
+  const { user, loading: authLoading, getUserRole, logout } = useAuth();
   const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -252,7 +252,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
               variant="ghost"
               className="w-full text-muted-foreground"
               onClick={async () => {
-                await signOut();
+                await logout();
                 window.location.href = "/";
               }}
               data-testid="button-logout-from-modal"

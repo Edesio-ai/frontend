@@ -51,9 +51,8 @@ export function useAuth() {
         return response;
     };
 
-    const signOut = async () => {
-        const { error } = await supabase.auth.signOut();
-        return { error };
+    const logout = async (): Promise<void> => {
+        await authService.logout();
     };
 
     const getUserRole = (): UserRole | null => {
@@ -92,7 +91,7 @@ export function useAuth() {
         role,
         signUp,
         signIn,
-        signOut,
+        logout,
         getUserRole,
         resendVerificationEmail,
         isEmailVerified,

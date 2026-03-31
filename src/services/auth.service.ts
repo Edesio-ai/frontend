@@ -34,5 +34,10 @@ export const authService = {
         return apiFetch<any>("/api/auth/session", {
             method: "GET",
         });
+    },
+    async logout(): Promise<any> {
+        return apiFetch<any>("/api/auth/logout", {
+            method: "POST",
+        });
     }
 };

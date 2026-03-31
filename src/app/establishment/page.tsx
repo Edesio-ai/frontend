@@ -589,7 +589,7 @@ function ProfesseurRow({
 
 export default function Etablissement() {
   const router = useRouter();
-  const { signOut, getUserRole, loading: authLoading, user } = useAuth();
+  const { logout, getUserRole, loading: authLoading, user } = useAuth();
   const {
     establishment,
     professeurs,
@@ -661,7 +661,7 @@ export default function Etablissement() {
     return null;
   }
   const handleSignOut = async () => {
-    await signOut();
+    await logout();
     router.push("/");
   };
 
