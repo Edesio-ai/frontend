@@ -144,7 +144,7 @@ export default function Register() {
         teacher: "teacher",
         establishment: "establishment",
       };
-      router.push(`/choisir-plan?plan=${planMapping[selectedRole]}`);
+      router.push(`/billing/choose-plan?plan=${planMapping[selectedRole]}`);
     }
     setIsSubmitting(false);
     setErrorMessage(null);

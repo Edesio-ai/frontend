@@ -233,7 +233,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
 
           {!currentPlan && (
             <div className="space-y-4">
-              <Link href="/choisir-plan">
+              <Link href={`/billing/choose-plan?plan=${role}`}>
                 <Button className="w-full" size="lg" data-testid="button-choose-plan">
                   Choisir un abonnement
                 </Button>
