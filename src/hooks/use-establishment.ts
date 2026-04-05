@@ -291,7 +291,6 @@ export function useEstablishment() {
 
   useEffect(() => {
     if (!authLoading && user) {
-      console.log('DEBUT DE LA RECUPERATION DES DONNEES')
       fetchEtablissementData();
     }
   }, [authLoading, user, fetchEtablissementData]);
