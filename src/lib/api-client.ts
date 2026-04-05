@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { getCookie } from "./cookies";
+import { authService } from "@/services/auth.service";
 
 export async function apiFetch<T>(
     url: string,
@@ -19,8 +21,12 @@ export async function apiFetch<T>(
     });
 
     if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: `HTTP ${response.status}` }));
-        throw new Error(error.message || `HTTP ${response.status}`);
+        const { message, code } = await response.json();
+        if(code === "TOKEN_USER_NOT_FOUND") {
+            await authService.logout();
+            redirect("/login");
+        }
+        throw new Error(message || `HTTP ${response.status}`);
     }
 
     return response.json() as Promise<T>;
