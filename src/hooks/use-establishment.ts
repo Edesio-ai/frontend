@@ -9,15 +9,7 @@ import type {
   Student
 } from "@/types";
 import { establishmentService } from "@/services/establishment.service";
-
-function generateInvitationCode(length: number = 12): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
-  let code = "";
-  for (let i = 0; i < length; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
-}
+import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 
 interface EtablissementStats {
   totalProfesseurs: number;
@@ -94,7 +86,7 @@ export function useEstablishment() {
       setInvitationTokens([]);
       return;
     }
-
+    
     try {
       const tokens = await establishmentService.getInvitationTokens(establishment.id);
       setInvitationTokens(tokens);
@@ -105,67 +97,57 @@ export function useEstablishment() {
   }, [establishment]);
 
   const createInvitationToken = useCallback(
-    async (invitedEmail: string, expiresInDays: number = 7, chatbotsAlloues: number = 0): Promise<InvitationToken | null> => {
-      //   if (!establishment) return null;
+    async (invitedEmail: string, expiresInDays: number = 7, assignedChatbots: number = 0): Promise<boolean | null> => {
+        if (!establishment) return null;
+        if (!invitedEmail || !invitedEmail.includes("@")) {
+          return null;
+        }
+        try {
+          const token = generateInvitationCode();
+          const expiresAt = new Date();
+          expiresAt.setDate(expiresAt.getDate() + expiresInDays);
 
-      //   if (!invitedEmail || !invitedEmail.includes("@")) {
-      //     setError("Veuillez entrer une adresse email valide.");
-      //     return null;
-      //   }
+          const body = {
+            establishmentId: establishment.id,
+            token,
+            invitedEmail: invitedEmail.toLowerCase().trim(),
+            expiresAt: expiresAt.toISOString(),
+            assignedChatbots,
+          }
 
-      //   try {
-      //     const token = generateInvitationCode();
-      //     const expiresAt = new Date();
-      //     expiresAt.setDate(expiresAt.getDate() + expiresInDays);
+          const { success } = await establishmentService.createInvitationToken(body);
 
-      //     const { data, error: insertError } = await supabase
-      //       .from("invitation_tokens")
-      //       .insert({
-      //         etablissement_id: establishment.id,
-      //         token,
-      //         invited_email: invitedEmail.toLowerCase().trim(),
-      //         expires_at: expiresAt.toISOString(),
-      //         chatbots_alloues: chatbotsAlloues,
-      //       })
-      //       .select()
-      //       .single();
+          if(!success) {
+            const message = "Une erreur est survenue. Merci de réessayer.";
+            setError(message);
+            throw new Error("Error while creating invitation token");
+          }
 
-      //     if (insertError) {
-      //       console.error("Error creating invitation token:", insertError);
-      //       setError("Erreur lors de la création du code d'invitation.");
-      //       return null;
-      //     }
+          if (establishment) {
+            const sendInvitationBody = {
+              invitedEmail: invitedEmail.toLowerCase().trim(),
+              establishmentName: establishment.name,
+              invitationToken: token,
+              assignedChatbots,
+            }
 
-      //     // Send invitation email
-      //     if (session?.access_token && establishment) {
-      //       try {
-      //         await fetch("/api/send-invitation-email", {
-      //           method: "POST",
-      //           headers: {
-      //             "Content-Type": "application/json",
-      //             Authorization: `Bearer ${session.access_token}`,
-      //           },
-      //           body: JSON.stringify({
-      //             invitedEmail: invitedEmail.toLowerCase().trim(),
-      //             etablissementNom: establishment.nom,
-      //             invitationToken: token,
-      //             chatbotsAlloues,
-      //           }),
-      //         });
-      //       } catch (emailError) {
-      //         console.error("Failed to send invitation email:", emailError);
-      //         // Don't fail the invitation creation if email fails
-      //       }
-      //     }
+            const response: { success: boolean } = await establishmentService.sendInvitationEmail(sendInvitationBody);
 
-      //     await fetchInvitationTokens();
-      //     return data;
-      //   } catch (err) {
-      //     console.error("Unexpected error:", err);
-      //     setError("Une erreur est survenue. Merci de réessayer.");
-      //     return null;
-      //   }
-      return null
+            if(!response.success) {
+              const message = "Une erreur est survenue. Merci de réessayer.";
+              setError(message);
+              throw new Error("Error while sending invitation email");
+            }
+
+            await fetchInvitationTokens();
+            return response.success;
+          }
+          return null;
+        } catch (err) {
+          console.error("Unexpected error:", err);
+          setError("Une erreur est survenue. Merci de réessayer.");
+          return null;
+        }
     },
     [establishment, fetchInvitationTokens, "session"]
   );
