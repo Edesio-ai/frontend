@@ -39,5 +39,10 @@ export const authService = {
         return apiFetch<any>("/api/auth/logout", {
             method: "POST",
         });
-    }
+    },
+    async validateInvitationToken(token: string): Promise<any> {
+        return apiFetch<any>(`/check-invitation/${token}`, {
+            method: "GET",
+        });
+    },
 };
