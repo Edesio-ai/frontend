@@ -498,6 +498,7 @@ export default function Etablissement() {
     stats,
     loading,
     error,
+    createInvitationToken,
     deleteInvitationToken,
     getSessionStudents,
     getSessionCours,
@@ -825,6 +826,7 @@ export default function Etablissement() {
         <InvitationModal
           isOpen={showInvitationModal}
           setShowInvitationModal={setShowInvitationModal}
+          createInvitationToken={createInvitationToken}
         />
 
         <SessionStudentsModal

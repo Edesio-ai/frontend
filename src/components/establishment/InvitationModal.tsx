@@ -4,23 +4,21 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Loader2, Mail, Plus } from "lucide-react";
 import { useState } from "react";
-import { useEstablishment } from "@/hooks/use-establishment";
 
 type InvitationModalProps = {
     isOpen: boolean;
     setShowInvitationModal: (open: boolean) => void;
+    createInvitationToken: (email: string, days: number, chatbots: number) => Promise<boolean | null>;
 }
 
 export default function InvitationModal({
     isOpen,
     setShowInvitationModal,
+    createInvitationToken,
 }: InvitationModalProps) {
     const [inviteEmail, setInviteEmail] = useState("nicolas.marinm@outlook.fr");
     const [chatbotsAlloues, setChatbotsAlloues] = useState(10);
     const [isCreatingInvitation, setIsCreatingInvitation] = useState(false);
-    const {
-        createInvitationToken,
-      } = useEstablishment();
 
     const isValidEmail = inviteEmail.includes("@") && inviteEmail.includes(".");
 
