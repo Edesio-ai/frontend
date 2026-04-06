@@ -21,7 +21,7 @@ export function useAuth() {
         [],
       );
 
-      useEffect(() => {
+    useEffect(() => {
         void (async () => {
             try {
                 await authService.initCsrf();
@@ -30,7 +30,7 @@ export function useAuth() {
             }
             await refreshUserSession();
         })();
-      }, [refreshUserSession]);
+    }, [refreshUserSession]);
 
     const signUp = async (
         email: string,
