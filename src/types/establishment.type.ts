@@ -8,11 +8,12 @@ export interface Establishment {
 
 export interface InvitationToken {
     id: string;
-    etablissement_id: string;
+    etablishment_id: string;
     token: string;
     invited_email: string;
     expires_at: string;
     used_at: string | null;
     used_by: string | null;
     created_at: string;
+    available_chatbots: number;
 }

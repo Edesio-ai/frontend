@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Check, Info, Bot } from "lucide-react";
@@ -13,9 +12,8 @@ import { PlanCard } from "@/components/billing/PlanCard";
 
 export default function ChoisirPlan() {
   const [isAnnual, setIsAnnual] = useState(false);
+  const [recommendedPlan, setRecommendedPlan] = useState<string | null>(null);
   const { user, getUserRole } = useAuth();
-  const searchParams = useSearchParams();
-  const recommendedPlan = searchParams.get("plan");
   const userRole = getUserRole();
 
   // Map user role to plan id
@@ -33,6 +31,8 @@ export default function ChoisirPlan() {
   // Scroll to top when page loads
   useEffect(() => {
     window.scrollTo(0, 0);
+    const params = new URLSearchParams(window.location.search);
+    setRecommendedPlan(params.get("plan"));
   }, []);
 
   return (

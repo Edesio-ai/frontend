@@ -16,8 +16,8 @@ export default function InvitationModal({
     setShowInvitationModal,
     createInvitationToken,
 }: InvitationModalProps) {
-    const [inviteEmail, setInviteEmail] = useState("nicolas.marinm@outlook.fr");
-    const [chatbotsAlloues, setChatbotsAlloues] = useState(10);
+    const [inviteEmail, setInviteEmail] = useState("");
+    const [availableChatbots, setAvailableChatobots] = useState(0);
     const [isCreatingInvitation, setIsCreatingInvitation] = useState(false);
 
     const isValidEmail = inviteEmail.includes("@") && inviteEmail.includes(".");
@@ -25,17 +25,17 @@ export default function InvitationModal({
     const handleClose = () => {
         setShowInvitationModal(false);
         setInviteEmail("");
-        setChatbotsAlloues(0);
+        setAvailableChatobots(0);
     }
 
     const handleCreateInvitation = async () => {
         setIsCreatingInvitation(true);
-        const result = await createInvitationToken(inviteEmail, 7, chatbotsAlloues);
+        const result = await createInvitationToken(inviteEmail, 7, availableChatbots);
         setIsCreatingInvitation(false);
         if (result) {
           setShowInvitationModal(false);
           setInviteEmail("");
-          setChatbotsAlloues(0);
+          setAvailableChatobots(0);
         }
       };
 
@@ -77,8 +77,8 @@ export default function InvitationModal({
                             type="number"
                             min="0"
                             max="100"
-                            value={chatbotsAlloues}
-                            onChange={(e) => setChatbotsAlloues(Math.max(0, parseInt(e.target.value) || 0))}
+                            value={availableChatbots}
+                            onChange={(e) => setAvailableChatobots(Math.max(0, parseInt(e.target.value) || 0))}
                             className="w-32"
                             data-testid="input-chatbots-count"
                         />
