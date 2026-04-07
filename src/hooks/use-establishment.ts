@@ -10,6 +10,7 @@ import type {
 } from "@/types";
 import { establishmentService } from "@/services/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
+import { tokenService } from "@/services/token.service";
 
 interface EtablissementStats {
   totalProfesseurs: number;
@@ -154,23 +155,16 @@ export function useEstablishment() {
 
   const deleteInvitationToken = useCallback(
     async (tokenId: string): Promise<boolean> => {
-      try {
-        const { error: deleteError } = await supabase
-          .from("invitation_tokens")
-          .delete()
-          .eq("id", tokenId);
+        const { success } = await tokenService.deleteInvitationToken(tokenId);
 
-        if (deleteError) {
-          console.error("Error deleting token:", deleteError);
-          return false;
+        if(!success) {
+          const message = "Une erreur est survenue. Merci de réessayer.";
+          setError(message);
+          throw new Error("Error while deleting invitation token");
         }
 
         await fetchInvitationTokens();
-        return true;
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        return false;
-      }
+        return success;
     },
     [fetchInvitationTokens]
   );

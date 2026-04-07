@@ -39,15 +39,10 @@ import {
   BookOpen,
   LogOut,
   Plus,
-  Copy,
-  Trash2,
   UserCog,
   ChevronDown,
   ChevronRight,
-  Clock,
-  CheckCircle2,
   Loader2,
-  Mail,
   FileText,
   HelpCircle,
   Eye,
@@ -61,11 +56,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import type { TeacherWithStats, SessionWithStudentCount, Student } from "@/types";
+import type { TeacherWithStats, SessionWithStudentCount, Student, InvitationToken } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TokenElement } from "@/components/establishment/TokenElement";
 
 interface CourseBasic {
   id: string;
@@ -509,7 +505,6 @@ export default function Etablissement() {
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [showSuggestionsModal, setShowSuggestionsModal] = useState(false);
 
-  const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
   const [selectedSession, setSelectedSession] = useState<SessionWithStudentCount | null>(null);
   const [sessionStudents, setSessionStudents] = useState<Student[]>([]);
@@ -564,12 +559,6 @@ export default function Etablissement() {
     router.push("/");
   };
 
-  const handleCopyToken = (token: string) => {
-    navigator.clipboard.writeText(token);
-    setCopiedToken(token);
-    setTimeout(() => setCopiedToken(null), 2000);
-  };
-
   const handleViewStudents = async (session: SessionWithStudentCount) => {
     setSelectedSession(session);
     setLoadingStudents(true);
@@ -585,10 +574,6 @@ export default function Etablissement() {
     const details = await getCourseDetails(coursId);
     setSelectedCourseDetails(details);
     setLoadingCourse(false);
-  };
-
-  const isTokenExpired = (expiresAt: string) => {
-    return new Date(expiresAt) < new Date();
   };
 
   if (loading) {
@@ -707,79 +692,9 @@ export default function Etablissement() {
               </div>
             ) : (
               <div className="space-y-3">
-                {invitationTokens.map((token: { id: string; token: string; expires_at: string; used_at: string | null; invited_email: string; chatbots_alloues?: number }) => {
-                  const expired = isTokenExpired(token.expires_at);
-                  const used = !!token.used_at;
-
-                  return (
-                    <div
-                      key={token.id}
-                      className={`flex items-center justify-between p-4 rounded-lg border ${expired || used ? "bg-muted/50 opacity-60" : "bg-background"
-                        }`}
-                      data-testid={`invitation-token-${token.id}`}
-                    >
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-4">
-                          <code className="bg-muted px-3 py-1 rounded font-mono text-sm">
-                            {token.token}
-                          </code>
-                          {used ? (
-                            <Badge variant="secondary" className="flex items-center gap-1">
-                              <CheckCircle2 className="h-3 w-3" />
-                              Utilisé
-                            </Badge>
-                          ) : expired ? (
-                            <Badge variant="destructive" className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              Expiré
-                            </Badge>
-                          ) : (
-                            <Badge variant="outline" className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              Expire le {new Date(token.expires_at).toLocaleDateString("fr-FR")}
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-2">
-                            <Mail className="h-3 w-3" />
-                            <span>{token.invited_email}</span>
-                          </div>
-                          {(token as { chatbots_alloues?: number }).chatbots_alloues !== undefined && (token as { chatbots_alloues?: number }).chatbots_alloues! > 0 && (
-                            <Badge variant="outline" className="text-xs">
-                              {(token as { chatbots_alloues?: number }).chatbots_alloues} chatbot{(token as { chatbots_alloues?: number }).chatbots_alloues! > 1 ? "s" : ""}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {!expired && !used && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleCopyToken(token.token)}
-                            data-testid={`button-copy-token-${token.id}`}
-                          >
-                            {copiedToken === token.token ? (
-                              <CheckCircle2 className="h-4 w-4 text-green-500" />
-                            ) : (
-                              <Copy className="h-4 w-4" />
-                            )}
-                          </Button>
-                        )}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => deleteInvitationToken(token.id)}
-                          data-testid={`button-delete-token-${token.id}`}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
+                {invitationTokens.map((token: InvitationToken) => (
+                  <TokenElement key={token.id} token={token} handleDeleteToken={deleteInvitationToken} />
+                ))}
               </div>
             )}
           </Card>
