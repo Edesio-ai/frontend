@@ -4,10 +4,21 @@ export interface Course {
     titre: string;
     description: string | null;
     contenu_texte: string | null;
-    questions_validees?: boolean;
-    position_ordre?: number;
+    questions_validated?: boolean;
+    position_order?: number;
     created_at: string;
 }
+
+export type CourseRanking  = {
+    student_id: string;
+    name: string;
+    photo_url: string | null;
+    attempted_questions: number;
+    correct_answers: number;
+    success_rate: number;
+    rank: number;
+    last_attempt: string;
+  }
 
 export interface CourseFile {
     id: string;
@@ -23,8 +34,8 @@ export interface Question {
     type: QuestionType;
     question: string;
     propositions: string[] | null;
-    bonne_reponse: string | null;
-    bonnes_reponses: string[] | null;
+    good_answer: string | null;
+    good_answers: string[] | null;
     explication: string | null;
     position_ordre?: number;
     created_at: string;
@@ -34,24 +45,24 @@ export type QuestionType = 'single' | 'multiple' | 'open';
 
 export interface CourseQuestion {
     id: string;
-    cours_id: string;
-    eleve_id: string;
+    course_id: string;
+    student_id: string;
     question: string;
-    reponse: string | null;
-    repondu_at: string | null;
+    answer: string | null;
+    answered_at: string | null;
     created_at: string;
-    eleve_nom?: string;
+    student_name?: string;
 }
 
-export type InsertCours = Omit<Course, "id" | "created_at" | "questions_validees" | "position_ordre">;
+export type InsertCourse = Omit<Course, "id" | "created_at" | "questions_validated" | "position_order">;
 
 export interface CoursRanking {
-    eleve_id: string;
-    nom: string;
+    student_id: string;
+    name: string;
     photo_url: string | null;
-    questions_tentees: number;
-    reponses_correctes: number;
-    taux_reussite: number;
-    rang: number;
-    derniere_tentative: string;
+    attempted_questions: number;
+    correct_answers: number;
+    success_rate: number;
+    rank: number;
+    last_attempt: string;
 }
