@@ -64,8 +64,8 @@ interface InvitationData {
 
 const formSchema = z
   .object({
-    firstName: z.string().min(1, "Le prénom est requis"),
-    lastName: z.string().min(1, "Le nom est requis"),
+    firstname: z.string().min(1, "Le prénom est requis"),
+    lastname: z.string().min(1, "Le nom est requis"),
     email: z.string().email("Adresse email invalide"),
     password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
     confirmPassword: z.string().min(1, "Veuillez confirmer votre mot de passe"),
@@ -85,7 +85,6 @@ export default function TeacherInvitation() {
   const token = params?.token as string;
   const router = useRouter();
   const { signIn } = useAuth();
-  
   const [isValidating, setIsValidating] = useState(true);
   const [invitationData, setInvitationData] = useState<InvitationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -95,8 +94,8 @@ export default function TeacherInvitation() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      firstname: "",
+      lastname: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -128,10 +127,30 @@ export default function TeacherInvitation() {
   };
 
   useEffect(() => {
-    
+
 
     validateToken();
   }, [token]);
+
+  const handleSignupTeacherByInvitation = async (data: FormValues) => {
+    try {
+      const body = {
+
+        token,
+        email: data.email,
+        password: data.password,
+        firstname: data.firstname,
+        lastname: data.lastname,
+      };
+
+      return await authService.signupTeacherByInvitation(body);
+    } catch (err) {
+      setIsSubmitting(false);
+      const translatedError = translateSupabaseError(err instanceof Error ? err.message : "Erreur inconnue");
+      setErrorMessage(translatedError);
+      return;
+    }
+  }
 
   const onSubmit = async (data: FormValues) => {
     if (!invitationData || !token) return;
@@ -139,63 +158,12 @@ export default function TeacherInvitation() {
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    try {
-      const response = await fetch("/api/signup-professor", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token,
-          email: data.email,
-          password: data.password,
-          firstName: data.firstName,
-          lastName: data.lastName,
-        }),
-      });
+    await handleSignupTeacherByInvitation(data);
+    await signIn(data.email, data.password);
 
-      const result = await response.json();
+    router.push("/teacher");
+    setErrorMessage(null);
 
-      if (!response.ok) {
-        setIsSubmitting(false);
-        const translatedError = translateSupabaseError(result.error || "Erreur inconnue");
-        setErrorMessage(translatedError);
-        return;
-      }
-
-      try {
-        fetch("/api/notifications/welcome", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: data.email,
-            name: data.firstName,
-            role: "professeur",
-          }),
-        }).catch((emailError) => {
-          console.error("Failed to send welcome email:", emailError);
-        });
-      } catch (emailError) {
-        console.error("Failed to send welcome email:", emailError);
-      }
-
-      // Sign in the user
-      const { error: signInError } = await signIn(data.email, data.password);
-
-      setIsSubmitting(false);
-
-      if (signInError) {
-        const translatedError = translateSupabaseError(signInError.message);
-        setErrorMessage(`Compte créé mais erreur de connexion : ${translatedError}`);
-        return;
-      }
-
-      router.push("/teacher");
-    } catch (err) {
-      setIsSubmitting(false);
-      console.error("Signup error:", err);
-      setErrorMessage("Une erreur inattendue s'est produite. Veuillez réessayer.");
-    }
   };
 
   if (isValidating) {
@@ -287,7 +255,7 @@ export default function TeacherInvitation() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="firstName"
+                  name="firstname"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Prénom</FormLabel>
@@ -305,7 +273,7 @@ export default function TeacherInvitation() {
 
                 <FormField
                   control={form.control}
-                  name="lastName"
+                  name="lastname"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Nom</FormLabel>
