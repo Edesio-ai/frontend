@@ -45,4 +45,10 @@ export const authService = {
             method: "GET",
         });
     },
+    async signupTeacherByInvitation(body: any): Promise<any> {
+        return apiFetch<any>("/api/auth/register/teacher", {
+            method: "POST",
+            body: JSON.stringify(body),
+        });
+    },
 };
