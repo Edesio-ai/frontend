@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     console.log("🚀 ~ DELETE ~ id:", request.headers.get("x-csrf-token") ?? "")
     const response = await fetch(`${process.env.BACKEND_URL}/establishment/invitation-token/${id}`, {
@@ -14,7 +14,6 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
     if(!response.ok) {
         const error = await response.json();
-        console.log("🚀 ~ DELETE ~ error:", error)
         return NextResponse.json({ error: error.message || "Failed to delete invitation token" }, { status: response.status });
     }
 
