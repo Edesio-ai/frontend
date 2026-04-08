@@ -88,7 +88,7 @@ type CreateSessionFormValues = z.infer<typeof createSessionFormSchema>;
 export default function Teacher() {
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
   const {
-    professeur,
+    teacher,
     sessions,
     loading: profLoading,
     error,
@@ -390,7 +390,7 @@ export default function Teacher() {
     );
   }
 
-  const firstName = user.user_metadata?.firstName || professeur?.nom || "Professeur";
+  const firstName = user.user_metadata?.firstName || teacher?.nom || "Professeur";
 
   return (
     <SubscriptionBlockModal>

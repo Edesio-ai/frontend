@@ -32,12 +32,12 @@ function generateSessionCode(length: number = 6): string {
 
 export function useTeacher() {
   const { user, loading: authLoading } = useAuth();
-  const [professeur, setTeacher] = useState<Teacher | null>(null);
+  const [teacher, setTeacher] = useState<Teacher | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const handleFetchTeacher = useCallback(async (): Promise<Teacher | null> => {
+  const handleFetchTeacher = useCallback(async (): Promise<Teacher> => {
     try {
       const response = await teacherService.fetchTeacher();
       return response;
@@ -45,7 +45,7 @@ export function useTeacher() {
       console.error("Error fetching teacher:", error);
       setError("Une erreur est survenue. Merci de réessayer.");
       setLoading(false);
-      return null;
+      throw error;
     }
 
 
@@ -79,14 +79,13 @@ export function useTeacher() {
       return;
     }
 
-    const existingTeacher = await handleFetchTeacher();
+    const  teacher  = await handleFetchTeacher();
 
-    if (existingTeacher) {
-      setTeacher(existingTeacher);
+    if (teacher) {
+      setTeacher(teacher);
       const invitationToken = user.user_metadata?.invitationToken;
-      const teacherWithEtab = existingTeacher as TeacherWithEtab;
-      if (invitationToken && !teacherWithEtab.establishment_id) {
-        console.log('invitationToken DEDAAAAAAANS', invitationToken)
+      const teacherWithEstab = teacher as TeacherWithEtab;
+      if (invitationToken && !teacherWithEstab.establishment_id) {
         await handleInvitationValidation(invitationToken);
       }
     } else {
@@ -108,35 +107,24 @@ export function useTeacher() {
   }, [user]);
 
   const fetchSessions = useCallback(async () => {
-    if (!professeur) {
+    if (!teacher) {
       setSessions([]);
       return;
     }
 
     try {
-      const { data, error: fetchError } = await supabase
-        .from("sessions")
-        .select("*")
-        .eq("professeur_id", professeur.id)
-        .order("created_at", { ascending: false });
-
-      if (fetchError) {
-        console.error("Error fetching sessions:", fetchError);
-        setError("Une erreur est survenue. Merci de réessayer.");
-        return;
-      }
-
-      setSessions(data || []);
+      const sessions = await teacherService.getSessions();
+      setSessions(sessions || []);
       setError(null);
     } catch (err) {
       console.error("Unexpected error:", err);
       setError("Une erreur est survenue. Merci de réessayer.");
     }
-  }, [professeur]);
+  }, [teacher]);
 
   const createSession = useCallback(
     async (nom: string, langue: SessionLanguage = 'francais'): Promise<Session | null> => {
-      if (!professeur) return null;
+      if (!teacher) return null;
 
       try {
         let code = generateSessionCode();
@@ -156,7 +144,7 @@ export function useTeacher() {
         }
 
         const sessionData: InsertSession = {
-          professeur_id: professeur.id,
+          teacher_id: teacher.id,
           nom,
           code,
           langue,
@@ -183,19 +171,19 @@ export function useTeacher() {
         return null;
       }
     },
-    [professeur]
+    [teacher]
   );
 
   const updateSession = useCallback(
     async (sessionId: string, nom: string): Promise<Session | null> => {
-      if (!professeur) return null;
+      if (!teacher) return null;
 
       try {
         const { data, error: updateError } = await supabase
           .from("sessions")
           .update({ nom })
           .eq("id", sessionId)
-          .eq("professeur_id", professeur.id)
+          .eq("teacher_id", teacher.id)
           .select()
           .single();
 
@@ -216,12 +204,12 @@ export function useTeacher() {
         return null;
       }
     },
-    [professeur]
+    [teacher]
   );
 
   const deleteSession = useCallback(
     async (sessionId: string): Promise<boolean> => {
-      if (!professeur) return false;
+      if (!teacher) return false;
 
       try {
         // First delete all questions for courses in this session
@@ -315,7 +303,7 @@ export function useTeacher() {
           .from("sessions")
           .delete()
           .eq("id", sessionId)
-          .eq("professeur_id", professeur.id);
+          .eq("professeur_id", teacher.id);
 
         if (deleteError) {
           console.error("Error deleting session:", deleteError);
@@ -332,7 +320,7 @@ export function useTeacher() {
         return false;
       }
     },
-    [professeur]
+    [teacher]
   );
 
   const fetchCours = useCallback(
@@ -1063,10 +1051,10 @@ export function useTeacher() {
   }, [authLoading, fetchOrCreateProfesseur]);
 
   useEffect(() => {
-    if (professeur) {
+    if (teacher) {
       fetchSessions();
     }
-  }, [professeur, fetchSessions]);
+  }, [teacher, fetchSessions]);
 
   const reorderCours = useCallback(
     async (coursIds: string[]): Promise<boolean> => {
@@ -1174,7 +1162,7 @@ export function useTeacher() {
   );
 
   return {
-    professeur,
+    teacher,
     sessions,
     loading: authLoading || loading,
     error,
