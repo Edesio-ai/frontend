@@ -3,13 +3,9 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 import {
   Dialog,
   DialogContent,
@@ -24,14 +20,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+
 import { useAuth } from "@/hooks/use-auth";
 import { useTeacher } from "@/hooks/use-teacher";
 import { SessionCard, CourseList, QuestionsCoursePanel } from "@/components/dashboard";
@@ -40,13 +29,6 @@ import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
 import { useToast } from "@/hooks/use-toast";
 import type { Session, SessionParticipant, SessionLanguage, Course } from "@/types";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   LogOut,
   Loader2,
   Users,
@@ -54,36 +36,18 @@ import {
   UserCog,
   BookOpen,
   Plus,
-  Search,
-  FileText,
-  ChevronRight,
-  Upload,
-  X,
-  Sparkles,
   GraduationCap,
-  Globe,
   MessageCircle,
   Lightbulb
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
 import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
-
-const langueLabels: Record<SessionLanguage, string> = {
-  francais: "Français",
-  anglais: "Anglais",
-  espagnol: "Espagnol",
-  allemand: "Allemand",
-};
-
-const createSessionFormSchema = z.object({
-  sessionNom: z.string().min(1, "Le nom de la session est requis").max(100, "Le nom est trop long"),
-  sessionLangue: z.enum(["francais", "anglais", "espagnol", "allemand"]),
-  coursTitre: z.string().min(1, "Le titre du cours est requis").max(200, "Le titre est trop long"),
-  coursDescription: z.string().max(500, "La description est trop longue").optional().or(z.literal("")),
-  coursContenu: z.string().optional().or(z.literal("")),
-});
-
-type CreateSessionFormValues = z.infer<typeof createSessionFormSchema>;
+import { ToolBar } from "@/components/teacher/ToolBar";
+import { CreateModal } from "@/components/teacher/CreateModal";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CreateSessionFormValues } from "@/types/zod.type";
+import { createSessionFormSchema } from "@/utils/constants/zod";
 
 export default function Teacher() {
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
@@ -96,7 +60,7 @@ export default function Teacher() {
     updateSession,
     deleteSession,
     fetchCours,
-    createCours,
+    createCourse,
     updateCours,
     deleteCours,
     reorderCours,
@@ -126,14 +90,8 @@ export default function Teacher() {
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [showSuggestionsModal, setShowSuggestionsModal] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
   const [selectedPdfFiles, setSelectedPdfFiles] = useState<File[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Session[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [sessionTab, setSessionTab] = useState<"cours" | "eleves" | "qa">("cours");
   const [participants, setParticipants] = useState<SessionParticipant[]>([]);
@@ -143,6 +101,9 @@ export default function Teacher() {
   const [newlyCreatedCours, setNewlyCreatedCours] = useState<Course | null>(null);
 
   const role = getUserRole();
+
+  
+
 
   const form = useForm<CreateSessionFormValues>({
     resolver: zodResolver(createSessionFormSchema),
@@ -161,34 +122,7 @@ export default function Teacher() {
     }
   }, [authLoading, user, role, router]);
 
-  useEffect(() => {
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
 
-    if (!searchQuery.trim()) {
-      setSearchResults([]);
-      setIsSearching(false);
-      return;
-    }
-
-    setIsSearching(true);
-
-    searchTimeoutRef.current = setTimeout(() => {
-      const query = searchQuery.toLowerCase();
-      const filtered = sessions.filter(
-        (session) => session.nom.toLowerCase().includes(query)
-      );
-      setSearchResults(filtered);
-      setIsSearching(false);
-    }, 300);
-
-    return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
-    };
-  }, [searchQuery, sessions]);
 
 
   useEffect(() => {
@@ -294,19 +228,7 @@ export default function Teacher() {
     return success;
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setSelectedPdfFiles((prev) => [...prev, ...Array.from(files)]);
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
 
-  const removeSelectedFile = (index: number) => {
-    setSelectedPdfFiles((prev) => prev.filter((_, i) => i !== index));
-  };
 
   const handleOpenCreateModal = () => {
     form.reset();
@@ -320,64 +242,6 @@ export default function Teacher() {
     setCreateModalOpen(false);
   };
 
-  const onCreateSubmit = async (data: CreateSessionFormValues) => {
-    setIsCreating(true);
-
-    try {
-      const newSession = await createSession(data.sessionNom, data.sessionLangue);
-
-      if (!newSession) {
-        toast({
-          title: "Erreur",
-          description: "Impossible de créer la session. Veuillez réessayer.",
-          variant: "destructive",
-        });
-        setIsCreating(false);
-        return;
-      }
-
-      const newCours = await createCours(
-        newSession.id,
-        data.coursTitre,
-        data.coursDescription || "",
-        data.coursContenu || "",
-        selectedPdfFiles.length > 0 ? selectedPdfFiles : undefined
-      );
-
-      await refreshSessions();
-      handleCloseCreateModal();
-
-      if (!newCours) {
-        toast({
-          title: "Attention",
-          description: "La session a été créée mais le cours n'a pas pu être ajouté. Vous pouvez l'ajouter manuellement.",
-          variant: "destructive",
-        });
-        setSelectedSession(newSession);
-      } else {
-        toast({
-          title: "Succès",
-          description: "Session et cours créés avec succès !",
-        });
-        setNewlyCreatedCours(newCours);
-        setSelectedSession(newSession);
-      }
-    } catch (err) {
-      console.error("Error in creation flow:", err);
-      toast({
-        title: "Erreur",
-        description: "Une erreur inattendue s'est produite. Veuillez réessayer.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsCreating(false);
-    }
-  };
-
-  const handleSelectSearchResult = (session: Session) => {
-    setSearchQuery("");
-    setSelectedSession(session);
-  };
 
   if (authLoading || profLoading || !user || role !== "teacher") {
     return (
@@ -493,65 +357,11 @@ export default function Teacher() {
           )}
 
           <div className="space-y-8">
-            <section>
-              <Card className="p-6 bg-card/80 backdrop-blur-sm border-border/50 shadow-xl" data-testid="card-search-and-create">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Rechercher une classe..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-background/50"
-                      data-testid="input-search-sessions"
-                    />
-
-                    {searchQuery && (
-                      <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-10 max-h-80 overflow-y-auto">
-                        {isSearching ? (
-                          <div className="p-4 text-center text-muted-foreground">
-                            <Loader2 className="h-4 w-4 animate-spin mx-auto" />
-                          </div>
-                        ) : searchResults.length === 0 ? (
-                          <div className="p-4 text-center text-muted-foreground">
-                            Aucune classe trouvée pour "{searchQuery}"
-                          </div>
-                        ) : (
-                          <div className="py-2">
-                            {searchResults.map((session) => (
-                              <button
-                                key={session.id}
-                                className="w-full px-4 py-3 text-left hover:bg-muted/50 flex items-center gap-3"
-                                onClick={() => handleSelectSearchResult(session)}
-                                data-testid={`search-result-${session.id}`}
-                              >
-                                <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-medium truncate">{session.nom}</p>
-                                  <p className="text-sm text-muted-foreground truncate">
-                                    Code: {session.code}
-                                  </p>
-                                </div>
-                                <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  <Button
-                    onClick={handleOpenCreateModal}
-                    className="shadow-lg shadow-primary/25"
-                    data-testid="button-open-create-modal"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Nouvelle classe
-                  </Button>
-                </div>
-              </Card>
-            </section>
+            <ToolBar
+              setSelectedSession={setSelectedSession}
+              handleOpenCreateModal={handleOpenCreateModal}
+              sessions={sessions}
+            />
 
             <section>
               <div className="flex items-center gap-3 mb-6">
@@ -597,215 +407,19 @@ export default function Teacher() {
           </div>
         </main>
 
-        <Dialog open={createModalOpen} onOpenChange={(open) => !open && handleCloseCreateModal()}>
-          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col p-0">
-            <DialogHeader className="px-6 pt-6 pb-4 border-b flex-shrink-0">
-              <DialogTitle className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <Plus className="h-4 w-4 text-primary-foreground" />
-                </div>
-                Créer une nouvelle classe
-              </DialogTitle>
-              <DialogDescription>
-                Créez une classe et ajoutez votre premier cours en même temps.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="flex-1 overflow-y-auto px-6 py-6">
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onCreateSubmit)} className="space-y-6">
-                  <div className="space-y-4">
-                    <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      Classe
-                    </h4>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <FormField
-                        control={form.control}
-                        name="sessionNom"
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormLabel>Nom de la classe</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Ex: 3ème B – Histoire"
-                                {...field}
-                                data-testid="input-new-session-name"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="sessionLangue"
-                        render={({ field }) => (
-                          <FormItem className="w-full sm:w-44">
-                            <FormLabel>Langue du cours</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger data-testid="select-new-session-language">
-                                  <Globe className="h-4 w-4 mr-2 text-muted-foreground" />
-                                  <SelectValue placeholder="Langue" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {(Object.keys(langueLabels) as SessionLanguage[]).map((lang) => (
-                                  <SelectItem key={lang} value={lang}>
-                                    {langueLabels[lang]}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="border-t pt-6 space-y-4">
-                    <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide flex items-center gap-2">
-                      <BookOpen className="h-4 w-4" />
-                      Premier cours
-                    </h4>
-
-                    <FormField
-                      control={form.control}
-                      name="coursTitre"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Titre du cours</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Ex: La Révolution française"
-                              {...field}
-                              data-testid="input-new-course-title"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="coursDescription"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Description courte <span className="text-muted-foreground font-normal">(optionnel)</span></FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Ex: Introduction aux causes et conséquences"
-                              {...field}
-                              data-testid="input-new-course-description"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <div className="space-y-2">
-                      <FormLabel>Fichiers PDF</FormLabel>
-                      <p className="text-xs text-muted-foreground">
-                        Ajoutez un ou plusieurs fichiers PDF contenant le contenu du cours
-                      </p>
-                      <div className="space-y-2">
-                        <input
-                          type="file"
-                          accept="application/pdf"
-                          onChange={handleFileSelect}
-                          className="hidden"
-                          ref={fileInputRef}
-                          multiple
-                          data-testid="input-new-course-pdf"
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => fileInputRef.current?.click()}
-                          data-testid="button-select-pdf-new"
-                        >
-                          <Upload className="h-4 w-4 mr-2" />
-                          {selectedPdfFiles.length > 0 ? "Ajouter d'autres PDFs" : "Sélectionner des PDFs"}
-                        </Button>
-                        {selectedPdfFiles.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {selectedPdfFiles.map((file, index) => (
-                              <div
-                                key={`${file.name}-${file.size}-${index}`}
-                                className="flex items-center gap-2 text-sm bg-primary/10 border border-primary/20 rounded-md px-2 py-1"
-                              >
-                                <FileText className="h-3.5 w-3.5 text-primary" />
-                                <span className="max-w-[200px] truncate">{file.name}</span>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-5 w-5"
-                                  onClick={() => removeSelectedFile(index)}
-                                  data-testid={`button-remove-pdf-new-${index}`}
-                                >
-                                  <X className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <FormField
-                      control={form.control}
-                      name="coursContenu"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            Contenu texte additionnel
-                            <span className="text-muted-foreground font-normal ml-2">(optionnel)</span>
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Vous pouvez ajouter du texte supplémentaire ici, ou laisser vide si vous utilisez uniquement des PDFs..."
-                              className="min-h-[100px] resize-y"
-                              {...field}
-                              data-testid="textarea-new-course-content"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex justify-end gap-2 pt-4 border-t">
-                    <Button type="button" variant="outline" onClick={handleCloseCreateModal}>
-                      Annuler
-                    </Button>
-                    <Button type="submit" disabled={isCreating} className="shadow-lg shadow-primary/25" data-testid="button-create-session-and-course">
-                      {isCreating ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                          Création...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="h-4 w-4 mr-2" />
-                          Créer la session et le cours
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <CreateModal 
+        createModalOpen={createModalOpen} 
+        form={form} 
+        onOpenChange={(open: boolean) => !open && handleCloseCreateModal()} 
+        createSession={createSession} 
+        createCourse={createCourse} 
+        setSelectedPdfFiles={setSelectedPdfFiles}
+        selectedPdfFiles={selectedPdfFiles}
+        refreshSessions={refreshSessions}
+        handleCloseCreateModal={handleCloseCreateModal}
+        setSelectedSession={setSelectedSession}
+        setNewlyCreatedCours={setNewlyCreatedCours}
+        />
 
         <Dialog open={!!selectedSession} onOpenChange={(open) => !open && handleCloseSessionModal()}>
           <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-hidden flex flex-col p-0">
@@ -814,7 +428,7 @@ export default function Teacher() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                   <BookOpen className="h-4 w-4 text-primary-foreground" />
                 </div>
-                {selectedSession?.nom}
+                {selectedSession?.name}
               </DialogTitle>
               <DialogDescription>
                 Gérez les cours de cette session et visualisez les élèves inscrits.
@@ -848,7 +462,7 @@ export default function Teacher() {
                     <CourseList
                       session={selectedSession}
                       fetchCours={fetchCours}
-                      createCours={createCours}
+                      createCourse={createCourse}
                       updateCours={updateCours}
                       deleteCours={deleteCours}
                       reorderCours={reorderCours}

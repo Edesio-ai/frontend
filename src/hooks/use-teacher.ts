@@ -397,7 +397,7 @@ export function useTeacher() {
     []
   );
 
-  const createCours = useCallback(
+  const createCourse = useCallback(
     async (
       sessionId: string,
       titre: string,
@@ -1170,7 +1170,7 @@ export function useTeacher() {
     updateSession,
     deleteSession,
     fetchCours,
-    createCours,
+    createCourse,
     updateCours,
     deleteCours,
     reorderCours,
