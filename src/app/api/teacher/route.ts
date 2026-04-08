@@ -13,8 +13,8 @@ export async function GET(request: NextRequest) {
         const error = await response.json();
         return NextResponse.json({ error: error.message }, { status: response.status });
     }
-    const data = await response.json();
-    return NextResponse.json({ teacher: data });
+    const teacher = await response.json();
+    return NextResponse.json(teacher);
 }
 
 export async function POST(request: NextRequest) {
@@ -34,6 +34,6 @@ export async function POST(request: NextRequest) {
         const error = await response.json();
         return NextResponse.json({ error: error.message }, { status: response.status });
     }
-    const data = await response.json();
-    return NextResponse.json({ teacher: data });
+    const teacher = await response.json();
+    return NextResponse.json(teacher);
 }
