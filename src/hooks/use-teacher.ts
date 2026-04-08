@@ -123,7 +123,7 @@ export function useTeacher() {
   }, [teacher]);
 
   const createSession = useCallback(
-    async (nom: string, langue: SessionLanguage = 'francais'): Promise<Session | null> => {
+    async (name: string, langue: SessionLanguage = 'francais'): Promise<Session | null> => {
       if (!teacher) return null;
 
       try {
@@ -145,7 +145,7 @@ export function useTeacher() {
 
         const sessionData: InsertSession = {
           teacher_id: teacher.id,
-          nom,
+          name,
           code,
           langue,
         };
