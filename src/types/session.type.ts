@@ -1,7 +1,7 @@
 export interface Session {
     id: string;
     teacher_id: string;
-    nom: string;
+    name: string;
     code: string;
     langue: SessionLanguage;
     created_at: string;

@@ -130,7 +130,7 @@ function SessionStudentsModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Élèves de {session.nom}
+            Élèves de {session.name}
           </DialogTitle>
           <DialogDescription>
             {session.students_count} élève(s) inscrit(s) à cette session
@@ -453,7 +453,7 @@ function ProfesseurRow({
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex flex-wrap items-center gap-3">
                         <BookOpen className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">{session.nom}</span>
+                        <span className="font-medium">{session.name}</span>
                         <Badge variant="outline" className="text-xs">
                           {session.code}
                         </Badge>

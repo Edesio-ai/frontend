@@ -66,7 +66,7 @@ type FormValues = z.infer<typeof formSchema>;
 interface CourseListProps {
   session: Session;
   fetchCours: (sessionId: string) => Promise<Course[]>;
-  createCours: (
+  createCourse: (
     sessionId: string,
     titre: string,
     description: string,
@@ -270,13 +270,13 @@ function AddCourseModal({
   open,
   onOpenChange,
   sessionId,
-  createCours,
+  createCourse,
   onCourseCreated,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   sessionId: string;
-  createCours: CourseListProps["createCours"];
+  createCourse: CourseListProps["createCourse"];
   onCourseCreated: (cours: Course) => void;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -294,7 +294,7 @@ function AddCourseModal({
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
-    const newCours = await createCours(
+    const newCours = await createCourse(
       sessionId,
       data.titre,
       data.description || "",
@@ -484,7 +484,7 @@ function AddCourseModal({
 export function CourseList({ 
   session, 
   fetchCours, 
-  createCours, 
+  createCourse, 
   updateCours,
   deleteCours,
   reorderCours,
@@ -683,7 +683,7 @@ export function CourseList({
         open={addModalOpen}
         onOpenChange={setAddModalOpen}
         sessionId={session.id}
-        createCours={createCours}
+        createCourse={createCourse}
         onCourseCreated={handleCourseCreated}
       />
 
@@ -691,7 +691,7 @@ export function CourseList({
         <CourseTesterModal
           cours={selectedCours}
           allCours={cours}
-          sessionName={session.nom}
+          sessionName={session.name}
           open={!!selectedCours}
           onOpenChange={(open) => !open && setSelectedCours(null)}
           updateCours={updateCours}
