@@ -2,22 +2,23 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/use-auth";
 
-import type { 
-  Teacher, 
-  Session, 
+import type {
+  Teacher,
+  Session,
   SessionLanguage,
-  Course, 
-  CourseFile, 
+  Course,
+  CourseFile,
   Question,
   CourseQuestion,
-  InsertSession, 
+  InsertSession,
   InsertCourse,
   SessionParticipant,
   CoursRanking
 } from "@/types";
+import { teacherService } from "@/services/teacher.service";
 
 interface TeacherWithEtab extends Teacher {
-  etablissement_id?: string | null;
+  establishment_id?: string | null;
 }
 
 function generateSessionCode(length: number = 6): string {
@@ -31,109 +32,80 @@ function generateSessionCode(length: number = 6): string {
 
 export function useTeacher() {
   const { user, loading: authLoading } = useAuth();
-  const [professeur, setProfesseur] = useState<Teacher | null>(null);
+  const [professeur, setTeacher] = useState<Teacher | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleFetchTeacher = useCallback(async (): Promise<Teacher | null> => {
+    try {
+      const response = await teacherService.fetchTeacher();
+      return response;
+    } catch (error) {
+      console.error("Error fetching teacher:", error);
+      setError("Une erreur est survenue. Merci de réessayer.");
+      setLoading(false);
+      return null;
+    }
+
+
+  }, [user]);
+
+  const handleInvitationValidation = useCallback(async (invitationToken: string): Promise<any> => {
+    try {
+      const response = await teacherService.validateInvitationToken(invitationToken);
+      return response;
+    } catch (err) {
+      console.error("Error validating invitation token:", err);
+    }
+    
+  }, [user]);
+
+  const handleCreateTeacher = useCallback(async (name: string, email: string) => {
+    try {
+      const response = await teacherService.createTeacher(name, email);
+      return response;
+    } catch (err) {
+      console.error("Error creating teacher:", err);
+      setError("Une erreur est survenue. Merci de réessayer.");
+      setLoading(false);
+      return;
+    }
+  }, [user]);
   const fetchOrCreateProfesseur = useCallback(async () => {
     if (!user) {
-      setProfesseur(null);
+      setTeacher(null);
       setLoading(false);
       return;
     }
 
-    // try {
-    //   const { data: existingProf, error: fetchError } = await supabase
-    //     .from("professeurs")
-    //     .select("*")
-    //     .eq("supabase_user_id", user.id)
-    //     .maybeSingle();
+    const existingTeacher = await handleFetchTeacher();
 
-    //   if (fetchError) {
-    //     console.error("Error fetching professeur:", fetchError);
-    //     setError("Une erreur est survenue. Merci de réessayer.");
-    //     setLoading(false);
-    //     return;
-    //   }
+    if (existingTeacher) {
+      setTeacher(existingTeacher);
+      const invitationToken = user.user_metadata?.invitationToken;
+      const teacherWithEtab = existingTeacher as TeacherWithEtab;
+      if (invitationToken && !teacherWithEtab.establishment_id) {
+        console.log('invitationToken DEDAAAAAAANS', invitationToken)
+        await handleInvitationValidation(invitationToken);
+      }
+    } else {
+      const name =
+        user.user_metadata?.firstname && user.user_metadata?.lastname
+          ? `${user.user_metadata.firstname} ${user.user_metadata.lastname}`
+          : user.user_metadata?.firstname || "Professeur";
 
-    //   if (existingProf) {
-    //     setProfesseur(existingProf);
-        
-    //     // Check if there's an invitation token to validate (for existing professors not yet linked)
-    //     const invitationToken = user.user_metadata?.invitationToken;
-    //     const profWithEtab = existingProf as TeacherWithEtab;
-    //     if (invitationToken && !profWithEtab.etablissement_id && session?.access_token) {
-    //       try {
-    //         const response = await fetch("/api/validate-invitation", {
-    //           method: "POST",
-    //           headers: { 
-    //             "Content-Type": "application/json",
-    //             "Authorization": `Bearer ${session.access_token}`
-    //           },
-    //           body: JSON.stringify({ token: invitationToken }),
-    //         });
-    //         if (response.ok) {
-    //           console.log("Professor linked to établissement via invitation token");
-    //         }
-    //       } catch (err) {
-    //         console.error("Error validating invitation token:", err);
-    //       }
-    //     }
-    //   } else {
-    //     const nom =
-    //       user.user_metadata?.firstName && user.user_metadata?.lastName
-    //         ? `${user.user_metadata.firstName} ${user.user_metadata.lastName}`
-    //         : user.user_metadata?.firstName || "Professeur";
+      const invitationToken = user.user_metadata?.invitationToken;
 
-    //     const { data: newProf, error: insertError } = await supabase
-    //       .from("professeurs")
-    //       .insert({
-    //         supabase_user_id: user.id,
-    //         nom,
-    //         email: user.email || "",
-    //       })
-    //       .select()
-    //       .single();
+      const newTeacher = await handleCreateTeacher(name, user.email || "");
 
-    //     if (insertError) {
-    //       console.error("Error creating professeur:", insertError);
-    //       setError("Une erreur est survenue. Merci de réessayer.");
-    //       setLoading(false);
-    //       return;
-    //     }
-
-    //     // Validate invitation token if provided
-    //     const invitationToken = user.user_metadata?.invitationToken;
-    //     if (invitationToken && newProf && session?.access_token) {
-    //       try {
-    //         const response = await fetch("/api/validate-invitation", {
-    //           method: "POST",
-    //           headers: { 
-    //             "Content-Type": "application/json",
-    //             "Authorization": `Bearer ${session.access_token}`
-    //           },
-    //           body: JSON.stringify({ token: invitationToken }),
-    //         });
-    //         if (response.ok) {
-    //           console.log("New professor linked to établissement via invitation token");
-    //         }
-    //       } catch (err) {
-    //         console.error("Error validating invitation token:", err);
-    //       }
-    //     }
-
-    //     setProfesseur(newProf);
-    //   }
-
-    //   setError(null);
-    // } catch (err) {
-    //   console.error("Unexpected error:", err);
-    //   setError("Une erreur est survenue. Merci de réessayer.");
-    // } finally {
-    //   setLoading(false);
-    // }
-  }, [user, ]);
+      if (invitationToken && newTeacher) {
+        await handleInvitationValidation(invitationToken);
+        setTeacher(newTeacher);
+      }
+    }
+    setLoading(false);
+  }, [user]);
 
   const fetchSessions = useCallback(async () => {
     if (!professeur) {
@@ -266,7 +238,6 @@ export function useTeacher() {
 
         if (courses && courses.length > 0) {
           const courseIds = courses.map((c) => c.id);
-          
           // Delete questions for all courses
           const { error: questionsError } = await supabase
             .from("questions")
@@ -295,7 +266,7 @@ export function useTeacher() {
             if (fichiers && fichiers.length > 0) {
               const filePaths = fichiers.map((f) => f.fichier_url);
               const { error: storageError } = await supabase.storage.from("cours-pdf").remove(filePaths);
-              
+
               if (storageError) {
                 console.error("Error removing files from storage:", storageError);
                 // Continue anyway as files might not exist
@@ -664,7 +635,7 @@ export function useTeacher() {
     },
     []
   );
- 
+
   const updateQuestion = useCallback(
     async (
       questionId: string,
@@ -814,7 +785,7 @@ export function useTeacher() {
 
   const generateQuestions = useCallback(
     async (
-      coursId: string, 
+      coursId: string,
       config?: GenerateQuestionsConfig
     ): Promise<{ success: boolean; questionsCreated?: number; questions?: Question[]; error?: string }> => {
       try {
@@ -831,9 +802,9 @@ export function useTeacher() {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             coursId,
-            ...config 
+            ...config
           }),
         });
 
