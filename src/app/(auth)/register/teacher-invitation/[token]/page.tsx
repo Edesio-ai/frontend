@@ -22,6 +22,7 @@ import { GraduationCap, Loader2, CheckCircle2, XCircle, Building2 } from "lucide
 import { useAuth } from "@/hooks/use-auth";
 import { authService } from "@/services/auth.service";
 
+
 function translateSupabaseError(message: string): string {
   const errorTranslations: Record<string, string> = {
     "Invalid login credentials": "Identifiants de connexion invalides",
@@ -84,7 +85,7 @@ export default function TeacherInvitation() {
   const params = useParams();
   const token = params?.token as string;
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { signIn, signUp } = useAuth();
   const [isValidating, setIsValidating] = useState(true);
   const [invitationData, setInvitationData] = useState<InvitationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -127,23 +128,12 @@ export default function TeacherInvitation() {
   };
 
   useEffect(() => {
-
-
     validateToken();
   }, [token]);
 
   const handleSignupTeacherByInvitation = async (data: FormValues) => {
     try {
-      const body = {
-
-        token,
-        email: data.email,
-        password: data.password,
-        firstname: data.firstname,
-        lastname: data.lastname,
-      };
-
-      return await authService.signupTeacherByInvitation(body);
+      return await signUp(data.email, data.password, "teacher", data.acceptTerms, data.firstname, data.lastname, invitationData?.establishmentName, token);
     } catch (err) {
       setIsSubmitting(false);
       const translatedError = translateSupabaseError(err instanceof Error ? err.message : "Erreur inconnue");

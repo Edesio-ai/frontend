@@ -48,7 +48,6 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
 
   const handleOpenPortal = async () => {
     if (user) return;
-    console.log("🚀 ~ handleOpenPortal ~ user:", "XXXXXXXXXXXXXX")
     // setIsOpeningPortal(true);
     // try {
     //   const response = await fetch("/api/stripe/create-portal-session", {
@@ -72,7 +71,6 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
   const role = getUserRole();
 
   useEffect(() => {
-
     const checkSubscription = async () => {
       if (!user) {
         setIsLoading(false);
@@ -81,15 +79,6 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
 
       if (role === "student") {
         setSubscriptionStatus({ hasActiveSubscription: true, role: "eleve" });
-        setIsLoading(false);
-        return;
-      }
-
-      // Grandfather clause: Users created before Jan 28, 2026 are exempt from subscription requirement
-      const grandfatherCutoffDate = new Date("2026-01-28T00:00:00Z");
-      const userCreatedAt = user.created_at ? new Date(user.created_at) : null;
-      if (userCreatedAt && userCreatedAt < grandfatherCutoffDate) {
-        setSubscriptionStatus({ hasActiveSubscription: true, role: role || "grandfathered" });
         setIsLoading(false);
         return;
       }
@@ -110,7 +99,6 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
     }
   }, [user, authLoading, role]);
 
-  // Show loading state
   if (isLoading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
