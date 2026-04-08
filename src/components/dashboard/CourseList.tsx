@@ -691,7 +691,7 @@ export function CourseList({
         <CourseTesterModal
           cours={selectedCours}
           allCours={cours}
-          sessionName={session.nom}
+          sessionName={session.name}
           open={!!selectedCours}
           onOpenChange={(open) => !open && setSelectedCours(null)}
           updateCours={updateCours}

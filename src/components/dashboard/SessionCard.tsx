@@ -27,7 +27,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [renameModalOpen, setRenameModalOpen] = useState(false);
-  const [newName, setNewName] = useState(session.nom);
+  const [newName, setNewName] = useState(session.name);
   const [isRenaming, setIsRenaming] = useState(false);
 
   const formatDate = (dateStr: string) => {
@@ -66,7 +66,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
 
   const handleRenameClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setNewName(session.nom);
+    setNewName(session.name);
     setRenameModalOpen(true);
   };
 
@@ -109,7 +109,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
                   )}
                 </div>
                 <h3 className="font-semibold text-lg leading-tight break-words" data-testid={`text-session-name-${session.id}`}>
-                  {session.nom}
+                  {session.name}
                 </h3>
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
@@ -195,7 +195,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
           <DialogHeader>
             <DialogTitle className="text-destructive">Supprimer la session ?</DialogTitle>
             <DialogDescription>
-              Cette action est irréversible. Tous les cours, fichiers PDF et questions associés à la session "{session.nom}" seront définitivement supprimés.
+              Cette action est irréversible. Tous les cours, fichiers PDF et questions associés à la session "{session.name}" seront définitivement supprimés.
             </DialogDescription>
           </DialogHeader>
 
