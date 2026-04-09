@@ -69,10 +69,12 @@ export function CreateModal({
     };
 
     const onCreateSubmit = async (data: CreateSessionFormValues) => {
+        console.log("🚀 ~ onCreateSubmit ~ data:", data)
         setIsCreating(true);
+        const { sessionName, sessionLanguage, courseTitle, courseDescription, courseContent } = data;
 
         try {
-            const newSession = await createSession(data.sessionNom, data.sessionLangue);
+            const newSession = await createSession(sessionName, sessionLanguage);
 
             if (!newSession) {
                 toast({
@@ -84,18 +86,18 @@ export function CreateModal({
                 return;
             }
 
-            const newCours = await createCourse(
+            const newCourse = await createCourse(
                 newSession.id,
-                data.coursTitre,
-                data.coursDescription || "",
-                data.coursContenu || "",
+                courseTitle,
+                courseDescription || "",
+                courseContent || "",
                 selectedPdfFiles.length > 0 ? selectedPdfFiles : undefined
             );
 
             await refreshSessions();
             handleCloseCreateModal();
 
-            if (!newCours) {
+            if (!newCourse) {
                 toast({
                     title: "Attention",
                     description: "La session a été créée mais le cours n'a pas pu être ajouté. Vous pouvez l'ajouter manuellement.",
@@ -107,7 +109,7 @@ export function CreateModal({
                     title: "Succès",
                     description: "Session et cours créés avec succès !",
                 });
-                setNewlyCreatedCours(newCours);
+                setNewlyCreatedCours(newCourse);
                 setSelectedSession(newSession);
             }
         } catch (err) {
@@ -148,7 +150,7 @@ export function CreateModal({
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <FormField
                                         control={form.control}
-                                        name="sessionNom"
+                                        name="sessionName"
                                         render={({ field }) => (
                                             <FormItem className="flex-1">
                                                 <FormLabel>Nom de la classe</FormLabel>
@@ -165,7 +167,7 @@ export function CreateModal({
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="sessionLangue"
+                                        name="sessionLanguage"
                                         render={({ field }) => (
                                             <FormItem className="w-full sm:w-44">
                                                 <FormLabel>Langue du cours</FormLabel>
@@ -202,7 +204,7 @@ export function CreateModal({
 
                                 <FormField
                                     control={form.control}
-                                    name="coursTitre"
+                                    name="courseTitle"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Titre du cours</FormLabel>
@@ -220,7 +222,7 @@ export function CreateModal({
 
                                 <FormField
                                     control={form.control}
-                                    name="coursDescription"
+                                    name="courseDescription"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Description courte <span className="text-muted-foreground font-normal">(optionnel)</span></FormLabel>
@@ -288,7 +290,7 @@ export function CreateModal({
 
                                 <FormField
                                     control={form.control}
-                                    name="coursContenu"
+                                    name="courseContent"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>

@@ -1,9 +1,9 @@
 export interface Session {
     id: string;
-    teacher_id: string;
+    teacherId: string;
     name: string;
     code: string;
-    langue: SessionLanguage;
+    language: SessionLanguage;
     created_at: string;
 }
 
@@ -17,9 +17,9 @@ export interface SessionWithStudentCount extends Session {
 export type InsertSession = Omit<Session, "id" | "created_at">;
 
 export interface SessionParticipant {
-    eleve_id: string;
-    nom: string;
+    studentId: string;
+    name: string;
     email: string;
-    photo_url: string | null;
-    joined_at: string;
+    photoUrl: string | null;
+    joinedAt: string;
 }

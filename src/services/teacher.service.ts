@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { Session, Teacher } from "@/types";
+import { Teacher } from "@/types";
 
 export const teacherService = {
   createTeacher: async (name: string, email: string): Promise<Teacher | null> => {
@@ -23,10 +23,4 @@ export const teacherService = {
     });
     return reponse as any;
   },
-  getSessions: async (): Promise<Session[]> => {
-    const reponse = await apiFetch(`/api/teacher/sessions`, {
-      method: "GET",
-    });
-    return reponse as Session[];
-  }
 }

@@ -108,11 +108,11 @@ export default function Teacher() {
   const form = useForm<CreateSessionFormValues>({
     resolver: zodResolver(createSessionFormSchema),
     defaultValues: {
-      sessionNom: "",
-      sessionLangue: "francais",
-      coursTitre: "",
-      coursDescription: "",
-      coursContenu: "",
+      sessionName: "",
+      sessionLanguage: "francais",
+      courseTitle: "",
+      courseDescription: "",
+      courseContent: "",
     },
   });
 
@@ -505,25 +505,25 @@ export default function Teacher() {
                       <div className="space-y-3">
                         {participants.map((participant) => (
                           <div
-                            key={participant.eleve_id}
+                            key={participant.studentId}
                             className="flex items-center gap-4 p-4 rounded-lg bg-muted/30 border"
-                            data-testid={`participant-${participant.eleve_id}`}
+                            data-testid={`participant-${participant.studentId}`}
                           >
                             <Avatar className="h-10 w-10">
-                              {participant.photo_url ? (
-                                <AvatarImage src={participant.photo_url} alt={participant.nom} />
+                              {participant.photoUrl ? (
+                                <AvatarImage src={participant.photoUrl} alt={participant.name} />
                               ) : null}
                               <AvatarFallback className="bg-primary/10 text-primary font-medium">
-                                {participant.nom.slice(0, 2).toUpperCase()}
+                                {participant.name.slice(0, 2).toUpperCase()}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
-                              <p className="font-medium truncate">{participant.nom}</p>
+                              <p className="font-medium truncate">{participant.name}</p>
                               <p className="text-sm text-muted-foreground truncate">{participant.email}</p>
                             </div>
                             <div className="text-right text-sm text-muted-foreground">
                               <p>Inscrit le</p>
-                              <p>{new Date(participant.joined_at).toLocaleDateString("fr-FR")}</p>
+                              <p>{new Date(participant.joinedAt).toLocaleDateString("fr-FR")}</p>
                             </div>
                           </div>
                         ))}
