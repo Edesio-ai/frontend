@@ -21,4 +21,11 @@ export const sessionService = {
         });
         return reponse;
     },
+    updateSessionName: async (sessionId: string, name: string, teacherId: string): Promise<{ session: Session }> => {
+      const reponse = await apiFetch<{ session: Session }>(`/api/teacher/sessions/update/${sessionId}`, {
+        method: "PUT",
+        body: JSON.stringify({ name, teacherId }),
+      });
+      return reponse;
+    },
 }

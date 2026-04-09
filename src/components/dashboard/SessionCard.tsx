@@ -12,6 +12,7 @@ import {
 import type { Session } from "@/types";
 import { Calendar, Copy, BookOpen, Check, Trash2, Users, Loader2, MessageCircle, Pencil } from "lucide-react";
 import { useState } from "react";
+import { RenameSessionModal } from "../teacher/RenameSessionModal";
 
 interface SessionCardProps {
   session: Session;
@@ -232,54 +233,15 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
         </DialogContent>
       </Dialog>
 
-      <Dialog open={renameModalOpen} onOpenChange={setRenameModalOpen}>
-        <DialogContent data-testid="modal-rename-session">
-          <DialogHeader>
-            <DialogTitle>Renommer la session</DialogTitle>
-            <DialogDescription>
-              Modifiez le nom de votre session. Ce changement sera visible par vos élèves.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 pt-2">
-            <Input
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              placeholder="Nom de la session"
-              data-testid="input-rename-session"
-            />
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => setRenameModalOpen(false)}
-                disabled={isRenaming}
-                data-testid="button-cancel-rename"
-              >
-                Annuler
-              </Button>
-              <Button
-                className="flex-1"
-                onClick={handleConfirmRename}
-                disabled={isRenaming || !newName.trim()}
-                data-testid="button-confirm-rename"
-              >
-                {isRenaming ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Enregistrement...
-                  </>
-                ) : (
-                  <>
-                    <Check className="h-4 w-4 mr-2" />
-                    Enregistrer
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <RenameSessionModal 
+        renameModalOpen={renameModalOpen}
+        setRenameModalOpen={setRenameModalOpen}
+        newName={newName}
+        setNewName={setNewName}
+        isRenaming={isRenaming}
+        handleConfirmRename={handleConfirmRename}
+      />
+          
     </>
   );
 }

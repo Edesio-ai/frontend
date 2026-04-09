@@ -23,7 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { useAuth } from "@/hooks/use-auth";
 import { useTeacher } from "@/hooks/use-teacher";
-import { SessionCard, CourseList, QuestionsCoursePanel } from "@/components/dashboard";
+import { CourseList, QuestionsCoursePanel } from "@/components/dashboard";
 import { SuggestionsModal } from "@/components/SuggestionsModal";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
 import { useToast } from "@/hooks/use-toast";

@@ -155,25 +155,29 @@ export function useTeacher() {
     [teacher]
   );
 
+  const handleUpdateSessionName = async (sessionId: string, name: string): Promise<Session> => {
+    try {
+      if (!teacher) {
+        throw new Error("Teacher not found");
+      }
+      const { session } = await sessionService.updateSessionName(sessionId, name, teacher.id);
+      return session;
+
+    } catch (err) {
+      console.error("Error updating session:", err);
+      setError("Erreur lors de la mise à jour de la session.");
+      throw err;
+
+    }
+  }
+
   const updateSession = useCallback(
     async (sessionId: string, nom: string): Promise<Session | null> => {
       if (!teacher) return null;
 
       try {
-        const { data, error: updateError } = await supabase
-          .from("sessions")
-          .update({ nom })
-          .eq("id", sessionId)
-          .eq("teacher_id", teacher.id)
-          .select()
-          .single();
-
-        if (updateError) {
-          console.error("Error updating session:", updateError);
-          setError("Erreur lors de la mise à jour de la session.");
-          return null;
-        }
-
+        const data = await handleUpdateSessionName(sessionId, nom);
+        
         setSessions((prev) =>
           prev.map((s) => (s.id === sessionId ? data : s))
         );
