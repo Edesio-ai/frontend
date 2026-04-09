@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import {  Teacher } from "@/types";
+import { Teacher } from "@/types";
 
 export const teacherService = {
   createTeacher: async (name: string, email: string): Promise<Teacher | null> => {
