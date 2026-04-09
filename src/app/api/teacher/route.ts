@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
     const response = await fetch(`${process.env.BACKEND_URL}/teacher`, {
         method: "GET",
         headers: {
-            "cookie": request.headers.get("cookie") ?? "",
+            "Cookie": request.headers.get("Cookie") ?? "",
         },
     });
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify(body),
         headers: {
             "Content-Type": "application/json",
-            "cookie": request.headers.get("cookie") ?? "",
+            "Cookie": request.headers.get("Cookie") ?? "",
             "x-csrf-token": request.headers.get("x-csrf-token") ?? "",
         },
     });

@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { Teacher } from "@/types";
+import {  Teacher } from "@/types";
 
 export const teacherService = {
   createTeacher: async (name: string, email: string): Promise<Teacher | null> => {
@@ -10,8 +10,8 @@ export const teacherService = {
     return reponse as Teacher | null;
   },
   
-  fetchTeacher: async (): Promise<Teacher> => {
-    const reponse = await apiFetch<Teacher>(`/api/teacher/`, {
+  fetchTeacher: async (): Promise<{ teacher: Teacher}> => {
+    const reponse = await apiFetch<{ teacher: Teacher}>(`/api/teacher/`, {
       method: "GET",
     });
     return reponse;

@@ -33,8 +33,8 @@ export function useTeacher() {
 
   const handleFetchTeacher = useCallback(async (): Promise<Teacher> => {
     try {
-      const response = await teacherService.fetchTeacher();
-      return response;
+      const { teacher } = await teacherService.fetchTeacher();
+      return teacher;
     } catch (error) {
       console.error("Error fetching teacher:", error);
       setError("Une erreur est survenue. Merci de réessayer.");
