@@ -48,6 +48,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateSessionFormValues } from "@/types/zod.type";
 import { createSessionFormSchema } from "@/utils/constants/zod";
+import { ClassListSection } from "@/components/teacher/section/classListSection";
 
 export default function Teacher() {
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
@@ -362,48 +363,14 @@ export default function Teacher() {
               handleOpenCreateModal={handleOpenCreateModal}
               sessions={sessions}
             />
-
-            <section>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-600/10 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-indigo-600" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold">Mes classes</h2>
-                  <p className="text-sm text-muted-foreground">{sessions.length} classe{sessions.length > 1 ? 's' : ''} créée{sessions.length > 1 ? 's' : ''}</p>
-                </div>
-              </div>
-
-              {sessions.length === 0 ? (
-                <Card className="p-10 text-center bg-card/50 backdrop-blur-sm border-dashed">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <Users className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">Aucune classe créée</h3>
-                  <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                    Créez votre première classe pour commencer à ajouter des cours et générer des questions IA.
-                  </p>
-                  <Button onClick={handleOpenCreateModal} className="shadow-lg shadow-primary/25" data-testid="button-create-first-session">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Créer ma première classe
-                  </Button>
-                </Card>
-              ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {sessions.map((session) => (
-                    <SessionCard
-                      key={session.id}
-                      session={session}
-                      isSelected={false}
-                      onSelect={handleSelectSession}
-                      onRename={handleRenameSession}
-                      onDelete={handleDeleteSession}
-                      pendingQuestionsCount={sessionPendingCounts[session.id] || 0}
-                    />
-                  ))}
-                </div>
-              )}
-            </section>
+            <ClassListSection
+              sessions={sessions}
+              handleOpenCreateModal={handleOpenCreateModal}
+              handleSelectSession={handleSelectSession}
+              handleRenameSession={handleRenameSession}
+              handleDeleteSession={handleDeleteSession}
+              sessionPendingCounts={sessionPendingCounts}
+            />
           </div>
         </main>
 

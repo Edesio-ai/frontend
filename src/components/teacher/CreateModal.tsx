@@ -69,7 +69,6 @@ export function CreateModal({
     };
 
     const onCreateSubmit = async (data: CreateSessionFormValues) => {
-        console.log("🚀 ~ onCreateSubmit ~ data:", data)
         setIsCreating(true);
         const { sessionName, sessionLanguage, courseTitle, courseDescription, courseContent } = data;
 
