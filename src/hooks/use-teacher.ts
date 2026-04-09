@@ -16,19 +16,13 @@ import type {
   CoursRanking
 } from "@/types";
 import { teacherService } from "@/services/teacher.service";
+import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
+import { sessionService } from "@/services/session.service";
 
 interface TeacherWithEtab extends Teacher {
   establishment_id?: string | null;
 }
 
-function generateSessionCode(length: number = 6): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for (let i = 0; i < length; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
-}
 
 export function useTeacher() {
   const { user, loading: authLoading } = useAuth();
@@ -113,7 +107,7 @@ export function useTeacher() {
     }
 
     try {
-      const sessions = await teacherService.getSessions();
+      const sessions = await sessionService.getSessions();
       setSessions(sessions || []);
       setError(null);
     } catch (err) {
@@ -122,49 +116,36 @@ export function useTeacher() {
     }
   }, [teacher]);
 
+  const handleCreateSession = async (sessionData: InsertSession): Promise<Session> => {
+    try {
+      return await sessionService.insertSession(sessionData);
+    
+    } catch (err) {
+      console.error("Error creating session:", err);
+      setError("Une erreur est survenue. Merci de réessayer.");
+      throw err;
+    }
+  }
+
+
   const createSession = useCallback(
-    async (name: string, langue: SessionLanguage = 'francais'): Promise<Session | null> => {
+    async (name: string, language: SessionLanguage = 'francais'): Promise<Session | null> => {
       if (!teacher) return null;
 
       try {
-        let code = generateSessionCode();
-        let attempts = 0;
-        const maxAttempts = 5;
-
-        while (attempts < maxAttempts) {
-          const { data: existing } = await supabase
-            .from("sessions")
-            .select("id")
-            .eq("code", code)
-            .maybeSingle();
-
-          if (!existing) break;
-          code = generateSessionCode();
-          attempts++;
-        }
+      const code = await generateUniqueSessionCode();
 
         const sessionData: InsertSession = {
-          teacher_id: teacher.id,
+          teacherId: teacher.id,
           name,
           code,
-          langue,
+          language,
         };
+        const session : Session = await handleCreateSession(sessionData);
 
-        const { data, error: insertError } = await supabase
-          .from("sessions")
-          .insert(sessionData)
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error("Error creating session:", insertError);
-          setError("Une erreur est survenue. Merci de réessayer.");
-          return null;
-        }
-
-        setSessions((prev) => [data, ...prev]);
+        setSessions((prev) => [session, ...prev]);
         setError(null);
-        return data;
+        return session;
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue. Merci de réessayer.");
@@ -871,11 +852,11 @@ export function useTeacher() {
           const eleveData = row.eleves as unknown as { id: string; nom: string; email: string; photo_url: string | null } | null;
           if (eleveData) {
             participants.push({
-              eleve_id: eleveData.id,
-              nom: eleveData.nom,
+              studentId: eleveData.id,
+              name: eleveData.nom,
               email: eleveData.email,
-              photo_url: eleveData.photo_url,
-              joined_at: row.joined_at,
+              photoUrl: eleveData.photo_url,
+              joinedAt: row.joined_at,
             });
           }
         }
