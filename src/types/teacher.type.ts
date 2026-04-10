@@ -11,7 +11,7 @@ export interface Teacher {
 
 export interface TeacherWithStats {
   id: string;
-  nom: string;
+  name: string;
   email: string;
   created_at: string;
   sessions_count: number;

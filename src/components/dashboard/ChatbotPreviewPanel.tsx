@@ -199,7 +199,7 @@ function CourseSelectionDropdown({
               className="py-3"
               data-testid={`select-cours-item-${c.id}`}
             >
-              {c.titre}
+              {c.title}
             </SelectItem>
           ))}
         </SelectContent>
@@ -299,7 +299,7 @@ export function ChatbotPreviewPanel({
         const totalQuestions = chatbot.questions.length;
         const scoreRatio = totalQuestions > 0 ? chatbot.score / totalQuestions : 0;
         chatbot.addBotMessage(
-          `Bravo ! Tu as terminé la révision de "${chatbot.selectedCours?.titre}" !\n\nTon score : ${chatbot.score}/${totalQuestions} bonnes réponses.\n\nContinue comme ça !`,
+          `Bravo ! Tu as terminé la révision de "${chatbot.selectedCours?.title}" !\n\nTon score : ${chatbot.score}/${totalQuestions} bonnes réponses.\n\nContinue comme ça !`,
           "completion",
           { scoreRatio }
         );

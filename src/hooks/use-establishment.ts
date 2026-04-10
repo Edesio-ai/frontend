@@ -6,16 +6,17 @@ import type {
   Establishment,
   InvitationToken,
   TeacherWithStats,
-  Student
+  Student,
+  CourseDetails
 } from "@/types";
 import { establishmentService } from "@/services/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { tokenService } from "@/services/token.service";
 
 interface EtablissementStats {
-  totalProfesseurs: number;
+  totalTeachers: number;
   totalSessions: number;
-  totalEleves: number;
+  totalStudents: number;
 }
 
 export function useEstablishment() {
@@ -27,16 +28,16 @@ export function useEstablishment() {
   const [error, setError] = useState<string | null>(null);
 
   const [stats, setStats] = useState<EtablissementStats>({
-    totalProfesseurs: 0,
+    totalTeachers: 0,
     totalSessions: 0,
-    totalEleves: 0,
+    totalStudents: 0,
   });
 
   const insertEstablishment = async (name: string) => {
     try {
       const establishment = await establishmentService.createEstablishment(user?.id || "", name, user?.email || "");
       setEstablishment(establishment);
-      setStats({ totalProfesseurs: 0, totalSessions: 0, totalEleves: 0 });
+      setStats({ totalTeachers: 0, totalSessions: 0, totalStudents: 0 });
       setProfesseurs([]);
       return establishment;
     } catch (err) {
@@ -222,17 +223,13 @@ export function useEstablishment() {
       //     console.error("Unexpected error:", err);
       //     return [];
       //   }
+      return [];
     },
     ["session"]
   );
 
   const getCourseDetails = useCallback(
-    async (coursId: string): Promise<{
-      cours: { id: string; titre: string; description: string | null; contenu_texte: string | null; questions_validees: boolean };
-      questions: { id: string; question: string; type: string; reponse_correcte: string; options: string[] | null }[];
-      students: { id: string; nom: string; email: string; photo_url: string | null; reponses_correctes: number; reponses_totales: number }[];
-      fichiers: { id: string; nom_fichier: string }[];
-    } | null> => {
+    async (coursId: string): Promise<CourseDetails | null> => {
       //   if (!session?.access_token) return null;
 
       //   try {

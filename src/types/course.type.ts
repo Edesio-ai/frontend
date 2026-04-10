@@ -1,15 +1,22 @@
 export interface Course {
     id: string;
     session_id: string;
-    titre: string;
+    title: string;
     description: string | null;
-    contenu_texte: string | null;
-    questions_validated?: boolean;
+    content_text: string | null;
+    validated_questions?: boolean;
     position_order?: number;
     created_at: string;
 }
 
-export type CourseRanking  = {
+export interface CourseBasic {
+    id: string;
+    title: string;
+    description: string | null;
+    validated_questions: boolean;
+}
+
+export type CourseRanking = {
     student_id: string;
     name: string;
     photo_url: string | null;
@@ -18,7 +25,7 @@ export type CourseRanking  = {
     success_rate: number;
     rank: number;
     last_attempt: string;
-  }
+}
 
 export interface CourseFile {
     id: string;
@@ -65,4 +72,33 @@ export interface CoursRanking {
     success_rate: number;
     rank: number;
     last_attempt: string;
+}
+
+export interface CourseDetails {
+    course: {
+        id: string;
+        title: string;
+        description: string | null;
+        content_text: string | null;
+        validated_questions: boolean;
+    };
+    questions: { 
+        id: string;
+        question: string;
+        type: QuestionType;
+        good_answer: string;
+        proposals: string[] | null;
+    }[];
+    students: {
+        id: string;
+        name: string;
+        email: string;
+        photo_url: string | null;
+        correct_answers: number;
+        total_answers: number;
+    }[];
+    files: {
+        id: string;
+        name: string;
+    }[];
 }
