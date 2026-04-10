@@ -192,109 +192,21 @@ export function useTeacher() {
     [teacher]
   );
 
+  const handleDeleteSession = async (sessionId: string): Promise<void> => {
+    try {
+      return await sessionService.deleteSession(sessionId);
+    } catch (err) {
+      console.error("Error deleting session courses:", err);
+      setError("Erreur lors de la suppression des cours de la session.");
+      throw err;
+    }
+  }
   const deleteSession = useCallback(
     async (sessionId: string): Promise<boolean> => {
       if (!teacher) return false;
 
       try {
-        // First delete all questions for courses in this session
-        const { data: courses, error: coursesError } = await supabase
-          .from("cours")
-          .select("id")
-          .eq("session_id", sessionId);
-
-        if (coursesError) {
-          console.error("Error fetching courses for deletion:", coursesError);
-          setError("Erreur lors de la récupération des cours.");
-          return false;
-        }
-
-        if (courses && courses.length > 0) {
-          const courseIds = courses.map((c) => c.id);
-          // Delete questions for all courses
-          const { error: questionsError } = await supabase
-            .from("questions")
-            .delete()
-            .in("cours_id", courseIds);
-
-          if (questionsError) {
-            console.error("Error deleting questions:", questionsError);
-            setError("Erreur lors de la suppression des questions.");
-            return false;
-          }
-
-          // Delete course files from storage and database
-          for (const course of courses) {
-            const { data: fichiers, error: fichiersError } = await supabase
-              .from("cours_fichiers")
-              .select("fichier_url")
-              .eq("cours_id", course.id);
-
-            if (fichiersError) {
-              console.error("Error fetching course files:", fichiersError);
-              setError("Erreur lors de la récupération des fichiers.");
-              return false;
-            }
-
-            if (fichiers && fichiers.length > 0) {
-              const filePaths = fichiers.map((f) => f.fichier_url);
-              const { error: storageError } = await supabase.storage.from("cours-pdf").remove(filePaths);
-
-              if (storageError) {
-                console.error("Error removing files from storage:", storageError);
-                // Continue anyway as files might not exist
-              }
-            }
-
-            const { error: deleteFichiersError } = await supabase
-              .from("cours_fichiers")
-              .delete()
-              .eq("cours_id", course.id);
-
-            if (deleteFichiersError) {
-              console.error("Error deleting file records:", deleteFichiersError);
-              setError("Erreur lors de la suppression des enregistrements de fichiers.");
-              return false;
-            }
-          }
-
-          // Delete all courses
-          const { error: deleteCoursError } = await supabase
-            .from("cours")
-            .delete()
-            .eq("session_id", sessionId);
-
-          if (deleteCoursError) {
-            console.error("Error deleting courses:", deleteCoursError);
-            setError("Erreur lors de la suppression des cours.");
-            return false;
-          }
-        }
-
-        // Delete student enrollments for this session
-        const { error: enrollmentsError } = await supabase
-          .from("eleve_sessions")
-          .delete()
-          .eq("session_id", sessionId);
-
-        if (enrollmentsError) {
-          console.error("Error deleting enrollments:", enrollmentsError);
-          setError("Erreur lors de la suppression des inscriptions élèves.");
-          return false;
-        }
-
-        // Finally delete the session
-        const { error: deleteError } = await supabase
-          .from("sessions")
-          .delete()
-          .eq("id", sessionId)
-          .eq("professeur_id", teacher.id);
-
-        if (deleteError) {
-          console.error("Error deleting session:", deleteError);
-          setError("Erreur lors de la suppression de la session.");
-          return false;
-        }
+        await handleDeleteSession(sessionId);
 
         setSessions((prev) => prev.filter((s) => s.id !== sessionId));
         setError(null);

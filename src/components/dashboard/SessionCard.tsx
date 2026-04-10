@@ -13,6 +13,7 @@ import type { Session } from "@/types";
 import { Calendar, Copy, BookOpen, Check, Trash2, Users, Loader2, MessageCircle, Pencil } from "lucide-react";
 import { useState } from "react";
 import { RenameSessionModal } from "../teacher/RenameSessionModal";
+import { DeleteSessionModal } from "../teacher/DeleteSessionModal";
 
 interface SessionCardProps {
   session: Session;
@@ -191,47 +192,13 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
         </div>
       </Card>
 
-      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <DialogContent data-testid="modal-delete-session">
-          <DialogHeader>
-            <DialogTitle className="text-destructive">Supprimer la session ?</DialogTitle>
-            <DialogDescription>
-              Cette action est irréversible. Tous les cours, fichiers PDF et questions associés à la session "{session.name}" seront définitivement supprimés.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex gap-3 pt-4">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => setDeleteModalOpen(false)}
-              disabled={isDeleting}
-              data-testid="button-cancel-delete"
-            >
-              Annuler
-            </Button>
-            <Button
-              variant="destructive"
-              className="flex-1"
-              onClick={handleConfirmDelete}
-              disabled={isDeleting}
-              data-testid="button-confirm-delete"
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Suppression...
-                </>
-              ) : (
-                <>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Supprimer
-                </>
-              )}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <DeleteSessionModal
+        deleteModalOpen={deleteModalOpen}
+        setDeleteModalOpen={setDeleteModalOpen}
+        session={session}
+        isDeleting={isDeleting}
+        handleConfirmDelete={handleConfirmDelete}
+      />
 
       <RenameSessionModal 
         renameModalOpen={renameModalOpen}

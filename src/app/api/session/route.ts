@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-    const response = await fetch(`${process.env.BACKEND_URL}/teacher/sessions`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/session/teacher-sessions`, {
         headers: {
             "Cookie": request.headers.get("Cookie") ?? ""
         }
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
-    const response = await fetch(`${process.env.BACKEND_URL}/teacher/sessions`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/session`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     });
     if(!response.ok) {
         const error = await response.json();
+        console.log("🚀 ~ POST ~ error:", error)
         return NextResponse.json({ error: error.message }, { status: response.status });
     }
 
