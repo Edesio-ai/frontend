@@ -56,7 +56,7 @@ export function QuestionsCoursePanel({
         for (const q of courseQuestions) {
           allQuestions.push({
             ...q,
-            courseTitle: cours.titre,
+            courseTitle: cours.title,
           });
         }
       }

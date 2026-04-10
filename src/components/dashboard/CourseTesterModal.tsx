@@ -514,9 +514,9 @@ export function CourseTesterModal({
   const [generateSuccess, setGenerateSuccess] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [editedTitre, setEditedTitre] = useState(cours.titre);
+  const [editedTitre, setEditedTitre] = useState(cours.title);
   const [editedDescription, setEditedDescription] = useState(cours.description || "");
-  const [editedContenu, setEditedContenu] = useState(cours.contenu_texte || "");
+  const [editedContenu, setEditedContenu] = useState(cours.content_text || "");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [fichierToDelete, setFichierToDelete] = useState<CourseFile | null>(null);
   const [isDeletingFichier, setIsDeletingFichier] = useState(false);
@@ -545,7 +545,7 @@ export function CourseTesterModal({
   
   // Phase control: questions not validated = phase 1, validated = phase 2
   // Use local state to track validation status (refreshed from DB when modal opens)
-  const [questionsValidated, setQuestionsValidated] = useState(cours.questions_validated);
+  const [questionsValidated, setQuestionsValidated] = useState(cours.validated_questions);
   
   // Phase 1 sub-view: course editing vs question generation
   const [showQuestionGenerator, setShowQuestionGenerator] = useState(false);
@@ -595,10 +595,10 @@ export function CourseTesterModal({
   }, [open, cours.id]);
 
   useEffect(() => {
-    setEditedTitre(cours.titre);
+    setEditedTitre(cours.title);
     setEditedDescription(cours.description || "");
-    setEditedContenu(cours.contenu_texte || "");
-    setQuestionsValidated(cours.questions_validated);
+    setEditedContenu(cours.content_text || "");
+    setQuestionsValidated(cours.validated_questions);
   }, [cours]);
 
   const loadData = async () => {
@@ -607,12 +607,12 @@ export function CourseTesterModal({
     // Fetch fresh cours status to ensure we have the latest questions_validees value
     const { data: freshCours } = await supabase
       .from("cours")
-      .select("questions_validees")
+      .select("validated_questions")
       .eq("id", cours.id)
       .single();
     
     if (freshCours) {
-      setQuestionsValidated(freshCours.questions_validees);
+      setQuestionsValidated(freshCours.validated_questions);
     }
     
     const [fichiersData, questionsData] = await Promise.all([
@@ -985,12 +985,12 @@ export function CourseTesterModal({
                     {showQuestionGenerator ? (
                       <>
                         <Sparkles className="h-5 w-5" />
-                        Créer les questions - {cours.titre}
+                        Créer les questions - {cours.title}
                       </>
                     ) : (
                       <>
                         <BookOpen className="h-5 w-5" />
-                        {cours.titre}
+                        {cours.title}
                       </>
                     )}
                   </DialogTitle>
@@ -1122,7 +1122,7 @@ export function CourseTesterModal({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => exportQuestionsPdf(questions, cours.titre, sessionName)}
+                        onClick={() => exportQuestionsPdf(questions, cours.title, sessionName)}
                         data-testid="button-export-questions-pdf"
                       >
                         <Download className="h-3.5 w-3.5 mr-1" />
@@ -1284,7 +1284,7 @@ export function CourseTesterModal({
                   <Button
                     onClick={async () => {
                       // Save course changes before going to questions
-                      if (editedTitre !== cours.titre || editedDescription !== (cours.description || "") || editedContenu !== (cours.contenu_texte || "")) {
+                      if (editedTitre !== cours.title || editedDescription !== (cours.description || "") || editedContenu !== (cours.content_text || "")) {
                         setIsSaving(true);
                         const updated = await updateCours(cours.id, editedTitre, editedDescription || null, editedContenu || null);
                         if (updated) {
@@ -1343,7 +1343,7 @@ export function CourseTesterModal({
           <DialogHeader className="px-6 pt-6 pb-4 border-b flex-shrink-0">
             <DialogTitle className="flex items-center gap-2">
               <BookOpen className="h-5 w-5" />
-              {cours.titre}
+              {cours.title}
             </DialogTitle>
             <DialogDescription>
               Gérez le contenu du cours et utilisez le bouton "Tester le chatbot" pour simuler l'expérience élève
@@ -1398,7 +1398,7 @@ export function CourseTesterModal({
                 <Card className="p-4 space-y-3">
                   <div>
                     <span className="text-xs text-muted-foreground uppercase">Titre</span>
-                    <p className="font-medium">{cours.titre}</p>
+                    <p className="font-medium">{cours.title}</p>
                   </div>
                   {cours.description && (
                     <div>
@@ -1406,10 +1406,10 @@ export function CourseTesterModal({
                       <p className="text-sm">{cours.description}</p>
                     </div>
                   )}
-                  {cours.contenu_texte && (
+                  {cours.content_text && (
                     <div>
                       <span className="text-xs text-muted-foreground uppercase">Contenu</span>
-                      <p className="text-sm whitespace-pre-wrap line-clamp-4">{cours.contenu_texte}</p>
+                      <p className="text-sm whitespace-pre-wrap line-clamp-4">{cours.content_text}</p>
                     </div>
                   )}
                 </Card>
@@ -1502,7 +1502,7 @@ export function CourseTesterModal({
                           size="sm"
                           onClick={(e) => {
                             e.stopPropagation();
-                            exportQuestionsPdf(questions, cours.titre, sessionName);
+                            exportQuestionsPdf(questions, cours.title, sessionName);
                           }}
                           data-testid="button-export-questions-pdf-phase2"
                         >
@@ -1601,7 +1601,7 @@ export function CourseTesterModal({
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => exportClassementPdf(rankings, cours.titre, sessionName)}
+                          onClick={() => exportClassementPdf(rankings, cours.title, sessionName)}
                           data-testid="button-export-rankings-pdf"
                         >
                           <Download className="h-3.5 w-3.5 mr-1" />
@@ -1675,7 +1675,7 @@ export function CourseTesterModal({
             <div className="flex items-center justify-between gap-2">
               <DialogTitle className="flex items-center gap-2 flex-1 min-w-0">
                 <MessageSquare className="h-5 w-5 text-primary shrink-0" />
-                <span className="truncate">Test du chatbot - {cours.titre}</span>
+                <span className="truncate">Test du chatbot - {cours.title}</span>
               </DialogTitle>
               <div className="flex items-center gap-2 shrink-0">
                 <Button 

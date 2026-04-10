@@ -56,9 +56,9 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 const formSchema = z.object({
-  titre: z.string().min(1, "Le titre est requis").max(200, "Le titre est trop long"),
+  title: z.string().min(1, "Le titre est requis").max(200, "Le titre est trop long"),
   description: z.string().max(500, "La description est trop longue").optional().or(z.literal("")),
-  contenuTexte: z.string().optional().or(z.literal("")),
+  contentText: z.string().optional().or(z.literal("")),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -70,7 +70,7 @@ interface CourseListProps {
     sessionId: string,
     titre: string,
     description: string,
-    contenuTexte: string,
+    contentText: string,
     pdfFiles?: File[]
   ) => Promise<Course | null>;
   updateCours: (
@@ -131,7 +131,7 @@ interface SortableCourseItemProps {
 
 function SortableCourseItem({ cours, onSelect, onRename, onDelete, formatDate }: SortableCourseItemProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(cours.titre);
+  const [editTitle, setEditTitle] = useState(cours.title);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -151,14 +151,14 @@ function SortableCourseItem({ cours, onSelect, onRename, onDelete, formatDate }:
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setEditTitle(cours.titre);
+    setEditTitle(cours.title);
     setIsEditing(true);
     setTimeout(() => inputRef.current?.focus(), 50);
   };
 
   const handleSaveEdit = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.stopPropagation();
-    if (editTitle.trim() && editTitle !== cours.titre) {
+    if (editTitle.trim() && editTitle !== cours.title) {
       onRename(cours.id, editTitle.trim());
     }
     setIsEditing(false);
@@ -169,7 +169,7 @@ function SortableCourseItem({ cours, onSelect, onRename, onDelete, formatDate }:
       handleSaveEdit(e);
     } else if (e.key === "Escape") {
       setIsEditing(false);
-      setEditTitle(cours.titre);
+      setEditTitle(cours.title);
     }
   };
 
@@ -223,7 +223,7 @@ function SortableCourseItem({ cours, onSelect, onRename, onDelete, formatDate }:
             <>
               <div className="flex items-center gap-2">
                 <h5 className="font-medium truncate" data-testid={`text-course-title-${cours.id}`}>
-                  {cours.titre}
+                  {cours.title}
                 </h5>
                 <Button
                   size="icon"
@@ -286,9 +286,9 @@ function AddCourseModal({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      titre: "",
+      title: "",
       description: "",
-      contenuTexte: "",
+      contentText: "",
     },
   });
 
@@ -296,10 +296,10 @@ function AddCourseModal({
     setIsSubmitting(true);
     const newCours = await createCourse(
       sessionId,
-      data.titre,
+      data.title,
       data.description || "",
-      data.contenuTexte || "",
-      selectedPdfFiles.length > 0 ? selectedPdfFiles : undefined
+      data.contentText || "",
+      selectedPdfFiles.length > 0 ? selectedPdfFiles : undefined as File[] | undefined
     );
     if (newCours) {
       onCourseCreated(newCours);
@@ -351,7 +351,7 @@ function AddCourseModal({
               <div className="space-y-4 pb-4">
                 <FormField
                   control={form.control}
-                  name="titre"
+                  name="title"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Titre du cours</FormLabel>
@@ -437,7 +437,7 @@ function AddCourseModal({
 
                 <FormField
                   control={form.control}
-                  name="contenuTexte"
+                  name="contentText"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
@@ -576,7 +576,7 @@ export function CourseList({
       coursId,
       newTitle,
       coursToUpdate.description,
-      coursToUpdate.contenu_texte
+      coursToUpdate.content_text
     );
 
     if (updated) {
@@ -716,7 +716,7 @@ export function CourseList({
           <DialogHeader>
             <DialogTitle className="text-destructive">Supprimer le cours ?</DialogTitle>
             <DialogDescription>
-              Cette action est irréversible. Toutes les questions, fichiers PDF et statistiques associés au cours "{coursToDelete?.titre}" seront définitivement supprimés.
+              Cette action est irréversible. Toutes les questions, fichiers PDF et statistiques associés au cours "{coursToDelete?.title}" seront définitivement supprimés.
             </DialogDescription>
           </DialogHeader>
 

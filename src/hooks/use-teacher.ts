@@ -261,17 +261,17 @@ export function useTeacher() {
   const updateCours = useCallback(
     async (
       coursId: string,
-      titre: string,
+      title: string,
       description: string | null,
-      contenuTexte: string | null
+      contentText: string | null
     ): Promise<Course | null> => {
       try {
         const { data, error: updateError } = await supabase
           .from("cours")
           .update({
-            titre,
+            title,
             description: description || null,
-            contenu_texte: contenuTexte || null,
+            content_text: contentText || null,
           })
           .eq("id", coursId)
           .select()
@@ -297,9 +297,9 @@ export function useTeacher() {
   const createCourse = useCallback(
     async (
       sessionId: string,
-      titre: string,
+      title: string,
       description: string,
-      contenuTexte: string,
+      contentText: string,
       pdfFiles?: File[]
     ): Promise<Course | null> => {
       try {
@@ -322,9 +322,9 @@ export function useTeacher() {
 
         const coursData: InsertCourse = {
           session_id: sessionId,
-          titre,
+          title,
           description: description || null,
-          contenu_texte: contenuTexte || null,
+          content_text: contentText || null,
         };
 
         const { data, error: insertError } = await supabase

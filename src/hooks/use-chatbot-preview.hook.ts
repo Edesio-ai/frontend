@@ -256,14 +256,14 @@ export function useChatbotPreview() {
   }, [state.availableCours, state.sessionName, addBotMessage]);
 
   const selectCours = useCallback((cours: Course, questions: Question[]) => {
-    addStudentMessage(`Je veux réviser "${cours.titre}"`, "answer");
+    addStudentMessage(`Je veux réviser "${cours.title}"`, "answer");
     const shuffledQuestions = shuffleArray(questions);
     dispatch({ type: "SELECT_COURS", cours, questions: shuffledQuestions });
 
     if (questions.length === 0) {
       setTimeout(() => {
         addBotMessage(
-          `Je n'ai pas encore de questions pour "${cours.titre}". Demande à ton professeur de générer des questions !`,
+          `Je n'ai pas encore de questions pour "${cours.title}". Demande à ton professeur de générer des questions !`,
           "completion"
         );
       }, 500);
@@ -271,7 +271,7 @@ export function useChatbotPreview() {
       setTimeout(() => {
         const startMsg = pickRandom(startQuizMessages).replace("{count}", String(questions.length));
         addBotMessage(
-          `Super, on révise "${cours.titre}" ! ${startMsg}`,
+          `Super, on révise "${cours.title}" ! ${startMsg}`,
           "question"
         );
       }, 500);
