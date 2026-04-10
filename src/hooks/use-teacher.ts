@@ -192,10 +192,20 @@ export function useTeacher() {
     [teacher]
   );
 
+  const handleDeleteSession = async (sessionId: string): Promise<boolean> => {
+    try {
+      return await sessionService.deleteSession(sessionId);
+    } catch (err) {
+      console.error("Error deleting session courses:", err);
+      setError("Erreur lors de la suppression des cours de la session.");
+      return false;
+    }
+  }
   const deleteSession = useCallback(
     async (sessionId: string): Promise<boolean> => {
       if (!teacher) return false;
 
+      await handleDeleteSession(sessionId);
       try {
         // First delete all questions for courses in this session
         const { data: courses, error: coursesError } = await supabase

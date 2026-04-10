@@ -9,7 +9,7 @@ type RouteContext = {
 export async function GET(request: Request, { params }: RouteContext) {
     const { code } = await params;
 
-    const response = await fetch(`${process.env.BACKEND_URL}/teacher/sessions/${code}`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/session/code/${code}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
