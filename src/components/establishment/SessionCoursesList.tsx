@@ -55,7 +55,7 @@ export function SessionCoursesList({
               <span>{cours.title}</span>
             </div>
             <div className="flex items-center gap-2">
-              {cours.validated_questions ? (
+              {cours.validatedQuestions ? (
                 <Badge variant="default" className="text-xs">Publié</Badge>
               ) : (
                 <Badge variant="outline" className="text-xs">Brouillon</Badge>

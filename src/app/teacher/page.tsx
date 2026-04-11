@@ -65,7 +65,7 @@ export default function Teacher() {
     updateCours,
     deleteCours,
     reorderCours,
-    uploadPdfForCours,
+    uploadPdfForCourse,
     fetchCoursFichiers,
     deleteCoursFichier,
     getPdfUrl,
@@ -433,7 +433,7 @@ export default function Teacher() {
                       updateCours={updateCours}
                       deleteCours={deleteCours}
                       reorderCours={reorderCours}
-                      uploadPdfForCours={uploadPdfForCours}
+                      uploadPdfForCourse={uploadPdfForCourse}
                       fetchCoursFichiers={fetchCoursFichiers}
                       deleteCoursFichier={deleteCoursFichier}
                       getPdfUrl={getPdfUrl}

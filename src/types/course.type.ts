@@ -1,11 +1,11 @@
 export interface Course {
     id: string;
-    session_id: string;
+    sessionId: string;
     title: string;
     description: string | null;
-    content_text: string | null;
-    validated_questions?: boolean;
-    position_order?: number;
+    contentText: string | null;
+    validatedQuestions?: boolean;
+    positionOrder?: number;
     created_at: string;
 }
 
@@ -13,7 +13,7 @@ export interface CourseBasic {
     id: string;
     title: string;
     description: string | null;
-    validated_questions: boolean;
+    validatedQuestions: boolean;
 }
 
 export type CourseRanking = {
@@ -29,9 +29,9 @@ export type CourseRanking = {
 
 export interface CourseFile {
     id: string;
-    cours_id: string;
-    fichier_url: string;
-    nom_fichier: string;
+    course_id: string;
+    file_url: string;
+    file_name: string;
     created_at: string;
 }
 
@@ -61,7 +61,7 @@ export interface CourseQuestion {
     student_name?: string;
 }
 
-export type InsertCourse = Omit<Course, "id" | "created_at" | "questions_validated" | "position_order">;
+export type InsertCourse = Omit<Course, "id" | "created_at" | "validatedQuestions" | "positionOrder">;
 
 export interface CoursRanking {
     student_id: string;
@@ -79,8 +79,8 @@ export interface CourseDetails {
         id: string;
         title: string;
         description: string | null;
-        content_text: string | null;
-        validated_questions: boolean;
+        contentText: string | null;
+        validatedQuestions: boolean;
     };
     questions: { 
         id: string;
