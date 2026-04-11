@@ -34,4 +34,10 @@ export const sessionService = {
       });
       return reponse;
   },
+  getSessionCoursesCount: async (sessionId: string): Promise<{ coursesCount: number }> => {
+    const reponse = await apiFetch<{ coursesCount: number }>(`/api/session/${sessionId}/courses-count`, {
+      method: "GET",
+    });
+    return reponse;
+  }
 }

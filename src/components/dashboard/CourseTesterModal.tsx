@@ -106,7 +106,7 @@ interface CourseTesterModalProps {
     description: string | null,
     contenuTexte: string | null
   ) => Promise<Course | null>;
-  uploadPdfForCours: (coursId: string, file: File) => Promise<CourseFile | null>;
+  uploadPdfForCourse: (coursId: string, file: File) => Promise<CourseFile | null>;
   fetchCoursFichiers: (coursId: string) => Promise<CourseFile[]>;
   deleteCoursFichier: (fichier: CourseFile) => Promise<boolean>;
   getPdfUrl: (filePath: string) => Promise<string | null>;
@@ -490,7 +490,7 @@ export function CourseTesterModal({
   open,
   onOpenChange,
   updateCours,
-  uploadPdfForCours,
+  uploadPdfForCourse,
   fetchCoursFichiers,
   deleteCoursFichier,
   getPdfUrl,
@@ -516,7 +516,7 @@ export function CourseTesterModal({
   const [isSaving, setIsSaving] = useState(false);
   const [editedTitre, setEditedTitre] = useState(cours.title);
   const [editedDescription, setEditedDescription] = useState(cours.description || "");
-  const [editedContenu, setEditedContenu] = useState(cours.content_text || "");
+  const [editedContenu, setEditedContenu] = useState(cours.contentText || "");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [fichierToDelete, setFichierToDelete] = useState<CourseFile | null>(null);
   const [isDeletingFichier, setIsDeletingFichier] = useState(false);
@@ -545,7 +545,7 @@ export function CourseTesterModal({
   
   // Phase control: questions not validated = phase 1, validated = phase 2
   // Use local state to track validation status (refreshed from DB when modal opens)
-  const [questionsValidated, setQuestionsValidated] = useState(cours.validated_questions);
+  const [questionsValidated, setQuestionsValidated] = useState(cours.validatedQuestions);
   
   // Phase 1 sub-view: course editing vs question generation
   const [showQuestionGenerator, setShowQuestionGenerator] = useState(false);
@@ -597,8 +597,8 @@ export function CourseTesterModal({
   useEffect(() => {
     setEditedTitre(cours.title);
     setEditedDescription(cours.description || "");
-    setEditedContenu(cours.content_text || "");
-    setQuestionsValidated(cours.validated_questions);
+    setEditedContenu(cours.contentText || "");
+    setQuestionsValidated(cours.validatedQuestions);
   }, [cours]);
 
   const loadData = async () => {
@@ -607,12 +607,12 @@ export function CourseTesterModal({
     // Fetch fresh cours status to ensure we have the latest questions_validees value
     const { data: freshCours } = await supabase
       .from("cours")
-      .select("validated_questions")
+      .select("validatedQuestions")
       .eq("id", cours.id)
       .single();
     
     if (freshCours) {
-      setQuestionsValidated(freshCours.validated_questions);
+      setQuestionsValidated(freshCours.validatedQuestions);
     }
     
     const [fichiersData, questionsData] = await Promise.all([
@@ -651,7 +651,7 @@ export function CourseTesterModal({
     if (!file) return;
     
     setIsUploadingPdf(true);
-    const newFichier = await uploadPdfForCours(cours.id, file);
+    const newFichier = await uploadPdfForCourse(cours.id, file);
     if (newFichier) {
       setFichiers((prev) => [...prev, newFichier]);
     }
@@ -677,7 +677,7 @@ export function CourseTesterModal({
   };
 
   const handleDownloadPdf = async (fichier: CourseFile) => {
-    const url = await getPdfUrl(fichier.fichier_url);
+    const url = await getPdfUrl(fichier.file_url);
     if (url) {
       window.open(url, "_blank");
     }
@@ -1263,7 +1263,7 @@ export function CourseTesterModal({
                         <div key={f.id} className="flex flex-wrap items-center justify-between gap-2 p-2 rounded bg-muted/30 text-sm">
                           <div className="flex flex-wrap items-center gap-2 min-w-0">
                             <FileText className="h-4 w-4 flex-shrink-0" />
-                            <span className="truncate">{f.nom_fichier}</span>
+                            <span className="truncate">{f.file_name}</span>
                           </div>
                           <div className="flex gap-1">
                             <Button variant="ghost" size="icon" onClick={() => handleDownloadPdf(f)} data-testid={`button-download-pdf-${f.id}`}>
@@ -1284,7 +1284,7 @@ export function CourseTesterModal({
                   <Button
                     onClick={async () => {
                       // Save course changes before going to questions
-                      if (editedTitre !== cours.title || editedDescription !== (cours.description || "") || editedContenu !== (cours.content_text || "")) {
+                      if (editedTitre !== cours.title || editedDescription !== (cours.description || "") || editedContenu !== (cours.contentText || "")) {
                         setIsSaving(true);
                         const updated = await updateCours(cours.id, editedTitre, editedDescription || null, editedContenu || null);
                         if (updated) {
@@ -1406,10 +1406,10 @@ export function CourseTesterModal({
                       <p className="text-sm">{cours.description}</p>
                     </div>
                   )}
-                  {cours.content_text && (
+                  {cours.contentText && (
                     <div>
                       <span className="text-xs text-muted-foreground uppercase">Contenu</span>
-                      <p className="text-sm whitespace-pre-wrap line-clamp-4">{cours.content_text}</p>
+                      <p className="text-sm whitespace-pre-wrap line-clamp-4">{cours.contentText}</p>
                     </div>
                   )}
                 </Card>
@@ -1436,7 +1436,7 @@ export function CourseTesterModal({
                       <div key={f.id} className="flex items-center justify-between gap-2 p-2 rounded bg-muted/30 text-sm">
                         <div className="flex items-center gap-2 min-w-0">
                           <FileText className="h-4 w-4 flex-shrink-0" />
-                          <span className="truncate">{f.nom_fichier}</span>
+                          <span className="truncate">{f.file_name}</span>
                         </div>
                         <div className="flex gap-1">
                           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownloadPdf(f)}>
@@ -1717,7 +1717,7 @@ export function CourseTesterModal({
           <AlertDialogHeader>
             <AlertDialogTitle>Supprimer ce document ?</AlertDialogTitle>
             <AlertDialogDescription>
-              Voulez-vous vraiment supprimer « {fichierToDelete?.nom_fichier} » ?
+              Voulez-vous vraiment supprimer « {fichierToDelete?.file_name} » ?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

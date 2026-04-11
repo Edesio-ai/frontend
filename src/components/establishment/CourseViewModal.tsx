@@ -43,14 +43,14 @@ export function CourseViewModal({
             </div>
           ) : courseDetails ? (
             <div className="flex-1 overflow-y-auto space-y-6 py-4">
-              {courseDetails.course.content_text && (
+              {courseDetails.course.contentText && (
                 <div className="space-y-2">
                   <h3 className="font-medium text-sm flex flex-wrap items-center gap-2">
                     <FileText className="h-4 w-4" />
                     Contenu texte
                   </h3>
                   <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg whitespace-pre-wrap">
-                    {courseDetails.course.content_text}
+                    {courseDetails.course.contentText}
                   </p>
                 </div>
               )}

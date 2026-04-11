@@ -81,7 +81,7 @@ interface CourseListProps {
   ) => Promise<Course | null>;
   deleteCours?: (coursId: string) => Promise<boolean>;
   reorderCours?: (coursIds: string[]) => Promise<boolean>;
-  uploadPdfForCours: (coursId: string, file: File) => Promise<CourseFile | null>;
+  uploadPdfForCourse: (coursId: string, file: File) => Promise<CourseFile | null>;
   fetchCoursFichiers: (coursId: string) => Promise<CourseFile[]>;
   deleteCoursFichier: (fichier: CourseFile) => Promise<boolean>;
   getPdfUrl: (filePath: string) => Promise<string | null>;
@@ -488,7 +488,7 @@ export function CourseList({
   updateCours,
   deleteCours,
   reorderCours,
-  uploadPdfForCours,
+  uploadPdfForCourse,
   fetchCoursFichiers,
   deleteCoursFichier,
   getPdfUrl,
@@ -576,7 +576,7 @@ export function CourseList({
       coursId,
       newTitle,
       coursToUpdate.description,
-      coursToUpdate.content_text
+      coursToUpdate.contentText
     );
 
     if (updated) {
@@ -695,7 +695,7 @@ export function CourseList({
           open={!!selectedCours}
           onOpenChange={(open) => !open && setSelectedCours(null)}
           updateCours={updateCours}
-          uploadPdfForCours={uploadPdfForCours}
+          uploadPdfForCourse={uploadPdfForCourse}
           fetchCoursFichiers={fetchCoursFichiers}
           deleteCoursFichier={deleteCoursFichier}
           getPdfUrl={getPdfUrl}

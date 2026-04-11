@@ -18,6 +18,7 @@ import type {
 import { teacherService } from "@/services/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
 import { sessionService } from "@/services/session.service";
+import { courseService } from "@/services/course.service";
 
 interface TeacherWithEtab extends Teacher {
   establishment_id?: string | null;
@@ -52,7 +53,6 @@ export function useTeacher() {
     } catch (err) {
       console.error("Error validating invitation token:", err);
     }
-    
   }, [user]);
 
   const handleCreateTeacher = useCallback(async (name: string, email: string) => {
@@ -73,7 +73,7 @@ export function useTeacher() {
       return;
     }
 
-    const  teacher  = await handleFetchTeacher();
+    const teacher = await handleFetchTeacher();
 
     if (teacher) {
       setTeacher(teacher);
@@ -119,7 +119,7 @@ export function useTeacher() {
   const handleCreateSession = async (sessionData: InsertSession): Promise<Session> => {
     try {
       return await sessionService.insertSession(sessionData);
-    
+
     } catch (err) {
       console.error("Error creating session:", err);
       setError("Une erreur est survenue. Merci de réessayer.");
@@ -133,7 +133,7 @@ export function useTeacher() {
       if (!teacher) return null;
 
       try {
-      const code = await generateUniqueSessionCode();
+        const code = await generateUniqueSessionCode();
 
         const sessionData: InsertSession = {
           teacherId: teacher.id,
@@ -141,7 +141,7 @@ export function useTeacher() {
           code,
           language,
         };
-        const session : Session = await handleCreateSession(sessionData);
+        const session: Session = await handleCreateSession(sessionData);
 
         setSessions((prev) => [session, ...prev]);
         setError(null);
@@ -177,7 +177,7 @@ export function useTeacher() {
 
       try {
         const data = await handleUpdateSessionName(sessionId, nom);
-        
+
         setSessions((prev) =>
           prev.map((s) => (s.id === sessionId ? data : s))
         );
@@ -271,7 +271,7 @@ export function useTeacher() {
           .update({
             title,
             description: description || null,
-            content_text: contentText || null,
+            contentText: contentText || null,
           })
           .eq("id", coursId)
           .select()
@@ -294,116 +294,48 @@ export function useTeacher() {
     []
   );
 
-  const createCourse = useCallback(
-    async (
-      sessionId: string,
-      title: string,
-      description: string,
-      contentText: string,
-      pdfFiles?: File[]
-    ): Promise<Course | null> => {
+  const handleGetCoursesCount = async (sessionId: string): Promise<number> => {
+    try {
+      const { coursesCount } = await sessionService.getSessionCoursesCount(sessionId);
+      return coursesCount;
+    } catch (err) {
+      console.error("Error counting cours:", err);
+      throw err;
+    }
+  }
+
+  const handleCreateCourse = async (coursData: InsertCourse): Promise<Course> => {
+    try {
+      const { data } = await courseService.createCourse(coursData);
+      return data
+    } catch (err) {
+      console.error("Error creating course:", err);
+      setError("Une erreur est survenue. Merci de réessayer.");
+      throw err;
+    }
+  }
+  
+
+  const handleUploadPdfForCours = async (coursId: string, file: File): Promise<CourseFile> => {
+    try {
+      const { data } = await courseService.uploadFile(coursId, file);
+      return data;
+    } catch (err) {
+      console.error("Error uploading PDF:", err);
+      setError("Une erreur est survenue. Merci de réessayer.");
+      throw err;
+    }
+  }
+
+  const uploadPdfForCourse = useCallback(
+    async (coursId: string, file: File): Promise<CourseFile> => {
       try {
-        const { count, error: countError } = await supabase
-          .from("cours")
-          .select("*", { count: "exact", head: true })
-          .eq("session_id", sessionId);
-
-        if (countError) {
-          console.error("Error counting cours:", countError);
-          setError("Erreur lors de la vérification du nombre de cours.");
-          return null;
-        }
-
-        const MAX_COURS_PER_SESSION = 50;
-        if (count !== null && count >= MAX_COURS_PER_SESSION) {
-          setError(`Vous avez atteint la limite de ${MAX_COURS_PER_SESSION} cours par session.`);
-          return null;
-        }
-
-        const coursData: InsertCourse = {
-          session_id: sessionId,
-          title,
-          description: description || null,
-          content_text: contentText || null,
-        };
-
-        const { data, error: insertError } = await supabase
-          .from("cours")
-          .insert(coursData)
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error("Error creating cours:", insertError);
-          setError("Une erreur est survenue. Merci de réessayer.");
-          return null;
-        }
-
-        if (pdfFiles && pdfFiles.length > 0 && data) {
-          for (const pdfFile of pdfFiles) {
-            await uploadPdfForCours(data.id, pdfFile);
-          }
-        }
-
-        setError(null);
-        return data;
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
-        return null;
-      }
-    },
-    []
-  );
-
-  const uploadPdfForCours = useCallback(
-    async (coursId: string, file: File): Promise<CourseFile | null> => {
-      try {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${coursId}/${Date.now()}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from("cours-pdf")
-          .upload(fileName, file, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-        if (uploadError) {
-          console.error("Error uploading PDF:", uploadError);
-          console.error("Upload error details:", JSON.stringify(uploadError, null, 2));
-          if (uploadError.message?.includes("not found")) {
-            setError("Le bucket 'cours-pdf' n'existe pas dans Supabase Storage.");
-          } else if (uploadError.message?.includes("Unauthorized") || uploadError.message?.includes("security")) {
-            setError("Permission refusée. Vérifiez les politiques du bucket 'cours-pdf'.");
-          } else {
-            setError(`Erreur upload: ${uploadError.message || "Erreur inconnue"}`);
-          }
-          return null;
-        }
-
-        const { data: fichierData, error: insertError } = await supabase
-          .from("cours_fichiers")
-          .insert({
-            cours_id: coursId,
-            fichier_url: fileName,
-            nom_fichier: file.name,
-          })
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error("Error inserting file record:", insertError);
-          setError("Erreur lors de l'enregistrement du fichier.");
-          return null;
-        }
-
-        setError(null);
-        return fichierData;
+        const fileData = await handleUploadPdfForCours(coursId, file);
+        return fileData;
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue lors de l'upload.");
-        return null;
+        throw err;
       }
     },
     []
@@ -432,12 +364,58 @@ export function useTeacher() {
     []
   );
 
+  const createCourse = useCallback(
+    async (
+      sessionId: string,
+      title: string,
+      description: string,
+      contentText: string,
+      pdfFiles?: File[]
+    ): Promise<Course | null> => {
+      try {
+
+        const count = await handleGetCoursesCount(sessionId);
+
+        const MAX_COURS_PER_SESSION = 50;
+
+        if (count !== null && count >= MAX_COURS_PER_SESSION) {
+          setError(`Vous avez atteint la limite de ${MAX_COURS_PER_SESSION} cours par session.`);
+          return null;
+        }
+
+        const coursData: InsertCourse = {
+          sessionId: sessionId,
+          title,
+          description: description || null,
+          contentText: contentText || null,
+        };
+
+        const course = await handleCreateCourse(coursData);
+      
+
+        if (pdfFiles && pdfFiles.length > 0 && course) {
+          for (const pdfFile of pdfFiles) {
+            await uploadPdfForCourse(course.id, pdfFile);
+          }
+        }
+
+        setError(null);
+        return course;
+      } catch (err) {
+        console.error("Unexpected error:", err);
+        setError("Une erreur est survenue. Merci de réessayer.");
+        return null;
+      }
+    },
+    [uploadPdfForCourse]
+  );
+
   const deleteCoursFichier = useCallback(
     async (fichier: CourseFile): Promise<boolean> => {
       try {
         const { error: storageError } = await supabase.storage
           .from("cours-pdf")
-          .remove([fichier.fichier_url]);
+          .remove([fichier.file_url]);
 
         if (storageError) {
           console.error("Error deleting file from storage:", storageError);
@@ -1071,7 +1049,7 @@ export function useTeacher() {
     updateCours,
     deleteCours,
     reorderCours,
-    uploadPdfForCours,
+    uploadPdfForCourse,
     fetchCoursFichiers,
     deleteCoursFichier,
     getPdfUrl,
