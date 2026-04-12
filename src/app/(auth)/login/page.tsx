@@ -73,28 +73,33 @@ export default function Connexion() {
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const response = await handleLogin(data.email, data.password);
-
-    setIsSubmitting(false);
-    if (response?.user) {
-      const role = response.user.user_metadata?.role;
-      switch(role){
-        case "teacher":
-          router.push("/teacher");
-          break;
-        case "student":
-          router.push("/student");
-          break;
-        case "establishment":
-          router.push("/establishment");
-          break;
-        case "standalone":
-          router.push("/standalone");
-          break;
-        default:
-          router.push("/");
-          break;
+    try {
+      const user = await handleLogin(data.email, data.password);
+  
+      setIsSubmitting(false);
+      if (user) {
+        const role = user.metadata?.role;
+        switch(role){
+          case "teacher":
+            router.push("/teacher");
+            break;
+          case "student":
+            router.push("/student");
+            break;
+          case "establishment":
+            router.push("/establishment");
+            break;
+          case "standalone":
+            router.push("/standalone");
+            break;
+          default:
+            router.push("/");
+            break;
+        }
       }
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Échec de la connexion. Vérifiez vos identifiants.");
+      setIsSubmitting(false);
     }
   };
 

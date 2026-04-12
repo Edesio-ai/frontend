@@ -1,5 +1,6 @@
 import { apiFetch } from "@/lib/api-client";
 import { UserRole } from "@/lib/supabaseClient";
+import { User } from "@/types/user.type";
 
 export const authService = {
     async initCsrf(): Promise<any> {
@@ -24,8 +25,8 @@ export const authService = {
             body: JSON.stringify(body),
         });
     },
-    async signIn(email: string, password: string): Promise<any> {
-        return apiFetch<any>("/api/auth/login", {
+    async signIn(email: string, password: string): Promise<{success: boolean, user: User }> {
+        return apiFetch<{success: boolean, user: User }>("/api/auth/login", {
             method: "POST",
             body: JSON.stringify({ email, password }),
         });

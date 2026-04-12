@@ -57,16 +57,17 @@ export function useEstablishment() {
     } catch (err) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Merci de réessayer.";
       if (message.includes("404")) {
-        const name = user.user_metadata?.establishment ||
-          (user.user_metadata?.firstname && user.user_metadata?.lastname
-            ? `${user.user_metadata.firstname} ${user.user_metadata.lastname}`
-            : "Établissement");
-
-        await insertEstablishment(name);
-        return
+        if (user) {
+          const name = user.metadata?.establishment ||
+            (user.metadata?.firstname && user.metadata?.lastname
+              ? `${user.metadata.firstname} ${user.metadata.lastname}`
+              : "Établissement");
+  
+          await insertEstablishment(name);
+          return
+        }
       }
       setError(message || "Erreur lors du chargement des données");
-
     } finally {
       setLoading(false);
     }
