@@ -113,10 +113,9 @@ export default function Register() {
     }
   }
 
-  const hangleSignIn = async (email: string, password: string) => {
+  const hangleSignIn = async (email: string, password: string): Promise<void> => {
     try {
-      const response = await signIn(email, password);
-      return response
+      await signIn(email, password);
     } catch (error) {
       setIsSubmitting(false);
       const message = error instanceof Error ? error.message : "An error occures. Try again later";

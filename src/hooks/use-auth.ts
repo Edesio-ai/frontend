@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase, UserRole } from "@/lib/supabaseClient";
 import { authService } from "@/services/auth.service";
+import { User } from "@/types/user.type";
 
 export function useAuth() {
-    const [user, setUser] = useState<any | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [role, setRole] = useState<UserRole | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -46,9 +47,9 @@ export function useAuth() {
         return response;
     };
 
-    const signIn = async (email: string, password: string) => {
-        const response = await authService.signIn(email, password);
-        return response;
+    const signIn = async (email: string, password: string): Promise<User> => {
+        const { user } = await authService.signIn(email, password);
+        return user;
     };
 
     const logout = async (): Promise<void> => {
@@ -56,7 +57,7 @@ export function useAuth() {
     };
 
     const getUserRole = (): UserRole | null => {
-        return user?.user_metadata?.role as UserRole | null;
+        return user?.metadata?.role as UserRole | null;
     };
 
     const resendVerificationEmail = async (email: string) => {
@@ -68,7 +69,7 @@ export function useAuth() {
     };
 
     const isEmailVerified = (): boolean => {
-        return user?.email_confirmed_at !== null && user?.email_confirmed_at !== undefined;
+        return user?.emailConfirmedAt !== null && user?.emailConfirmedAt !== undefined;
     };
 
     const resetPassword = async (email: string) => {

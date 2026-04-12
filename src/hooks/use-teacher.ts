@@ -77,18 +77,18 @@ export function useTeacher() {
 
     if (teacher) {
       setTeacher(teacher);
-      const invitationToken = user.user_metadata?.invitationToken;
+      const invitationToken = user.metadata?.invitationToken;
       const teacherWithEstab = teacher as TeacherWithEtab;
       if (invitationToken && !teacherWithEstab.establishment_id) {
         await handleInvitationValidation(invitationToken);
       }
     } else {
       const name =
-        user.user_metadata?.firstname && user.user_metadata?.lastname
-          ? `${user.user_metadata.firstname} ${user.user_metadata.lastname}`
-          : user.user_metadata?.firstname || "Professeur";
+        user.metadata?.firstname && user.metadata?.lastname
+          ? `${user.metadata.firstname} ${user.metadata.lastname}`
+          : user.metadata?.firstname || "Professeur";
 
-      const invitationToken = user.user_metadata?.invitationToken;
+      const invitationToken = user.metadata?.invitationToken;
 
       const newTeacher = await handleCreateTeacher(name, user.email || "");
 

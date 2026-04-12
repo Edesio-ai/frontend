@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    const { user } = await response.json();
+    const user = await response.json();
     const res = NextResponse.json({ success: true, user });
 
     const getSetCookie = (response.headers as Headers & {
@@ -43,6 +43,5 @@ export async function POST(request: NextRequest) {
             res.headers.append("set-cookie", raw);
         }
     }
-
     return res;
 }
