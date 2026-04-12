@@ -3,6 +3,10 @@ import { Button } from "../ui/button";
 import { DialogFooter, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog";
 import { Accordion } from "@radix-ui/react-accordion";
 import { CourseDetails } from "@/types";
+import {
+  propositionLabels,
+  correctAnswerDisplay,
+} from "@/lib/proposition-labels";
 import { Dialog } from "@radix-ui/react-dialog";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";
@@ -85,8 +89,8 @@ export function CourseViewModal({
                       <AccordionItem key={q.id} value={q.id}>
                         <AccordionTrigger className="text-sm text-left">
                           <div className="flex flex-wrap items-center gap-2">
-                            <Badge variant={q.type === "single" ? "default" : "outline"} className="text-xs">
-                              {q.type === "single" ? "QCM" : "Ouverte"}
+                            <Badge variant={q.type === "single" || q.type === "multiple" ? "default" : "outline"} className="text-xs">
+                              {q.type === "single" || q.type === "multiple" ? "QCM" : "Ouverte"}
                             </Badge>
                             <span>Q{index + 1}: {q.question.length > 80 ? q.question.substring(0, 80) + "..." : q.question}</span>
                           </div>
@@ -94,19 +98,45 @@ export function CourseViewModal({
                         <AccordionContent>
                           <div className="space-y-2 pl-4">
                             <p className="text-sm"><strong>Question:</strong> {q.question}</p>
-                            {q.type === "single" && q.proposals && (
+                            {(q.type === "single" || q.type === "multiple") &&
+                              propositionLabels(q.propositions).length > 0 && (
                               <div className="space-y-1">
-                                <p className="text-sm font-medium">Options:</p>
+                                <p className="text-sm font-medium">Propositions :</p>
                                 <ul className="list-disc list-inside text-sm text-muted-foreground">
-                                  {q.proposals.map((opt, i) => (
-                                    <li key={i} className={opt === q.good_answer ? "text-green-600 font-medium" : ""}>
-                                      {opt} {opt === q.good_answer && "(Correcte)"}
+                                  {propositionLabels(q.propositions).map((opt, i) => (
+                                    <li
+                                      key={i}
+                                      className={
+                                        opt ===
+                                        correctAnswerDisplay(q.propositions, q.correctAnswer)
+                                          ? "text-green-600 font-medium"
+                                          : ""
+                                      }
+                                    >
+                                      {opt}{" "}
+                                      {opt ===
+                                        correctAnswerDisplay(q.propositions, q.correctAnswer) &&
+                                        "(Correcte)"}
                                     </li>
                                   ))}
                                 </ul>
                               </div>
                             )}
-                            <p className="text-sm"><strong>Réponse correcte:</strong> <span className="text-green-600">{q.good_answer}</span></p>
+                            <p className="text-sm">
+                              <strong>Réponse correcte :</strong>{" "}
+                              <span className="text-green-600">
+                                {q.correctAnswers?.length
+                                  ? q.correctAnswers
+                                      .map((c) =>
+                                        correctAnswerDisplay(q.propositions, c),
+                                      )
+                                      .join(", ")
+                                  : correctAnswerDisplay(
+                                      q.propositions,
+                                      q.correctAnswer,
+                                    )}
+                              </span>
+                            </p>
                           </div>
                         </AccordionContent>
                       </AccordionItem>
@@ -128,7 +158,7 @@ export function CourseViewModal({
                       <div key={student.id} className="flex flex-wrap items-center justify-between gap-2 p-2 rounded bg-muted/30 text-sm">
                         <div className="flex items-center gap-2">
                           <Avatar className="h-6 w-6">
-                            <AvatarImage src={student.photo_url || undefined} />
+                            <AvatarImage src={student.photoUrl || undefined} />
                             <AvatarFallback className="text-xs">
                               {student.name.split(" ").map((n) => n[0]).join("").toUpperCase()}
                             </AvatarFallback>
@@ -136,7 +166,7 @@ export function CourseViewModal({
                           <span className="font-medium">{student.name}</span>
                         </div>
                         <Badge variant="outline">
-                          {student.correct_answers}/{student.total_answers} réponses correctes
+                          {student.correctAnswers}/{student.totalAnswers} réponses correctes
                         </Badge>
                       </div>
                     ))}

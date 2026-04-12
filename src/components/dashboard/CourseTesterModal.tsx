@@ -47,6 +47,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ChatbotPreviewPanel } from "@/components/dashboard/ChatbotPreviewPanel";
 import type { Course, CourseFile, Question, CourseRanking } from "@/types";
+import {
+  propositionLabels,
+  multipleChoiceIndicesCorrect,
+  indexMatchesCorrectAnswer,
+  correctAnswerDisplay,
+} from "@/lib/proposition-labels";
 import { supabase } from "@/lib/supabaseClient";
 import {
   Select,
@@ -116,10 +122,10 @@ interface CourseTesterModalProps {
     updates: {
       type?: "single" | "multiple" | "open";
       question?: string;
-      propositions?: string[] | null;
-      bonne_reponse?: string | null;
-      bonnes_reponses?: string[] | null;
-      explication?: string | null;
+      propositions?: Question["propositions"];
+      correctAnswer?: string | null;
+      correctAnswers?: string[] | null;
+      explanation?: string | null;
     }
   ) => Promise<Question | null>;
   deleteQuestion: (questionId: string) => Promise<boolean>;
@@ -129,9 +135,9 @@ interface CourseTesterModalProps {
       type: "single" | "open" | "multiple";
       question: string;
       propositions?: string[];
-      bonne_reponse?: string;
-      bonnes_reponses?: string[];
-      explication?: string;
+      correctAnswer?: string;
+      correctAnswers?: string[];
+      explanation?: string;
     }
   ) => Promise<Question | null>;
   generateQuestions: (
@@ -164,22 +170,30 @@ function QuestionCard({
   const [isDeleting, setIsDeleting] = useState(false);
   const [editedType, setEditedType] = useState<"single" | "multiple" | "open">(question.type === "multiple" ? "single" : question.type as "single" | "multiple" | "open");
   const [editedQuestion, setEditedQuestion] = useState(question.question);
+  const initialLabels = propositionLabels(question.propositions);
   const [editedPropositions, setEditedPropositions] = useState<string[]>(
-    question.propositions || ["Option A", "Option B", "Option C", "Option D"]
+    initialLabels.length > 0
+      ? initialLabels
+      : ["Option A", "Option B", "Option C", "Option D"],
   );
-  const initialCorrectIndex = question.propositions?.findIndex(
-    (p) => p === question.good_answer
-  ) ?? 0;
+  const rawCorrectIdx = initialLabels.findIndex((_, i) =>
+    indexMatchesCorrectAnswer(i, question.propositions, question.correctAnswer),
+  );
+  const initialCorrectIndex = rawCorrectIdx >= 0 ? rawCorrectIdx : 0;
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(initialCorrectIndex);
-  const initialCorrectIndices = question.good_answers 
-    ? question.propositions?.reduce<number[]>((acc, p, i) => {
-        if (question.good_answers?.includes(p)) acc.push(i);
-        return acc;
-      }, []) || []
-    : [];
-  const [correctAnswerIndices, setCorrectAnswerIndices] = useState<number[]>(initialCorrectIndices);
-  const [editedBonneReponse, setEditedBonneReponse] = useState(question.good_answer || "");
-  const [editedExplication, setEditedExplication] = useState(question.explication || "");
+  const initialCorrectIndices = multipleChoiceIndicesCorrect(
+    question.propositions,
+    question.correctAnswers,
+  );
+  const [correctAnswerIndices, setCorrectAnswerIndices] = useState<number[]>(
+    initialCorrectIndices,
+  );
+  const [editedBonneReponse, setEditedBonneReponse] = useState(
+    correctAnswerDisplay(question.propositions, question.correctAnswer) || "",
+  );
+  const [editedExplication, setEditedExplication] = useState(
+    question.explanation || "",
+  );
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const handleTypeChange = (newType: "single" | "open") => {
@@ -209,8 +223,8 @@ function QuestionCard({
     const updates = {
       type: editedType,
       question: editedQuestion,
-      good_answer: goodAnswer,
-      good_answers: goodAnswers,
+      correctAnswer: goodAnswer,
+      correctAnswers: goodAnswers,
       explanation: editedExplication || null,
       propositions: propositions,
     };
@@ -236,20 +250,26 @@ function QuestionCard({
   const handleCancel = () => {
     setEditedType(question.type === "multiple" ? "single" : question.type as "single" | "open");
     setEditedQuestion(question.question);
-    setEditedPropositions(question.propositions || ["Option A", "Option B", "Option C", "Option D"]);
-    const resetIndex = question.propositions?.findIndex(
-      (p) => p === question.good_answer
-    ) ?? 0;
-    setCorrectAnswerIndex(resetIndex);
-    const resetIndices = question.good_answers 
-      ? question.propositions?.reduce<number[]>((acc, p, i) => {
-          if (question.good_answers?.includes(p)) acc.push(i);
-          return acc;
-        }, []) || []
-      : [];
-    setCorrectAnswerIndices(resetIndices);
-    setEditedBonneReponse(question.good_answer || "");
-    setEditedExplication(question.explication || "");
+    const labels = propositionLabels(question.propositions);
+    setEditedPropositions(
+      labels.length > 0
+        ? labels
+        : ["Option A", "Option B", "Option C", "Option D"],
+    );
+    const resetIdx = labels.findIndex((_, i) =>
+      indexMatchesCorrectAnswer(i, question.propositions, question.correctAnswer),
+    );
+    setCorrectAnswerIndex(resetIdx >= 0 ? resetIdx : 0);
+    setCorrectAnswerIndices(
+      multipleChoiceIndicesCorrect(
+        question.propositions,
+        question.correctAnswers,
+      ),
+    );
+    setEditedBonneReponse(
+      correctAnswerDisplay(question.propositions, question.correctAnswer) || "",
+    );
+    setEditedExplication(question.explanation || "");
     setIsEditing(false);
   };
 
@@ -268,8 +288,8 @@ function QuestionCard({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="qcm">QCM</SelectItem>
-                    <SelectItem value="ouverte">Ouverte</SelectItem>
+                    <SelectItem value="single">QCM</SelectItem>
+                    <SelectItem value="open">Ouverte</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -405,22 +425,23 @@ function QuestionCard({
             </Button>
           </div>
           <p className="text-sm">{question.question}</p>
-          {question.type === 'single' && question.propositions && (
+          {(question.type === 'single' || question.type === 'multiple') && propositionLabels(question.propositions).length > 0 && (
             <ul className="text-xs space-y-0.5">
-              {question.propositions.map((prop, i) => (
+              {propositionLabels(question.propositions).map((prop, i) => (
                 <li key={i} className={`flex items-center gap-1 ${
-                  prop === question.good_answer ? 'text-green-600 dark:text-green-400 font-medium' : 'text-muted-foreground'
+                  indexMatchesCorrectAnswer(i, question.propositions, question.correctAnswer) ? 'text-green-600 dark:text-green-400 font-medium' : 'text-muted-foreground'
                 }`}>
                   <span>{String.fromCharCode(65 + i)}.</span>
                   <span>{prop}</span>
-                  {prop === question.good_answer && <CheckCircle2 className="h-3 w-3" />}
+                  {indexMatchesCorrectAnswer(i, question.propositions, question.correctAnswer) && <CheckCircle2 className="h-3 w-3" />}
                 </li>
               ))}
             </ul>
           )}
-          {question.type === 'open' && question.good_answer && (
+          {question.type === 'open' && question.correctAnswer && (
             <p className="text-xs text-muted-foreground">
-              <span className="font-medium">Réponse:</span> {question.good_answer}
+              <span className="font-medium">Réponse:</span>{" "}
+              {correctAnswerDisplay(question.propositions, question.correctAnswer)}
             </p>
           )}
         </div>
@@ -783,12 +804,12 @@ export function CourseTesterModal({
       type: "single" | "open";
       question: string;
       propositions?: string[];
-      bonne_reponse?: string;
-      explication?: string;
+      correctAnswer?: string;
+      explanation?: string;
     } = {
       type: newQuestionType,
       question: newQuestionText,
-      explication: newExplication || undefined,
+      explanation: newExplication || undefined,
     };
 
     if (newQuestionType === "single") {
@@ -798,9 +819,9 @@ export function CourseTesterModal({
         return;
       }
       questionData.propositions = filteredPropositions;
-      questionData.bonne_reponse = filteredPropositions[newCorrectIndex] || filteredPropositions[0];
+      questionData.correctAnswer = filteredPropositions[newCorrectIndex] || filteredPropositions[0];
     } else {
-      questionData.bonne_reponse = newBonneReponse || undefined;
+      questionData.correctAnswer = newBonneReponse || undefined;
     }
 
     const result = await createQuestion(cours.id, questionData);
@@ -835,7 +856,9 @@ export function CourseTesterModal({
     setIsValidating(false);
   };
 
-  const currentQcmCount = questions.filter((q) => q.type === "single").length;
+  const currentQcmCount = questions.filter(
+    (q) => q.type === "single" || q.type === "multiple",
+  ).length;
   const currentOuverteCount = questions.filter((q) => q.type === "open").length;
 
   // Shared Add Question Dialog (used in both phases)
@@ -1624,9 +1647,9 @@ export function CourseTesterModal({
                     <div className="space-y-2 max-h-[200px] overflow-y-auto">
                       {rankings.map((ranking) => (
                         <Card 
-                          key={ranking.student_id} 
+                          key={ranking.studentId}
                           className={`p-3 flex items-center gap-3 ${ranking.rank <= 3 ? 'border-primary/30' : ''}`}
-                          data-testid={`ranking-item-${ranking.student_id}`}
+                          data-testid={`ranking-item-${ranking.studentId}`}
                         >
                           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-bold">
                             {ranking.rank === 1 ? (
@@ -1640,7 +1663,7 @@ export function CourseTesterModal({
                             )}
                           </div>
                           <Avatar className="h-8 w-8 border">
-                            <AvatarImage src={ranking.photo_url || undefined} />
+                            <AvatarImage src={ranking.photoUrl || undefined} />
                             <AvatarFallback className="text-xs">
                               {ranking.name?.slice(0, 2).toUpperCase() || '??'}
                             </AvatarFallback>
@@ -1648,12 +1671,12 @@ export function CourseTesterModal({
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm truncate">{ranking.name}</p>
                             <p className="text-xs text-muted-foreground">
-                              {ranking.correct_answers}/{ranking.attempted_questions} réponses correctes
+                              {ranking.correctAnswers}/{ranking.attemptedQuestions} réponses correctes
                             </p>
                           </div>
                           <div className="text-right">
                             <span className="font-bold text-sm">
-                              {Math.round(ranking.success_rate)}%
+                              {Math.round(ranking.successRate)}%
                             </span>
                           </div>
                         </Card>

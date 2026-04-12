@@ -3,18 +3,18 @@ import { SessionWithStudentCount } from "./session.type";
 
 export interface Teacher {
   id: string;
-  supabase_user_id: string;
-  nom: string;
+  supabaseUserId: string;
+  name: string;
   email: string;
-  created_at: string;
+  createdAt: string;
 }
 
 export interface TeacherWithStats {
   id: string;
   name: string;
   email: string;
-  created_at: string;
-  sessions_count: number;
-  students_count: number;
+  createdAt: string;
+  sessionsCount: number;
+  studentsCount: number;
   sessions: SessionWithStudentCount[];
 }

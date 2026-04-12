@@ -171,7 +171,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <Calendar className="h-4 w-4" />
-                <span>{formatDate(session.created_at)}</span>
+                <span>{formatDate(session.createdAt)}</span>
               </div>
             </div>
 

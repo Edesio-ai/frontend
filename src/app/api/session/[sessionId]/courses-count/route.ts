@@ -19,6 +19,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const { coursesCount } = await response.json();
+    const json = await response.json();
+    const coursesCount = json.coursesCount ?? json.count ?? 0;
     return NextResponse.json({ coursesCount });
 }

@@ -20,8 +20,8 @@ export function TokenElement({ token, handleDeleteToken }: TokenElementProps) {
         setCopiedToken(token);
         setTimeout(() => setCopiedToken(null), 2000);
     };
-    const expired = isTokenExpired(token.expires_at);
-    const used = !!token.used_at;
+    const expired = isTokenExpired(token.expiresAt);
+    const used = !!token.usedAt;
     return (
         <div
             key={token.id}
@@ -47,18 +47,18 @@ export function TokenElement({ token, handleDeleteToken }: TokenElementProps) {
                     ) : (
                         <Badge variant="outline" className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
-                            Expire le {new Date(token.expires_at).toLocaleDateString("fr-FR")}
+                            Expire le {new Date(token.expiresAt).toLocaleDateString("fr-FR")}
                         </Badge>
                     )}
                 </div>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                         <Mail className="h-3 w-3" />
-                        <span>{token.invited_email}</span>
+                        <span>{token.invitedEmail}</span>
                     </div>
-                    {token.available_chatbots !== undefined && token.available_chatbots! > 0 && (
+                    {token.availableChatbots !== undefined && token.availableChatbots! > 0 && (
                         <Badge variant="outline" className="text-xs">
-                            {token.available_chatbots} chatbot{token.available_chatbots! > 1 ? "s" : ""}
+                            {token.availableChatbots} chatbot{token.availableChatbots! > 1 ? "s" : ""}
                         </Badge>
                     )}
                 </div>

@@ -31,7 +31,7 @@ export function SessionStudentsModal({
               Élèves de {session.name}
             </DialogTitle>
             <DialogDescription>
-              {session.students_count} élève(s) inscrit(s) à cette session
+              {session.studentsCount} élève(s) inscrit(s) à cette session
             </DialogDescription>
           </DialogHeader>
   
@@ -57,12 +57,12 @@ export function SessionStudentsModal({
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src={student.photo_url || undefined} />
+                          <AvatarImage src={student.photoUrl || undefined} />
                           <AvatarFallback>
-                            {student.nom.split(" ").map((n) => n[0]).join("").toUpperCase()}
+                            {student.name.split(" ").map((n) => n[0]).join("").toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="font-medium">{student.nom}</span>
+                        <span className="font-medium">{student.name}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
