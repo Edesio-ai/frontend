@@ -19,6 +19,7 @@ import { teacherService } from "@/services/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
 import { sessionService } from "@/services/session.service";
 import { courseService } from "@/services/course.service";
+import { questionService } from "@/services/question.service";
 type CoursesTableRow = {
   id: string;
   session_id: string;
@@ -914,28 +915,7 @@ export function useTeacher() {
   const fetchPendingQuestionsCount = useCallback(
     async (sessionId: string): Promise<number> => {
       try {
-        const { data: courses, error: coursesError } = await supabase
-          .from("courses")
-          .select("id")
-          .eq("session_id", sessionId);
-
-        if (coursesError || !courses || courses.length === 0) {
-          return 0;
-        }
-
-        const courseIds = courses.map(c => c.id);
-
-        const { count, error: countError } = await supabase
-          .from("course_questions")
-          .select("*", { count: "exact", head: true })
-          .in("course_id", courseIds)
-          .is("answer", null);
-
-        if (countError) {
-          console.error("Error counting pending questions:", countError);
-          return 0;
-        }
-
+        const { count } = await questionService.getPendingQuestionsCount(sessionId)
         return count || 0;
       } catch (err) {
         console.error("Unexpected error:", err);
