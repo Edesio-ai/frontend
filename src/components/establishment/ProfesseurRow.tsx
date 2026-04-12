@@ -34,10 +34,10 @@ export function ProfesseurRow({
                 </TableCell>
                 <TableCell className="text-muted-foreground">{teacher.email}</TableCell>
                 <TableCell>
-                    <Badge variant="secondary">{teacher.sessions_count} classe(s)</Badge>
+                    <Badge variant="secondary">{teacher.sessionsCount} classe(s)</Badge>
                 </TableCell>
                 <TableCell>
-                    <Badge variant="outline">{teacher.students_count} élève(s)</Badge>
+                    <Badge variant="outline">{teacher.studentsCount} élève(s)</Badge>
                 </TableCell>
             </TableRow>
 
@@ -69,7 +69,7 @@ export function ProfesseurRow({
                                                 data-testid={`button-view-students-${session.id}`}
                                             >
                                                 <Users className="h-4 w-4 mr-1" />
-                                                {session.students_count} élève(s)
+                                                {session.studentsCount} élève(s)
                                             </Button>
                                         </div>
                                         <SessionCoursesList

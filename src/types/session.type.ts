@@ -4,17 +4,17 @@ export interface Session {
     name: string;
     code: string;
     language: SessionLanguage;
-    created_at: string;
+    createdAt: string;
 }
 
 export type SessionLanguage = 'francais' | 'anglais' | 'espagnol' | 'allemand';
 
 export interface SessionWithStudentCount extends Session {
-    students_count: number;
-    teacher_nom?: string;
+    studentsCount: number;
+    teacherName?: string;
 }
 
-export type InsertSession = Omit<Session, "id" | "created_at">;
+export type InsertSession = Omit<Session, "id" | "createdAt">;
 
 export interface SessionParticipant {
     studentId: string;

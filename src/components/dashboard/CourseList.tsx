@@ -22,7 +22,13 @@ import {
 } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CourseTesterModal } from "./CourseTesterModal";
-import type { Session, Course, CourseFile, Question, CourseRanking } from "@/types";
+import type {
+  Session,
+  Course,
+  CourseFile,
+  Question,
+  CourseRanking,
+} from "@/types";
 import { 
   Plus, 
   Loader2, 
@@ -91,9 +97,9 @@ interface CourseListProps {
     updates: {
       type?: "single" | "multiple" | "open";
       question?: string;
-      propositions?: string[] | null;
-      good_answer?: string | null;
-      good_answers?: string[] | null;
+      propositions?: Question["propositions"];
+      correctAnswer?: string | null;
+      correctAnswers?: string[] | null;
       explanation?: string | null;
     }
   ) => Promise<Question | null>;
@@ -104,9 +110,9 @@ interface CourseListProps {
       type: "single" | "multiple" | "open";
       question: string;
       propositions?: string[];
-      bonne_reponse?: string;
-      bonnes_reponses?: string[];
-      explication?: string;
+      correctAnswer?: string;
+      correctAnswers?: string[];
+      explanation?: string;
     }
   ) => Promise<Question | null>;
   reorderQuestions?: (questionIds: string[]) => Promise<boolean>;
@@ -253,7 +259,7 @@ function SortableCourseItem({ cours, onSelect, onRename, onDelete, formatDate }:
               )}
               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                 <Calendar className="h-3 w-3" />
-                <span>{formatDate(cours.created_at)}</span>
+                <span>{formatDate(cours.createdAt ?? "")}</span>
               </div>
             </>
           )}

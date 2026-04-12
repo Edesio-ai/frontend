@@ -64,7 +64,9 @@ export function QuestionsCoursePanel({
       allQuestions.sort((a, b) => {
         if (!a.answer && b.answer) return -1;
         if (a.answer && !b.answer) return 1;
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
       });
       
       setQuestions(allQuestions);
@@ -103,7 +105,7 @@ export function QuestionsCoursePanel({
     if (result) {
       setQuestions(prev => prev.map(q => 
         q.id === answeringId 
-          ? { ...q, reponse: result.answer, repondu_at: result.answered_at }
+          ? { ...q, answer: result.answer, answeredAt: result.answeredAt }
           : q
       ));
       setAnsweringId(null);
@@ -197,7 +199,7 @@ export function QuestionsCoursePanel({
                     {question.question}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Par <span className="font-medium">{question.student_name || "Élève"}</span> le {new Date(question.created_at).toLocaleDateString("fr-FR")} à {new Date(question.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                    Par <span className="font-medium">{question.studentName || "Élève"}</span> le {new Date(question.createdAt).toLocaleDateString("fr-FR")} à {new Date(question.createdAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
                 <Button
@@ -216,7 +218,7 @@ export function QuestionsCoursePanel({
                   <p className="text-sm text-muted-foreground mb-1">Votre réponse :</p>
                   <p className="text-sm">{question.answer}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Répondu le {new Date(question.answered_at!).toLocaleDateString("fr-FR")}
+                    Répondu le {new Date(question.answeredAt!).toLocaleDateString("fr-FR")}
                   </p>
                 </div>
               ) : answeringId === question.id ? (

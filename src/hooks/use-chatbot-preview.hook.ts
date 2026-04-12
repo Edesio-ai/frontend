@@ -1,5 +1,10 @@
 import { useReducer, useCallback } from "react";
 import type { Course, Question } from "@/types";
+import {
+  propositionLabels,
+  correctAnswerDisplay,
+  letterAnswerIsCorrect,
+} from "@/lib/proposition-labels";
 
 export interface ChatMessage {
   id: string;
@@ -305,9 +310,10 @@ export function useChatbotPreview() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             question: question.question,
-            correctAnswer: question.good_answer || "",
+            correctAnswer:
+              correctAnswerDisplay(question.propositions, question.correctAnswer) || "",
             studentAnswer: answer,
-            explication: question.explication || "",
+            explication: question.explanation || "",
           }),
         });
 
@@ -318,13 +324,13 @@ export function useChatbotPreview() {
           if (isReflectionValid) {
             const feedback = pickRandom(afterRetryMessages);
             addBotMessage(
-              `${feedback}${question.explication ? `\n\n${question.explication}` : ""}`,
+              `${feedback}${question.explanation ? `\n\n${question.explanation}` : ""}`,
               "feedback",
               { isCorrect: false }
             );
           } else {
             addBotMessage(
-              `Hmm, ta réponse ne correspond pas vraiment à la notion.\n\nLa bonne réponse était : ${question.good_answer}${question.explication ? `\n\n${question.explication}` : ""}\n\nPas de souci, passons à la suite !`,
+              `Hmm, ta réponse ne correspond pas vraiment à la notion.\n\nLa bonne réponse était : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}${question.explanation ? `\n\n${question.explanation}` : ""}\n\nPas de souci, passons à la suite !`,
               "feedback",
               { isCorrect: false }
             );
@@ -332,7 +338,7 @@ export function useChatbotPreview() {
         } else {
           // Fallback if API fails
           addBotMessage(
-            `D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : ${question.good_answer}${question.explication ? `\n\n${question.explication}` : ""}`,
+            `D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}${question.explanation ? `\n\n${question.explanation}` : ""}`,
             "feedback",
             { isCorrect: false }
           );
@@ -340,7 +346,7 @@ export function useChatbotPreview() {
       } catch (error) {
         console.error("Error evaluating reflection:", error);
         addBotMessage(
-          `D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : ${question.good_answer}${question.explication ? `\n\n${question.explication}` : ""}`,
+          `D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}${question.explanation ? `\n\n${question.explanation}` : ""}`,
           "feedback",
           { isCorrect: false }
         );
@@ -351,18 +357,22 @@ export function useChatbotPreview() {
 
     let isCorrect = false;
     
-    if (question.type === "single") {
+    if (question.type === "single" || question.type === "multiple") {
       const answerLetter = answer.toUpperCase().trim().charAt(0);
       const answerIndex = answerLetter.charCodeAt(0) - 65;
-      
-      if (question.propositions && answerIndex >= 0 && answerIndex < question.propositions.length) {
-        const selectedOption = question.propositions[answerIndex];
-        isCorrect = selectedOption === question.good_answer;
+
+      const labels = propositionLabels(question.propositions);
+      if (labels.length > 0 && answerIndex >= 0 && answerIndex < labels.length) {
+        isCorrect = letterAnswerIsCorrect(question, answerIndex);
       }
     } else {
       // For open questions in preview, use simple matching (AI evaluation is for students)
       const normalizedAnswer = answer.toLowerCase().trim();
-      const normalizedCorrect = (question.good_answer || "").toLowerCase().trim();
+      const normalizedCorrect = (
+        correctAnswerDisplay(question.propositions, question.correctAnswer) || ""
+      )
+        .toLowerCase()
+        .trim();
       isCorrect = normalizedAnswer.includes(normalizedCorrect) || normalizedCorrect.includes(normalizedAnswer);
     }
 
@@ -372,7 +382,7 @@ export function useChatbotPreview() {
       if (isCorrect) {
         const feedback = pickRandom(correctAnswers);
         addBotMessage(
-          `${feedback}${question.explication ? `\n\n${question.explication}` : ""}`,
+          `${feedback}${question.explanation ? `\n\n${question.explanation}` : ""}`,
           "feedback",
           { isCorrect: true }
         );
@@ -380,10 +390,10 @@ export function useChatbotPreview() {
       } else {
         const encouragement = pickRandom(encouragementsAfterWrong);
         
-        if (question.type === "single") {
+        if (question.type === "single" || question.type === "multiple") {
           // For QCM: show correct answer and give another try with buttons (no text explanation needed)
           addBotMessage(
-            `${encouragement}\n\nLa bonne réponse est : ${question.good_answer}\n\nEssaie de sélectionner la bonne réponse cette fois !`,
+            `${encouragement}\n\nLa bonne réponse est : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}\n\nEssaie de sélectionner la bonne réponse cette fois !`,
             "feedback",
             { isCorrect: false }
           );
@@ -391,7 +401,7 @@ export function useChatbotPreview() {
           // For open questions: ask for reflection/explanation
           const retryPrompt = pickRandom(retryEncouragements);
           addBotMessage(
-            `${encouragement}\n\nLa bonne réponse est : ${question.good_answer}\n\n${retryPrompt}`,
+            `${encouragement}\n\nLa bonne réponse est : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}\n\n${retryPrompt}`,
             "feedback",
             { isCorrect: false }
           );

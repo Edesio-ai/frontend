@@ -255,7 +255,7 @@ export default function Teacher() {
     );
   }
 
-  const firstName = user.metadata?.firstName || teacher?.nom || "Professeur";
+  const firstName = user.metadata?.firstName || teacher?.name || "Professeur";
 
   return (
     <SubscriptionBlockModal>

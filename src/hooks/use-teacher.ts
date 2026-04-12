@@ -19,9 +19,74 @@ import { teacherService } from "@/services/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
 import { sessionService } from "@/services/session.service";
 import { courseService } from "@/services/course.service";
+type CoursesTableRow = {
+  id: string;
+  session_id: string;
+  title: string;
+  description: string | null;
+  text_content: string | null;
+  validated_questions: boolean | null;
+  position_order: number | null;
+  created_at: string;
+};
+
+function courseFromCoursesRow(row: CoursesTableRow): Course {
+  return {
+    id: row.id,
+    sessionId: row.session_id,
+    title: row.title,
+    description: row.description,
+    contentText: row.text_content,
+    validatedQuestions: Boolean(row.validated_questions),
+    positionOrder: row.position_order ?? undefined,
+    createdAt: row.created_at,
+  };
+}
+
+type CourseFilesTableRow = {
+  id: string;
+  course_id: string;
+  file_url: string;
+  file_name: string;
+  created_at: string;
+};
+
+function courseFileFromRow(row: CourseFilesTableRow): CourseFile {
+  return {
+    id: row.id,
+    courseId: row.course_id,
+    fileUrl: row.file_url,
+    fileName: row.file_name,
+    createdAt: row.created_at,
+  };
+}
+
+type CourseQuestionsTableRow = {
+  id: string;
+  course_id: string;
+  student_id: string;
+  question: string;
+  answer: string | null;
+  answered_at: string | null;
+  created_at: string;
+  student_name?: string | null;
+};
+
+function courseQuestionFromRow(row: CourseQuestionsTableRow): CourseQuestion {
+  return {
+    id: row.id,
+    courseId: row.course_id,
+    studentId: row.student_id,
+    question: row.question,
+    answer: row.answer,
+    answeredAt: row.answered_at,
+    createdAt: row.created_at,
+    studentName: row.student_name ?? undefined,
+  };
+}
 
 interface TeacherWithEtab extends Teacher {
-  establishment_id?: string | null;
+  establishmentId?: string | null;
 }
 
 
@@ -79,7 +144,7 @@ export function useTeacher() {
       setTeacher(teacher);
       const invitationToken = user.metadata?.invitationToken;
       const teacherWithEstab = teacher as TeacherWithEtab;
-      if (invitationToken && !teacherWithEstab.establishment_id) {
+      if (invitationToken && !teacherWithEstab.establishmentId) {
         await handleInvitationValidation(invitationToken);
       }
     } else {
@@ -192,7 +257,7 @@ export function useTeacher() {
     [teacher]
   );
 
-  const handleDeleteSession = async (sessionId: string): Promise<void> => {
+  const handleDeleteSession = async (sessionId: string): Promise<unknown> => {
     try {
       return await sessionService.deleteSession(sessionId);
     } catch (err) {
@@ -267,11 +332,11 @@ export function useTeacher() {
     ): Promise<Course | null> => {
       try {
         const { data, error: updateError } = await supabase
-          .from("cours")
+          .from("courses")
           .update({
             title,
             description: description || null,
-            contentText: contentText || null,
+            text_content: contentText || null,
           })
           .eq("id", coursId)
           .select()
@@ -284,7 +349,7 @@ export function useTeacher() {
         }
 
         setError(null);
-        return data;
+        return courseFromCoursesRow(data as CoursesTableRow);
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue. Merci de réessayer.");
@@ -307,7 +372,7 @@ export function useTeacher() {
   const handleCreateCourse = async (coursData: InsertCourse): Promise<Course> => {
     try {
       const { data } = await courseService.createCourse(coursData);
-      return data
+      return data;
     } catch (err) {
       console.error("Error creating course:", err);
       setError("Une erreur est survenue. Merci de réessayer.");
@@ -345,9 +410,9 @@ export function useTeacher() {
     async (coursId: string): Promise<CourseFile[]> => {
       try {
         const { data, error: fetchError } = await supabase
-          .from("cours_fichiers")
+          .from("course_files")
           .select("*")
-          .eq("cours_id", coursId)
+          .eq("course_id", coursId)
           .order("created_at", { ascending: false });
 
         if (fetchError) {
@@ -355,7 +420,7 @@ export function useTeacher() {
           return [];
         }
 
-        return data || [];
+        return (data || []).map((row) => courseFileFromRow(row as CourseFilesTableRow));
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
@@ -424,7 +489,7 @@ export function useTeacher() {
         }
 
         const { error: deleteError } = await supabase
-          .from("cours_fichiers")
+          .from("course_files")
           .delete()
           .eq("id", fichier.id);
 
@@ -490,7 +555,7 @@ export function useTeacher() {
 
         const data = await response.json();
         console.log("Questions fetched:", data?.length || 0, "questions");
-        return data || [];
+        return (Array.isArray(data) ? data : []) as Question[];
       } catch (err) {
         console.error("Unexpected error in fetchQuestions:", err);
         return [];
@@ -505,9 +570,9 @@ export function useTeacher() {
       updates: {
         type?: "single" | "multiple" | "open";
         question?: string;
-        propositions?: string[] | null;
-        good_answer?: string | null;
-        good_answers?: string[] | null;
+        propositions?: Question["propositions"];
+        correctAnswer?: string | null;
+        correctAnswers?: string[] | null;
         explanation?: string | null;
       }
     ): Promise<Question | null> => {
@@ -537,7 +602,7 @@ export function useTeacher() {
         }
 
         setError(null);
-        return result.question;
+        return result.question ? (result.question as Question) : null;
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue. Merci de réessayer.");
@@ -596,9 +661,9 @@ export function useTeacher() {
         type: "single" | "multiple" | "open";
         question: string;
         propositions?: string[];
-        bonne_reponse?: string;
-        bonnes_reponses?: string[];
-        explication?: string;
+        correctAnswer?: string;
+        correctAnswers?: string[];
+        explanation?: string;
       }
     ): Promise<Question | null> => {
       try {
@@ -617,8 +682,13 @@ export function useTeacher() {
             "Authorization": `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
-            coursId,
-            ...questionData,
+            courseId: coursId,
+            type: questionData.type,
+            question: questionData.question,
+            propositions: questionData.propositions,
+            correctAnswer: questionData.correctAnswer,
+            correctAnswers: questionData.correctAnswers,
+            explanation: questionData.explanation,
           }),
         });
 
@@ -630,7 +700,7 @@ export function useTeacher() {
         }
 
         setError(null);
-        return result.question;
+        return result.question ? (result.question as Question) : null;
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue. Merci de réessayer.");
@@ -677,7 +747,11 @@ export function useTeacher() {
           return { success: false, error: data.error || "Erreur lors de la génération" };
         }
 
-        return { success: true, questionsCreated: data.questionsCreated, questions: data.questions || [] };
+        return {
+          success: true,
+          questionsCreated: data.questionsCreated,
+          questions: (data.questions || []) as Question[],
+        };
       } catch (err) {
         console.error("Error generating questions:", err);
         return { success: false, error: "Erreur de connexion au serveur" };
@@ -710,7 +784,10 @@ export function useTeacher() {
           return { success: false, error: data.error || "Erreur lors de la validation" };
         }
 
-        return { success: true, cours: data.cours };
+        return {
+          success: true,
+          cours: data.cours as Course | undefined,
+        };
       } catch (err) {
         console.error("Error validating questions:", err);
         return { success: false, error: "Erreur de connexion au serveur" };
@@ -723,12 +800,12 @@ export function useTeacher() {
     async (sessionId: string): Promise<SessionParticipant[]> => {
       try {
         const { data, error: fetchError } = await supabase
-          .from("eleve_sessions")
+          .from("student_sessions")
           .select(`
             joined_at,
-            eleves (
+            students (
               id,
-              nom,
+              name,
               email,
               photo_url
             )
@@ -743,13 +820,18 @@ export function useTeacher() {
 
         const participants: SessionParticipant[] = [];
         for (const row of data || []) {
-          const eleveData = row.eleves as unknown as { id: string; nom: string; email: string; photo_url: string | null } | null;
-          if (eleveData) {
+          const studentRow = row.students as unknown as {
+            id: string;
+            name: string;
+            email: string;
+            photo_url: string | null;
+          } | null;
+          if (studentRow) {
             participants.push({
-              studentId: eleveData.id,
-              name: eleveData.nom,
-              email: eleveData.email,
-              photoUrl: eleveData.photo_url,
+              studentId: studentRow.id,
+              name: studentRow.name,
+              email: studentRow.email,
+              photoUrl: studentRow.photo_url,
               joinedAt: row.joined_at,
             });
           }
@@ -786,8 +868,7 @@ export function useTeacher() {
           return [];
         }
 
-        const rankings: CoursRanking[] = await response.json();
-        return rankings;
+        return (await response.json()) as CoursRanking[];
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
@@ -821,7 +902,7 @@ export function useTeacher() {
         }
 
         const data = await response.json();
-        return data || [];
+        return (Array.isArray(data) ? data : []) as CourseQuestion[];
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
@@ -834,7 +915,7 @@ export function useTeacher() {
     async (sessionId: string): Promise<number> => {
       try {
         const { data: courses, error: coursesError } = await supabase
-          .from("cours")
+          .from("courses")
           .select("id")
           .eq("session_id", sessionId);
 
@@ -845,10 +926,10 @@ export function useTeacher() {
         const courseIds = courses.map(c => c.id);
 
         const { count, error: countError } = await supabase
-          .from("questions_cours")
+          .from("course_questions")
           .select("*", { count: "exact", head: true })
-          .in("cours_id", courseIds)
-          .is("reponse", null);
+          .in("course_id", courseIds)
+          .is("answer", null);
 
         if (countError) {
           console.error("Error counting pending questions:", countError);
@@ -868,10 +949,10 @@ export function useTeacher() {
     async (questionId: string, reponse: string): Promise<CourseQuestion | null> => {
       try {
         const { data, error: updateError } = await supabase
-          .from("questions_cours")
+          .from("course_questions")
           .update({
-            reponse,
-            repondu_at: new Date().toISOString(),
+            answer: reponse,
+            answered_at: new Date().toISOString(),
           })
           .eq("id", questionId)
           .select()
@@ -884,7 +965,7 @@ export function useTeacher() {
         }
 
         setError(null);
-        return data;
+        return courseQuestionFromRow(data as CourseQuestionsTableRow);
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue.");
@@ -898,7 +979,7 @@ export function useTeacher() {
     async (questionId: string): Promise<boolean> => {
       try {
         const { error: deleteError } = await supabase
-          .from("questions_cours")
+          .from("course_questions")
           .delete()
           .eq("id", questionId);
 
@@ -1009,13 +1090,13 @@ export function useTeacher() {
       try {
         const updates = questionIds.map((id, index) => ({
           id,
-          position_ordre: index,
+          position_order: index,
         }));
 
         for (const update of updates) {
           const { error: updateError } = await supabase
             .from("questions")
-            .update({ position_ordre: update.position_ordre })
+            .update({ position_order: update.position_order })
             .eq("id", update.id);
 
           if (updateError) {

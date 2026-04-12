@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useChatbotPreview, type ChatMessage } from "@/hooks/use-chatbot-preview.hook";
 import type { Course, Question } from "@/types";
+import { propositionLabels } from "@/lib/proposition-labels";
 import { 
   Send, 
   User, 
@@ -215,7 +216,8 @@ function QCMOptions({
   question: Question;
   onSelect: (answer: string) => void;
 }) {
-  if (!question.propositions) return null;
+  const labels = propositionLabels(question.propositions);
+  if (labels.length === 0) return null;
 
   return (
     <div className="py-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="qcm-options-container">
@@ -224,7 +226,7 @@ function QCMOptions({
         <span>Clique sur ta réponse</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
-        {question.propositions.map((prop, i) => (
+        {labels.map((prop, i) => (
           <button
             key={i}
             onClick={() => onSelect(String.fromCharCode(65 + i))}
@@ -354,9 +356,9 @@ export function ChatbotPreviewPanel({
     !chatbot.selectedCours &&
     cours.length > 0;
   // Show QCM buttons when asking a question OR during retry mode for QCM
-  const showQCMOptions = 
-    chatbot.chatbotState === "asking_questions" && 
-    currentQuestion?.type === "multiple" &&
+  const showQCMOptions =
+    chatbot.chatbotState === "asking_questions" &&
+    (currentQuestion?.type === "single" || currentQuestion?.type === "multiple") &&
     (chatbot.messages[chatbot.messages.length - 1]?.type === "question" || chatbot.retryMode);
 
   return (

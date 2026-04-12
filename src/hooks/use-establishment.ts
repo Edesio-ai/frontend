@@ -174,27 +174,46 @@ export function useEstablishment() {
   const getSessionStudents = useCallback(
     async (sessionId: string): Promise<Student[]> => {
       try {
-        const { data: eleveSessions, error: esError } = await supabase
-          .from("eleve_sessions")
-          .select("eleve_id")
+        const { data: links, error: esError } = await supabase
+          .from("student_sessions")
+          .select("student_id")
           .eq("session_id", sessionId);
 
-        if (esError || !eleveSessions?.length) {
+        if (esError || !links?.length) {
           return [];
         }
 
-        const eleveIds = eleveSessions.map((es) => es.eleve_id);
-        const { data: eleves, error: elevesError } = await supabase
-          .from("eleves")
+        const studentIds = links.map((row) => row.student_id);
+        const { data: rows, error: studentsError } = await supabase
+          .from("students")
           .select("*")
-          .in("id", eleveIds);
+          .in("id", studentIds);
 
-        if (elevesError) {
-          console.error("Error fetching students:", elevesError);
+        if (studentsError || !rows) {
+          console.error("Error fetching students:", studentsError);
           return [];
         }
 
-        return eleves || [];
+        type StudentsRow = {
+          id: string;
+          supabase_user_id: string;
+          name: string;
+          email: string;
+          photo_url: string | null;
+          created_at: string;
+        };
+
+        return rows.map((row) => {
+          const r = row as StudentsRow;
+          return {
+            id: r.id,
+            supabaseUserId: r.supabase_user_id,
+            name: r.name,
+            email: r.email,
+            photoUrl: r.photo_url,
+            createdAt: r.created_at,
+          };
+        });
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];

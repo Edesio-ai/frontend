@@ -1,6 +1,10 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { Question, CourseRanking } from "@/types";
+import {
+  propositionLabels,
+  correctAnswerDisplay,
+} from "@/lib/proposition-labels";
 
 export function exportQuestionsPdf(
   questions: Question[],
@@ -50,9 +54,10 @@ export function exportQuestionsPdf(
     yPos += questionLines.length * 5 + 3;
 
     if (q.type === "single" || q.type === "multiple") {
-      if (q.propositions && q.propositions.length > 0) {
+      const labels = propositionLabels(q.propositions);
+      if (labels.length > 0) {
         doc.setTextColor(60);
-        q.propositions.forEach((prop, i) => {
+        labels.forEach((prop, i) => {
           const letter = String.fromCharCode(65 + i);
           const propText = `${letter}. ${prop}`;
           const propLines = doc.splitTextToSize(propText, pageWidth - 35);
@@ -63,25 +68,33 @@ export function exportQuestionsPdf(
       }
 
       doc.setTextColor(34, 139, 34);
-      if (q.type === "single" && q.good_answer) {
-        doc.text(`Réponse : ${q.good_answer}`, 14, yPos);
+      if (q.type === "single" && q.correctAnswer) {
+        doc.text(
+          `Réponse : ${correctAnswerDisplay(q.propositions, q.correctAnswer)}`,
+          14,
+          yPos,
+        );
         yPos += 6;
-      } else if (q.type === "multiple" && q.good_answers && q.good_answers.length > 0) {
-        doc.text(`Réponses : ${q.good_answers.join(", ")}`, 14, yPos);
+      } else if (q.type === "multiple" && q.correctAnswers && q.correctAnswers.length > 0) {
+        const resolved = q.correctAnswers.map((ca) =>
+          correctAnswerDisplay(q.propositions, ca),
+        );
+        doc.text(`Réponses : ${resolved.join(", ")}`, 14, yPos);
         yPos += 6;
       }
     } else if (q.type === "open") {
       doc.setTextColor(34, 139, 34);
-      if (q.good_answer) {
-        const repLines = doc.splitTextToSize(`Réponse attendue : ${q.good_answer}`, pageWidth - 28);
+      const openDisplay = correctAnswerDisplay(q.propositions, q.correctAnswer);
+      if (openDisplay) {
+        const repLines = doc.splitTextToSize(`Réponse attendue : ${openDisplay}`, pageWidth - 28);
         doc.text(repLines, 14, yPos);
         yPos += repLines.length * 5 + 2;
       }
     }
 
-    if (q.explication) {
+    if (q.explanation) {
       doc.setTextColor(100);
-      const expLines = doc.splitTextToSize(`Explication : ${q.explication}`, pageWidth - 28);
+      const expLines = doc.splitTextToSize(`Explication : ${q.explanation}`, pageWidth - 28);
       doc.text(expLines, 14, yPos);
       yPos += expLines.length * 5;
     }
@@ -120,8 +133,8 @@ export function exportClassementPdf(
   const tableData = rankings.map((r) => [
     r.rank.toString(),
     r.name || "Anonyme",
-    `${r.correct_answers}/${r.attempted_questions}`,
-    `${Math.round(r.success_rate)}%`,
+    `${r.correctAnswers}/${r.attemptedQuestions}`,
+    `${Math.round(r.successRate)}%`,
   ]);
 
   autoTable(doc, {
