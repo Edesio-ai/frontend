@@ -415,7 +415,7 @@ export function useTeacher() {
       try {
         const { error: storageError } = await supabase.storage
           .from("cours-pdf")
-          .remove([fichier.file_url]);
+          .remove([fichier.fileUrl]);
 
         if (storageError) {
           console.error("Error deleting file from storage:", storageError);

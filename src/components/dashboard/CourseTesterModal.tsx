@@ -677,7 +677,7 @@ export function CourseTesterModal({
   };
 
   const handleDownloadPdf = async (fichier: CourseFile) => {
-    const url = await getPdfUrl(fichier.file_url);
+    const url = await getPdfUrl(fichier.fileUrl);
     if (url) {
       window.open(url, "_blank");
     }
@@ -1263,7 +1263,7 @@ export function CourseTesterModal({
                         <div key={f.id} className="flex flex-wrap items-center justify-between gap-2 p-2 rounded bg-muted/30 text-sm">
                           <div className="flex flex-wrap items-center gap-2 min-w-0">
                             <FileText className="h-4 w-4 flex-shrink-0" />
-                            <span className="truncate">{f.file_name}</span>
+                            <span className="truncate">{f.fileName}</span>
                           </div>
                           <div className="flex gap-1">
                             <Button variant="ghost" size="icon" onClick={() => handleDownloadPdf(f)} data-testid={`button-download-pdf-${f.id}`}>
@@ -1436,7 +1436,7 @@ export function CourseTesterModal({
                       <div key={f.id} className="flex items-center justify-between gap-2 p-2 rounded bg-muted/30 text-sm">
                         <div className="flex items-center gap-2 min-w-0">
                           <FileText className="h-4 w-4 flex-shrink-0" />
-                          <span className="truncate">{f.file_name}</span>
+                          <span className="truncate">{f.fileName}</span>
                         </div>
                         <div className="flex gap-1">
                           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownloadPdf(f)}>
@@ -1717,7 +1717,7 @@ export function CourseTesterModal({
           <AlertDialogHeader>
             <AlertDialogTitle>Supprimer ce document ?</AlertDialogTitle>
             <AlertDialogDescription>
-              Voulez-vous vraiment supprimer « {fichierToDelete?.file_name} » ?
+              Voulez-vous vraiment supprimer « {fichierToDelete?.fileName} » ?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

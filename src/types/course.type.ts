@@ -29,9 +29,9 @@ export type CourseRanking = {
 
 export interface CourseFile {
     id: string;
-    course_id: string;
-    file_url: string;
-    file_name: string;
+    cours_id: string;
+    fileUrl: string;
+    fileName: string;
     created_at: string;
 }
 
