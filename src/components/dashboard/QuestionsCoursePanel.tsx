@@ -22,7 +22,7 @@ interface QuestionsCoursWithCourse extends CourseQuestion {
 
 interface QuestionsCoursPanelProps {
   sessionId: string;
-  fetchCours: (sessionId: string) => Promise<Course[]>;
+  fetchCourses: (sessionId: string) => Promise<Course[]>;
   fetchQuestionsCoursForCours: (coursId: string) => Promise<CourseQuestion[]>;
   answerQuestionCours: (questionId: string, reponse: string) => Promise<CourseQuestion | null>;
   deleteQuestionCours: (questionId: string) => Promise<boolean>;
@@ -31,7 +31,7 @@ interface QuestionsCoursPanelProps {
 
 export function QuestionsCoursePanel({
   sessionId,
-  fetchCours,
+  fetchCourses,
   fetchQuestionsCoursForCours,
   answerQuestionCours,
   deleteQuestionCours,
@@ -48,7 +48,7 @@ export function QuestionsCoursePanel({
   const loadQuestions = async () => {
     setLoading(true);
     try {
-      const courses = await fetchCours(sessionId);
+      const courses = await fetchCourses(sessionId);
       const allQuestions: QuestionsCoursWithCourse[] = [];
       
       for (const cours of courses) {

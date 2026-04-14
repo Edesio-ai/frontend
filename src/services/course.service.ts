@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { Course, CourseFile, InsertCourse } from "@/types";
+import { Course, CourseFile, CourseRanking, InsertCourse } from "@/types";
 
 export const courseService = {
   createCourse: async (body: InsertCourse): Promise<{data: Course }> => {
@@ -20,5 +20,17 @@ export const courseService = {
     });
 
     return response;
-  }
+  },
+  getCoursesFiles: async (courseId: string): Promise<CourseFile[]> => {
+    const response = await apiFetch<CourseFile[]>(`/api/course/${courseId}/file`);
+    return response;
+  },
+  getCourseValidatedQuestions: async (courseId: string): Promise<{ validatedQuestions: boolean }> => {
+    const response = await apiFetch<{ validatedQuestions: boolean }>(`/api/course/${courseId}/validated-questions`);
+    return response;
+  },
+  getCourseRanking: async (courseId: string): Promise<CourseRanking[]> => {
+    const response = await apiFetch<CourseRanking[]>(`/api/course/${courseId}/ranking`);
+    return response;
+  },
 }

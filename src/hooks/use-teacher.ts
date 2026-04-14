@@ -13,7 +13,7 @@ import type {
   InsertSession,
   InsertCourse,
   SessionParticipant,
-  CoursRanking
+  CourseRanking
 } from "@/types";
 import { teacherService } from "@/services/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
@@ -40,24 +40,6 @@ function courseFromCoursesRow(row: CoursesTableRow): Course {
     contentText: row.text_content,
     validatedQuestions: Boolean(row.validated_questions),
     positionOrder: row.position_order ?? undefined,
-    createdAt: row.created_at,
-  };
-}
-
-type CourseFilesTableRow = {
-  id: string;
-  course_id: string;
-  file_url: string;
-  file_name: string;
-  created_at: string;
-};
-
-function courseFileFromRow(row: CourseFilesTableRow): CourseFile {
-  return {
-    id: row.id,
-    courseId: row.course_id,
-    fileUrl: row.file_url,
-    fileName: row.file_name,
     createdAt: row.created_at,
   };
 }
@@ -286,35 +268,13 @@ export function useTeacher() {
     [teacher]
   );
 
-  const fetchCours = useCallback(
+  const fetchCourses = useCallback(
     async (sessionId: string): Promise<Course[]> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
-
-        if (!accessToken) {
-          console.error("No access token available");
-          setError("Vous devez être connecté");
-          return [];
-        }
-
-        const response = await fetch(`/api/sessions/${sessionId}/cours`, {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Error fetching cours:", errorData.error);
-          setError("Une erreur est survenue. Merci de réessayer.");
-          return [];
-        }
-
-        const data = await response.json();
+        const { courses } = await sessionService.getSessionCourses(sessionId);
+  
         setError(null);
-        return data || [];
+        return courses || [];
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue. Merci de réessayer.");
@@ -407,21 +367,12 @@ export function useTeacher() {
     []
   );
 
-  const fetchCoursFichiers = useCallback(
+  const fetchCourseFiles = useCallback(
     async (coursId: string): Promise<CourseFile[]> => {
       try {
-        const { data, error: fetchError } = await supabase
-          .from("course_files")
-          .select("*")
-          .eq("course_id", coursId)
-          .order("created_at", { ascending: false });
+        const fileData = await courseService.getCoursesFiles(coursId);
 
-        if (fetchError) {
-          console.error("Error fetching fichiers:", fetchError);
-          return [];
-        }
-
-        return (data || []).map((row) => courseFileFromRow(row as CourseFilesTableRow));
+        return fileData;
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
@@ -530,33 +481,9 @@ export function useTeacher() {
   const fetchQuestions = useCallback(
     async (coursId: string): Promise<Question[]> => {
       try {
-        console.log("fetchQuestions called for coursId:", coursId);
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
-
-        if (!accessToken) {
-          console.error("No access token available");
-          return [];
-        }
-
-        console.log("Fetching questions from API...");
-        const response = await fetch(`/api/cours/${coursId}/questions`, {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        });
-
-        console.log("Response status:", response.status);
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Error fetching questions:", errorData.error);
-          return [];
-        }
-
-        const data = await response.json();
-        console.log("Questions fetched:", data?.length || 0, "questions");
-        return (Array.isArray(data) ? data : []) as Question[];
+        const questionsData = await questionService.getCourseQuestions(coursId);
+        
+        return questionsData;
       } catch (err) {
         console.error("Unexpected error in fetchQuestions:", err);
         return [];
@@ -848,28 +775,12 @@ export function useTeacher() {
   );
 
   const fetchCoursClassement = useCallback(
-    async (coursId: string): Promise<CoursRanking[]> => {
+    async (coursId: string): Promise<CourseRanking[]> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
 
-        if (!accessToken) {
-          console.error("No access token available");
-          return [];
-        }
+        const rankingData = await courseService.getCourseRanking(coursId);
 
-        const response = await fetch(`/api/cours/${coursId}/classement`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          console.error("Error fetching course classement:", response.statusText);
-          return [];
-        }
-
-        return (await response.json()) as CoursRanking[];
+        return rankingData;
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
@@ -1105,13 +1016,13 @@ export function useTeacher() {
     createSession,
     updateSession,
     deleteSession,
-    fetchCours,
+    fetchCourses,
     createCourse,
     updateCours,
     deleteCours,
     reorderCours,
     uploadPdfForCourse,
-    fetchCoursFichiers,
+    fetchCourseFiles,
     deleteCoursFichier,
     getPdfUrl,
     fetchQuestions,

@@ -67,8 +67,6 @@ export type InsertCourse = Omit<
   "id" | "createdAt" | "validatedQuestions" | "positionOrder"
 >;
 
-export type CoursRanking = CourseRanking;
-
 export interface CourseDetails {
   course: {
     id: string;

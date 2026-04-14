@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { z } from "zod";
 import {
   DndContext,
   closestCenter,
@@ -53,7 +52,6 @@ import {
   indexMatchesCorrectAnswer,
   correctAnswerDisplay,
 } from "@/lib/proposition-labels";
-import { supabase } from "@/lib/supabaseClient";
 import {
   Select,
   SelectContent,
@@ -61,12 +59,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { 
-  Loader2, 
-  FileText, 
+import {
+  Loader2,
+  FileText,
   X,
-  Upload, 
-  Sparkles, 
+  Upload,
+  Sparkles,
   FileDown,
   CheckCircle2,
   HelpCircle,
@@ -79,11 +77,9 @@ import {
   MessageSquare,
   BookOpen,
   Plus,
-  ToggleLeft,
   Trophy,
   Award,
   CircleDot,
-  CheckSquare,
   PenLine,
   GripVertical,
   Download,
@@ -91,14 +87,9 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { exportQuestionsPdf, exportClassementPdf } from "@/lib/pdf-export";
+import { courseService } from "@/services/course.service";
 
-const formSchema = z.object({
-  titre: z.string().min(1, "Le titre est requis").max(200, "Le titre est trop long"),
-  description: z.string().max(500, "La description est trop longue").optional().or(z.literal("")),
-  contenuTexte: z.string().optional().or(z.literal("")),
-});
 
-type FormValues = z.infer<typeof formSchema>;
 
 interface CourseTesterModalProps {
   cours: Course;
@@ -113,7 +104,7 @@ interface CourseTesterModalProps {
     contenuTexte: string | null
   ) => Promise<Course | null>;
   uploadPdfForCourse: (coursId: string, file: File) => Promise<CourseFile | null>;
-  fetchCoursFichiers: (coursId: string) => Promise<CourseFile[]>;
+  fetchCourseFiles: (coursId: string) => Promise<CourseFile[]>;
   deleteCoursFichier: (fichier: CourseFile) => Promise<boolean>;
   getPdfUrl: (filePath: string) => Promise<string | null>;
   fetchQuestions: (coursId: string) => Promise<Question[]>;
@@ -141,7 +132,7 @@ interface CourseTesterModalProps {
     }
   ) => Promise<Question | null>;
   generateQuestions: (
-    coursId: string, 
+    coursId: string,
     config?: { totalQuestions?: number; qcmCount?: number; ouverteCount?: number }
   ) => Promise<{ success: boolean; questionsCreated?: number; questions?: Question[]; error?: string }>;
   validateQuestions: (coursId: string) => Promise<{ success: boolean; cours?: Course; error?: string }>;
@@ -206,11 +197,11 @@ function QuestionCard({
 
   const handleSave = async () => {
     setIsSaving(true);
-    
+
     let goodAnswer: string | null = null;
     let goodAnswers: string[] | null = null;
     let propositions: string[] | null = null;
-    
+
     if (editedType === "single") {
       propositions = editedPropositions;
       if (correctAnswerIndex >= 0 && correctAnswerIndex < editedPropositions.length) {
@@ -219,7 +210,7 @@ function QuestionCard({
     } else {
       goodAnswer = editedBonneReponse || null;
     }
-    
+
     const updates = {
       type: editedType,
       question: editedQuestion,
@@ -294,9 +285,9 @@ function QuestionCard({
                 </Select>
               </div>
               <div className="flex gap-1">
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
+                <Button
+                  size="sm"
+                  variant="ghost"
                   className="text-destructive hover:text-destructive"
                   onClick={() => setDeleteConfirmOpen(true)}
                   disabled={isSaving}
@@ -407,17 +398,16 @@ function QuestionCard({
         </div>
         <div className="flex-1 min-w-0 space-y-1">
           <div className="flex items-center justify-between gap-2">
-            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-              question.type === 'single' || question.type === 'multiple'
-                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400' 
+            <span className={`text-xs px-1.5 py-0.5 rounded-full ${question.type === 'single' || question.type === 'multiple'
+                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400'
                 : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
-            }`}>
+              }`}>
               {question.type === 'single' || question.type === 'multiple' ? 'QCM' : 'Ouverte'}
             </span>
-            <Button 
-              size="sm" 
-              variant="ghost" 
-              className="h-6 px-2 opacity-0 group-hover:opacity-100 transition-opacity" 
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 px-2 opacity-0 group-hover:opacity-100 transition-opacity"
               onClick={() => setIsEditing(true)}
               data-testid={`button-edit-question-${question.id}`}
             >
@@ -428,9 +418,8 @@ function QuestionCard({
           {(question.type === 'single' || question.type === 'multiple') && propositionLabels(question.propositions).length > 0 && (
             <ul className="text-xs space-y-0.5">
               {propositionLabels(question.propositions).map((prop, i) => (
-                <li key={i} className={`flex items-center gap-1 ${
-                  indexMatchesCorrectAnswer(i, question.propositions, question.correctAnswer) ? 'text-green-600 dark:text-green-400 font-medium' : 'text-muted-foreground'
-                }`}>
+                <li key={i} className={`flex items-center gap-1 ${indexMatchesCorrectAnswer(i, question.propositions, question.correctAnswer) ? 'text-green-600 dark:text-green-400 font-medium' : 'text-muted-foreground'
+                  }`}>
                   <span>{String.fromCharCode(65 + i)}.</span>
                   <span>{prop}</span>
                   {indexMatchesCorrectAnswer(i, question.propositions, question.correctAnswer) && <CheckCircle2 className="h-3 w-3" />}
@@ -512,7 +501,7 @@ export function CourseTesterModal({
   onOpenChange,
   updateCours,
   uploadPdfForCourse,
-  fetchCoursFichiers,
+  fetchCourseFiles,
   deleteCoursFichier,
   getPdfUrl,
   fetchQuestions,
@@ -557,17 +546,15 @@ export function CourseTesterModal({
   const [validateError, setValidateError] = useState<string | null>(null);
   const [chatbotModalOpen, setChatbotModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   // Question generation configuration (max 20 questions total for token safety)
   const MAX_QUESTIONS = 20;
   const [genTotalQuestions, setGenTotalQuestions] = useState(10);
   const [genQcmCount, setGenQcmCount] = useState(5);
   const [genOuverteCount, setGenOuverteCount] = useState(5);
-  
   // Phase control: questions not validated = phase 1, validated = phase 2
   // Use local state to track validation status (refreshed from DB when modal opens)
   const [questionsValidated, setQuestionsValidated] = useState(cours.validatedQuestions);
-  
   // Phase 1 sub-view: course editing vs question generation
   const [showQuestionGenerator, setShowQuestionGenerator] = useState(false);
 
@@ -624,26 +611,20 @@ export function CourseTesterModal({
 
   const loadData = async () => {
     setLoading(true);
-    
-    // Fetch fresh cours status to ensure we have the latest questions_validees value
-    const { data: freshCours } = await supabase
-      .from("cours")
-      .select("validatedQuestions")
-      .eq("id", cours.id)
-      .single();
-    
-    if (freshCours) {
-      setQuestionsValidated(freshCours.validatedQuestions);
+
+    const freshCourse = await courseService.getCourseValidatedQuestions(cours.id);
+    if (freshCourse) {
+      setQuestionsValidated(freshCourse.validatedQuestions);
     }
-    
-    const [fichiersData, questionsData] = await Promise.all([
-      fetchCoursFichiers(cours.id),
+    const [fileData, questionsData] = await Promise.all([
+      fetchCourseFiles(cours.id),
       fetchQuestions(cours.id),
     ]);
-    setFichiers(fichiersData);
+
+    setFichiers(fileData);
     setQuestions(questionsData);
     setLoading(false);
-    
+
     if (fetchCoursClassement) {
       setLoadingRankings(true);
       const rankingsData = await fetchCoursClassement(cours.id);
@@ -670,7 +651,7 @@ export function CourseTesterModal({
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     setIsUploadingPdf(true);
     const newFichier = await uploadPdfForCourse(cours.id, file);
     if (newFichier) {
@@ -725,7 +706,7 @@ export function CourseTesterModal({
       console.log("Starting question generation with config:", config);
       const result = await generateQuestions(cours.id, config);
       console.log("Generation result:", result);
-      
+
       if (result.success) {
         setGenerateSuccess(`${result.questionsCreated} questions générées avec succès !`);
         if (result.questions && result.questions.length > 0) {
@@ -753,12 +734,12 @@ export function CourseTesterModal({
     const newValue = Math.max(0, Math.min(MAX_QUESTIONS, value));
     let newQcm = genQcmCount;
     let newOuverte = genOuverteCount;
-    
+
     if (field === 'qcm') newQcm = newValue;
     if (field === 'ouverte') newOuverte = newValue;
-    
+
     let total = newQcm + newOuverte;
-    
+
     // Limit total to MAX_QUESTIONS
     if (total > MAX_QUESTIONS) {
       if (field === 'qcm') {
@@ -768,7 +749,7 @@ export function CourseTesterModal({
       }
       total = newQcm + newOuverte;
     }
-    
+
     setGenQcmCount(newQcm);
     setGenOuverteCount(newOuverte);
     setGenTotalQuestions(total);
@@ -797,9 +778,9 @@ export function CourseTesterModal({
   const handleAddQuestion = async () => {
     if (!newQuestionText.trim()) return;
     if (questions.length >= MAX_QUESTIONS) return;
-    
+
     setIsAddingQuestion(true);
-    
+
     const questionData: {
       type: "single" | "open";
       question: string;
@@ -825,13 +806,13 @@ export function CourseTesterModal({
     }
 
     const result = await createQuestion(cours.id, questionData);
-    
+
     if (result) {
       setQuestions((prev) => [...prev, result]);
       resetAddQuestionForm();
       setAddQuestionOpen(false);
     }
-    
+
     setIsAddingQuestion(false);
   };
 
@@ -840,19 +821,19 @@ export function CourseTesterModal({
       setValidateError("Vous devez d'abord générer des questions");
       return;
     }
-    
+
     setIsValidating(true);
     setValidateError(null);
-    
+
     const result = await validateQuestions(cours.id);
-    
+
     if (result.success && result.cours) {
       onCoursUpdated(result.cours);
       setQuestionsValidated(true);
     } else {
       setValidateError(result.error || "Erreur lors de la validation");
     }
-    
+
     setIsValidating(false);
   };
 
@@ -965,11 +946,11 @@ export function CourseTesterModal({
           <Button variant="ghost" onClick={() => setAddQuestionOpen(false)} disabled={isAddingQuestion}>
             Annuler
           </Button>
-          <Button 
-            onClick={handleAddQuestion} 
+          <Button
+            onClick={handleAddQuestion}
             disabled={
-              isAddingQuestion || 
-              !newQuestionText.trim() || 
+              isAddingQuestion ||
+              !newQuestionText.trim() ||
               (newQuestionType === "single" && newPropositions.filter(p => p.trim()).length < 2)
             }
             data-testid="button-confirm-add-question"
@@ -1018,7 +999,7 @@ export function CourseTesterModal({
                     )}
                   </DialogTitle>
                   <DialogDescription>
-                    {showQuestionGenerator 
+                    {showQuestionGenerator
                       ? "Générez ou ajoutez manuellement les questions pour ce cours"
                       : "Modifiez le contenu du cours avant de générer les questions"
                     }
@@ -1039,7 +1020,7 @@ export function CourseTesterModal({
                     <Sparkles className="h-4 w-4" />
                     Générer les questions
                   </h5>
-                  
+
                   <p className="text-sm text-muted-foreground">
                     L'IA va analyser le contenu du cours et les PDFs pour créer des questions.
                   </p>
@@ -1047,34 +1028,34 @@ export function CourseTesterModal({
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm text-muted-foreground mb-1 block">Questions QCM</label>
-                      <Input 
-                        type="number" 
+                      <Input
+                        type="number"
                         min={0}
                         max={MAX_QUESTIONS}
-                        value={genQcmCount} 
+                        value={genQcmCount}
                         onChange={(e) => handleConfigChange('qcm', parseInt(e.target.value) || 0)}
                         data-testid="input-qcm-count"
                       />
                     </div>
                     <div>
                       <label className="text-sm text-muted-foreground mb-1 block">Questions ouvertes</label>
-                      <Input 
-                        type="number" 
+                      <Input
+                        type="number"
                         min={0}
                         max={MAX_QUESTIONS}
-                        value={genOuverteCount} 
+                        value={genOuverteCount}
                         onChange={(e) => handleConfigChange('ouverte', parseInt(e.target.value) || 0)}
                         data-testid="input-ouverte-count"
                       />
                     </div>
                   </div>
-                  
+
                   <p className="text-xs text-muted-foreground">
                     Total: {genTotalQuestions} questions (max {MAX_QUESTIONS})
                   </p>
 
-                  <Button 
-                    onClick={executeGeneration} 
+                  <Button
+                    onClick={executeGeneration}
                     disabled={isGenerating || genTotalQuestions === 0}
                     className="w-full"
                     size="lg"
@@ -1191,7 +1172,7 @@ export function CourseTesterModal({
                     {validateError && (
                       <p className="text-sm text-destructive mb-2">{validateError}</p>
                     )}
-                    <Button 
+                    <Button
                       onClick={handleValidateQuestions}
                       disabled={isValidating || questions.length === 0}
                       className="w-full"
@@ -1216,28 +1197,28 @@ export function CourseTesterModal({
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm font-medium mb-1 block">Titre du cours</label>
-                    <Input 
-                      value={editedTitre} 
-                      onChange={(e) => setEditedTitre(e.target.value)} 
+                    <Input
+                      value={editedTitre}
+                      onChange={(e) => setEditedTitre(e.target.value)}
                       placeholder="Titre du cours"
                       data-testid="input-course-title"
                     />
                   </div>
                   <div>
                     <label className="text-sm font-medium mb-1 block">Description (optionnel)</label>
-                    <Input 
-                      value={editedDescription} 
-                      onChange={(e) => setEditedDescription(e.target.value)} 
+                    <Input
+                      value={editedDescription}
+                      onChange={(e) => setEditedDescription(e.target.value)}
                       placeholder="Description du cours..."
                       data-testid="input-course-description"
                     />
                   </div>
                   <div>
                     <label className="text-sm font-medium mb-1 block">Contenu texte (optionnel)</label>
-                    <Textarea 
-                      value={editedContenu} 
-                      onChange={(e) => setEditedContenu(e.target.value)} 
-                      className="min-h-[100px]" 
+                    <Textarea
+                      value={editedContenu}
+                      onChange={(e) => setEditedContenu(e.target.value)}
+                      className="min-h-[100px]"
                       placeholder="Ajoutez du contenu texte pour aider l'IA à générer des questions..."
                       data-testid="input-course-content"
                     />
@@ -1490,13 +1471,13 @@ export function CourseTesterModal({
                       {isGenerating ? (
                         <><Loader2 className="h-4 w-4 animate-spin mr-1" /> Génération...</>
                       ) : (
-                      <><Sparkles className="h-4 w-4 mr-1" /> {questions.length > 0 ? "Re-générer" : "Générer des questions"}</>
-                    )}
-                  </Button>
+                        <><Sparkles className="h-4 w-4 mr-1" /> {questions.length > 0 ? "Re-générer" : "Générer des questions"}</>
+                      )}
+                    </Button>
+                  </div>
                 </div>
-              </div>
 
-              {generateError && (
+                {generateError && (
                   <Card className="p-3 bg-destructive/10 border-destructive/20 text-destructive text-sm">
                     {generateError}
                   </Card>
@@ -1555,9 +1536,9 @@ export function CourseTesterModal({
                                   onQuestionDeleted={handleQuestionDeleted}
                                 />
                               ))}
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
+                              <Button
+                                variant="outline"
+                                size="sm"
                                 className="w-full mt-2"
                                 onClick={() => setAddQuestionOpen(true)}
                                 data-testid="button-add-question"
@@ -1576,8 +1557,8 @@ export function CourseTesterModal({
                     <Sparkles className="h-6 w-6 mx-auto opacity-50" />
                     <p>Aucune question générée.</p>
                     <div className="flex gap-2 justify-center">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => setAddQuestionOpen(true)}
                         data-testid="button-add-question-empty"
@@ -1633,7 +1614,7 @@ export function CourseTesterModal({
                       )}
                     </div>
                   </div>
-                  
+
                   {loadingRankings ? (
                     <div className="flex items-center justify-center py-6">
                       <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -1646,7 +1627,7 @@ export function CourseTesterModal({
                   ) : (
                     <div className="space-y-2 max-h-[200px] overflow-y-auto">
                       {rankings.map((ranking) => (
-                        <Card 
+                        <Card
                           key={ranking.studentId}
                           className={`p-3 flex items-center gap-3 ${ranking.rank <= 3 ? 'border-primary/30' : ''}`}
                           data-testid={`ranking-item-${ranking.studentId}`}
@@ -1691,7 +1672,7 @@ export function CourseTesterModal({
       </Dialog>
 
       <Dialog open={chatbotModalOpen} onOpenChange={setChatbotModalOpen}>
-        <DialogContent 
+        <DialogContent
           className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 !max-w-none !w-screen !h-[100dvh] !rounded-none !border-0 flex flex-col p-0 overflow-hidden [&>button]:hidden sm:!inset-auto sm:!left-1/2 sm:!top-1/2 sm:!-translate-x-1/2 sm:!-translate-y-1/2 sm:!max-w-3xl sm:!w-[95vw] sm:!h-[90vh] sm:!rounded-2xl sm:!border"
         >
           <DialogHeader className="px-4 pt-4 pb-3 border-b flex-shrink-0 sm:px-6 sm:pt-6 sm:pb-4" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}>
@@ -1701,9 +1682,9 @@ export function CourseTesterModal({
                 <span className="truncate">Test du chatbot - {cours.title}</span>
               </DialogTitle>
               <div className="flex items-center gap-2 shrink-0">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => setChatbotRefreshKey((k) => k + 1)}
                   data-testid="button-refresh-chatbot"
                 >
@@ -1764,7 +1745,7 @@ export function CourseTesterModal({
               {questions.length > 0 && " Les questions existantes seront remplacées."}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-3 py-4">
             {/* QCM - Choix unique */}
             <div className="flex items-center gap-4 p-3 rounded-lg border bg-muted/30">
@@ -1809,23 +1790,23 @@ export function CourseTesterModal({
                 />
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between pt-3 mt-2 border-t">
               <span className="text-sm font-medium">Total de questions à générer <span className="text-muted-foreground font-normal">(max {MAX_QUESTIONS})</span></span>
               <span className="text-xl font-bold text-primary">{genTotalQuestions}</span>
             </div>
-            
+
             {genTotalQuestions === 0 && (
               <p className="text-sm text-destructive text-center">Indiquez au moins 1 question à générer</p>
             )}
           </div>
-          
+
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => setRegenerateDialogOpen(false)}>
               Annuler
             </Button>
-            <Button 
-              onClick={executeGeneration} 
+            <Button
+              onClick={executeGeneration}
               disabled={genTotalQuestions === 0}
               data-testid="button-confirm-generate"
             >
