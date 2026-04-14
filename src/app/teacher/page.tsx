@@ -60,13 +60,13 @@ export default function Teacher() {
     createSession,
     updateSession,
     deleteSession,
-    fetchCours,
+    fetchCourses,
     createCourse,
     updateCours,
     deleteCours,
     reorderCours,
     uploadPdfForCourse,
-    fetchCoursFichiers,
+    fetchCourseFiles,
     deleteCoursFichier,
     getPdfUrl,
     fetchQuestions,
@@ -428,13 +428,13 @@ export default function Teacher() {
                   <div className="p-6">
                     <CourseList
                       session={selectedSession}
-                      fetchCours={fetchCours}
+                      fetchCourses={fetchCourses}
                       createCourse={createCourse}
                       updateCours={updateCours}
                       deleteCours={deleteCours}
                       reorderCours={reorderCours}
                       uploadPdfForCourse={uploadPdfForCourse}
-                      fetchCoursFichiers={fetchCoursFichiers}
+                      fetchCourseFiles={fetchCourseFiles}
                       deleteCoursFichier={deleteCoursFichier}
                       getPdfUrl={getPdfUrl}
                       fetchQuestions={fetchQuestions}
@@ -503,7 +503,7 @@ export default function Teacher() {
                   <div className="p-6">
                     <QuestionsCoursePanel
                       sessionId={selectedSession.id}
-                      fetchCours={fetchCours}
+                      fetchCourses={fetchCourses}
                       fetchQuestionsCoursForCours={fetchQuestionsCoursForCours}
                       answerQuestionCours={answerQuestionCours}
                       deleteQuestionCours={deleteQuestionCours}

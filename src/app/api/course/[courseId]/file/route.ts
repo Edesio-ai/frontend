@@ -36,3 +36,22 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
     const data = await response.json();
     return NextResponse.json(data);
 }
+
+export async function GET(request: NextRequest, { params }: RouteContext) {
+    const { courseId } = await params;
+
+    const response = await fetch(`${process.env.BACKEND_URL}/course/${courseId}/files`, {
+        method: "GET",
+        headers: {
+            "Cookie": request.headers.get("Cookie") ?? "",
+        },
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        return NextResponse.json({ error: error.message }, { status: response.status });
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+}

@@ -71,7 +71,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface CourseListProps {
   session: Session;
-  fetchCours: (sessionId: string) => Promise<Course[]>;
+  fetchCourses: (sessionId: string) => Promise<Course[]>;
   createCourse: (
     sessionId: string,
     titre: string,
@@ -88,7 +88,7 @@ interface CourseListProps {
   deleteCours?: (coursId: string) => Promise<boolean>;
   reorderCours?: (coursIds: string[]) => Promise<boolean>;
   uploadPdfForCourse: (coursId: string, file: File) => Promise<CourseFile | null>;
-  fetchCoursFichiers: (coursId: string) => Promise<CourseFile[]>;
+  fetchCourseFiles: (coursId: string) => Promise<CourseFile[]>;
   deleteCoursFichier: (fichier: CourseFile) => Promise<boolean>;
   getPdfUrl: (filePath: string) => Promise<string | null>;
   fetchQuestions: (coursId: string) => Promise<Question[]>;
@@ -489,13 +489,13 @@ function AddCourseModal({
 
 export function CourseList({ 
   session, 
-  fetchCours, 
+  fetchCourses, 
   createCourse, 
   updateCours,
   deleteCours,
   reorderCours,
   uploadPdfForCourse,
-  fetchCoursFichiers,
+  fetchCourseFiles,
   deleteCoursFichier,
   getPdfUrl,
   fetchQuestions,
@@ -532,7 +532,7 @@ export function CourseList({
 
   const loadCours = async () => {
     setLoading(true);
-    const data = await fetchCours(session.id);
+    const data = await fetchCourses(session.id);
     setCours(data);
     setLoading(false);
   };
@@ -702,7 +702,7 @@ export function CourseList({
           onOpenChange={(open) => !open && setSelectedCours(null)}
           updateCours={updateCours}
           uploadPdfForCourse={uploadPdfForCourse}
-          fetchCoursFichiers={fetchCoursFichiers}
+          fetchCourseFiles={fetchCourseFiles}
           deleteCoursFichier={deleteCoursFichier}
           getPdfUrl={getPdfUrl}
           fetchQuestions={fetchQuestions}
