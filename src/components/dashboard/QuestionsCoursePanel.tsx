@@ -23,18 +23,18 @@ interface QuestionsCoursWithCourse extends CourseQuestion {
 interface QuestionsCoursPanelProps {
   sessionId: string;
   fetchCourses: (sessionId: string) => Promise<Course[]>;
-  fetchQuestionsCoursForCours: (coursId: string) => Promise<CourseQuestion[]>;
-  answerQuestionCours: (questionId: string, reponse: string) => Promise<CourseQuestion | null>;
-  deleteQuestionCours: (questionId: string) => Promise<boolean>;
+  fetchQuestionsCourseForCourse: (coursId: string) => Promise<CourseQuestion[]>;
+  answerQuestionCourse: (questionId: string, reponse: string) => Promise<CourseQuestion | null>;
+  deleteQuestionCourse: (questionId: string) => Promise<boolean>;
   onPendingCountChange?: () => void;
 }
 
 export function QuestionsCoursePanel({
   sessionId,
   fetchCourses,
-  fetchQuestionsCoursForCours,
-  answerQuestionCours,
-  deleteQuestionCours,
+  fetchQuestionsCourseForCourse,
+  answerQuestionCourse,
+  deleteQuestionCourse,
   onPendingCountChange,
 }: QuestionsCoursPanelProps) {
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,7 @@ export function QuestionsCoursePanel({
       const allQuestions: QuestionsCoursWithCourse[] = [];
       
       for (const cours of courses) {
-        const courseQuestions = await fetchQuestionsCoursForCours(cours.id);
+        const courseQuestions = await fetchQuestionsCourseForCourse(cours.id);
         for (const q of courseQuestions) {
           allQuestions.push({
             ...q,
@@ -99,7 +99,7 @@ export function QuestionsCoursePanel({
     if (!answeringId || !answerText.trim()) return;
     
     setSubmitting(true);
-    const result = await answerQuestionCours(answeringId, answerText.trim());
+    const result = await answerQuestionCourse(answeringId, answerText.trim());
     setSubmitting(false);
     
     if (result) {
@@ -121,7 +121,7 @@ export function QuestionsCoursePanel({
     const wasUnanswered = questionToDelete && !questionToDelete.answer;
     
     setDeleting(true);
-    const success = await deleteQuestionCours(deleteConfirmId);
+    const success = await deleteQuestionCourse(deleteConfirmId);
     setDeleting(false);
     
     if (success) {

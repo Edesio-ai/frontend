@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 
 interface ChatbotPreviewPanelProps {
-  cours: Course[];
+  course: Course[];
   sessionName: string;
   fetchQuestions: (coursId: string) => Promise<Question[]>;
   refreshKey: number;
@@ -169,14 +169,14 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 }
 
 function CourseSelectionDropdown({
-  cours,
+  course,
   onSelect,
 }: {
-  cours: Course[];
+  course: Course[];
   onSelect: (c: Course) => void;
 }) {
   const handleValueChange = (coursId: string) => {
-    const selected = cours.find((c) => c.id === coursId);
+    const selected = course.find((c) => c.id === coursId);
     if (selected) {
       onSelect(selected);
     }
@@ -186,19 +186,19 @@ function CourseSelectionDropdown({
     <div className="bg-gradient-to-br from-primary/20 to-violet-500/20 rounded-xl p-5 border-2 border-primary/30 shadow-md space-y-3 animate-in fade-in slide-in-from-bottom-3 duration-300">
       <div className="flex items-center justify-center gap-2 text-base font-semibold text-foreground">
         <BookOpen className="h-5 w-5 text-primary" />
-        <span>Choisis le cours à réviser</span>
+        <span>Choisis le course à réviser</span>
       </div>
       <Select onValueChange={handleValueChange}>
-        <SelectTrigger className="w-full h-12 text-base bg-background border-2 border-primary/40 focus:ring-primary/50 focus:border-primary font-medium" data-testid="select-cours-dropdown">
+        <SelectTrigger className="w-full h-12 text-base bg-background border-2 border-primary/40 focus:ring-primary/50 focus:border-primary font-medium" data-testid="select-course-dropdown">
           <SelectValue placeholder="Sélectionne un cours..." />
         </SelectTrigger>
         <SelectContent>
-          {cours.map((c) => (
+          {course.map((c) => (
             <SelectItem 
               key={c.id} 
               value={c.id}
               className="py-3"
-              data-testid={`select-cours-item-${c.id}`}
+              data-testid={`select-course-item-${c.id}`}
             >
               {c.title}
             </SelectItem>
@@ -216,7 +216,7 @@ function QCMOptions({
   question: Question;
   onSelect: (answer: string) => void;
 }) {
-  const labels = propositionLabels(question.propositions);
+  const labels = propositionLabels(question.proposals);
   if (labels.length === 0) return null;
 
   return (
@@ -245,7 +245,7 @@ function QCMOptions({
 }
 
 export function ChatbotPreviewPanel({
-  cours,
+  course,
   sessionName,
   fetchQuestions,
   refreshKey,
@@ -262,8 +262,8 @@ export function ChatbotPreviewPanel({
     setHasAskedCourse(false);
     setLastAskedQuestionIndex(-1);
     setInputValue("");
-    if (cours.length > 0) {
-      chatbot.initializeWithCours(cours, sessionName);
+    if (course.length > 0) {
+      chatbot.initializeWithCours(course, sessionName);
     }
   }, [refreshKey, sessionName]);
 
@@ -345,8 +345,8 @@ export function ChatbotPreviewPanel({
     setHasAskedCourse(false);
     setLastAskedQuestionIndex(-1);
     setInputValue("");
-    if (cours.length > 0) {
-      chatbot.initializeWithCours(cours, sessionName);
+    if (course.length > 0) {
+      chatbot.initializeWithCours(course, sessionName);
     }
   };
 
@@ -354,7 +354,7 @@ export function ChatbotPreviewPanel({
   const showCourseSelection = 
     chatbot.messages.some((m:ChatMessage) => m.type === "course_selection") && 
     !chatbot.selectedCours &&
-    cours.length > 0;
+    course.length > 0;
   // Show QCM buttons when asking a question OR during retry mode for QCM
   const showQCMOptions =
     chatbot.chatbotState === "asking_questions" &&
@@ -408,8 +408,8 @@ export function ChatbotPreviewPanel({
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-1">Le chatbot démarre...</p>
-            {cours.length === 0 && (
-              <p className="text-xs text-muted-foreground/70">Ajoutez des cours pour tester</p>
+            {course.length === 0 && (
+              <p className="text-xs text-muted-foreground/70">Ajoutez des course pour tester</p>
             )}
           </div>
         ) : (
@@ -425,7 +425,7 @@ export function ChatbotPreviewPanel({
 
       {showCourseSelection && !isLoadingQuestions && (
         <div className="px-4 pb-4">
-          <CourseSelectionDropdown cours={cours} onSelect={handleCoursSelect} />
+          <CourseSelectionDropdown course={course} onSelect={handleCoursSelect} />
         </div>
       )}
 

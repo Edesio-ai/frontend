@@ -20,6 +20,7 @@ import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
 import { sessionService } from "@/services/session.service";
 import { courseService } from "@/services/course.service";
 import { questionService } from "@/services/question.service";
+import { GenerateQuestionsConfig } from "@/types/question.type";
 type CoursesTableRow = {
   id: string;
   session_id: string;
@@ -271,7 +272,7 @@ export function useTeacher() {
   const fetchCourses = useCallback(
     async (sessionId: string): Promise<Course[]> => {
       try {
-        const { courses } = await sessionService.getSessionCourses(sessionId);
+        const courses = await sessionService.getSessionCourses(sessionId);
   
         setError(null);
         return courses || [];
@@ -284,7 +285,7 @@ export function useTeacher() {
     []
   );
 
-  const updateCours = useCallback(
+  const updateCourse = useCallback(
     async (
       coursId: string,
       title: string,
@@ -427,7 +428,7 @@ export function useTeacher() {
     [uploadPdfForCourse]
   );
 
-  const deleteCoursFichier = useCallback(
+  const deleteCourseFile = useCallback(
     async (fichier: CourseFile): Promise<boolean> => {
       try {
         const { error: storageError } = await supabase.storage
@@ -498,7 +499,7 @@ export function useTeacher() {
       updates: {
         type?: "single" | "multiple" | "open";
         question?: string;
-        propositions?: Question["propositions"];
+        propositions?: Question["proposals"];
         correctAnswer?: string | null;
         correctAnswers?: string[] | null;
         explanation?: string | null;
@@ -638,47 +639,18 @@ export function useTeacher() {
     []
   );
 
-  interface GenerateQuestionsConfig {
-    totalQuestions?: number;
-    qcmCount?: number;
-    ouverteCount?: number;
-  }
-
   const generateQuestions = useCallback(
     async (
       coursId: string,
       config?: GenerateQuestionsConfig
-    ): Promise<{ success: boolean; questionsCreated?: number; questions?: Question[]; error?: string }> => {
+    ): Promise<{ success: boolean; questionCount?: number; questions?: Question[]; error?: string }> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
+        const { questions, questionCount} = await questionService.generateQuestions(coursId, config);
 
-        if (!accessToken) {
-          return { success: false, error: "Vous devez être connecté pour générer des questions" };
-        }
-
-        const response = await fetch("/api/generate-questions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            coursId,
-            ...config
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          return { success: false, error: data.error || "Erreur lors de la génération" };
-        }
-
-        return {
+        return { 
           success: true,
-          questionsCreated: data.questionsCreated,
-          questions: (data.questions || []) as Question[],
+          questionCount,
+          questions,
         };
       } catch (err) {
         console.error("Error generating questions:", err);
@@ -774,7 +746,7 @@ export function useTeacher() {
     []
   );
 
-  const fetchCoursClassement = useCallback(
+  const fetchCourseRanking = useCallback(
     async (coursId: string): Promise<CourseRanking[]> => {
       try {
 
@@ -789,7 +761,7 @@ export function useTeacher() {
     []
   );
 
-  const fetchQuestionsCoursForCours = useCallback(
+  const fetchQuestionsCourseForCourse = useCallback(
     async (coursId: string): Promise<CourseQuestion[]> => {
       try {
         const { data: sessionData } = await supabase.auth.getSession();
@@ -836,7 +808,7 @@ export function useTeacher() {
     []
   );
 
-  const answerQuestionCours = useCallback(
+  const answerQuestionCourse = useCallback(
     async (questionId: string, reponse: string): Promise<CourseQuestion | null> => {
       try {
         const { data, error: updateError } = await supabase
@@ -866,7 +838,7 @@ export function useTeacher() {
     []
   );
 
-  const deleteQuestionCours = useCallback(
+  const deleteQuestionCourse = useCallback(
     async (questionId: string): Promise<boolean> => {
       try {
         const { error: deleteError } = await supabase
@@ -903,7 +875,7 @@ export function useTeacher() {
     }
   }, [teacher, fetchSessions]);
 
-  const reorderCours = useCallback(
+  const reorderCourse = useCallback(
     async (coursIds: string[]): Promise<boolean> => {
       try {
         const { data: sessionData } = await supabase.auth.getSession();
@@ -940,7 +912,7 @@ export function useTeacher() {
     []
   );
 
-  const deleteCours = useCallback(
+  const deleteCourse = useCallback(
     async (coursId: string): Promise<boolean> => {
       try {
         const { data: sessionData } = await supabase.auth.getSession();
@@ -1018,12 +990,12 @@ export function useTeacher() {
     deleteSession,
     fetchCourses,
     createCourse,
-    updateCours,
-    deleteCours,
-    reorderCours,
+    updateCourse,
+    deleteCourse,
+    reorderCourse,
     uploadPdfForCourse,
     fetchCourseFiles,
-    deleteCoursFichier,
+    deleteCourseFile,
     getPdfUrl,
     fetchQuestions,
     updateQuestion,
@@ -1034,10 +1006,10 @@ export function useTeacher() {
     validateQuestions,
     refreshSessions: fetchSessions,
     fetchSessionParticipants,
-    fetchCoursClassement,
-    fetchQuestionsCoursForCours,
+    fetchCourseRanking,
+    fetchQuestionsCourseForCourse,
     fetchPendingQuestionsCount,
-    answerQuestionCours,
-    deleteQuestionCours,
+    answerQuestionCourse,
+    deleteQuestionCourse,
   };
 }

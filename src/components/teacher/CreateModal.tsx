@@ -35,7 +35,7 @@ type CreateModalProps = {
     refreshSessions: () => Promise<void>;
     handleCloseCreateModal: () => void;
     setSelectedSession: Dispatch<SetStateAction<Session | null>>;
-    setNewlyCreatedCours: Dispatch<SetStateAction<Course | null>>;
+    setNewlyCreatedCourse: Dispatch<SetStateAction<Course | null>>;
 }
 
 export function CreateModal({
@@ -49,7 +49,7 @@ export function CreateModal({
     refreshSessions,
     handleCloseCreateModal,
     setSelectedSession,
-    setNewlyCreatedCours,
+    setNewlyCreatedCourse,
 }: CreateModalProps) {
     const [isCreating, setIsCreating] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -108,7 +108,7 @@ export function CreateModal({
                     title: "Succès",
                     description: "Session et cours créés avec succès !",
                 });
-                setNewlyCreatedCours(newCourse);
+                setNewlyCreatedCourse(newCourse);
                 setSelectedSession(newSession);
             }
         } catch (err) {
