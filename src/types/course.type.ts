@@ -43,7 +43,7 @@ export interface Question {
   courseId: string;
   type: QuestionType;
   question: string;
-  propositions: unknown;
+  proposals: unknown;
   correctAnswer: string | null;
   correctAnswers: string[] | null;
   explanation: string | null;

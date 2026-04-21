@@ -1,10 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -12,15 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { CourseTesterModal } from "./CourseTesterModal";
 import type {
   Session,
@@ -33,14 +20,7 @@ import {
   Plus, 
   Loader2, 
   FileText, 
-  Calendar, 
-  X,
   BookOpen, 
-  Upload, 
-  ChevronRight,
-  GripVertical,
-  Pencil,
-  Check,
   Trash2
 } from "lucide-react";
 import {
@@ -56,18 +36,10 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-
-const formSchema = z.object({
-  title: z.string().min(1, "Le titre est requis").max(200, "Le titre est trop long"),
-  description: z.string().max(500, "La description est trop longue").optional().or(z.literal("")),
-  contentText: z.string().optional().or(z.literal("")),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { AddCourseModal } from "../teacher/AddCourseModam";
+import { SortableCourseItem } from "../teacher/SortableCoursetem";
 
 interface CourseListProps {
   session: Session;
@@ -79,17 +51,17 @@ interface CourseListProps {
     contentText: string,
     pdfFiles?: File[]
   ) => Promise<Course | null>;
-  updateCours: (
+  updateCourse: (
     coursId: string,
     titre: string,
     description: string | null,
     contenuTexte: string | null
   ) => Promise<Course | null>;
-  deleteCours?: (coursId: string) => Promise<boolean>;
-  reorderCours?: (coursIds: string[]) => Promise<boolean>;
+  deleteCourse?: (courseId: string) => Promise<boolean>;
+  reorderCourse?: (coursIds: string[]) => Promise<boolean>;
   uploadPdfForCourse: (coursId: string, file: File) => Promise<CourseFile | null>;
   fetchCourseFiles: (coursId: string) => Promise<CourseFile[]>;
-  deleteCoursFichier: (fichier: CourseFile) => Promise<boolean>;
+  deleteCourseFile: (fichier: CourseFile) => Promise<boolean>;
   getPdfUrl: (filePath: string) => Promise<string | null>;
   fetchQuestions: (coursId: string) => Promise<Question[]>;
   updateQuestion: (
@@ -97,7 +69,7 @@ interface CourseListProps {
     updates: {
       type?: "single" | "multiple" | "open";
       question?: string;
-      propositions?: Question["propositions"];
+      proposals?: Question["proposals"];
       correctAnswer?: string | null;
       correctAnswers?: string[] | null;
       explanation?: string | null;
@@ -109,7 +81,7 @@ interface CourseListProps {
     questionData: {
       type: "single" | "multiple" | "open";
       question: string;
-      propositions?: string[];
+      proposals?: string[];
       correctAnswer?: string;
       correctAnswers?: string[];
       explanation?: string;
@@ -121,382 +93,22 @@ interface CourseListProps {
     config?: { totalQuestions?: number; qcmCount?: number; ouverteCount?: number }
   ) => Promise<{ success: boolean; questionsCreated?: number; error?: string }>;
   validateQuestions: (coursId: string) => Promise<{ success: boolean; cours?: Course; error?: string }>;
-  fetchCoursClassement?: (coursId: string) => Promise<CourseRanking[]>;
+  fetchCourseRanking?: (coursId: string) => Promise<CourseRanking[]>;
   onClose: () => void;
   initialCoursToOpen?: Course | null;
   onInitialCoursOpened?: () => void;
-}
-
-interface SortableCourseItemProps {
-  cours: Course;
-  onSelect: (cours: Course) => void;
-  onRename: (coursId: string, newTitle: string) => void;
-  onDelete?: (cours: Course) => void;
-  formatDate: (dateStr: string) => string;
-}
-
-function SortableCourseItem({ cours, onSelect, onRename, onDelete, formatDate }: SortableCourseItemProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(cours.title);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: cours.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  const handleEditClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setEditTitle(cours.title);
-    setIsEditing(true);
-    setTimeout(() => inputRef.current?.focus(), 50);
-  };
-
-  const handleSaveEdit = (e: React.MouseEvent | React.KeyboardEvent) => {
-    e.stopPropagation();
-    if (editTitle.trim() && editTitle !== cours.title) {
-      onRename(cours.id, editTitle.trim());
-    }
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSaveEdit(e);
-    } else if (e.key === "Escape") {
-      setIsEditing(false);
-      setEditTitle(cours.title);
-    }
-  };
-
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onDelete) {
-      onDelete(cours);
-    }
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="p-4 rounded-lg border bg-card hover-elevate cursor-pointer transition-all flex items-center gap-2"
-      onClick={() => !isEditing && onSelect(cours)}
-      data-testid={`card-course-${cours.id}`}
-    >
-      <div
-        {...attributes}
-        {...listeners}
-        className="cursor-grab active:cursor-grabbing p-1 text-muted-foreground hover:text-foreground"
-        onClick={(e) => e.stopPropagation()}
-        data-testid={`drag-handle-course-${cours.id}`}
-      >
-        <GripVertical className="h-5 w-5" />
-      </div>
-      <div className="flex-1 min-w-0 flex items-center justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          {isEditing ? (
-            <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-              <Input
-                ref={inputRef}
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="h-8"
-                data-testid={`input-rename-course-${cours.id}`}
-              />
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-8 w-8"
-                onClick={handleSaveEdit}
-                data-testid={`button-confirm-rename-course-${cours.id}`}
-              >
-                <Check className="h-4 w-4" />
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center gap-2">
-                <h5 className="font-medium truncate" data-testid={`text-course-title-${cours.id}`}>
-                  {cours.title}
-                </h5>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-6 w-6 opacity-50 hover:opacity-100 focus:opacity-100"
-                  onClick={handleEditClick}
-                  data-testid={`button-rename-course-${cours.id}`}
-                >
-                  <Pencil className="h-3 w-3" />
-                </Button>
-                {onDelete && (
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-6 w-6 opacity-50 hover:opacity-100 focus:opacity-100 hover:text-destructive"
-                    onClick={handleDeleteClick}
-                    data-testid={`button-delete-course-${cours.id}`}
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                )}
-              </div>
-              {cours.description && (
-                <p className="text-sm text-muted-foreground truncate mt-0.5">
-                  {cours.description}
-                </p>
-              )}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                <Calendar className="h-3 w-3" />
-                <span>{formatDate(cours.createdAt ?? "")}</span>
-              </div>
-            </>
-          )}
-        </div>
-        {!isEditing && (
-          <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-        )}
-      </div>
-    </div>
-  );
-}
-
-function AddCourseModal({
-  open,
-  onOpenChange,
-  sessionId,
-  createCourse,
-  onCourseCreated,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  sessionId: string;
-  createCourse: CourseListProps["createCourse"];
-  onCourseCreated: (cours: Course) => void;
-}) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedPdfFiles, setSelectedPdfFiles] = useState<File[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      contentText: "",
-    },
-  });
-
-  const onSubmit = async (data: FormValues) => {
-    setIsSubmitting(true);
-    const newCours = await createCourse(
-      sessionId,
-      data.title,
-      data.description || "",
-      data.contentText || "",
-      selectedPdfFiles.length > 0 ? selectedPdfFiles : undefined as File[] | undefined
-    );
-    if (newCours) {
-      onCourseCreated(newCours);
-      form.reset();
-      setSelectedPdfFiles([]);
-      onOpenChange(false);
-    }
-    setIsSubmitting(false);
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setSelectedPdfFiles((prev) => [...prev, ...Array.from(files)]);
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  const removeSelectedFile = (index: number) => {
-    setSelectedPdfFiles((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!newOpen) {
-      form.reset();
-      setSelectedPdfFiles([]);
-    }
-    onOpenChange(newOpen);
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Ajouter un nouveau cours
-          </DialogTitle>
-          <DialogDescription>
-            Créez un cours en ajoutant un titre, des fichiers PDF et optionnellement du contenu texte.
-          </DialogDescription>
-        </DialogHeader>
-        
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col flex-1 min-h-0">
-            <ScrollArea className="flex-1 pr-4 max-h-[60vh]">
-              <div className="space-y-4 pb-4">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Titre du cours</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Ex: La Révolution française"
-                          {...field}
-                          data-testid="input-course-title"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-              <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description courte</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Ex: Introduction aux causes et conséquences"
-                          {...field}
-                          data-testid="input-course-description"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="space-y-2">
-                  <FormLabel>Fichiers PDF</FormLabel>
-                  <p className="text-xs text-muted-foreground">
-                    Ajoutez un ou plusieurs fichiers PDF contenant le contenu du cours
-                  </p>
-                  <div className="space-y-2">
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      onChange={handleFileSelect}
-                      className="hidden"
-                      ref={fileInputRef}
-                      multiple
-                      data-testid="input-course-pdf"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => fileInputRef.current?.click()}
-                      data-testid="button-select-pdf"
-                    >
-                      <Upload className="h-4 w-4 mr-2" />
-                      {selectedPdfFiles.length > 0 ? "Ajouter d'autres PDFs" : "Sélectionner des PDFs"}
-                    </Button>
-                    {selectedPdfFiles.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {selectedPdfFiles.map((file, index) => (
-                          <div
-                            key={`${file.name}-${file.size}-${index}`}
-                            className="flex items-center gap-2 text-sm bg-muted/50 rounded-md px-2 py-1"
-                          >
-                            <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="max-w-[200px] truncate">{file.name}</span>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="h-5 w-5"
-                              onClick={() => removeSelectedFile(index)}
-                              data-testid={`button-remove-pdf-${index}`}
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="contentText"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        Contenu texte additionnel
-                        <span className="text-muted-foreground font-normal ml-2">(optionnel)</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Vous pouvez ajouter du texte supplémentaire ici, ou laisser vide si vous utilisez uniquement des PDFs..."
-                          className="min-h-[100px] resize-y"
-                          {...field}
-                          data-testid="textarea-course-content"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </ScrollArea>
-
-            <div className="flex justify-end gap-2 pt-4 border-t mt-4 flex-shrink-0">
-              <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
-                Annuler
-              </Button>
-              <Button type="submit" disabled={isSubmitting} data-testid="button-add-course">
-                {isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Créer le cours
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  );
 }
 
 export function CourseList({ 
   session, 
   fetchCourses, 
   createCourse, 
-  updateCours,
-  deleteCours,
-  reorderCours,
+  updateCourse,
+  deleteCourse,
+  reorderCourse,
   uploadPdfForCourse,
   fetchCourseFiles,
-  deleteCoursFichier,
+  deleteCourseFile,
   getPdfUrl,
   fetchQuestions,
   updateQuestion,
@@ -505,18 +117,16 @@ export function CourseList({
   reorderQuestions,
   generateQuestions,
   validateQuestions,
-  fetchCoursClassement,
-  onClose,
+  fetchCourseRanking,
   initialCoursToOpen,
   onInitialCoursOpened
 }: CourseListProps) {
-  const [cours, setCours] = useState<Course[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [addModalOpen, setAddModalOpen] = useState(false);
-  const [selectedCours, setSelectedCours] = useState<Course | null>(null);
-  const [openQuestionsForCours, setOpenQuestionsForCours] = useState<Course | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [coursToDelete, setCoursToDelete] = useState<Course | null>(null);
+  const [coursToDelete, setCourseToDelete] = useState<Course | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const sensors = useSensors(
@@ -530,20 +140,20 @@ export function CourseList({
     })
   );
 
-  const loadCours = async () => {
+  const loadCourse = async () => {
     setLoading(true);
     const data = await fetchCourses(session.id);
-    setCours(data);
+    setCourses(data);
     setLoading(false);
   };
 
   useEffect(() => {
-    loadCours();
+    loadCourse();
   }, [session.id]);
 
   useEffect(() => {
     if (initialCoursToOpen && !loading) {
-      setSelectedCours(initialCoursToOpen);
+      setSelectedCourse(initialCoursToOpen);
       if (onInitialCoursOpened) {
         onInitialCoursOpened();
       }
@@ -554,55 +164,55 @@ export function CourseList({
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = cours.findIndex((c) => c.id === active.id);
-    const newIndex = cours.findIndex((c) => c.id === over.id);
+    const oldIndex = courses.findIndex((c) => c.id === active.id);
+    const newIndex = courses.findIndex((c) => c.id === over.id);
 
-    const previousCours = [...cours];
-    const newCours = arrayMove(cours, oldIndex, newIndex);
-    setCours(newCours);
+    const previousCours = [...courses];
+    const newCours = arrayMove(courses, oldIndex, newIndex);
+    setCourses(newCours);
 
-    if (reorderCours) {
+    if (reorderCourse) {
       try {
-        const success = await reorderCours(newCours.map((c) => c.id));
+        const success = await reorderCourse(newCours.map((c) => c.id));
         if (!success) {
-          setCours(previousCours);
+          setCourses(previousCours);
         }
       } catch (err) {
         console.error("Error reordering courses:", err);
-        setCours(previousCours);
+        setCourses(previousCours);
       }
     }
   };
 
-  const handleRenameCours = async (coursId: string, newTitle: string) => {
-    const coursToUpdate = cours.find((c) => c.id === coursId);
-    if (!coursToUpdate) return;
+  const handleRenameCourse = async (courseId: string, newTitle: string) => {
+    const courseToUpdate = courses.find((c) => c.id === courseId);
+    if (!courseToUpdate) return;
 
-    const updated = await updateCours(
-      coursId,
+    const updated = await updateCourse(
+      courseId,
       newTitle,
-      coursToUpdate.description,
-      coursToUpdate.contentText
+      courseToUpdate.description,
+      courseToUpdate.contentText
     );
 
     if (updated) {
-      setCours((prev) =>
-        prev.map((c) => (c.id === coursId ? updated : c))
+      setCourses((prev) =>
+        prev.map((c) => (c.id === courseId ? updated : c))
       );
     }
   };
 
   const handleCourseCreated = (newCours: Course) => {
-    setCours((prev) => [newCours, ...prev]);
-    setSelectedCours(newCours);
+    setCourses((prev) => [newCours, ...prev]);
+    setSelectedCourse(newCours);
   };
 
-  const handleCoursUpdated = (updatedCours: Course) => {
-    setCours((prev) =>
+  const handleCourseUpdated = (updatedCours: Course) => {
+    setCourses((prev) =>
       prev.map((c) => (c.id === updatedCours.id ? updatedCours : c))
     );
-    if (selectedCours?.id === updatedCours.id) {
-      setSelectedCours(updatedCours);
+    if (selectedCourse?.id === updatedCours.id) {
+      setSelectedCourse(updatedCours);
     }
   };
 
@@ -614,22 +224,22 @@ export function CourseList({
     });
   };
 
-  const handleDeleteCours = (coursToRemove: Course) => {
-    setCoursToDelete(coursToRemove);
+  const handleDeleteCourse = (coursToRemove: Course) => {
+    setCourseToDelete(coursToRemove);
     setDeleteModalOpen(true);
   };
 
   const handleConfirmDelete = async () => {
-    if (!coursToDelete || !deleteCours) return;
+    if (!coursToDelete || !deleteCourse) return;
     setIsDeleting(true);
-    const success = await deleteCours(coursToDelete.id);
+    const success = await deleteCourse(coursToDelete.id);
     if (success) {
-      setCours((prev) => prev.filter((c) => c.id !== coursToDelete.id));
-      if (selectedCours?.id === coursToDelete.id) {
-        setSelectedCours(null);
+      setCourses((prev) => prev.filter((c) => c.id !== coursToDelete.id));
+      if (selectedCourse?.id === coursToDelete.id) {
+        setSelectedCourse(null);
       }
       setDeleteModalOpen(false);
-      setCoursToDelete(null);
+      setCourseToDelete(null);
     }
     setIsDeleting(false);
   };
@@ -640,7 +250,7 @@ export function CourseList({
         <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
           <h4 className="font-medium flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
-            Course existants ({cours.length})
+            Course existants ({courses.length})
           </h4>
           <Button onClick={() => setAddModalOpen(true)} data-testid="button-open-add-course">
             <Plus className="h-4 w-4 mr-2" />
@@ -652,7 +262,7 @@ export function CourseList({
           <div className="flex items-center justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
-        ) : cours.length === 0 ? (
+        ) : courses.length === 0 ? (
           <div className="p-8 text-center text-muted-foreground bg-muted/20 rounded-lg border border-dashed">
             <FileText className="h-10 w-10 mx-auto mb-3 opacity-50" />
             <p className="font-medium">Aucun cours pour cette session</p>
@@ -665,17 +275,17 @@ export function CourseList({
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={cours.map((c) => c.id)}
+              items={courses.map((c) => c.id)}
               strategy={verticalListSortingStrategy}
             >
               <div className="space-y-2">
-                {cours.map((c) => (
+                {courses.map((c) => (
                   <SortableCourseItem
                     key={c.id}
-                    cours={c}
-                    onSelect={setSelectedCours}
-                    onRename={handleRenameCours}
-                    onDelete={deleteCours ? handleDeleteCours : undefined}
+                    course={c}
+                    onSelect={setSelectedCourse}
+                    onRename={handleRenameCourse}
+                    onDelete={deleteCourse ? handleDeleteCourse : undefined}
                     formatDate={formatDate}
                   />
                 ))}
@@ -693,17 +303,17 @@ export function CourseList({
         onCourseCreated={handleCourseCreated}
       />
 
-      {selectedCours && (
+      {selectedCourse && (
         <CourseTesterModal
-          cours={selectedCours}
-          allCours={cours}
+          course={selectedCourse}
+          allCourses={courses}
           sessionName={session.name}
-          open={!!selectedCours}
-          onOpenChange={(open) => !open && setSelectedCours(null)}
-          updateCours={updateCours}
+          open={!!selectedCourse}
+          onOpenChange={(open) => !open && setSelectedCourse(null)}
+          updateCourse={updateCourse}
           uploadPdfForCourse={uploadPdfForCourse}
           fetchCourseFiles={fetchCourseFiles}
-          deleteCoursFichier={deleteCoursFichier}
+          deleteCourseFile={deleteCourseFile}
           getPdfUrl={getPdfUrl}
           fetchQuestions={fetchQuestions}
           updateQuestion={updateQuestion}
@@ -712,8 +322,8 @@ export function CourseList({
           reorderQuestions={reorderQuestions}
           generateQuestions={generateQuestions}
           validateQuestions={validateQuestions}
-          fetchCoursClassement={fetchCoursClassement}
-          onCoursUpdated={handleCoursUpdated}
+          fetchCourseRanking={fetchCourseRanking}
+          onCourseUpdated={handleCourseUpdated}
         />
       )}
 
@@ -732,7 +342,7 @@ export function CourseList({
               className="flex-1"
               onClick={() => {
                 setDeleteModalOpen(false);
-                setCoursToDelete(null);
+                setCourseToDelete(null);
               }}
               disabled={isDeleting}
               data-testid="button-cancel-delete-course"

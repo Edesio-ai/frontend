@@ -311,7 +311,7 @@ export function useChatbotPreview() {
           body: JSON.stringify({
             question: question.question,
             correctAnswer:
-              correctAnswerDisplay(question.propositions, question.correctAnswer) || "",
+              correctAnswerDisplay(question.proposals, question.correctAnswer) || "",
             studentAnswer: answer,
             explication: question.explanation || "",
           }),
@@ -330,7 +330,7 @@ export function useChatbotPreview() {
             );
           } else {
             addBotMessage(
-              `Hmm, ta réponse ne correspond pas vraiment à la notion.\n\nLa bonne réponse était : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}${question.explanation ? `\n\n${question.explanation}` : ""}\n\nPas de souci, passons à la suite !`,
+              `Hmm, ta réponse ne correspond pas vraiment à la notion.\n\nLa bonne réponse était : ${correctAnswerDisplay(question.proposals, question.correctAnswer)}${question.explanation ? `\n\n${question.explanation}` : ""}\n\nPas de souci, passons à la suite !`,
               "feedback",
               { isCorrect: false }
             );
@@ -338,7 +338,7 @@ export function useChatbotPreview() {
         } else {
           // Fallback if API fails
           addBotMessage(
-            `D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}${question.explanation ? `\n\n${question.explanation}` : ""}`,
+            `D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : ${correctAnswerDisplay(question.proposals, question.correctAnswer)}${question.explanation ? `\n\n${question.explanation}` : ""}`,
             "feedback",
             { isCorrect: false }
           );
@@ -346,7 +346,7 @@ export function useChatbotPreview() {
       } catch (error) {
         console.error("Error evaluating reflection:", error);
         addBotMessage(
-          `D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}${question.explanation ? `\n\n${question.explanation}` : ""}`,
+          `D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : ${correctAnswerDisplay(question.proposals, question.correctAnswer)}${question.explanation ? `\n\n${question.explanation}` : ""}`,
           "feedback",
           { isCorrect: false }
         );
@@ -361,7 +361,7 @@ export function useChatbotPreview() {
       const answerLetter = answer.toUpperCase().trim().charAt(0);
       const answerIndex = answerLetter.charCodeAt(0) - 65;
 
-      const labels = propositionLabels(question.propositions);
+      const labels = propositionLabels(question.proposals);
       if (labels.length > 0 && answerIndex >= 0 && answerIndex < labels.length) {
         isCorrect = letterAnswerIsCorrect(question, answerIndex);
       }
@@ -369,7 +369,7 @@ export function useChatbotPreview() {
       // For open questions in preview, use simple matching (AI evaluation is for students)
       const normalizedAnswer = answer.toLowerCase().trim();
       const normalizedCorrect = (
-        correctAnswerDisplay(question.propositions, question.correctAnswer) || ""
+        correctAnswerDisplay(question.proposals, question.correctAnswer) || ""
       )
         .toLowerCase()
         .trim();
@@ -393,7 +393,7 @@ export function useChatbotPreview() {
         if (question.type === "single" || question.type === "multiple") {
           // For QCM: show correct answer and give another try with buttons (no text explanation needed)
           addBotMessage(
-            `${encouragement}\n\nLa bonne réponse est : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}\n\nEssaie de sélectionner la bonne réponse cette fois !`,
+            `${encouragement}\n\nLa bonne réponse est : ${correctAnswerDisplay(question.proposals, question.correctAnswer)}\n\nEssaie de sélectionner la bonne réponse cette fois !`,
             "feedback",
             { isCorrect: false }
           );
@@ -401,7 +401,7 @@ export function useChatbotPreview() {
           // For open questions: ask for reflection/explanation
           const retryPrompt = pickRandom(retryEncouragements);
           addBotMessage(
-            `${encouragement}\n\nLa bonne réponse est : ${correctAnswerDisplay(question.propositions, question.correctAnswer)}\n\n${retryPrompt}`,
+            `${encouragement}\n\nLa bonne réponse est : ${correctAnswerDisplay(question.proposals, question.correctAnswer)}\n\n${retryPrompt}`,
             "feedback",
             { isCorrect: false }
           );

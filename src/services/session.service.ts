@@ -51,8 +51,8 @@ export const sessionService = {
 
     return reponse;
   },
-  getSessionCourses: async (sessionId: string): Promise<{ courses: Course[] }> => {
-    const reponse = await apiFetch<{ courses: Course[] }>(`/api/session/${sessionId}/courses`);
+  getSessionCourses: async (sessionId: string): Promise<Course[]> => {
+    const reponse = await apiFetch<Course[]>(`/api/session/${sessionId}/courses`);
 
     return reponse;
   },

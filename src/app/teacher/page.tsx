@@ -62,12 +62,12 @@ export default function Teacher() {
     deleteSession,
     fetchCourses,
     createCourse,
-    updateCours,
-    deleteCours,
-    reorderCours,
+    updateCourse,
+    deleteCourse,
+    reorderCourse,
     uploadPdfForCourse,
     fetchCourseFiles,
-    deleteCoursFichier,
+    deleteCourseFile,
     getPdfUrl,
     fetchQuestions,
     updateQuestion,
@@ -78,11 +78,11 @@ export default function Teacher() {
     validateQuestions,
     refreshSessions,
     fetchSessionParticipants,
-    fetchCoursClassement,
-    fetchQuestionsCoursForCours,
+    fetchCourseRanking,
+    fetchQuestionsCourseForCourse,
     fetchPendingQuestionsCount,
-    answerQuestionCours,
-    deleteQuestionCours,
+    answerQuestionCourse,
+    deleteQuestionCourse,
   } = useTeacher();
   const { toast } = useToast();
   const router = useRouter();
@@ -99,7 +99,7 @@ export default function Teacher() {
   const [loadingParticipants, setLoadingParticipants] = useState(false);
   const [pendingQuestionsCount, setPendingQuestionsCount] = useState<number>(0);
   const [sessionPendingCounts, setSessionPendingCounts] = useState<Record<string, number>>({});
-  const [newlyCreatedCours, setNewlyCreatedCours] = useState<Course | null>(null);
+  const [newlyCreatedCours, setNewlyCreatedCourse] = useState<Course | null>(null);
 
   const role = getUserRole();
 
@@ -171,7 +171,7 @@ export default function Teacher() {
     setSessionTab("cours");
     setParticipants([]);
     setPendingQuestionsCount(0);
-    setNewlyCreatedCours(null);
+    setNewlyCreatedCourse(null);
   };
 
   const loadParticipants = async (sessionId: string) => {
@@ -385,7 +385,7 @@ export default function Teacher() {
         refreshSessions={refreshSessions}
         handleCloseCreateModal={handleCloseCreateModal}
         setSelectedSession={setSelectedSession}
-        setNewlyCreatedCours={setNewlyCreatedCours}
+        setNewlyCreatedCourse={setNewlyCreatedCourse}
         />
 
         <Dialog open={!!selectedSession} onOpenChange={(open) => !open && handleCloseSessionModal()}>
@@ -430,12 +430,12 @@ export default function Teacher() {
                       session={selectedSession}
                       fetchCourses={fetchCourses}
                       createCourse={createCourse}
-                      updateCours={updateCours}
-                      deleteCours={deleteCours}
-                      reorderCours={reorderCours}
+                      updateCourse={updateCourse}
+                      deleteCourse={deleteCourse}
+                      reorderCourse={reorderCourse}
                       uploadPdfForCourse={uploadPdfForCourse}
                       fetchCourseFiles={fetchCourseFiles}
-                      deleteCoursFichier={deleteCoursFichier}
+                      deleteCourseFile={deleteCourseFile}
                       getPdfUrl={getPdfUrl}
                       fetchQuestions={fetchQuestions}
                       updateQuestion={updateQuestion}
@@ -444,10 +444,10 @@ export default function Teacher() {
                       reorderQuestions={reorderQuestions}
                       generateQuestions={generateQuestions}
                       validateQuestions={validateQuestions}
-                      fetchCoursClassement={fetchCoursClassement}
+                      fetchCourseRanking={fetchCourseRanking}
                       onClose={handleCloseSessionModal}
                       initialCoursToOpen={newlyCreatedCours}
-                      onInitialCoursOpened={() => setNewlyCreatedCours(null)}
+                      onInitialCoursOpened={() => setNewlyCreatedCourse(null)}
                     />
                   </div>
                 </TabsContent>
@@ -504,9 +504,9 @@ export default function Teacher() {
                     <QuestionsCoursePanel
                       sessionId={selectedSession.id}
                       fetchCourses={fetchCourses}
-                      fetchQuestionsCoursForCours={fetchQuestionsCoursForCours}
-                      answerQuestionCours={answerQuestionCours}
-                      deleteQuestionCours={deleteQuestionCours}
+                      fetchQuestionsCourseForCourse={fetchQuestionsCourseForCourse}
+                      answerQuestionCourse={answerQuestionCourse}
+                      deleteQuestionCourse={deleteQuestionCourse}
                       onPendingCountChange={() => refreshPendingCount(selectedSession.id)}
                     />
                   </div>
