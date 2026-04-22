@@ -14,7 +14,7 @@ export function ProfesseurRow({
 }: {
     teacher: TeacherWithStats;
     onViewStudents: (session: SessionWithStudentCount) => void;
-    onViewCourse: (coursId: string) => void;
+    onViewCourse: (courseId: string) => void;
     getSessionCours: (sessionId: string) => Promise<CourseBasic[]>;
 }) {
     const [isOpen, setIsOpen] = useState(false);

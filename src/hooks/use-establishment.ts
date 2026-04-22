@@ -249,11 +249,11 @@ export function useEstablishment() {
   );
 
   const getCourseDetails = useCallback(
-    async (coursId: string): Promise<CourseDetails | null> => {
+    async (courseId: string): Promise<CourseDetails | null> => {
       //   if (!session?.access_token) return null;
 
       //   try {
-      //     const response = await fetch(`/api/establishment/cours/${coursId}`, {
+      //     const response = await fetch(`/api/establishment/cours/${courseId}`, {
       //       headers: {
       //         Authorization: `Bearer ${session.access_token}`,
       //       },
