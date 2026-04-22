@@ -29,7 +29,7 @@ import {
 interface ChatbotPreviewPanelProps {
   course: Course[];
   sessionName: string;
-  fetchQuestions: (coursId: string) => Promise<Question[]>;
+  fetchQuestions: (courseId: string) => Promise<Question[]>;
   refreshKey: number;
 }
 
@@ -175,8 +175,8 @@ function CourseSelectionDropdown({
   course: Course[];
   onSelect: (c: Course) => void;
 }) {
-  const handleValueChange = (coursId: string) => {
-    const selected = course.find((c) => c.id === coursId);
+  const handleValueChange = (courseId: string) => {
+    const selected = course.find((c) => c.id === courseId);
     if (selected) {
       onSelect(selected);
     }

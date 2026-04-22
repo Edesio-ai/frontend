@@ -52,18 +52,18 @@ interface CourseListProps {
     pdfFiles?: File[]
   ) => Promise<Course | null>;
   updateCourse: (
-    coursId: string,
+    courseId: string,
     titre: string,
     description: string | null,
     contenuTexte: string | null
   ) => Promise<Course | null>;
   deleteCourse?: (courseId: string) => Promise<boolean>;
   reorderCourse?: (coursIds: string[]) => Promise<boolean>;
-  uploadPdfForCourse: (coursId: string, file: File) => Promise<CourseFile | null>;
-  fetchCourseFiles: (coursId: string) => Promise<CourseFile[]>;
+  uploadPdfForCourse: (courseId: string, file: File) => Promise<CourseFile | null>;
+  fetchCourseFiles: (courseId: string) => Promise<CourseFile[]>;
   deleteCourseFile: (fichier: CourseFile) => Promise<boolean>;
   getPdfUrl: (filePath: string) => Promise<string | null>;
-  fetchQuestions: (coursId: string) => Promise<Question[]>;
+  fetchQuestions: (courseId: string) => Promise<Question[]>;
   updateQuestion: (
     questionId: string,
     updates: {
@@ -77,23 +77,22 @@ interface CourseListProps {
   ) => Promise<Question | null>;
   deleteQuestion: (questionId: string) => Promise<boolean>;
   createQuestion: (
-    coursId: string,
+    courseId: string,
     questionData: {
       type: "single" | "multiple" | "open";
-      question: string;
+      questionText: string;
       proposals?: string[];
-      correctAnswer?: string;
       correctAnswers?: string[];
       explanation?: string;
     }
   ) => Promise<Question | null>;
   reorderQuestions?: (questionIds: string[]) => Promise<boolean>;
   generateQuestions: (
-    coursId: string,
+    courseId: string,
     config?: { totalQuestions?: number; qcmCount?: number; ouverteCount?: number }
   ) => Promise<{ success: boolean; questionsCreated?: number; error?: string }>;
-  validateQuestions: (coursId: string) => Promise<{ success: boolean; cours?: Course; error?: string }>;
-  fetchCourseRanking?: (coursId: string) => Promise<CourseRanking[]>;
+  validateQuestions: (courseId: string) => Promise<{ success: boolean; cours?: Course; error?: string }>;
+  fetchCourseRanking?: (courseId: string) => Promise<CourseRanking[]>;
   onClose: () => void;
   initialCoursToOpen?: Course | null;
   onInitialCoursOpened?: () => void;

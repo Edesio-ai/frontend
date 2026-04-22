@@ -146,11 +146,11 @@ export default function Establishment() {
     setLoadingStudents(false);
   };
 
-  const handleViewCourse = async (coursId: string) => {
+  const handleViewCourse = async (courseId: string) => {
     setShowCourseModal(true);
     setLoadingCourse(true);
     setSelectedCourseDetails(null);
-    const details = await getCourseDetails(coursId);
+    const details = await getCourseDetails(courseId);
     setSelectedCourseDetails(details);
     setLoadingCourse(false);
   };

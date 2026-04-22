@@ -11,7 +11,7 @@ export interface ChatMessage {
   sender: "bot" | "student";
   text: string;
   type?: "greeting" | "course_selection" | "question" | "answer" | "feedback" | "completion";
-  coursId?: string;
+  courseId?: string;
   questionId?: string;
   isCorrect?: boolean;
   isPartial?: boolean;

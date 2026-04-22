@@ -116,10 +116,10 @@ interface CourseTesterModalProps {
   ) => Promise<Question | null>;
   deleteQuestion: (questionId: string) => Promise<boolean>;
   createQuestion: (
-    coursId: string,
+    courseId: string,
     questionData: {
       type: "single" | "open" | "multiple";
-      question: string;
+      questionText: string;
       propositions?: string[];
       correctAnswer?: string;
       correctAnswers?: string[];
@@ -127,7 +127,7 @@ interface CourseTesterModalProps {
     }
   ) => Promise<Question | null>;
   generateQuestions: (
-    coursId: string,
+    courseId: string,
     config?: GenerateQuestionsConfig
   ) => Promise<{ success: boolean; questionCount?: number; questions?: Question[]; error?: string }>;
   validateQuestions: (courseId: string) => Promise<{ success: boolean; course?: Course; error?: string }>;
@@ -157,7 +157,7 @@ export function CourseTesterModal({
   fetchCourseRanking,
   onCourseUpdated,
 }: CourseTesterModalProps) {
-  const [files, setFichiers] = useState<CourseFile[]>([]);
+  const [files, setFiles] = useState<CourseFile[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [rankings, setRankings] = useState<CourseRanking[]>([]);
   const [loadingRankings, setLoadingRankings] = useState(false);
@@ -171,7 +171,7 @@ export function CourseTesterModal({
   const [editedDescription, setEditedDescription] = useState(course.description || "");
   const [editedContenu, setEditedContenu] = useState(course.contentText || "");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [fichierToDelete, setFichierToDelete] = useState<CourseFile | null>(null);
+  const [fileToDelete, setFileToDelete] = useState<CourseFile | null>(null);
   const [isDeletingFichier, setIsDeletingFichier] = useState(false);
   const [regenerateDialogOpen, setRegenerateDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -179,10 +179,10 @@ export function CourseTesterModal({
   const [addQuestionOpen, setAddQuestionOpen] = useState(false);
   const [newQuestionType, setNewQuestionType] = useState<"single" | "open">("single");
   const [newQuestionText, setNewQuestionText] = useState("");
-  const [newPropositions, setNewPropositions] = useState(["", "", "", ""]);
+  const [newProposals, setNewProposals] = useState(["", "", "", ""]);
   const [newCorrectIndex, setNewCorrectIndex] = useState(0);
   const [newCorrectIndices, setNewCorrectIndices] = useState<number[]>([]);
-  const [newBonneReponse, setNewBonneReponse] = useState("");
+  const [newGoodAnswer, setNewGoodAnswer] = useState("");
   const [newExplication, setNewExplication] = useState("");
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
@@ -264,7 +264,7 @@ export function CourseTesterModal({
       fetchQuestions(course.id),
     ]);
 
-    setFichiers(fileData);
+    setFiles(fileData);
     setQuestions(questionsData);
     setLoading(false);
 
@@ -298,27 +298,27 @@ export function CourseTesterModal({
     setIsUploadingPdf(true);
     const newFichier = await uploadPdfForCourse(course.id, file);
     if (newFichier) {
-      setFichiers((prev) => [...prev, newFichier]);
+      setFiles((prev) => [...prev, newFichier]);
     }
     setIsUploadingPdf(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleDeleteFichier = (fichier: CourseFile) => {
-    setFichierToDelete(fichier);
+    setFileToDelete(fichier);
     setDeleteDialogOpen(true);
   };
 
-  const confirmDeleteFichier = async () => {
-    if (!fichierToDelete) return;
+  const confirmDeleteFile = async () => {
+    if (!fileToDelete) return;
     setIsDeletingFichier(true);
-    const success = await deleteCourseFile(fichierToDelete);
+    const success = await deleteCourseFile(fileToDelete);
     if (success) {
-      setFichiers((prev) => prev.filter((f) => f.id !== fichierToDelete.id));
+      setFiles((prev) => prev.filter((f) => f.id !== fileToDelete.id));
     }
     setIsDeletingFichier(false);
     setDeleteDialogOpen(false);
-    setFichierToDelete(null);
+    setFileToDelete(null);
   };
 
   const handleDownloadPdf = async (fichier: CourseFile) => {
@@ -408,10 +408,10 @@ export function CourseTesterModal({
   const resetAddQuestionForm = () => {
     setNewQuestionType("single");
     setNewQuestionText("");
-    setNewPropositions(["", "", "", ""]);
+    setNewProposals(["", "", "", ""]);
     setNewCorrectIndex(0);
     setNewCorrectIndices([]);
-    setNewBonneReponse("");
+    setNewGoodAnswer("");
     setNewExplication("");
   };
 
@@ -423,26 +423,29 @@ export function CourseTesterModal({
 
     const questionData: {
       type: "single" | "open";
-      question: string;
-      propositions?: string[];
-      correctAnswer?: string;
+      questionText: string;
+      correctAnswers: string[];
+      proposals?: string[];
       explanation?: string;
     } = {
       type: newQuestionType,
-      question: newQuestionText,
+      questionText: newQuestionText,
       explanation: newExplication || undefined,
+      correctAnswers: []
     };
 
     if (newQuestionType === "single") {
-      const filteredPropositions = newPropositions.filter(p => p.trim() !== "");
-      if (filteredPropositions.length < 2) {
+      const filteredProposals = newProposals.filter(p => p.trim() !== "");
+      if (filteredProposals.length < 2) {
         setIsAddingQuestion(false);
         return;
       }
-      questionData.propositions = filteredPropositions;
-      questionData.correctAnswer = filteredPropositions[newCorrectIndex] || filteredPropositions[0];
+      questionData.proposals = filteredProposals;
+      questionData.correctAnswers.push(filteredProposals[newCorrectIndex] || filteredProposals[0])
     } else {
-      questionData.correctAnswer = newBonneReponse || undefined;
+      if(newGoodAnswer) {
+        questionData.correctAnswers.push(newGoodAnswer);
+      }
     }
 
     const result = await createQuestion(course.id, questionData);
@@ -507,8 +510,8 @@ export function CourseTesterModal({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="qcm">QCM (1 bonne réponse)</SelectItem>
-                <SelectItem value="ouverte">Question ouverte</SelectItem>
+                <SelectItem value="single">QCM (1 bonne réponse)</SelectItem>
+                <SelectItem value="open">Question ouverte</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -528,15 +531,15 @@ export function CourseTesterModal({
             <div className="space-y-2">
               <label className="text-sm font-medium">Propositions</label>
               <p className="text-xs text-muted-foreground">Cliquez sur le bouton pour marquer la bonne réponse</p>
-              {newPropositions.map((prop, i) => (
+              {newProposals.map((prop, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <span className="font-medium text-sm w-5">{String.fromCharCode(65 + i)}.</span>
                   <Input
                     value={prop}
                     onChange={(e) => {
-                      const newProps = [...newPropositions];
+                      const newProps = [...newProposals];
                       newProps[i] = e.target.value;
-                      setNewPropositions(newProps);
+                      setNewProposals(newProps);
                     }}
                     placeholder={`Option ${String.fromCharCode(65 + i)}`}
                     className={newCorrectIndex === i ? "border-green-500" : ""}
@@ -561,8 +564,9 @@ export function CourseTesterModal({
             <div className="space-y-2">
               <label className="text-sm font-medium">Réponse attendue</label>
               <Textarea
-                value={newBonneReponse}
-                onChange={(e) => setNewBonneReponse(e.target.value)}
+                value={newGoodAnswer}
+                required={newQuestionType === "open"}
+                onChange={(e) => setNewGoodAnswer(e.target.value)}
                 placeholder="La réponse attendue..."
                 className="min-h-[60px]"
                 data-testid="input-new-answer"
@@ -591,7 +595,7 @@ export function CourseTesterModal({
             disabled={
               isAddingQuestion ||
               !newQuestionText.trim() ||
-              (newQuestionType === "single" && newPropositions.filter(p => p.trim()).length < 2)
+              (newQuestionType === "single" && newProposals.filter(p => p.trim()).length < 2)
             }
             data-testid="button-confirm-add-question"
           >
@@ -915,7 +919,7 @@ export function CourseTesterModal({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel disabled={isDeletingFichier}>Annuler</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDeleteFichier} disabled={isDeletingFichier} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              <AlertDialogAction onClick={confirmDeleteFile} disabled={isDeletingFichier} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                 {isDeletingFichier ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                 Supprimer
               </AlertDialogAction>
@@ -1310,12 +1314,12 @@ export function CourseTesterModal({
           <AlertDialogHeader>
             <AlertDialogTitle>Supprimer ce document ?</AlertDialogTitle>
             <AlertDialogDescription>
-              Voulez-vous vraiment supprimer « {fichierToDelete?.fileName} » ?
+              Voulez-vous vraiment supprimer « {fileToDelete?.fileName} » ?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isDeletingFichier}>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteFichier} disabled={isDeletingFichier} className="bg-destructive text-destructive-foreground">
+            <AlertDialogAction onClick={confirmDeleteFile} disabled={isDeletingFichier} className="bg-destructive text-destructive-foreground">
               {isDeletingFichier ? <Loader2 className="h-4 w-4 animate-spin" /> : "Supprimer"}
             </AlertDialogAction>
           </AlertDialogFooter>

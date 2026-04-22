@@ -51,6 +51,14 @@ export interface Question {
   positionOrder?: number | null;
 }
 
+export interface CreateQuestionRequest {
+  courseId: string;
+  type: QuestionType;
+  questionText: string;
+  proposals?: string[];
+  correctAnswers?: string[];
+  explanation?: string | null;
+}
 export interface CourseQuestion {
   id: string;
   courseId: string;

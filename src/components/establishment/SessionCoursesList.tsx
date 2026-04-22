@@ -12,7 +12,7 @@ export function SessionCoursesList({
   }: {
     sessionId: string;
     getSessionCours: (sessionId: string) => Promise<CourseBasic[]>;
-    onViewCourse: (coursId: string) => void;
+    onViewCourse: (courseId: string) => void;
   }) {
     const [courses, setCourses] = useState<CourseBasic[]>([]);
     const [loading, setLoading] = useState(true);

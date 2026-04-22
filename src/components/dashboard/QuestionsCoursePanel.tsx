@@ -23,7 +23,7 @@ interface QuestionsCoursWithCourse extends CourseQuestion {
 interface QuestionsCoursPanelProps {
   sessionId: string;
   fetchCourses: (sessionId: string) => Promise<Course[]>;
-  fetchQuestionsCourseForCourse: (coursId: string) => Promise<CourseQuestion[]>;
+  fetchQuestionsCourseForCourse: (courseId: string) => Promise<CourseQuestion[]>;
   answerQuestionCourse: (questionId: string, reponse: string) => Promise<CourseQuestion | null>;
   deleteQuestionCourse: (questionId: string) => Promise<boolean>;
   onPendingCountChange?: () => void;

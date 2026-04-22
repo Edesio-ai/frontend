@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { Question } from "@/types/course.type";
+import { CreateQuestionRequest, Question } from "@/types/course.type";
 import { GenerateQuestionsConfig } from "@/types/question.type";
 
 export const questionService = {
@@ -20,6 +20,13 @@ export const questionService = {
     const response = await apiFetch<{ questionCount: number, questions: Question[]}>(`/api/question/generate/`, {
       method: "POST",
       body: JSON.stringify(body),
+    });
+    return response;
+  },
+  createQuestion: async (questionData: CreateQuestionRequest): Promise<{ data: Question }> => {
+    const response = await apiFetch<{ data: Question }>(`/api/question`, {
+      method: "POST",
+      body: JSON.stringify(questionData),
     });
     return response;
   },

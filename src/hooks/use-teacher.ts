@@ -13,7 +13,8 @@ import type {
   InsertSession,
   InsertCourse,
   SessionParticipant,
-  CourseRanking
+  CourseRanking,
+  CreateQuestionRequest
 } from "@/types";
 import { teacherService } from "@/services/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
@@ -287,7 +288,7 @@ export function useTeacher() {
 
   const updateCourse = useCallback(
     async (
-      coursId: string,
+      courseId: string,
       title: string,
       description: string | null,
       contentText: string | null
@@ -300,7 +301,7 @@ export function useTeacher() {
             description: description || null,
             text_content: contentText || null,
           })
-          .eq("id", coursId)
+          .eq("id", courseId)
           .select()
           .single();
 
@@ -343,9 +344,9 @@ export function useTeacher() {
   }
   
 
-  const handleUploadPdfForCours = async (coursId: string, file: File): Promise<CourseFile> => {
+  const handleUploadPdfForCours = async (courseId: string, file: File): Promise<CourseFile> => {
     try {
-      const { data } = await courseService.uploadFile(coursId, file);
+      const { data } = await courseService.uploadFile(courseId, file);
       return data;
     } catch (err) {
       console.error("Error uploading PDF:", err);
@@ -355,9 +356,9 @@ export function useTeacher() {
   }
 
   const uploadPdfForCourse = useCallback(
-    async (coursId: string, file: File): Promise<CourseFile> => {
+    async (courseId: string, file: File): Promise<CourseFile> => {
       try {
-        const fileData = await handleUploadPdfForCours(coursId, file);
+        const fileData = await handleUploadPdfForCours(courseId, file);
         return fileData;
       } catch (err) {
         console.error("Unexpected error:", err);
@@ -369,9 +370,9 @@ export function useTeacher() {
   );
 
   const fetchCourseFiles = useCallback(
-    async (coursId: string): Promise<CourseFile[]> => {
+    async (courseId: string): Promise<CourseFile[]> => {
       try {
-        const fileData = await courseService.getCoursesFiles(coursId);
+        const fileData = await courseService.getCoursesFiles(courseId);
 
         return fileData;
       } catch (err) {
@@ -480,9 +481,9 @@ export function useTeacher() {
   );
 
   const fetchQuestions = useCallback(
-    async (coursId: string): Promise<Question[]> => {
+    async (courseId: string): Promise<Question[]> => {
       try {
-        const questionsData = await questionService.getCourseQuestions(coursId);
+        const questionsData = await questionService.getCourseQuestions(courseId);
         
         return questionsData;
       } catch (err) {
@@ -585,51 +586,18 @@ export function useTeacher() {
 
   const createQuestion = useCallback(
     async (
-      coursId: string,
-      questionData: {
-        type: "single" | "multiple" | "open";
-        question: string;
-        propositions?: string[];
-        correctAnswer?: string;
-        correctAnswers?: string[];
-        explanation?: string;
-      }
+      courseId: string,
+      questionData: Omit<CreateQuestionRequest, "courseId">
     ): Promise<Question | null> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
-
-        if (!accessToken) {
-          setError("Vous devez être connecté");
-          return null;
-        }
-
-        const response = await fetch("/api/questions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            courseId: coursId,
-            type: questionData.type,
-            question: questionData.question,
-            propositions: questionData.propositions,
-            correctAnswer: questionData.correctAnswer,
-            correctAnswers: questionData.correctAnswers,
-            explanation: questionData.explanation,
-          }),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          setError(result.error || "Erreur lors de la création");
-          return null;
-        }
-
+        const body: CreateQuestionRequest = {
+          courseId,
+          ...questionData,
+        };
+        const { data: question } = await questionService.createQuestion(body);
+        
         setError(null);
-        return result.question ? (result.question as Question) : null;
+        return question;
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue. Merci de réessayer.");
@@ -641,11 +609,11 @@ export function useTeacher() {
 
   const generateQuestions = useCallback(
     async (
-      coursId: string,
+      courseId: string,
       config?: GenerateQuestionsConfig
     ): Promise<{ success: boolean; questionCount?: number; questions?: Question[]; error?: string }> => {
       try {
-        const { questions, questionCount} = await questionService.generateQuestions(coursId, config);
+        const { questions, questionCount} = await questionService.generateQuestions(courseId, config);
 
         return { 
           success: true,
@@ -661,7 +629,7 @@ export function useTeacher() {
   );
 
   const validateQuestions = useCallback(
-    async (coursId: string): Promise<{ success: boolean; cours?: Course; error?: string }> => {
+    async (courseId: string): Promise<{ success: boolean; cours?: Course; error?: string }> => {
       try {
         const { data: sessionData } = await supabase.auth.getSession();
         const accessToken = sessionData?.session?.access_token;
@@ -670,7 +638,7 @@ export function useTeacher() {
           return { success: false, error: "Vous devez être connecté" };
         }
 
-        const response = await fetch(`/api/cours/${coursId}/validate-questions`, {
+        const response = await fetch(`/api/cours/${courseId}/validate-questions`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -747,10 +715,10 @@ export function useTeacher() {
   );
 
   const fetchCourseRanking = useCallback(
-    async (coursId: string): Promise<CourseRanking[]> => {
+    async (courseId: string): Promise<CourseRanking[]> => {
       try {
 
-        const rankingData = await courseService.getCourseRanking(coursId);
+        const rankingData = await courseService.getCourseRanking(courseId);
 
         return rankingData;
       } catch (err) {
@@ -762,7 +730,7 @@ export function useTeacher() {
   );
 
   const fetchQuestionsCourseForCourse = useCallback(
-    async (coursId: string): Promise<CourseQuestion[]> => {
+    async (courseId: string): Promise<CourseQuestion[]> => {
       try {
         const { data: sessionData } = await supabase.auth.getSession();
         const accessToken = sessionData?.session?.access_token;
@@ -772,7 +740,7 @@ export function useTeacher() {
           return [];
         }
 
-        const response = await fetch(`/api/cours/${coursId}/questions-cours`, {
+        const response = await fetch(`/api/cours/${courseId}/questions-cours`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${accessToken}`,
@@ -913,7 +881,7 @@ export function useTeacher() {
   );
 
   const deleteCourse = useCallback(
-    async (coursId: string): Promise<boolean> => {
+    async (courseId: string): Promise<boolean> => {
       try {
         const { data: sessionData } = await supabase.auth.getSession();
         const accessToken = sessionData?.session?.access_token;
@@ -923,7 +891,7 @@ export function useTeacher() {
           return false;
         }
 
-        const response = await fetch(`/api/cours/${coursId}`, {
+        const response = await fetch(`/api/cours/${courseId}`, {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${accessToken}`,
