@@ -108,14 +108,14 @@ export function CourseViewModal({
                                       key={i}
                                       className={
                                         opt ===
-                                        correctAnswerDisplay(q.propositions, q.correctAnswer)
+                                        correctAnswerDisplay(q.propositions, q.correctAnswers || [])
                                           ? "text-green-600 font-medium"
                                           : ""
                                       }
                                     >
                                       {opt}{" "}
                                       {opt ===
-                                        correctAnswerDisplay(q.propositions, q.correctAnswer) &&
+                                        correctAnswerDisplay(q.propositions, q.correctAnswers || []) &&
                                         "(Correcte)"}
                                     </li>
                                   ))}
@@ -128,12 +128,12 @@ export function CourseViewModal({
                                 {q.correctAnswers?.length
                                   ? q.correctAnswers
                                       .map((c) =>
-                                        correctAnswerDisplay(q.propositions, c),
+                                        correctAnswerDisplay(q.propositions, q.correctAnswers || []),
                                       )
                                       .join(", ")
                                   : correctAnswerDisplay(
                                       q.propositions,
-                                      q.correctAnswer,
+                                      q.correctAnswers || [],
                                     )}
                               </span>
                             </p>
