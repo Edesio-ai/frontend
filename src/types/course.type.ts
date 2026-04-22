@@ -42,7 +42,7 @@ export interface Question {
   id: string;
   courseId: string;
   type: QuestionType;
-  question: string;
+  questionText: string;
   proposals: unknown;
   correctAnswer: string | null;
   correctAnswers: string[] | null;
@@ -88,7 +88,6 @@ export interface CourseDetails {
     question: string;
     type: QuestionType;
     propositions: unknown;
-    correctAnswer: string | null;
     correctAnswers?: string[] | null;
   }[];
   students: {

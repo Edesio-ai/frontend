@@ -49,7 +49,7 @@ export function exportQuestionsPdf(
     doc.setFontSize(10);
     doc.setTextColor(0);
     
-    const questionLines = doc.splitTextToSize(q.question, pageWidth - 28);
+    const questionLines = doc.splitTextToSize(q.questionText, pageWidth - 28);
     doc.text(questionLines, 14, yPos);
     yPos += questionLines.length * 5 + 3;
 
@@ -70,21 +70,21 @@ export function exportQuestionsPdf(
       doc.setTextColor(34, 139, 34);
       if (q.type === "single" && q.correctAnswer) {
         doc.text(
-          `Réponse : ${correctAnswerDisplay(q.proposals, q.correctAnswer)}`,
+          `Réponse : ${correctAnswerDisplay(q.proposals, q.correctAnswers || [])}`,
           14,
           yPos,
         );
         yPos += 6;
       } else if (q.type === "multiple" && q.correctAnswers && q.correctAnswers.length > 0) {
         const resolved = q.correctAnswers.map((ca) =>
-          correctAnswerDisplay(q.proposals, ca),
+          correctAnswerDisplay(q.proposals, q.correctAnswers || []),
         );
         doc.text(`Réponses : ${resolved.join(", ")}`, 14, yPos);
         yPos += 6;
       }
     } else if (q.type === "open") {
       doc.setTextColor(34, 139, 34);
-      const openDisplay = correctAnswerDisplay(q.proposals, q.correctAnswer);
+      const openDisplay = correctAnswerDisplay(q.proposals, q.correctAnswers || []);
       if (openDisplay) {
         const repLines = doc.splitTextToSize(`Réponse attendue : ${openDisplay}`, pageWidth - 28);
         doc.text(repLines, 14, yPos);

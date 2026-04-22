@@ -16,11 +16,13 @@ export function propositionLabels(proposals: unknown): string[] {
 
 export function correctAnswerDisplay(
   proposals: unknown,
-  correctAnswer: string | null,
+  correctAnswers: string[] | null,
 ): string {
-  if (correctAnswer == null) return "";
+
+  if (correctAnswers == null) return "";
+
   if (!Array.isArray(proposals) || proposals.length === 0) {
-    return correctAnswer;
+    return correctAnswers.join(", ");
   }
   const first = proposals[0];
   if (typeof first === "object" && first !== null && "id" in first) {
@@ -29,13 +31,13 @@ export function correctAnswerDisplay(
         typeof p === "object" &&
         p !== null &&
         "id" in p &&
-        (p as { id: string }).id === correctAnswer,
+        (p as { id: string }).id === correctAnswers[0],
     );
     if (row?.label) return row.label;
   }
   const labels = propositionLabels(proposals);
-  if (labels.includes(correctAnswer)) return correctAnswer;
-  return correctAnswer;
+  if (labels.includes(correctAnswers[0])) return correctAnswers[0];
+  return correctAnswers.join(", ");
 }
 
 export function multipleChoiceIndicesCorrect(
