@@ -1,11 +1,11 @@
 import { Question } from "@/types";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { Card } from "../ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Button } from "../ui/button";
 import { CheckCircle2, Loader2, Save, Trash2 } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
+import { DeleteQuestionModal } from "./DeleteQuestionModal";
 
 type EditQuestionModalProps = {
     question: Question;
@@ -160,23 +160,7 @@ export function EditQuestionModal({
                 </div>
             </Card>
 
-            <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Supprimer cette question ?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Cette action est irréversible. La question sera définitivement supprimée.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isDeleting}>Annuler</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                            {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                            Supprimer
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            <DeleteQuestionModal deleteConfirmOpen={deleteConfirmOpen} setDeleteConfirmOpen={setDeleteConfirmOpen} isDeleting={isDeleting} handleDelete={handleDelete} />
         </>
     )
 }
