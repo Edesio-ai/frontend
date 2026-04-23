@@ -30,4 +30,10 @@ export const questionService = {
     });
     return response;
   },
+  deleteQuestion: async (questionId: string): Promise<void> => {
+    const response = await apiFetch<void>(`/api/question/${questionId}`, {
+      method: "DELETE",
+    });
+    return response;
+  },
 };

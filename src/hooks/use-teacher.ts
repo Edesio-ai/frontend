@@ -545,34 +545,8 @@ export function useTeacher() {
   const deleteQuestion = useCallback(
     async (questionId: string): Promise<boolean> => {
       try {
-        console.log("deleteQuestion called with id:", questionId);
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
+        await questionService.deleteQuestion(questionId);
 
-        if (!accessToken) {
-          console.log("No access token");
-          setError("Vous devez être connecté");
-          return false;
-        }
-
-        console.log("Sending DELETE request to /api/questions/" + questionId);
-        const response = await fetch(`/api/questions/${questionId}`, {
-          method: "DELETE",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        });
-
-        console.log("Response status:", response.status);
-
-        if (!response.ok) {
-          const result = await response.json();
-          console.log("Delete failed:", result);
-          setError(result.error || "Erreur lors de la suppression");
-          return false;
-        }
-
-        console.log("Delete successful");
         setError(null);
         return true;
       } catch (err) {
