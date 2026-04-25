@@ -1,5 +1,5 @@
 import { correctAnswerDisplay, indexMatchesCorrectAnswer, multipleChoiceIndicesCorrect, propositionLabels } from "@/lib/proposition-labels";
-import { Question } from "@/types";
+import { Question, UpdateQuestionRequest } from "@/types";
 import { useState } from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
@@ -18,14 +18,7 @@ export function QuestionCard({
     index: number;
     updateQuestion: (
         questionId: string,
-        updates: {
-            type?: "single" | "multiple" | "open";
-            question?: string;
-            proposals?: Question["proposals"];
-            correctAnswer?: string | null;
-            correctAnswers?: string[] | null;
-            explanation?: string | null;
-        }
+        updates: UpdateQuestionRequest
     ) => Promise<Question | null>;
     deleteQuestion: (questionId: string) => Promise<boolean>;
     onQuestionUpdated: (updatedQuestion: Question) => void;
@@ -37,7 +30,7 @@ export function QuestionCard({
     const [editedType, setEditedType] = useState<"single" | "multiple" | "open">(question.type === "multiple" ? "single" : question.type as "single" | "multiple" | "open");
     const [editedQuestion, setEditedQuestion] = useState(question.questionText);
     const initialLabels = propositionLabels(question.proposals);
-    const [editedPropositions, setEditedPropositions] = useState<string[]>(
+    const [editedProposals, setEditedPropositions] = useState<string[]>(
         initialLabels.length > 0
             ? initialLabels
             : ["Option A", "Option B", "Option C", "Option D"],
@@ -57,14 +50,14 @@ export function QuestionCard({
     const [editedGoodAnswer, setEditedGoodAnswer] = useState(
         correctAnswerDisplay(question.proposals, question.correctAnswers) || "",
     );
-    const [editedExplication, setEditedExplication] = useState(
+    const [editedExplanation, setEditedExplication] = useState(
         question.explanation || "",
     );
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
     const handleTypeChange = (newType: "single" | "open") => {
         setEditedType(newType);
-        if (newType === "single" && editedPropositions.length === 0) {
+        if (newType === "single" && editedProposals.length === 0) {
             setEditedPropositions(["Option A", "Option B", "Option C", "Option D"]);
             setCorrectAnswerIndex(0);
         }
@@ -73,26 +66,23 @@ export function QuestionCard({
     const handleSave = async () => {
         setIsSaving(true);
 
-        let goodAnswer: string | null = null;
-        let goodAnswers: string[] | null = null;
-        let propositions: string[] | null = null;
-
+        let correctAnswers: string[] = [];
+        let proposals: string[] | null = null;
         if (editedType === "single") {
-            propositions = editedPropositions;
-            if (correctAnswerIndex >= 0 && correctAnswerIndex < editedPropositions.length) {
-                goodAnswer = editedPropositions[correctAnswerIndex];
+            proposals = editedProposals;
+            if (correctAnswerIndex >= 0 && correctAnswerIndex < editedProposals.length) {
+                correctAnswers.push(editedProposals[correctAnswerIndex]);
             }
         } else {
-            goodAnswer = editedGoodAnswer || null;
+            correctAnswers.push(editedGoodAnswer);
         }
 
-        const updates = {
+        const updates: UpdateQuestionRequest = {
             type: editedType,
-            question: editedQuestion,
-            correctAnswer: goodAnswer,
-            correctAnswers: goodAnswers,
-            explanation: editedExplication || null,
-            propositions: propositions,
+            questionText: editedQuestion,
+            explanation: editedExplanation || null,
+            correctAnswers,
+            proposals: proposals || [],
         };
 
         const result = await updateQuestion(question.id, updates);
@@ -144,7 +134,7 @@ export function QuestionCard({
             question={question}
             index={index}
             editedType={editedType}
-            editedPropositions={editedPropositions}
+            editedProposals={editedProposals}
             setEditedPropositions={setEditedPropositions}
             handleTypeChange={handleTypeChange}
             setDeleteConfirmOpen={setDeleteConfirmOpen}
@@ -157,7 +147,7 @@ export function QuestionCard({
             setCorrectAnswerIndex={setCorrectAnswerIndex}
             editedGoodAnswer={editedGoodAnswer}
             setEditedGoodAnswer={setEditedGoodAnswer}
-            editedExplication={editedExplication}
+            editedExplanation={editedExplanation}
             setEditedExplication={setEditedExplication}
             deleteConfirmOpen={deleteConfirmOpen}
             isDeleting={isDeleting}

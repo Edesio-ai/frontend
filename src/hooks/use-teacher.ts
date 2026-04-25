@@ -14,7 +14,8 @@ import type {
   InsertCourse,
   SessionParticipant,
   CourseRanking,
-  CreateQuestionRequest
+  CreateQuestionRequest,
+  UpdateQuestionRequest
 } from "@/types";
 import { teacherService } from "@/services/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
@@ -497,42 +498,29 @@ export function useTeacher() {
   const updateQuestion = useCallback(
     async (
       questionId: string,
-      updates: {
-        type?: "single" | "multiple" | "open";
-        question?: string;
-        propositions?: Question["proposals"];
-        correctAnswer?: string | null;
-        correctAnswers?: string[] | null;
-        explanation?: string | null;
-      }
+      updates: UpdateQuestionRequest
     ): Promise<Question | null> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
+       const { data } = await questionService.updateQuestion(questionId, updates);
 
-        if (!accessToken) {
-          setError("Vous devez être connecté");
-          return null;
-        }
+        // const response = await fetch(`/api/questions/${questionId}`, {
+        //   method: "PATCH",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     "Authorization": `Bearer ${accessToken}`,
+        //   },
+        //   body: JSON.stringify(updates),
+        // });
 
-        const response = await fetch(`/api/questions/${questionId}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(updates),
-        });
+        // const result = await response.json();
 
-        const result = await response.json();
-
-        if (!response.ok) {
-          setError(result.error || "Erreur lors de la mise à jour");
-          return null;
-        }
+        // if (!response.ok) {
+        //   setError(result.error || "Erreur lors de la mise à jour");
+        //   return null;
+        // }
 
         setError(null);
-        return result.question ? (result.question as Question) : null;
+        return data
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue. Merci de réessayer.");

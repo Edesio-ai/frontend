@@ -15,6 +15,7 @@ import type {
   CourseFile,
   Question,
   CourseRanking,
+  UpdateQuestionRequest,
 } from "@/types";
 import { 
   Plus, 
@@ -66,14 +67,7 @@ interface CourseListProps {
   fetchQuestions: (courseId: string) => Promise<Question[]>;
   updateQuestion: (
     questionId: string,
-    updates: {
-      type?: "single" | "multiple" | "open";
-      question?: string;
-      proposals?: Question["proposals"];
-      correctAnswer?: string | null;
-      correctAnswers?: string[] | null;
-      explanation?: string | null;
-    }
+    updates: UpdateQuestionRequest
   ) => Promise<Question | null>;
   deleteQuestion: (questionId: string) => Promise<boolean>;
   createQuestion: (
