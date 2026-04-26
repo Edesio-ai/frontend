@@ -871,16 +871,7 @@ export function useTeacher() {
         }));
 
         for (const update of updates) {
-          const { error: updateError } = await supabase
-            .from("questions")
-            .update({ position_order: update.position_order })
-            .eq("id", update.id);
-
-          if (updateError) {
-            console.error("Error updating question order:", updateError);
-            setError("Erreur lors de la mise à jour de l'ordre des questions.");
-            return false;
-          }
+          await updateQuestion(update.id, { positionOrder: update.position_order });
         }
 
         setError(null);
