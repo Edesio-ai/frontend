@@ -77,12 +77,13 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { exportQuestionsPdf, exportClassementPdf } from "@/lib/pdf-export";
+import { exportClassementPdf } from "@/lib/pdf-export";
 import { courseService } from "@/services/course.service";
 import { QuestionGenerator } from "../teacher/QuestionGenerator";
 import { MAX_QUESTIONS } from "@/utils/constants/teacher";
 import { GenerateQuestionsConfig } from "@/types/question.type";
 import { SortableQuestionItem } from "../teacher/SotableQuestionItem";
+import { exportService } from "@/services/export.service";
 
 
 
@@ -300,6 +301,11 @@ export function CourseTesterModal({
   const handleDeleteFichier = (fichier: CourseFile) => {
     setFileToDelete(fichier);
     setDeleteDialogOpen(true);
+  };
+
+  const handleDownloadQuestionsPdf = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    await exportService.exportQuestionsPdf(questions, course.title, sessionName);
   };
 
   const confirmDeleteFile = async () => {
@@ -712,7 +718,7 @@ export function CourseTesterModal({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => exportQuestionsPdf(questions, course.title, sessionName)}
+                        onClick={(e) => handleDownloadQuestionsPdf(e)}
                         data-testid="button-export-questions-pdf"
                       >
                         <Download className="h-3.5 w-3.5 mr-1" />
@@ -1090,10 +1096,7 @@ export function CourseTesterModal({
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            exportQuestionsPdf(questions, course.title, sessionName);
-                          }}
+                          onClick={(e) => handleDownloadQuestionsPdf(e)}
                           data-testid="button-export-questions-pdf-phase2"
                         >
                           <Download className="h-3.5 w-3.5 mr-1" />

@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { getCookie } from "./cookies";
 import { authService } from "@/services/auth.service";
 
@@ -29,10 +28,9 @@ export async function apiFetch<T>(
           (typeof err?.error?.message === "string" && err.error.message) ||
           `HTTP ${response.status}`;
         const code = err?.code;
-        
         if (code === "TOKEN_USER_NOT_FOUND") {
             await authService.logout();
-            redirect("/login");
+            window.location.href = "/login";
         }
         if (code === "ESTABLISHMENT_NOT_FOUND") {
             throw new Error('Establishment not found');
