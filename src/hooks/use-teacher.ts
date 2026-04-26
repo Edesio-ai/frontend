@@ -829,27 +829,7 @@ export function useTeacher() {
   const deleteCourse = useCallback(
     async (courseId: string): Promise<boolean> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
-
-        if (!accessToken) {
-          setError("Vous devez être connecté");
-          return false;
-        }
-
-        const response = await fetch(`/api/cours/${courseId}`, {
-          method: "DELETE",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          setError(result.error || "Erreur lors de la suppression");
-          return false;
-        }
+        await courseService.deleteCourse(courseId);
 
         setError(null);
         return true;

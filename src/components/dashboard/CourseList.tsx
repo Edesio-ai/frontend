@@ -1,12 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 
 import { CourseTesterModal } from "./CourseTesterModal";
 import type {
@@ -22,7 +15,6 @@ import {
   Loader2, 
   FileText, 
   BookOpen, 
-  Trash2
 } from "lucide-react";
 import {
   DndContext,
@@ -39,8 +31,9 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { AddCourseModal } from "../teacher/AddCourseModam";
+import { AddCourseModal } from "../teacher/AddCourseModal";
 import { SortableCourseItem } from "../teacher/SortableCoursetem";
+import { DeleteCourseModal } from "../teacher/DeleteCourseModal";
 
 interface CourseListProps {
   session: Session;
@@ -119,7 +112,7 @@ export function CourseList({
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [coursToDelete, setCourseToDelete] = useState<Course | null>(null);
+  const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const sensors = useSensors(
@@ -223,12 +216,12 @@ export function CourseList({
   };
 
   const handleConfirmDelete = async () => {
-    if (!coursToDelete || !deleteCourse) return;
+    if (!courseToDelete || !deleteCourse) return;
     setIsDeleting(true);
-    const success = await deleteCourse(coursToDelete.id);
+    const success = await deleteCourse(courseToDelete.id);
     if (success) {
-      setCourses((prev) => prev.filter((c) => c.id !== coursToDelete.id));
-      if (selectedCourse?.id === coursToDelete.id) {
+      setCourses((prev) => prev.filter((c) => c.id !== courseToDelete.id));
+      if (selectedCourse?.id === courseToDelete.id) {
         setSelectedCourse(null);
       }
       setDeleteModalOpen(false);
@@ -320,50 +313,14 @@ export function CourseList({
         />
       )}
 
-      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <DialogContent data-testid="modal-delete-course">
-          <DialogHeader>
-            <DialogTitle className="text-destructive">Supprimer le cours ?</DialogTitle>
-            <DialogDescription>
-              Cette action est irréversible. Toutes les questions, fichiers PDF et statistiques associés au cours "{coursToDelete?.title}" seront définitivement supprimés.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex gap-3 pt-4">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => {
-                setDeleteModalOpen(false);
-                setCourseToDelete(null);
-              }}
-              disabled={isDeleting}
-              data-testid="button-cancel-delete-course"
-            >
-              Annuler
-            </Button>
-            <Button
-              variant="destructive"
-              className="flex-1"
-              onClick={handleConfirmDelete}
-              disabled={isDeleting}
-              data-testid="button-confirm-delete-course"
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Suppression...
-                </>
-              ) : (
-                <>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Supprimer
-                </>
-              )}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <DeleteCourseModal
+        deleteModalOpen={deleteModalOpen}
+        setDeleteModalOpen={setDeleteModalOpen}
+        setCourseToDelete={setCourseToDelete}
+        courseToDelete={courseToDelete}
+        isDeleting={isDeleting}
+        handleConfirmDelete={handleConfirmDelete}
+      />
     </>
   );
 }

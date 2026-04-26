@@ -33,4 +33,10 @@ export const courseService = {
     const response = await apiFetch<CourseRanking[]>(`/api/course/${courseId}/ranking`);
     return response;
   },
+  deleteCourse: async (courseId: string): Promise<void> => {
+    const response = await apiFetch<void>(`/api/course/${courseId}`, {
+      method: "DELETE",
+    });
+    return response;
+  },
 }
