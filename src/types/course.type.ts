@@ -65,6 +65,7 @@ export interface UpdateQuestionRequest {
   proposals?: string[];
   correctAnswers?: string[];
   explanation?: string | null;
+  positionOrder?: number | null;
 }
 
 export interface CourseQuestion {
