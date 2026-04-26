@@ -44,7 +44,6 @@ export interface Question {
   type: QuestionType;
   questionText: string;
   proposals: unknown;
-  correctAnswer: string | null;
   correctAnswers: string[] | null;
   explanation: string | null;
   createdAt?: string;

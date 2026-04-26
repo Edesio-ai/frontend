@@ -36,8 +36,8 @@ export const questionService = {
     });
     return response;
   },
-  updateQuestion: async (questionId: string, updates: UpdateQuestionRequest): Promise<{ data: Question | null }> => {
-    const response = await apiFetch<{ data: Question | null }>(`/api/question/${questionId}`, {
+  updateQuestion: async (questionId: string, updates: UpdateQuestionRequest): Promise<{ question: Question | null }> => {
+    const response = await apiFetch<{ question: Question | null }>(`/api/question/${questionId}`, {
       method: "PATCH",
       body: JSON.stringify(updates),
     });

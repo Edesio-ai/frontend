@@ -36,7 +36,7 @@ export function QuestionCard({
             : ["Option A", "Option B", "Option C", "Option D"],
     );
     const rawCorrectIdx = initialLabels.findIndex((_, i) =>
-        indexMatchesCorrectAnswer(i, question.proposals, question.correctAnswer),
+        indexMatchesCorrectAnswer(i, question.proposals, question.correctAnswers?.[0] || null),
     );
     const initialCorrectIndex = rawCorrectIdx >= 0 ? rawCorrectIdx : 0;
     const [correctAnswerIndex, setCorrectAnswerIndex] = useState(initialCorrectIndex);
@@ -86,6 +86,7 @@ export function QuestionCard({
         };
 
         const result = await updateQuestion(question.id, updates);
+        console.log("🚀 ~ handleSave ~ result:", result)
         if (result) {
             onQuestionUpdated(result);
             setIsEditing(false);
@@ -113,7 +114,7 @@ export function QuestionCard({
                 : ["Option A", "Option B", "Option C", "Option D"],
         );
         const resetIdx = labels.findIndex((_, i) =>
-            indexMatchesCorrectAnswer(i, question.proposals, question.correctAnswer),
+            indexMatchesCorrectAnswer(i, question.proposals, question.correctAnswers?.[0] || null),
         );
         setCorrectAnswerIndex(resetIdx >= 0 ? resetIdx : 0);
         setCorrectAnswerIndices(
@@ -183,16 +184,16 @@ export function QuestionCard({
                     {(question.type === 'single' || question.type === 'multiple') && propositionLabels(question.proposals).length > 0 && (
                         <ul className="text-xs space-y-0.5">
                             {propositionLabels(question.proposals).map((prop, i) => (
-                                <li key={i} className={`flex items-center gap-1 ${indexMatchesCorrectAnswer(i, question.proposals, question.correctAnswer) ? 'text-green-600 dark:text-green-400 font-medium' : 'text-muted-foreground'
+                                <li key={i} className={`flex items-center gap-1 ${indexMatchesCorrectAnswer(i, question.proposals, question.correctAnswers?.[0] || null) ? 'text-green-600 dark:text-green-400 font-medium' : 'text-muted-foreground'
                                     }`}>
                                     <span>{String.fromCharCode(65 + i)}.</span>
                                     <span>{prop}</span>
-                                    {indexMatchesCorrectAnswer(i, question.proposals, question.correctAnswer) && <CheckCircle2 className="h-3 w-3" />}
+                                    {indexMatchesCorrectAnswer(i, question.proposals, question.correctAnswers?.[0] || null) && <CheckCircle2 className="h-3 w-3" />}
                                 </li>
                             ))}
                         </ul>
                     )}
-                    {question.type === 'open' && question.correctAnswer && (
+                    {question.type === 'open' && question.correctAnswers?.[0] && (
                         <p className="text-xs text-muted-foreground">
                             <span className="font-medium">Réponse:</span>{" "}
                             {correctAnswerDisplay(question.proposals, question.correctAnswers)}

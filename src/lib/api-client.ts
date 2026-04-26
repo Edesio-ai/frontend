@@ -34,6 +34,9 @@ export async function apiFetch<T>(
             await authService.logout();
             redirect("/login");
         }
+        if (code === "ESTABLISHMENT_NOT_FOUND") {
+            throw new Error('Establishment not found');
+        }
         throw new Error(message || `HTTP ${response.status}`);
     }
 

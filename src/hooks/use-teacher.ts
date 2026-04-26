@@ -501,26 +501,10 @@ export function useTeacher() {
       updates: UpdateQuestionRequest
     ): Promise<Question | null> => {
       try {
-       const { data } = await questionService.updateQuestion(questionId, updates);
-
-        // const response = await fetch(`/api/questions/${questionId}`, {
-        //   method: "PATCH",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     "Authorization": `Bearer ${accessToken}`,
-        //   },
-        //   body: JSON.stringify(updates),
-        // });
-
-        // const result = await response.json();
-
-        // if (!response.ok) {
-        //   setError(result.error || "Erreur lors de la mise à jour");
-        //   return null;
-        // }
+       const { question } = await questionService.updateQuestion(questionId, updates);
 
         setError(null);
-        return data
+        return question
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue. Merci de réessayer.");

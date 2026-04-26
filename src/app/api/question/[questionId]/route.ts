@@ -42,6 +42,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
         const error = await response.json();
         return NextResponse.json({ error: error.error }, { status: response.status });
     }
+    const data = await response.json();
 
-    return NextResponse.json({data: await response.json() });
+    return NextResponse.json({question: data.question });
 }
