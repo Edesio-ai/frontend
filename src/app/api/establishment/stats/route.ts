@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
 
     if(!response.ok) {
         const error = await response.json();
-        return NextResponse.json({ error: error.message }, { status: response.status });
+        return NextResponse.json({ error: error.message, code: error.code }, { status: response.status });
     }
 
     const data = await response.json();

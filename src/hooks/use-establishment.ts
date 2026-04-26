@@ -56,7 +56,7 @@ export function useEstablishment() {
       return response;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Merci de réessayer.";
-      if (message.includes("404")) {
+      if (message.includes("Establishment not found")) {
         if (user) {
           const name = user.metadata?.establishment ||
             (user.metadata?.firstname && user.metadata?.lastname

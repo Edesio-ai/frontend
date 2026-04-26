@@ -1,4 +1,4 @@
-import { Question } from "@/types";
+import { Question, UpdateQuestionRequest } from "@/types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
@@ -10,14 +10,7 @@ interface SortableQuestionItemProps {
     index: number;
     updateQuestion: (
         questionId: string,
-        updates: {
-            type?: "single" | "multiple" | "open";
-            question?: string;
-            proposals?: Question["proposals"];
-            correctAnswer?: string | null;
-            correctAnswers?: string[] | null;
-            explanation?: string | null;
-        }
+        updates: UpdateQuestionRequest
     ) => Promise<Question | null>;
     deleteQuestion: (questionId: string) => Promise<boolean>;
     onQuestionUpdated: (updatedQuestion: Question) => void;

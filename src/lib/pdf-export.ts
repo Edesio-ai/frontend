@@ -68,7 +68,7 @@ export function exportQuestionsPdf(
       }
 
       doc.setTextColor(34, 139, 34);
-      if (q.type === "single" && q.correctAnswer) {
+      if (q.type === "single" && q.correctAnswers?.[0]) {
         doc.text(
           `Réponse : ${correctAnswerDisplay(q.proposals, q.correctAnswers || [])}`,
           14,

@@ -44,7 +44,6 @@ export interface Question {
   type: QuestionType;
   questionText: string;
   proposals: unknown;
-  correctAnswer: string | null;
   correctAnswers: string[] | null;
   explanation: string | null;
   createdAt?: string;
@@ -59,6 +58,15 @@ export interface CreateQuestionRequest {
   correctAnswers?: string[];
   explanation?: string | null;
 }
+
+export interface UpdateQuestionRequest {
+  type?: QuestionType;
+  questionText?: string;
+  proposals?: string[];
+  correctAnswers?: string[];
+  explanation?: string | null;
+}
+
 export interface CourseQuestion {
   id: string;
   courseId: string;

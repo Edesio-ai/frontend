@@ -43,7 +43,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { ChatbotPreviewPanel } from "@/components/dashboard/ChatbotPreviewPanel";
-import type { Course, CourseFile, Question, CourseRanking } from "@/types";
+import type { Course, CourseFile, Question, CourseRanking, UpdateQuestionRequest } from "@/types";
 import {
   Select,
   SelectContent,
@@ -105,14 +105,7 @@ interface CourseTesterModalProps {
   fetchQuestions: (courseId: string) => Promise<Question[]>;
   updateQuestion: (
     questionId: string,
-    updates: {
-      type?: "single" | "multiple" | "open";
-      question?: string;
-      proposals?: Question["proposals"];
-      correctAnswer?: string | null;
-      correctAnswers?: string[] | null;
-      explanation?: string | null;
-    }
+    updates: UpdateQuestionRequest
   ) => Promise<Question | null>;
   deleteQuestion: (questionId: string) => Promise<boolean>;
   createQuestion: (

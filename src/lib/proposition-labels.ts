@@ -110,6 +110,6 @@ export function letterAnswerIsCorrect(question: Question, answerIndex: number): 
   return indexMatchesCorrectAnswer(
     answerIndex,
     question.proposals,
-    question.correctAnswer,
+    question.correctAnswers?.[0] || null,
   );
 }

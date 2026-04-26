@@ -11,7 +11,7 @@ type EditQuestionModalProps = {
     question: Question;
     index: number;
     editedType: "single" | "multiple" | "open";
-    editedPropositions: string[];
+    editedProposals: string[];
     setEditedPropositions: (propositions: string[]) => void;
     handleTypeChange: (newType: "single" | "open") => void;
     setDeleteConfirmOpen: (open: boolean) => void;
@@ -24,7 +24,7 @@ type EditQuestionModalProps = {
     setCorrectAnswerIndex: (index: number) => void;
     editedGoodAnswer: string;
     setEditedGoodAnswer: (bonneReponse: string) => void;
-    editedExplication: string;
+    editedExplanation: string;
     setEditedExplication: (explication: string) => void;
     deleteConfirmOpen: boolean;
     isDeleting: boolean;
@@ -35,7 +35,7 @@ export function EditQuestionModal({
     question,
     index,
     editedType,
-    editedPropositions,
+    editedProposals,
     setEditedPropositions,
     handleTypeChange,
     setDeleteConfirmOpen,
@@ -48,7 +48,7 @@ export function EditQuestionModal({
     setCorrectAnswerIndex,
     editedGoodAnswer,
     setEditedGoodAnswer,
-    editedExplication,
+    editedExplanation,
     setEditedExplication,
     deleteConfirmOpen,
     isDeleting,
@@ -106,13 +106,13 @@ export function EditQuestionModal({
                     {editedType === "single" && (
                         <div className="space-y-1">
                             <label className="text-xs text-muted-foreground">Propositions (cliquez sur le bouton pour marquer la bonne réponse)</label>
-                            {editedPropositions.map((prop, i) => (
+                            {editedProposals.map((prop, i) => (
                                 <div key={i} className="flex items-center gap-2">
                                     <span className="font-medium text-xs w-4">{String.fromCharCode(65 + i)}.</span>
                                     <Input
                                         value={prop}
                                         onChange={(e) => {
-                                            const newProps = [...editedPropositions];
+                                            const newProps = [...editedProposals];
                                             newProps[i] = e.target.value;
                                             setEditedPropositions(newProps);
                                         }}
@@ -150,7 +150,7 @@ export function EditQuestionModal({
                     <div className="space-y-1">
                         <label className="text-xs text-muted-foreground">Explication (optionnelle)</label>
                         <Textarea
-                            value={editedExplication}
+                            value={editedExplanation}
                             onChange={(e) => setEditedExplication(e.target.value)}
                             placeholder="Explication de la réponse..."
                             className="min-h-[40px] text-sm"
