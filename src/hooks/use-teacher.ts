@@ -15,7 +15,8 @@ import type {
   SessionParticipant,
   CourseRanking,
   CreateQuestionRequest,
-  UpdateQuestionRequest
+  UpdateQuestionRequest,
+  UpdateCourseRequest
 } from "@/types";
 import { teacherService } from "@/services/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
@@ -275,7 +276,7 @@ export function useTeacher() {
     async (sessionId: string): Promise<Course[]> => {
       try {
         const courses = await sessionService.getSessionCourses(sessionId);
-  
+
         setError(null);
         return courses || [];
       } catch (err) {
@@ -295,25 +296,15 @@ export function useTeacher() {
       contentText: string | null
     ): Promise<Course | null> => {
       try {
-        const { data, error: updateError } = await supabase
-          .from("courses")
-          .update({
-            title,
-            description: description || null,
-            text_content: contentText || null,
-          })
-          .eq("id", courseId)
-          .select()
-          .single();
-
-        if (updateError) {
-          console.error("Error updating cours:", updateError);
-          setError("Erreur lors de la mise à jour du cours.");
-          return null;
-        }
+        const body: UpdateCourseRequest = {
+          title,
+          description,
+          contentText,
+        };
+        const { data } = await courseService.updateCourse(courseId, body);
 
         setError(null);
-        return courseFromCoursesRow(data as CoursesTableRow);
+        return data;
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue. Merci de réessayer.");
@@ -343,7 +334,7 @@ export function useTeacher() {
       throw err;
     }
   }
-  
+
 
   const handleUploadPdfForCours = async (courseId: string, file: File): Promise<CourseFile> => {
     try {
@@ -411,7 +402,7 @@ export function useTeacher() {
         };
 
         const course = await handleCreateCourse(coursData);
-      
+
 
         if (pdfFiles && pdfFiles.length > 0 && course) {
           for (const pdfFile of pdfFiles) {
@@ -485,7 +476,7 @@ export function useTeacher() {
     async (courseId: string): Promise<Question[]> => {
       try {
         const questionsData = await questionService.getCourseQuestions(courseId);
-        
+
         return questionsData;
       } catch (err) {
         console.error("Unexpected error in fetchQuestions:", err);
@@ -501,7 +492,7 @@ export function useTeacher() {
       updates: UpdateQuestionRequest
     ): Promise<Question | null> => {
       try {
-       const { question } = await questionService.updateQuestion(questionId, updates);
+        const { question } = await questionService.updateQuestion(questionId, updates);
 
         setError(null);
         return question
@@ -541,7 +532,7 @@ export function useTeacher() {
           ...questionData,
         };
         const { data: question } = await questionService.createQuestion(body);
-        
+
         setError(null);
         return question;
       } catch (err) {
@@ -559,9 +550,9 @@ export function useTeacher() {
       config?: GenerateQuestionsConfig
     ): Promise<{ success: boolean; questionCount?: number; questions?: Question[]; error?: string }> => {
       try {
-        const { questions, questionCount} = await questionService.generateQuestions(courseId, config);
+        const { questions, questionCount } = await questionService.generateQuestions(courseId, config);
 
-        return { 
+        return {
           success: true,
           questionCount,
           questions,
