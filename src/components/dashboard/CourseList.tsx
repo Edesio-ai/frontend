@@ -153,19 +153,19 @@ export function CourseList({
     const oldIndex = courses.findIndex((c) => c.id === active.id);
     const newIndex = courses.findIndex((c) => c.id === over.id);
 
-    const previousCours = [...courses];
-    const newCours = arrayMove(courses, oldIndex, newIndex);
-    setCourses(newCours);
+    const previousCourse = [...courses];
+    const newCourse = arrayMove(courses, oldIndex, newIndex);
+    setCourses(newCourse);
 
     if (reorderCourse) {
       try {
-        const success = await reorderCourse(newCours.map((c) => c.id));
+        const success = await reorderCourse(newCourse.map((c) => c.id));
         if (!success) {
-          setCourses(previousCours);
+          setCourses(previousCourse);
         }
       } catch (err) {
         console.error("Error reordering courses:", err);
-        setCourses(previousCours);
+        setCourses(previousCourse);
       }
     }
   };
@@ -188,9 +188,9 @@ export function CourseList({
     }
   };
 
-  const handleCourseCreated = (newCours: Course) => {
-    setCourses((prev) => [newCours, ...prev]);
-    setSelectedCourse(newCours);
+  const handleCourseCreated = (newCourse: Course) => {
+    setCourses((prev) => [newCourse, ...prev]);
+    setSelectedCourse(newCourse);
   };
 
   const handleCourseUpdated = (updatedCours: Course) => {

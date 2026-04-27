@@ -783,29 +783,9 @@ export function useTeacher() {
   const reorderCourse = useCallback(
     async (coursIds: string[]): Promise<boolean> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
-
-        if (!accessToken) {
-          setError("Vous devez être connecté");
-          return false;
+        for (const [index, coursId] of coursIds.entries()) {
+          await courseService.updateCourse(coursId, { positionOrder: index + 1 });
         }
-
-        const response = await fetch("/api/cours/reorder", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ coursIds }),
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          setError(data.error || "Erreur lors de la mise à jour de l'ordre des cours.");
-          return false;
-        }
-
         setError(null);
         return true;
       } catch (err) {

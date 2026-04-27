@@ -113,4 +113,9 @@ export interface CourseDetails {
   }[];
 }
 
-export type UpdateCourseRequest = Record<string, any>;
+export type UpdateCourseRequest = {
+  title?: string;
+  description?: string | null;
+  contentText?: string | null;
+  positionOrder?: number;
+};
