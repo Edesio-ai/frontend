@@ -85,7 +85,7 @@ export function CreateModal({
                 return;
             }
 
-            const newCourse = await createCourse(
+            const newCoursee = await createCourse(
                 newSession.id,
                 courseTitle,
                 courseDescription || "",
@@ -96,7 +96,7 @@ export function CreateModal({
             await refreshSessions();
             handleCloseCreateModal();
 
-            if (!newCourse) {
+            if (!newCoursee) {
                 toast({
                     title: "Attention",
                     description: "La session a été créée mais le cours n'a pas pu être ajouté. Vous pouvez l'ajouter manuellement.",
@@ -108,7 +108,7 @@ export function CreateModal({
                     title: "Succès",
                     description: "Session et cours créés avec succès !",
                 });
-                setNewlyCreatedCourse(newCourse);
+                setNewlyCreatedCourse(newCoursee);
                 setSelectedSession(newSession);
             }
         } catch (err) {

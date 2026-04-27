@@ -55,15 +55,15 @@ export function AddCourseModal({
   
     const onSubmit = async (data: FormValues) => {
       setIsSubmitting(true);
-      const newCourse = await createCourse(
+      const newCoursee = await createCourse(
         sessionId,
         data.title,
         data.description || "",
         data.contentText || "",
         selectedPdfFiles.length > 0 ? selectedPdfFiles : undefined as File[] | undefined
       );
-      if (newCourse) {
-        onCourseCreated(newCourse);
+      if (newCoursee) {
+        onCourseCreated(newCoursee);
         form.reset();
         setSelectedPdfFiles([]);
         onOpenChange(false);
