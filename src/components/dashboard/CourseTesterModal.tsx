@@ -84,6 +84,7 @@ import { MAX_QUESTIONS } from "@/utils/constants/teacher";
 import { GenerateQuestionsConfig } from "@/types/question.type";
 import { SortableQuestionItem } from "../teacher/SotableQuestionItem";
 import { exportService } from "@/services/export.service";
+import { EditQuestionTesterModalSection } from "../teacher/EditQuestionTesterModalSection";
 
 
 
@@ -161,9 +162,9 @@ export function CourseTesterModal({
   const [generateSuccess, setGenerateSuccess] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [editedTitre, setEditedTitre] = useState(course.title);
+  const [editedTitle, setEditedTitle] = useState(course.title);
   const [editedDescription, setEditedDescription] = useState(course.description || "");
-  const [editedContenu, setEditedContenu] = useState(course.contentText || "");
+  const [editedContent, setEditedContent] = useState(course.contentText || "");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [fileToDelete, setFileToDelete] = useState<CourseFile | null>(null);
   const [isDeletingFichier, setIsDeletingFichier] = useState(false);
@@ -240,9 +241,9 @@ export function CourseTesterModal({
   }, [open, course.id]);
 
   useEffect(() => {
-    setEditedTitre(course.title);
+    setEditedTitle(course.title);
     setEditedDescription(course.description || "");
-    setEditedContenu(course.contentText || "");
+    setEditedContent(course.contentText || "");
     setQuestionsValidated(course.validatedQuestions);
   }, [course]);
 
@@ -274,9 +275,9 @@ export function CourseTesterModal({
     setIsSaving(true);
     const updated = await updateCourse(
       course.id,
-      editedTitre,
+      editedTitle,
       editedDescription || null,
-      editedContenu || null
+      editedContent || null
     );
     if (updated) {
       onCourseUpdated(updated);
@@ -790,8 +791,8 @@ export function CourseTesterModal({
                   <div>
                     <label className="text-sm font-medium mb-1 block">Titre du course</label>
                     <Input
-                      value={editedTitre}
-                      onChange={(e) => setEditedTitre(e.target.value)}
+                      value={editedTitle}
+                      onChange={(e) => setEditedTitle(e.target.value)}
                       placeholder="Titre du cours"
                       data-testid="input-course-title"
                     />
@@ -808,8 +809,8 @@ export function CourseTesterModal({
                   <div>
                     <label className="text-sm font-medium mb-1 block">Contenu texte (optionnel)</label>
                     <Textarea
-                      value={editedContenu}
-                      onChange={(e) => setEditedContenu(e.target.value)}
+                      value={editedContent}
+                      onChange={(e) => setEditedContent(e.target.value)}
                       className="min-h-[100px]"
                       placeholder="Ajoutez du contenu texte pour aider l'IA à générer des questions..."
                       data-testid="input-course-content"
@@ -880,9 +881,9 @@ export function CourseTesterModal({
                   <Button
                     onClick={async () => {
                       // Save course changes before going to questions
-                      if (editedTitre !== course.title || editedDescription !== (course.description || "") || editedContenu !== (course.contentText || "")) {
+                      if (editedTitle !== course.title || editedDescription !== (course.description || "") || editedContent !== (course.contentText || "")) {
                         setIsSaving(true);
-                        const updated = await updateCourse(course.id, editedTitre, editedDescription || null, editedContenu || null);
+                        const updated = await updateCourse(course.id, editedTitle, editedDescription || null, editedContent || null);
                         if (updated) {
                           onCourseUpdated(updated);
                         }
@@ -892,7 +893,7 @@ export function CourseTesterModal({
                     }}
                     className="w-full"
                     size="lg"
-                    disabled={isSaving || !editedTitre.trim()}
+                    disabled={isSaving || !editedTitle.trim()}
                     data-testid="button-continue-to-questions"
                   >
                     {isSaving ? (
@@ -952,65 +953,7 @@ export function CourseTesterModal({
             </div>
           ) : (
             <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6">
-              <div className="flex items-center justify-between gap-4 flex-wrap">
-                <h4 className="font-semibold flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  Contenu du cours
-                </h4>
-                <div className="flex gap-2">
-                  {isEditing ? (
-                    <>
-                      <Button variant="ghost" size="sm" onClick={() => setIsEditing(false)}>
-                        Annuler
-                      </Button>
-                      <Button size="sm" onClick={handleSave} disabled={isSaving}>
-                        {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="h-4 w-4 mr-1" /> Enregistrer</>}
-                      </Button>
-                    </>
-                  ) : (
-                    <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
-                      <Pencil className="h-4 w-4 mr-1" /> Modifier
-                    </Button>
-                  )}
-                </div>
-              </div>
-
-              {isEditing ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium mb-1 block">Titre</label>
-                    <Input value={editedTitre} onChange={(e) => setEditedTitre(e.target.value)} />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium mb-1 block">Description</label>
-                    <Input value={editedDescription} onChange={(e) => setEditedDescription(e.target.value)} placeholder="Description..." />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium mb-1 block">Contenu texte</label>
-                    <Textarea value={editedContenu} onChange={(e) => setEditedContenu(e.target.value)} className="min-h-[120px]" placeholder="Contenu..." />
-                  </div>
-                </div>
-              ) : (
-                <Card className="p-4 space-y-3">
-                  <div>
-                    <span className="text-xs text-muted-foreground uppercase">Titre</span>
-                    <p className="font-medium">{course.title}</p>
-                  </div>
-                  {course.description && (
-                    <div>
-                      <span className="text-xs text-muted-foreground uppercase">Description</span>
-                      <p className="text-sm">{course.description}</p>
-                    </div>
-                  )}
-                  {course.contentText && (
-                    <div>
-                      <span className="text-xs text-muted-foreground uppercase">Contenu</span>
-                      <p className="text-sm whitespace-pre-wrap line-clamp-4">{course.contentText}</p>
-                    </div>
-                  )}
-                </Card>
-              )}
-
+              <EditQuestionTesterModalSection isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} isSaving={isSaving} course={course} editedTitle={editedTitle} setEditedTitle={setEditedTitle} editedDescription={editedDescription} setEditedDescription={setEditedDescription} editedContent={editedContent} setEditedContent={setEditedContent} />
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
                   <h5 className="font-medium text-sm flex items-center gap-2">
