@@ -16,7 +16,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
 
     if (!response.ok) {
         const error = await response.json();
-        return NextResponse.json({ error: error.message }, { status: response.status });
+        return NextResponse.json({ error: error.message, code: error?.code }, { status: response.status });
     }
 
     const data = await response.json();
