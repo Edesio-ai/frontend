@@ -7,11 +7,11 @@ import { Eye } from "lucide-react";
 
 export function SessionCoursesList({
     sessionId,
-    getSessionCours,
+    getSessionCourse,
     onViewCourse,
   }: {
     sessionId: string;
-    getSessionCours: (sessionId: string) => Promise<CourseBasic[]>;
+    getSessionCourse: (sessionId: string) => Promise<CourseBasic[]>;
     onViewCourse: (courseId: string) => void;
   }) {
     const [courses, setCourses] = useState<CourseBasic[]>([]);
@@ -20,12 +20,12 @@ export function SessionCoursesList({
     useEffect(() => {
       const fetchCourses = async () => {
         setLoading(true);
-        const data = await getSessionCours(sessionId);
+        const data = await getSessionCourse(sessionId);
         setCourses(data);
         setLoading(false);
       };
       fetchCourses();
-    }, [sessionId, getSessionCours]);
+    }, [sessionId, getSessionCourse]);
   
     if (loading) {
       return (

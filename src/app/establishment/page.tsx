@@ -36,10 +36,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TokenElement } from "@/components/establishment/TokenElement";
-import { ProfesseurRow } from "@/components/establishment/ProfesseurRow";
 import { CourseViewModal } from "@/components/establishment/CourseViewModal";
 import { StatsCard } from "@/components/establishment/StatsCard";
 import { SessionStudentsModal } from "@/components/establishment/SessionStudentModal";
+import { TeacherRow } from "@/components/establishment/TeacherRow";
 
 export default function Establishment() {
   const router = useRouter();
@@ -54,7 +54,7 @@ export default function Establishment() {
     createInvitationToken,
     deleteInvitationToken,
     getSessionStudents,
-    getSessionCours,
+    getSessionCourse,
     getCourseDetails,
   } = useEstablishment();
 
@@ -289,12 +289,12 @@ export default function Establishment() {
                 </TableHeader>
                 <TableBody>
                   {professeurs.map((prof: TeacherWithStats) => (
-                    <ProfesseurRow
+                    <TeacherRow
                       key={prof.id}
                       teacher={prof}
                       onViewStudents={handleViewStudents}
                       onViewCourse={handleViewCourse}
-                      getSessionCours={getSessionCours}
+                      getSessionCourse={getSessionCourse}
                     />
                   ))}
                 </TableBody>
