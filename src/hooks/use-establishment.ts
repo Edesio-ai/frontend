@@ -12,6 +12,7 @@ import type {
 import { establishmentService } from "@/services/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { tokenService } from "@/services/token.service";
+import { sessionService } from "@/services/session.service";
 
 interface EtablissementStats {
   totalTeachers: number;
@@ -222,28 +223,10 @@ export function useEstablishment() {
     []
   );
 
-  const getSessionCours = useCallback(
+  const getSessionCourse = useCallback(
     async (sessionId: string): Promise<any> => {
-      //   if (!session?.access_token) return [];
-
-      //   try {
-      //     const response = await fetch(`/api/establishment/sessions/${sessionId}/cours`, {
-      //       headers: {
-      //         Authorization: `Bearer ${session.access_token}`,
-      //       },
-      //     });
-
-      //     if (!response.ok) {
-      //       console.error("Error fetching session courses");
-      //       return [];
-      //     }
-
-      //     return await response.json();
-      //   } catch (err) {
-      //     console.error("Unexpected error:", err);
-      //     return [];
-      //   }
-      return [];
+      const courses = await sessionService.getSessionCourses(sessionId);
+      return courses || [];
     },
     ["session"]
   );
@@ -305,7 +288,7 @@ export function useEstablishment() {
     createInvitationToken,
     deleteInvitationToken,
     getSessionStudents,
-    getSessionCours,
+    getSessionCourse,
     getCourseDetails,
   };
 }

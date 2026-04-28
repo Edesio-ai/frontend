@@ -6,16 +6,16 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { SessionCoursesList } from "./SessionCoursesList";
 
-export function ProfesseurRow({
+export function TeacherRow({
     teacher,
     onViewStudents,
     onViewCourse,
-    getSessionCours,
+    getSessionCourse,
 }: {
     teacher: TeacherWithStats;
     onViewStudents: (session: SessionWithStudentCount) => void;
     onViewCourse: (courseId: string) => void;
-    getSessionCours: (sessionId: string) => Promise<CourseBasic[]>;
+    getSessionCourse: (sessionId: string) => Promise<CourseBasic[]>;
 }) {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -74,7 +74,7 @@ export function ProfesseurRow({
                                         </div>
                                         <SessionCoursesList
                                             sessionId={session.id}
-                                            getSessionCours={getSessionCours}
+                                            getSessionCourse={getSessionCourse}
                                             onViewCourse={onViewCourse}
                                         />
                                     </div>
