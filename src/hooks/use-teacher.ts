@@ -24,6 +24,7 @@ import { sessionService } from "@/services/session.service";
 import { courseService } from "@/services/course.service";
 import { questionService } from "@/services/question.service";
 import { GenerateQuestionsConfig } from "@/types/question.type";
+import { fileService } from "@/services/file.service";
 type CoursesTableRow = {
   id: string;
   session_id: string;
@@ -422,30 +423,10 @@ export function useTeacher() {
   );
 
   const deleteCourseFile = useCallback(
-    async (fichier: CourseFile): Promise<boolean> => {
+    async (file: CourseFile): Promise<boolean> => {
       try {
-        const { error: storageError } = await supabase.storage
-          .from("cours-pdf")
-          .remove([fichier.fileUrl]);
+        await fileService.deleteFile(file.id);
 
-        if (storageError) {
-          console.error("Error deleting file from storage:", storageError);
-          setError("Erreur lors de la suppression du fichier.");
-          return false;
-        }
-
-        const { error: deleteError } = await supabase
-          .from("course_files")
-          .delete()
-          .eq("id", fichier.id);
-
-        if (deleteError) {
-          console.error("Error deleting file record:", deleteError);
-          setError("Erreur lors de la suppression de l'enregistrement.");
-          return false;
-        }
-
-        setError(null);
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
