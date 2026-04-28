@@ -1,5 +1,5 @@
 import { FileDown, Files, FileText, Loader2, Trash2, Upload } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { CourseFile } from "@/types/course.type";
 
 type FileSectionTesterModalProps = {

@@ -1,7 +1,7 @@
-import { Card } from '../ui/card'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import { Textarea } from '../ui/textarea'
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 import { FileText, Loader2, Save, Pencil } from 'lucide-react'
 import { Course } from '@/types/course.type'
 
@@ -19,6 +19,7 @@ type EditQuestionTesterModalSectionProps = {
     setEditedContent: (editedContent: string) => void;
 
 }
+
 export function EditQuestionTesterModalSection({ isEditing, setIsEditing, handleSave, isSaving, course, editedTitle, setEditedTitle, editedDescription, setEditedDescription, editedContent, setEditedContent }: EditQuestionTesterModalSectionProps) {
     return (
         <>

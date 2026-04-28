@@ -1,10 +1,10 @@
 import { Question } from "@/types";
-import { Card } from "../ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Button } from "../ui/button";
+import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { CheckCircle2, Loader2, Save, Trash2 } from "lucide-react";
-import { Textarea } from "../ui/textarea";
-import { Input } from "../ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { DeleteQuestionModal } from "./DeleteQuestionModal";
 
 type EditQuestionModalProps = {

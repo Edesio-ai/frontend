@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 interface QuestionGeneratorProps {
     genMultipleChoiceCount: number;
     genOpenedCount: number;
-    handleConfigChange: (field: 'qcm' | 'ouverte', value: number) => void;
+    handleConfigChange: (field: 'single' | 'open', value: number) => void;
     executeGeneration: () => Promise<void>;
     isGenerating: boolean;
     genTotalQuestions: number;
@@ -43,7 +43,7 @@ export function QuestionGenerator({
                         min={0}
                         max={MAX_QUESTIONS}
                         value={genMultipleChoiceCount}
-                        onChange={(e) => handleConfigChange('qcm', parseInt(e.target.value) || 0)}
+                        onChange={(e) => handleConfigChange('single', parseInt(e.target.value) || 0)}
                         data-testid="input-qcm-count"
                     />
                 </div>
@@ -54,7 +54,7 @@ export function QuestionGenerator({
                         min={0}
                         max={MAX_QUESTIONS}
                         value={genOpenedCount}
-                        onChange={(e) => handleConfigChange('ouverte', parseInt(e.target.value) || 0)}
+                        onChange={(e) => handleConfigChange('open', parseInt(e.target.value) || 0)}
                         data-testid="input-ouverte-count"
                     />
                 </div>
