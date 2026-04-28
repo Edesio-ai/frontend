@@ -566,32 +566,13 @@ export function useTeacher() {
   );
 
   const validateQuestions = useCallback(
-    async (courseId: string): Promise<{ success: boolean; cours?: Course; error?: string }> => {
+    async (courseId: string): Promise<{ success: boolean; course?: Course; error?: string }> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
-
-        if (!accessToken) {
-          return { success: false, error: "Vous devez être connecté" };
-        }
-
-        const response = await fetch(`/api/cours/${courseId}/validate-questions`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          return { success: false, error: data.error || "Erreur lors de la validation" };
-        }
+        const { data } = await courseService.validateQuestions(courseId);
 
         return {
           success: true,
-          cours: data.cours as Course | undefined,
+          course: data,
         };
       } catch (err) {
         console.error("Error validating questions:", err);

@@ -42,7 +42,7 @@ interface Suggestion {
   user_email: string | null;
   user_name: string | null;
   category: string;
-  titre: string;
+  title: string;
   contenu: string;
   likes_count: number;
   created_at: string;
@@ -56,7 +56,7 @@ interface SuggestionsModalProps {
 }
 
 const formSchema = z.object({
-  titre: z.string().min(3, "Le titre doit faire au moins 3 caractères").max(200, "Le titre est trop long"),
+  title: z.string().min(3, "Le title doit faire au moins 3 caractères").max(200, "Le title est trop long"),
   contenu: z.string().min(10, "La description doit faire au moins 10 caractères").max(2000, "La description est trop longue"),
 });
 
@@ -82,7 +82,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      titre: "",
+      title: "",
       contenu: "",
     },
   });
@@ -147,7 +147,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
         },
         body: JSON.stringify({
           category,
-          titre: values.titre,
+          title: values.title,
           contenu: values.contenu,
         }),
       });
@@ -330,7 +330,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
                     control={form.control}
-                    name="titre"
+                    name="title"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Titre de votre suggestion</FormLabel>
@@ -427,7 +427,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <h3 className="font-semibold text-sm sm:text-base line-clamp-2">
-                          {suggestion.titre}
+                          {suggestion.title}
                         </h3>
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-3 mb-3">

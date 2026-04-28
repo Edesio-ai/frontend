@@ -40,14 +40,14 @@ interface CourseListProps {
   fetchCourses: (sessionId: string) => Promise<Course[]>;
   createCourse: (
     sessionId: string,
-    titre: string,
+    title: string,
     description: string,
     contentText: string,
     pdfFiles?: File[]
   ) => Promise<Course | null>;
   updateCourse: (
     courseId: string,
-    titre: string,
+    title: string,
     description: string | null,
     contenuTexte: string | null
   ) => Promise<Course | null>;

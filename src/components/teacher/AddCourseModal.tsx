@@ -14,7 +14,7 @@ import { ScrollArea } from "../ui/scroll-area";
 
 
 const formSchema = z.object({
-    title: z.string().min(1, "Le titre est requis").max(200, "Le titre est trop long"),
+    title: z.string().min(1, "Le title est requis").max(200, "Le title est trop long"),
     description: z.string().max(500, "La description est trop longue").optional().or(z.literal("")),
     contentText: z.string().optional().or(z.literal("")),
   });
@@ -33,7 +33,7 @@ export function AddCourseModal({
     sessionId: string;
     createCourse: (
         sessionId: string,
-        titre: string,
+        title: string,
         description: string,
         contentText: string,
         pdfFiles?: File[]
@@ -102,7 +102,7 @@ export function AddCourseModal({
               Ajouter un nouveau cours
             </DialogTitle>
             <DialogDescription>
-              Créez un cours en ajoutant un titre, des fichiers PDF et optionnellement du contenu texte.
+              Créez un cours en ajoutant un title, des fichiers PDF et optionnellement du contenu texte.
             </DialogDescription>
           </DialogHeader>
           
