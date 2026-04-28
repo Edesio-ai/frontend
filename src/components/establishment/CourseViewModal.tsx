@@ -1,17 +1,14 @@
 import { BookOpen, FileText, HelpCircle, Loader2, Users } from "lucide-react";
 import { Button } from "../ui/button";
-import { DialogFooter, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog";
-import { Accordion } from "@radix-ui/react-accordion";
+import { DialogFooter, DialogContent, DialogHeader, DialogTitle, DialogDescription, Dialog } from "../ui/dialog";
 import { CourseDetails } from "@/types";
 import {
   propositionLabels,
   correctAnswerDisplay,
 } from "@/lib/proposition-labels";
-import { Dialog } from "@radix-ui/react-dialog";
-import { AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Badge } from "../ui/badge";
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
-import { AvatarFallback } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function CourseViewModal({
     isOpen,
@@ -69,7 +66,7 @@ export function CourseViewModal({
                     {courseDetails.files.map((f) => (
                       <div key={f.id} className="flex items-center gap-2 p-2 rounded bg-muted/30 text-sm">
                         <FileText className="h-4 w-4 flex-shrink-0" />
-                        <span className="truncate">{f.name}</span>
+                        <span className="truncate">{f.fileName}</span>
                       </div>
                     ))}
                   </div>
@@ -92,30 +89,30 @@ export function CourseViewModal({
                             <Badge variant={q.type === "single" || q.type === "multiple" ? "default" : "outline"} className="text-xs">
                               {q.type === "single" || q.type === "multiple" ? "QCM" : "Ouverte"}
                             </Badge>
-                            <span>Q{index + 1}: {q.question.length > 80 ? q.question.substring(0, 80) + "..." : q.question}</span>
+                            <span>Q{index + 1}: {q.questionText.length > 80 ? q.questionText.substring(0, 80) + "..." : q.questionText}</span>
                           </div>
                         </AccordionTrigger>
                         <AccordionContent>
                           <div className="space-y-2 pl-4">
-                            <p className="text-sm"><strong>Question:</strong> {q.question}</p>
+                            <p className="text-sm"><strong>Question:</strong> {q.questionText}</p>
                             {(q.type === "single" || q.type === "multiple") &&
-                              propositionLabels(q.propositions).length > 0 && (
+                              propositionLabels(q.proposals).length > 0 && (
                               <div className="space-y-1">
                                 <p className="text-sm font-medium">Propositions :</p>
                                 <ul className="list-disc list-inside text-sm text-muted-foreground">
-                                  {propositionLabels(q.propositions).map((opt, i) => (
+                                  {propositionLabels(q.proposals).map((opt, i) => (
                                     <li
                                       key={i}
                                       className={
                                         opt ===
-                                        correctAnswerDisplay(q.propositions, q.correctAnswers || [])
+                                        correctAnswerDisplay(q.proposals, q.correctAnswers || [])
                                           ? "text-green-600 font-medium"
                                           : ""
                                       }
                                     >
                                       {opt}{" "}
                                       {opt ===
-                                        correctAnswerDisplay(q.propositions, q.correctAnswers || []) &&
+                                        correctAnswerDisplay(q.proposals, q.correctAnswers || []) &&
                                         "(Correcte)"}
                                     </li>
                                   ))}
@@ -128,11 +125,11 @@ export function CourseViewModal({
                                 {q.correctAnswers?.length
                                   ? q.correctAnswers
                                       .map((c) =>
-                                        correctAnswerDisplay(q.propositions, q.correctAnswers || []),
+                                        correctAnswerDisplay(q.proposals, q.correctAnswers || []),
                                       )
                                       .join(", ")
                                   : correctAnswerDisplay(
-                                      q.propositions,
+                                      q.proposals,
                                       q.correctAnswers || [],
                                     )}
                               </span>

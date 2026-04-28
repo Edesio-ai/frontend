@@ -94,9 +94,9 @@ export interface CourseDetails {
   };
   questions: {
     id: string;
-    question: string;
+    questionText: string;
     type: QuestionType;
-    propositions: unknown;
+    proposals: unknown;
     correctAnswers?: string[] | null;
   }[];
   students: {
@@ -109,7 +109,7 @@ export interface CourseDetails {
   }[];
   files: {
     id: string;
-    name: string;
+    fileName: string;
   }[];
 }
 
