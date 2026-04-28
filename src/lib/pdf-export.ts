@@ -57,3 +57,12 @@ export function exportClassementPdf(
   const fileName = `resultats_${coursTitle.replace(/[^a-zA-Z0-9]/g, "_")}_${new Date().toISOString().split("T")[0]}.pdf`;
   doc.save(fileName);
 }
+
+export function downloadPdf(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.download = filename;
+  a.href = url;
+  a.click();
+  URL.revokeObjectURL(url);
+}

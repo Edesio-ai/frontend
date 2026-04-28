@@ -16,8 +16,8 @@ type QuestionSectionTesterModalProps = {
   generateSuccess: string | null;
   setChatbotModalOpen: (open: boolean) => void;
   setAddQuestionOpen: (open: boolean) => void;
-  currentQcmCount: number;
-  currentOuverteCount: number;
+  currentSingleCount: number;
+  currentOpenCount: number;
   handleQuestionDragEnd: (event: DragEndEvent) => void;
   handleQuestionUpdated: (question: Question) => void;
   handleQuestionDeleted: (questionId: string) => void;
@@ -27,7 +27,24 @@ type QuestionSectionTesterModalProps = {
   questionSensors: SensorDescriptor<SensorOptions>[] | undefined;
 }
 
-export function QuestionSectionTesterModal({ questions, handleGenerateQuestions, isGenerating, generateError, generateSuccess, setChatbotModalOpen, setAddQuestionOpen, currentQcmCount, currentOuverteCount, handleQuestionDragEnd, handleQuestionUpdated, handleQuestionDeleted, updateQuestion, deleteQuestion, handleDownloadQuestionsPdf, questionSensors }: QuestionSectionTesterModalProps) {
+export function QuestionSectionTesterModal({ 
+  questions,
+  handleGenerateQuestions,
+  isGenerating,
+  generateError,
+  generateSuccess,
+  setChatbotModalOpen,
+  setAddQuestionOpen,
+  currentSingleCount,
+  currentOpenCount,
+  handleQuestionDragEnd,
+  handleQuestionUpdated,
+  handleQuestionDeleted,
+  updateQuestion,
+  deleteQuestion,
+  handleDownloadQuestionsPdf,
+  questionSensors,
+}: QuestionSectionTesterModalProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -70,7 +87,7 @@ export function QuestionSectionTesterModal({ questions, handleGenerateQuestions,
                   <HelpCircle className="h-4 w-4" />
                   <span>Voir les {questions.length} questions</span>
                   <span className="text-muted-foreground text-xs">
-                    ({currentQcmCount} QCM, {currentOuverteCount} ouvertes)
+                    ({currentSingleCount} QCM, {currentOpenCount} ouvertes)
                   </span>
                 </div>
               </AccordionTrigger>

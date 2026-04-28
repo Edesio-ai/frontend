@@ -56,7 +56,7 @@ interface CourseListProps {
   uploadPdfForCourse: (courseId: string, file: File) => Promise<CourseFile | null>;
   fetchCourseFiles: (courseId: string) => Promise<CourseFile[]>;
   deleteCourseFile: (fichier: CourseFile) => Promise<boolean>;
-  getPdfUrl: (filePath: string) => Promise<string | null>;
+  getPdfUrl: (fileId: string, fileName: string) => Promise<void>;
   fetchQuestions: (courseId: string) => Promise<Question[]>;
   updateQuestion: (
     questionId: string,
