@@ -3,7 +3,6 @@ import { Course, CourseFile, CourseRanking, InsertCourse, UpdateCourseRequest } 
 
 export const courseService = {
   updateCourse: async (courseId: string, body: UpdateCourseRequest): Promise<{data: Course }> => {
-    console.log("🚀 ~ body:", body)
     const response = await apiFetch<{ data: Course }>(`/api/course/${courseId}`, {
       method: "PATCH",
       body: JSON.stringify(body),
@@ -45,6 +44,12 @@ export const courseService = {
   deleteCourse: async (courseId: string): Promise<void> => {
     const response = await apiFetch<void>(`/api/course/${courseId}`, {
       method: "DELETE",
+    });
+    return response;
+  },
+  validateQuestions: async (courseId: string): Promise<{ data: Course }> => {
+    const response = await apiFetch<{ data: Course }>(`/api/course/${courseId}/validate-questions`, {
+      method: "POST",
     });
     return response;
   },
