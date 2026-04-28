@@ -27,12 +27,6 @@ import {
 } from "@/components/ui/dialog";
 
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -59,7 +53,6 @@ import {
   Sparkles,
   FileDown,
   CheckCircle2,
-  HelpCircle,
   ListChecks,
   Trash2,
   RefreshCw,
@@ -69,8 +62,6 @@ import {
   Plus,
   Trophy,
   Award,
-  CircleDot,
-  PenLine,
   Download,
   ArrowLeft
 } from "lucide-react";
@@ -82,8 +73,10 @@ import { MAX_QUESTIONS } from "@/utils/constants/teacher";
 import { GenerateQuestionsConfig } from "@/types/question.type";
 import { SortableQuestionItem } from "../teacher/SotableQuestionItem";
 import { exportService } from "@/services/export.service";
-import { EditQuestionTesterModalSection } from "../teacher/EditQuestionTesterModalSection";
-import { FileSectionTesterModal } from "../teacher/FileSectionTesterModal";
+import { EditQuestionTesterModalSection } from "../teacher/CourseTesterModal/EditQuestionTesterModalSection";
+import { FileSectionTesterModal } from "../teacher/CourseTesterModal/FileSectionTesterModal";
+import { QuestionSectionTesterModal } from "../teacher/CourseTesterModal/QuestionSectionTesterModal";
+import { RegenerateQuestionModal } from "../teacher/CourseTesterModal/RegenerateQuestionModal";
 
 
 
@@ -187,8 +180,8 @@ export function CourseTesterModal({
   // Question generation configuration (max 20 questions total for token safety)
 
   const [genTotalQuestions, setGenTotalQuestions] = useState(10);
-  const [multipleChoinceGenCount, setGenQcmCount] = useState(5);
-  const [openedGenerateCount, setGenOuverteCount] = useState(5);
+  const [multipleChoinceGenCount, setGenSingleCount] = useState(5);
+  const [openGenerateCount, setGenOpenCount] = useState(5);
   // Phase control: questions not validated = phase 1, validated = phase 2
   // Use local state to track validation status (refreshed from DB when modal opens)
   const [questionsValidated, setQuestionsValidated] = useState(course.validatedQuestions);
@@ -234,7 +227,6 @@ export function CourseTesterModal({
   useEffect(() => {
     if (open) {
       loadData();
-      // Go directly to question generation view when modal opens in Phase 1
       setShowQuestionGenerator(true);
     }
   }, [open, course.id]);
@@ -328,7 +320,6 @@ export function CourseTesterModal({
   };
 
   const handleGenerateQuestions = () => {
-    // Always open the config dialog so professors can configure the generation
     setRegenerateDialogOpen(true);
   };
 
@@ -342,7 +333,7 @@ export function CourseTesterModal({
       const config = {
         totalQuestions: genTotalQuestions,
         multipleChoiceCount: multipleChoinceGenCount,
-        openedCount: openedGenerateCount
+        openedCount: openGenerateCount
       };
 
       const { questionCount, success, questions} = await generateQuestions(course.id, config);
@@ -368,29 +359,28 @@ export function CourseTesterModal({
     }
   };
 
-  const handleConfigChange = (field: 'qcm' | 'ouverte', value: number) => {
-    // Clamp individual value between 0 and MAX_QUESTIONS (enforces limit even when typing)
+  const handleConfigChange = (field: 'single' | 'open', value: number) => {
     const newValue = Math.max(0, Math.min(MAX_QUESTIONS, value));
-    let newQcm = multipleChoinceGenCount;
-    let newOuverte = openedGenerateCount;
+    let newSingleQuestion = multipleChoinceGenCount;
+    let newOpenQuestion = openGenerateCount;
 
-    if (field === 'qcm') newQcm = newValue;
-    if (field === 'ouverte') newOuverte = newValue;
+    if (field === 'single') newSingleQuestion = newValue;
+    if (field === 'open') newOpenQuestion = newValue;
 
-    let total = newQcm + newOuverte;
+    let total = newSingleQuestion + newOpenQuestion;
 
     // Limit total to MAX_QUESTIONS
     if (total > MAX_QUESTIONS) {
-      if (field === 'qcm') {
-        newQcm = Math.max(0, MAX_QUESTIONS - newOuverte);
+        if (field === 'single') {
+        newSingleQuestion = Math.max(0, MAX_QUESTIONS - newOpenQuestion);
       } else {
-        newOuverte = Math.max(0, MAX_QUESTIONS - newQcm);
+        newOpenQuestion = Math.max(0, MAX_QUESTIONS - newSingleQuestion);
       }
-      total = newQcm + newOuverte;
+      total = newSingleQuestion + newOpenQuestion;
     }
 
-    setGenQcmCount(newQcm);
-    setGenOuverteCount(newOuverte);
+    setGenSingleCount(newSingleQuestion);
+    setGenOpenCount(newOpenQuestion);
     setGenTotalQuestions(total);
   };
 
@@ -659,7 +649,7 @@ export function CourseTesterModal({
               <div className="flex-1 overflow-y-auto space-y-6 py-4">
                 <QuestionGenerator
                   genMultipleChoiceCount={multipleChoinceGenCount}
-                  genOpenedCount={openedGenerateCount}
+                  genOpenedCount={openGenerateCount}
                   handleConfigChange={handleConfigChange}
                   executeGeneration={executeGeneration}
                   isGenerating={isGenerating}
@@ -952,120 +942,45 @@ export function CourseTesterModal({
             </div>
           ) : (
             <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6">
-              <EditQuestionTesterModalSection isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} isSaving={isSaving} course={course} editedTitle={editedTitle} setEditedTitle={setEditedTitle} editedDescription={editedDescription} setEditedDescription={setEditedDescription} editedContent={editedContent} setEditedContent={setEditedContent} />
-              <FileSectionTesterModal files={files} handleFileUpload={handleFileUpload} fileInputRef={fileInputRef} isUploadingPdf={isUploadingPdf} handleDownloadPdf={handleDownloadPdf} handleDeleteFile={handleDeleteFile} />
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <h5 className="font-medium text-sm flex items-center gap-2">
-                    <ListChecks className="h-4 w-4" />
-                    Questions ({questions.length})
-                  </h5>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => setChatbotModalOpen(true)} data-testid="button-test-chatbot">
-                      <MessageSquare className="h-4 w-4 mr-1" />
-                      Tester le chatbot
-                    </Button>
-                    <Button size="sm" onClick={handleGenerateQuestions} disabled={isGenerating}>
-                      {isGenerating ? (
-                        <><Loader2 className="h-4 w-4 animate-spin mr-1" /> Génération...</>
-                      ) : (
-                        <><Sparkles className="h-4 w-4 mr-1" /> {questions.length > 0 ? "Re-générer" : "Générer des questions"}</>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                {generateError && (
-                  <Card className="p-3 bg-destructive/10 border-destructive/20 text-destructive text-sm">
-                    {generateError}
-                  </Card>
-                )}
-                {generateSuccess && (
-                  <Card className="p-3 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm">
-                    {generateSuccess}
-                  </Card>
-                )}
-
-                {questions.length > 0 ? (
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="questions" className="border rounded-lg">
-                      <div className="flex items-center justify-between px-4 py-3">
-                        <AccordionTrigger className="hover:no-underline p-0 flex-1 [&>svg]:ml-auto">
-                          <div className="flex items-center gap-2 text-sm">
-                            <HelpCircle className="h-4 w-4" />
-                            <span>Voir les {questions.length} questions</span>
-                            <span className="text-muted-foreground text-xs">
-                              ({currentQcmCount} QCM, {currentOuverteCount} ouvertes)
-                            </span>
-                          </div>
-                        </AccordionTrigger>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => handleDownloadQuestionsPdf(e)}
-                          data-testid="button-export-questions-pdf-phase2"
-                        >
-                          <Download className="h-3.5 w-3.5 mr-1" />
-                          PDF
-                        </Button>
-                      </div>
-                      <AccordionContent>
-                        <DndContext
-                          sensors={questionSensors}
-                          collisionDetection={closestCenter}
-                          onDragEnd={handleQuestionDragEnd}
-                        >
-                          <SortableContext
-                            items={questions.map((q) => q.id)}
-                            strategy={verticalListSortingStrategy}
-                          >
-                            <div className="space-y-2 px-4 pb-4 max-h-[500px] overflow-y-auto">
-                              {questions.map((q, index) => (
-                                <SortableQuestionItem
-                                  key={q.id}
-                                  question={q}
-                                  index={index}
-                                  updateQuestion={updateQuestion}
-                                  deleteQuestion={deleteQuestion}
-                                  onQuestionUpdated={handleQuestionUpdated}
-                                  onQuestionDeleted={handleQuestionDeleted}
-                                />
-                              ))}
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full mt-2"
-                                onClick={() => setAddQuestionOpen(true)}
-                                data-testid="button-add-question"
-                              >
-                                <Plus className="h-4 w-4 mr-1" />
-                                Ajouter une question
-                              </Button>
-                            </div>
-                          </SortableContext>
-                        </DndContext>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                ) : (
-                  <div className="text-sm text-muted-foreground text-center py-4 bg-muted/20 rounded-md space-y-3">
-                    <Sparkles className="h-6 w-6 mx-auto opacity-50" />
-                    <p>Aucune question générée.</p>
-                    <div className="flex gap-2 justify-center">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setAddQuestionOpen(true)}
-                        data-testid="button-add-question-empty"
-                      >
-                        <Plus className="h-4 w-4 mr-1" />
-                        Ajouter manuellement
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <EditQuestionTesterModalSection
+                isEditing={isEditing}
+                setIsEditing={setIsEditing}
+                handleSave={handleSave}
+                isSaving={isSaving}
+                course={course}
+                editedTitle={editedTitle}
+                setEditedTitle={setEditedTitle}
+                editedDescription={editedDescription} 
+                setEditedDescription={setEditedDescription} 
+                editedContent={editedContent}
+                setEditedContent={setEditedContent}
+              />
+              <FileSectionTesterModal
+                files={files}
+                handleFileUpload={handleFileUpload}
+                fileInputRef={fileInputRef}
+                isUploadingPdf={isUploadingPdf}
+                handleDownloadPdf={handleDownloadPdf}
+                handleDeleteFile={handleDeleteFile}
+              />
+              <QuestionSectionTesterModal 
+                questions={questions}
+                handleGenerateQuestions={handleGenerateQuestions}
+                isGenerating={isGenerating}
+                generateError={generateError}
+                generateSuccess={generateSuccess}
+                setChatbotModalOpen={setChatbotModalOpen}
+                setAddQuestionOpen={setAddQuestionOpen}
+                currentQcmCount={multipleChoinceGenCount}
+                currentOuverteCount={openGenerateCount}
+                handleQuestionDragEnd={handleQuestionDragEnd}
+                handleQuestionUpdated={handleQuestionUpdated}
+                handleQuestionDeleted={handleQuestionDeleted}
+                updateQuestion={updateQuestion}
+                deleteQuestion={deleteQuestion}
+                handleDownloadQuestionsPdf={handleDownloadQuestionsPdf}
+                questionSensors={questionSensors}
+              />
 
               {/* Rankings Section */}
               {fetchCourseRanking && (
@@ -1229,89 +1144,15 @@ export function CourseTesterModal({
         </AlertDialogContent>
       </AlertDialog>
 
-      <Dialog open={regenerateDialogOpen} onOpenChange={setRegenerateDialogOpen}>
-        <DialogContent className="sm:max-w-[480px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Générer des questions
-            </DialogTitle>
-            <DialogDescription>
-              Choisissez combien de questions de chaque type vous souhaitez créer.
-              {questions.length > 0 && " Les questions existantes seront remplacées."}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-3 py-4">
-            {/* QCM - Choix unique */}
-            <div className="flex items-center gap-4 p-3 rounded-lg border bg-muted/30">
-              <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center shrink-0">
-                <CircleDot className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm">Choix unique</p>
-                <p className="text-xs text-muted-foreground">L'élève choisit 1 seule réponse parmi 4</p>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <Input
-                  type="number"
-                  min={0}
-                  max={MAX_QUESTIONS}
-                  value={multipleChoinceGenCount}
-                  onChange={(e) => handleConfigChange('qcm', parseInt(e.target.value) || 0)}
-                  className="w-16 h-9 text-center"
-                  data-testid="input-gen-qcm-count"
-                />
-              </div>
-            </div>
-
-            {/* Ouvertes - Réponse rédigée */}
-            <div className="flex items-center gap-4 p-3 rounded-lg border bg-muted/30">
-              <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
-                <PenLine className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm">Réponse rédigée</p>
-                <p className="text-xs text-muted-foreground">L'élève écrit sa réponse avec ses mots</p>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <Input
-                  type="number"
-                  min={0}
-                  max={MAX_QUESTIONS}
-                  value={openedGenerateCount}
-                  onChange={(e) => handleConfigChange('ouverte', parseInt(e.target.value) || 0)}
-                  className="w-16 h-9 text-center"
-                  data-testid="input-gen-ouverte-count"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-3 mt-2 border-t">
-              <span className="text-sm font-medium">Total de questions à générer <span className="text-muted-foreground font-normal">(max {MAX_QUESTIONS})</span></span>
-              <span className="text-xl font-bold text-primary">{genTotalQuestions}</span>
-            </div>
-
-            {genTotalQuestions === 0 && (
-              <p className="text-sm text-destructive text-center">Indiquez au moins 1 question à générer</p>
-            )}
-          </div>
-
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setRegenerateDialogOpen(false)}>
-              Annuler
-            </Button>
-            <Button
-              onClick={executeGeneration}
-              disabled={genTotalQuestions === 0}
-              data-testid="button-confirm-generate"
-            >
-              <Sparkles className="h-4 w-4 mr-2" />
-              Générer {genTotalQuestions} question{genTotalQuestions > 1 ? 's' : ''}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <RegenerateQuestionModal
+        regenerateDialogOpen={regenerateDialogOpen}
+        setRegenerateDialogOpen={setRegenerateDialogOpen}
+        handleConfigChange={handleConfigChange}
+        executeGeneration={executeGeneration}
+        genTotalQuestions={genTotalQuestions}
+        questions={questions}
+        openGenerateCount={openGenerateCount}
+      />
 
       {renderAddQuestionDialog()}
     </>
