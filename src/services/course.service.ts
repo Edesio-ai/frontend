@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { Course, CourseFile, CourseRanking, InsertCourse, UpdateCourseRequest } from "@/types";
+import { Course, CourseDetails, CourseFile, CourseRanking, InsertCourse, UpdateCourseRequest } from "@/types";
 
 export const courseService = {
   updateCourse: async (courseId: string, body: UpdateCourseRequest): Promise<{data: Course }> => {
@@ -51,6 +51,10 @@ export const courseService = {
     const response = await apiFetch<{ data: Course }>(`/api/course/${courseId}/validate-questions`, {
       method: "POST",
     });
+    return response;
+  },
+  getCourseDetails: async (courseId: string): Promise<{ data: CourseDetails}> => {
+    const response = await apiFetch<{ data: CourseDetails }>(`/api/course/${courseId}/details`);
     return response;
   },
 }

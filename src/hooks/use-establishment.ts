@@ -13,6 +13,7 @@ import { establishmentService } from "@/services/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { tokenService } from "@/services/token.service";
 import { sessionService } from "@/services/session.service";
+import { courseService } from "@/services/course.service";
 
 interface EtablissementStats {
   totalTeachers: number;
@@ -233,27 +234,9 @@ export function useEstablishment() {
 
   const getCourseDetails = useCallback(
     async (courseId: string): Promise<CourseDetails | null> => {
-      //   if (!session?.access_token) return null;
+      const { data } = await courseService.getCourseDetails(courseId);
 
-      //   try {
-      //     const response = await fetch(`/api/establishment/cours/${courseId}`, {
-      //       headers: {
-      //         Authorization: `Bearer ${session.access_token}`,
-      //       },
-      //     });
-
-      //     if (!response.ok) {
-      //       console.error("Error fetching course details");
-      //       return null;
-      //     }
-
-      //     return await response.json();
-      //   } catch (err) {
-      //     console.error("Unexpected error:", err);
-      //     return null;
-      //   }
-
-      return null
+      return data || null;
     },
     ["session"]
   );

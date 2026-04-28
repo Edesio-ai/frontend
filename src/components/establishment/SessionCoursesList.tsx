@@ -2,8 +2,8 @@ import { CourseBasic } from "@/types";
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { BookOpen } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export function SessionCoursesList({
     sessionId,
@@ -34,7 +34,7 @@ export function SessionCoursesList({
         </div>
       );
     }
-    console.log(courses);
+
     if (courses.length === 0) {
       return (
         <p className="text-xs text-muted-foreground py-1">Aucun cours dans cette classe</p>
