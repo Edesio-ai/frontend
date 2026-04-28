@@ -25,6 +25,7 @@ import { courseService } from "@/services/course.service";
 import { questionService } from "@/services/question.service";
 import { GenerateQuestionsConfig } from "@/types/question.type";
 import { fileService } from "@/services/file.service";
+import { exportService } from "@/services/export.service";
 type CoursesTableRow = {
   id: string;
   session_id: string;
@@ -338,6 +339,8 @@ export function useTeacher() {
 
 
   const handleUploadPdfForCours = async (courseId: string, file: File): Promise<CourseFile> => {
+    console.log("🚀 ~ handleUploadPdfForCours ~ courseId:", courseId)
+    console.log("🚀 ~ handleUploadPdfForCours ~ file:", file)
     try {
       const { data } = await courseService.uploadFile(courseId, file);
       return data;
@@ -438,16 +441,18 @@ export function useTeacher() {
   );
 
   const getPdfUrl = useCallback(
-    async (filePath: string): Promise<string | null> => {
+    async (fileId: string, fileName: string): Promise<void> => {
+      console.log("🚀 ~ useTeacher ~ fileId:", fileId)
       try {
-        const { data } = await supabase.storage
-          .from("cours-pdf")
-          .createSignedUrl(filePath, 3600);
+        await exportService.exportCourseFilePdf(fileId, fileName);
+        // const { data } = await supabase.storage
+        //   .from("cours-pdf")
+        //   .createSignedUrl(filePath, 3600);
 
-        return data?.signedUrl || null;
+        // return data?.signedUrl || null;
       } catch (err) {
         console.error("Error getting PDF URL:", err);
-        return null;
+        setError("Une erreur est survenue. Merci de réessayer.");
       }
     },
     []

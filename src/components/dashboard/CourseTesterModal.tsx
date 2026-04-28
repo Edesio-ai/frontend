@@ -95,7 +95,7 @@ interface CourseTesterModalProps {
   uploadPdfForCourse: (courseId: string, file: File) => Promise<CourseFile | null>;
   fetchCourseFiles: (courseId: string) => Promise<CourseFile[]>;
   deleteCourseFile: (file: CourseFile) => Promise<boolean>;
-  getPdfUrl: (filePath: string) => Promise<string | null>;
+  getPdfUrl: (fileId: string, fileName: string) => Promise<void>;
   fetchQuestions: (courseId: string) => Promise<Question[]>;
   updateQuestion: (
     questionId: string,
@@ -313,10 +313,7 @@ export function CourseTesterModal({
   };
 
   const handleDownloadPdf = async (fichier: CourseFile) => {
-    const url = await getPdfUrl(fichier.fileUrl);
-    if (url) {
-      window.open(url, "_blank");
-    }
+    await getPdfUrl(fichier.id, fichier.fileName);
   };
 
   const handleGenerateQuestions = () => {
@@ -469,10 +466,10 @@ export function CourseTesterModal({
     setIsValidating(false);
   };
 
-  const currentQcmCount = questions.filter(
+  const currentSingleCount = questions.filter(
     (q) => q.type === "single" || q.type === "multiple",
   ).length;
-  const currentOuverteCount = questions.filter((q) => q.type === "open").length;
+  const currentOpenCount = questions.filter((q) => q.type === "open").length;
 
   // Shared Add Question Dialog (used in both phases)
   const renderAddQuestionDialog = () => (
@@ -971,8 +968,8 @@ export function CourseTesterModal({
                 generateSuccess={generateSuccess}
                 setChatbotModalOpen={setChatbotModalOpen}
                 setAddQuestionOpen={setAddQuestionOpen}
-                currentQcmCount={multipleChoinceGenCount}
-                currentOuverteCount={openGenerateCount}
+                currentSingleCount={currentSingleCount}
+                currentOpenCount={currentOpenCount}
                 handleQuestionDragEnd={handleQuestionDragEnd}
                 handleQuestionUpdated={handleQuestionUpdated}
                 handleQuestionDeleted={handleQuestionDeleted}
