@@ -1,3 +1,6 @@
+import { Question } from "./question.type";
+import { Student } from "./student.type";
+
 export interface Course {
   id: string;
   sessionId: string;
@@ -35,39 +38,6 @@ export interface CourseFile {
   createdAt: string;
 }
 
-export type QuestionType = "single" | "multiple" | "open";
-
-/** Aligné sur le domaine Nest (camelCase), comme `Question` côté API. */
-export interface Question {
-  id: string;
-  courseId: string;
-  type: QuestionType;
-  questionText: string;
-  proposals: unknown;
-  correctAnswers: string[] | null;
-  explanation: string | null;
-  createdAt?: string;
-  positionOrder?: number | null;
-}
-
-export interface CreateQuestionRequest {
-  courseId: string;
-  type: QuestionType;
-  questionText: string;
-  proposals?: string[];
-  correctAnswers?: string[];
-  explanation?: string | null;
-}
-
-export interface UpdateQuestionRequest {
-  type?: QuestionType;
-  questionText?: string;
-  proposals?: string[];
-  correctAnswers?: string[];
-  explanation?: string | null;
-  positionOrder?: number | null;
-}
-
 export interface CourseQuestion {
   id: string;
   courseId: string;
@@ -85,32 +55,13 @@ export type InsertCourse = Omit<
 >;
 
 export interface CourseDetails {
-  course: {
-    id: string;
-    title: string;
-    description: string | null;
-    contentText: string | null;
-    validatedQuestions: boolean;
-  };
-  questions: {
-    id: string;
-    questionText: string;
-    type: QuestionType;
-    proposals: unknown;
-    correctAnswers?: string[] | null;
-  }[];
-  students: {
-    id: string;
-    name: string;
-    email: string;
-    photoUrl: string | null;
+  course: Partial<Pick<Course, 'id' | 'title' | 'description' | 'contentText' | 'validatedQuestions'>>;
+  questions: (Pick<Question, 'id' | 'questionText'> & Partial<Pick<Question, 'type' | 'proposals' | 'correctAnswers'>>)[];
+  students: (Pick<Student, 'id' | 'name'> & Partial<Pick<Student, 'email' | 'photoUrl'>> & {
     correctAnswers: number;
     totalAnswers: number;
-  }[];
-  files: {
-    id: string;
-    fileName: string;
-  }[];
+  })[];
+  files: Partial<Pick<CourseFile, 'id' | 'fileName'>>[];
 }
 
 export type UpdateCourseRequest = {

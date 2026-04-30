@@ -110,7 +110,7 @@ export function CourseList({
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [addModalOpen, setAddModalOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedCourse, setselectedCourse] = useState<Course | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -139,7 +139,7 @@ export function CourseList({
 
   useEffect(() => {
     if (initialCoursToOpen && !loading) {
-      setSelectedCourse(initialCoursToOpen);
+      setselectedCourse(initialCoursToOpen);
       if (onInitialCoursOpened) {
         onInitialCoursOpened();
       }
@@ -190,7 +190,7 @@ export function CourseList({
 
   const handleCourseCreated = (newCourse: Course) => {
     setCourses((prev) => [newCourse, ...prev]);
-    setSelectedCourse(newCourse);
+    setselectedCourse(newCourse);
   };
 
   const handleCourseUpdated = (updatedCours: Course) => {
@@ -198,7 +198,7 @@ export function CourseList({
       prev.map((c) => (c.id === updatedCours.id ? updatedCours : c))
     );
     if (selectedCourse?.id === updatedCours.id) {
-      setSelectedCourse(updatedCours);
+      setselectedCourse(updatedCours);
     }
   };
 
@@ -222,7 +222,7 @@ export function CourseList({
     if (success) {
       setCourses((prev) => prev.filter((c) => c.id !== courseToDelete.id));
       if (selectedCourse?.id === courseToDelete.id) {
-        setSelectedCourse(null);
+        setselectedCourse(null);
       }
       setDeleteModalOpen(false);
       setCourseToDelete(null);
@@ -269,7 +269,7 @@ export function CourseList({
                   <SortableCourseItem
                     key={c.id}
                     course={c}
-                    onSelect={setSelectedCourse}
+                    onSelect={setselectedCourse}
                     onRename={handleRenameCourse}
                     onDelete={deleteCourse ? handleDeleteCourse : undefined}
                     formatDate={formatDate}
@@ -295,7 +295,7 @@ export function CourseList({
           allCourses={courses}
           sessionName={session.name}
           open={!!selectedCourse}
-          onOpenChange={(open) => !open && setSelectedCourse(null)}
+          onOpenChange={(open) => !open && setselectedCourse(null)}
           updateCourse={updateCourse}
           uploadPdfForCourse={uploadPdfForCourse}
           fetchCourseFiles={fetchCourseFiles}
