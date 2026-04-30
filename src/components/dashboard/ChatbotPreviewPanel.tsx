@@ -280,7 +280,7 @@ export function ChatbotPreviewPanel({
   useEffect(() => {
     if (
       chatbot.chatbotState === "asking_questions" && 
-      chatbot.selectedCours && 
+      chatbot.selectedCourse && 
       chatbot.currentQuestionIndex < chatbot.questions.length &&
       chatbot.currentQuestionIndex !== lastAskedQuestionIndex
     ) {
@@ -293,22 +293,22 @@ export function ChatbotPreviewPanel({
       }, chatbot.currentQuestionIndex === 0 ? 1000 : 1500);
       return () => clearTimeout(timer);
     }
-  }, [chatbot.chatbotState, chatbot.selectedCours, chatbot.currentQuestionIndex, chatbot.questions.length, lastAskedQuestionIndex]);
+  }, [chatbot.chatbotState, chatbot.selectedCourse, chatbot.currentQuestionIndex, chatbot.questions.length, lastAskedQuestionIndex]);
 
   useEffect(() => {
-    if (chatbot.chatbotState === "completed" && chatbot.selectedCours && chatbot.questions.length > 0) {
+    if (chatbot.chatbotState === "completed" && chatbot.selectedCourse && chatbot.questions.length > 0) {
       const timer = setTimeout(() => {
         const totalQuestions = chatbot.questions.length;
         const scoreRatio = totalQuestions > 0 ? chatbot.score / totalQuestions : 0;
         chatbot.addBotMessage(
-          `Bravo ! Tu as terminé la révision de "${chatbot.selectedCours?.title}" !\n\nTon score : ${chatbot.score}/${totalQuestions} bonnes réponses.\n\nContinue comme ça !`,
+          `Bravo ! Tu as terminé la révision de "${chatbot.selectedCourse?.title}" !\n\nTon score : ${chatbot.score}/${totalQuestions} bonnes réponses.\n\nContinue comme ça !`,
           "completion",
           { scoreRatio }
         );
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [chatbot.chatbotState, chatbot.selectedCours, chatbot.score, chatbot.questions.length]);
+  }, [chatbot.chatbotState, chatbot.selectedCourse, chatbot.score, chatbot.questions.length]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -316,10 +316,10 @@ export function ChatbotPreviewPanel({
     }
   }, [chatbot.messages.length]);
 
-  const handleCoursSelect = async (selectedCours: Course) => {
+  const handleCourseSelect = async (selectedCourse: Course) => {
     setIsLoadingQuestions(true);
-    const questions = await fetchQuestions(selectedCours.id);
-    chatbot.selectCours(selectedCours, questions);
+    const questions = await fetchQuestions(selectedCourse.id);
+    chatbot.selectCourse(selectedCourse, questions);
     setIsLoadingQuestions(false);
     setLastAskedQuestionIndex(-1);
   };
@@ -353,7 +353,7 @@ export function ChatbotPreviewPanel({
   const currentQuestion = chatbot.getCurrentQuestion();
   const showCourseSelection = 
     chatbot.messages.some((m:ChatMessage) => m.type === "course_selection") && 
-    !chatbot.selectedCours &&
+    !chatbot.selectedCourse &&
     course.length > 0;
   // Show QCM buttons when asking a question OR during retry mode for QCM
   const showQCMOptions =
@@ -425,7 +425,7 @@ export function ChatbotPreviewPanel({
 
       {showCourseSelection && !isLoadingQuestions && (
         <div className="px-4 pb-4">
-          <CourseSelectionDropdown course={course} onSelect={handleCoursSelect} />
+          <CourseSelectionDropdown course={course} onSelect={handleCourseSelect} />
         </div>
       )}
 

@@ -1,10 +1,11 @@
 import { useReducer, useCallback } from "react";
-import type { Course, Question } from "@/types";
+import type { Course, Question, EvaluateAnswerRequest } from "@/types";
 import {
   propositionLabels,
   correctAnswerDisplay,
   letterAnswerIsCorrect,
 } from "@/lib/proposition-labels";
+import { questionService } from "@/services/question.service";
 
 export interface ChatMessage {
   id: string;
@@ -29,7 +30,7 @@ interface State {
   chatbotState: ChatbotState;
   messages: ChatMessage[];
   availableCours: Course[];
-  selectedCours: Course | null;
+  selectedCourse: Course | null;
   questions: Question[];
   currentQuestionIndex: number;
   score: number;
@@ -117,7 +118,7 @@ const initialState: State = {
   chatbotState: "idle",
   messages: [],
   availableCours: [],
-  selectedCours: null,
+  selectedCourse: null,
   questions: [],
   currentQuestionIndex: 0,
   score: 0,
@@ -156,7 +157,7 @@ function reducer(state: State, action: Action): State {
     case "SELECT_COURS":
       return {
         ...state,
-        selectedCours: action.cours,
+        selectedCourse: action.cours,
         questions: action.questions,
         currentQuestionIndex: 0,
         chatbotState: action.questions.length > 0 ? "asking_questions" : "completed",
@@ -260,7 +261,7 @@ export function useChatbotPreview() {
     );
   }, [state.availableCours, state.sessionName, addBotMessage]);
 
-  const selectCours = useCallback((cours: Course, questions: Question[]) => {
+  const selectCourse = useCallback((cours: Course, questions: Question[]) => {
     addStudentMessage(`Je veux réviser "${cours.title}"`, "answer");
     const shuffledQuestions = shuffleArray(questions);
     dispatch({ type: "SELECT_COURS", cours, questions: shuffledQuestions });
@@ -287,7 +288,6 @@ export function useChatbotPreview() {
     if (state.currentQuestionIndex >= state.questions.length) return null;
     
     const question = state.questions[state.currentQuestionIndex];
-    // Don't include QCM options in text - they are shown as buttons separately
     const questionText = `Question ${state.currentQuestionIndex + 1}/${state.questions.length}\n\n${question.questionText}`;
     
     return {
@@ -301,25 +301,19 @@ export function useChatbotPreview() {
     if (!question) return;
 
     addStudentMessage(answer, "answer");
+    const body: EvaluateAnswerRequest = {
+      questionText: question.questionText,
+      correctAnswer:
+      correctAnswerDisplay(question.proposals, question.correctAnswers || []) || "",
+      answer: answer,
+      explanation: question.explanation || "",
+    }
 
-    // In retry mode, validate the reflection response with AI
     if (state.retryMode) {
       try {
-        const response = await fetch("/api/evaluate-answer", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            question: question.questionText,
-            correctAnswer:
-              correctAnswerDisplay(question.proposals, question.correctAnswers || []) || "",
-            studentAnswer: answer,
-            explication: question.explanation || "",
-          }),
-        });
+        const evaluation = await questionService.evaluateAnswer(body);
 
-        if (response.ok) {
-          const evaluation = await response.json();
-          const isReflectionValid = evaluation.score >= 0.3; // At least 30% understanding
+        const isReflectionValid = evaluation.score >= 0.3;
           
           if (isReflectionValid) {
             const feedback = pickRandom(afterRetryMessages);
@@ -335,14 +329,6 @@ export function useChatbotPreview() {
               { isCorrect: false }
             );
           }
-        } else {
-          // Fallback if API fails
-          addBotMessage(
-            `D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : ${correctAnswerDisplay(question.proposals, question.correctAnswers || [])}${question.explanation ? `\n\n${question.explanation}` : ""}`,
-            "feedback",
-            { isCorrect: false }
-          );
-        }
       } catch (error) {
         console.error("Error evaluating reflection:", error);
         addBotMessage(
@@ -366,14 +352,8 @@ export function useChatbotPreview() {
         isCorrect = letterAnswerIsCorrect(question, answerIndex);
       }
     } else {
-      // For open questions in preview, use simple matching (AI evaluation is for students)
-      const normalizedAnswer = answer.toLowerCase().trim();
-      const normalizedCorrect = (
-        correctAnswerDisplay(question.proposals, question.correctAnswers || []) || ""
-      )
-        .toLowerCase()
-        .trim();
-      isCorrect = normalizedAnswer.includes(normalizedCorrect) || normalizedCorrect.includes(normalizedAnswer);
+      const evaluation = await questionService.evaluateAnswer(body);
+      isCorrect = evaluation.score >= 0.7;
     }
 
     dispatch({ type: "ANSWER_QUESTION", isCorrect });
@@ -423,7 +403,7 @@ export function useChatbotPreview() {
     addBotMessage,
     addStudentMessage,
     proceedToCoursSelection,
-    selectCours,
+    selectCourse,
     askCurrentQuestion,
     submitAnswer,
     getCurrentQuestion,

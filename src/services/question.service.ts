@@ -1,6 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { CreateQuestionRequest, Question, UpdateQuestionRequest } from "@/types/course.type";
-import { GenerateQuestionsConfig } from "@/types/question.type";
+import { CreateQuestionRequest, EvaluateAnswerRequest, GenerateQuestionsConfig, Question, UpdateQuestionRequest } from "@/types/question.type";
 
 export const questionService = {
   getPendingQuestionsCount: async (sessionId: string): Promise<{ count: number }> => {
@@ -40,6 +39,13 @@ export const questionService = {
     const response = await apiFetch<{ question: Question | null }>(`/api/question/${questionId}`, {
       method: "PATCH",
       body: JSON.stringify(updates),
+    });
+    return response;
+  },
+  evaluateAnswer: async (body: EvaluateAnswerRequest): Promise<{ score: number }> => {
+    const response = await apiFetch<{ score: number }>(`/api/question/evaluate-answer`, {
+      method: "POST",
+      body: JSON.stringify(body),
     });
     return response;
   },

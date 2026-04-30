@@ -67,7 +67,7 @@ export default function Establishment() {
   const [sessionStudents, setSessionStudents] = useState<Student[]>([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
 
-  const [selectedCourseDetails, setSelectedCourseDetails] = useState<CourseDetails | null>(null);
+  const [selectedCourseDetails, setselectedCourseDetails] = useState<CourseDetails | null>(null);
   const [showCourseModal, setShowCourseModal] = useState(false);
   const [loadingCourse, setLoadingCourse] = useState(false);
 
@@ -149,9 +149,9 @@ export default function Establishment() {
   const handleViewCourse = async (courseId: string) => {
     setShowCourseModal(true);
     setLoadingCourse(true);
-    setSelectedCourseDetails(null);
+    setselectedCourseDetails(null);
     const details = await getCourseDetails(courseId);
-    setSelectedCourseDetails(details);
+    setselectedCourseDetails(details);
     setLoadingCourse(false);
   };
 
@@ -321,7 +321,7 @@ export default function Establishment() {
           isOpen={showCourseModal}
           onClose={() => {
             setShowCourseModal(false);
-            setSelectedCourseDetails(null);
+            setselectedCourseDetails(null);
           }}
           courseDetails={selectedCourseDetails}
           loading={loadingCourse}

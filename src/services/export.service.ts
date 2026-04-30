@@ -1,6 +1,6 @@
 import { getCookie } from "@/lib/cookies";
 import { downloadPdf } from "@/lib/pdf-export";
-import { Question } from "@/types/course.type";
+import { Question } from "@/types";
 
 export const exportService = {
     exportQuestionsPdf: async (questions: Question[], courseTitle: string, sessionName: string): Promise<void> => {
