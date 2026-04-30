@@ -262,7 +262,7 @@ export default function Student() {
     );
   }
 
-  const firstName = user.metadata?.firstName || "Élève";
+  const firstname = user.metadata?.firstname || "Élève";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-500/5 via-background to-indigo-500/10">
@@ -294,7 +294,7 @@ export default function Student() {
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
                 <GraduationCap className="h-4 w-4 text-green-600" />
                 <span className="text-sm font-medium text-green-700 dark:text-green-400">
-                  {firstName}
+                  {firstname}
                 </span>
               </div>
               <Link href="/profil">
@@ -359,10 +359,10 @@ export default function Student() {
             >
               <Avatar className="w-16 h-16 border-2 border-green-500/30 shadow-lg shadow-green-500/20">
                 {student?.photoUrl ? (
-                  <AvatarImage src={student.photoUrl} alt={firstName} className="object-cover" />
+                  <AvatarImage src={student.photoUrl} alt={firstname} className="object-cover" />
                 ) : null}
                 <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xl font-bold">
-                  {firstName.charAt(0).toUpperCase()}
+                  {firstname.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -385,7 +385,7 @@ export default function Student() {
                 className="text-3xl md:text-4xl font-bold"
                 data-testid="text-student-welcome"
               >
-                Salut, {firstName} !
+                Salut, {firstname} !
               </h1>
               <p className="text-muted-foreground">
                 Prêt à réviser avec Edesio ?
@@ -862,7 +862,7 @@ export default function Student() {
           onOpenChange={setChatbotOpen}
           cours={selectedCours}
           questions={coursQuestions}
-          studentName={firstName}
+          studentName={firstname}
           studentPhotoUrl={student?.photoUrl}
           onComplete={async (totalAnswered, correctAnswers) => {
             console.log("onComplete called:", { totalAnswered, correctAnswers, coursId: selectedCours.id });
