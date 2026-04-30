@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 import { useAuth } from "./use-auth";
-import { Course, CourseRanking, InsertStudent, InsertStudentSession, Question, QuestionCourse, Session, Student, StudentCourseStats } from "@/types";
+import { Course, CourseRanking, InsertStudentSession, Question, QuestionCourse, Session, Student, StudentCourseStats } from "@/types";
+import { studentService } from "@/services/student.service";
 
 interface JoinedSession extends Session {
   joinedAt: string;
@@ -15,7 +16,7 @@ export function useStudent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOrCreateEleve = useCallback(async () => {
+  const fetchOrCreateStudent = useCallback(async () => {
     if (!user) {
       setStudent(null);
       setLoading(false);
@@ -23,47 +24,13 @@ export function useStudent() {
     }
 
     try {
-      const { data: existingEleve, error: fetchError } = await supabase
-        .from("eleves")
-        .select("*")
-        .eq("supabase_user_id", user.id)
-        .maybeSingle();
-
-      if (fetchError) {
-        console.error("Error fetching eleve:", fetchError);
-        setError("Une erreur est survenue. Merci de réessayer.");
-        setLoading(false);
-        return;
-      }
-
-      if (existingEleve) {
-        setStudent(existingEleve);
+      const existingStudent = await studentService.getStudent();
+      
+      if (existingStudent) {
+        setStudent(existingStudent);
       } else {
-        const name =
-          user.metadata?.firstName && user.metadata?.lastName
-            ? `${user.metadata.firstName} ${user.metadata.lastName}`
-            : user.metadata?.firstName || "Élève";
-
-        const studentData: InsertStudent = {
-          supabaseUserId: user.id,
-          name,
-          email: user.email || "",
-        };
-
-        const { data: newEleve, error: insertError } = await supabase
-          .from("eleves")
-          .insert(studentData)
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error("Error creating eleve:", insertError);
-          setError("Une erreur est survenue. Merci de réessayer.");
-          setLoading(false);
-          return;
-        }
-
-        setStudent(newEleve);
+        const newStudent = await studentService.createStudent();
+        setStudent(newStudent);
       }
 
       setError(null);
@@ -118,9 +85,9 @@ export function useStudent() {
 
   useEffect(() => {
     if (!authLoading) {
-      fetchOrCreateEleve();
+      fetchOrCreateStudent();
     }
-  }, [authLoading, fetchOrCreateEleve]);
+  }, [authLoading, fetchOrCreateStudent]);
 
   useEffect(() => {
     if (student) {

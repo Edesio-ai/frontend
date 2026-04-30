@@ -24,5 +24,4 @@ export interface StudentCourseStats {
   createdAt: string;
 }
 
-export type InsertStudent = Omit<Student, "id" | "createdAt" | "photoUrl"> & { photoUrl?: string | null };
 export type InsertStudentSession = Omit<StudentSession, "id" | "joinedAt">;
