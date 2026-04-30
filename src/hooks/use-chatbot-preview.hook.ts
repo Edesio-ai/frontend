@@ -101,6 +101,10 @@ const startQuizMessages = [
   "Parfait ! Voici {count} questions pour tester tes connaissances.",
 ];
 
+const cheatMessages = [
+  "Bien essayé, mais ce n'est pas en trichant que l'on apprend !",
+]
+
 function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -308,23 +312,28 @@ export function useChatbotPreview() {
       answer: answer,
       explanation: question.explanation || "",
     }
+    let isCheating = false;
+
 
     if (state.retryMode) {
       try {
         const evaluation = await questionService.evaluateAnswer(body);
+        isCheating = evaluation.isCheating || false;
 
         const isReflectionValid = evaluation.score >= 0.3;
           
           if (isReflectionValid) {
             const feedback = pickRandom(afterRetryMessages);
+            const cheatMessage = pickRandom(cheatMessages);
             addBotMessage(
-              `${feedback}${question.explanation ? `\n\n${question.explanation}` : ""}`,
+              isCheating ? cheatMessage : `${feedback}${question.explanation ? `\n\n${question.explanation}` : ""}`,
               "feedback",
               { isCorrect: false }
             );
           } else {
+            const cheatMessage = pickRandom(cheatMessages);
             addBotMessage(
-              `Hmm, ta réponse ne correspond pas vraiment à la notion.\n\nLa bonne réponse était : ${correctAnswerDisplay(question.proposals, question.correctAnswers || [])}${question.explanation ? `\n\n${question.explanation}` : ""}\n\nPas de souci, passons à la suite !`,
+              isCheating ? cheatMessage : `Hmm, ta réponse ne correspond pas vraiment à la notion.\n\nLa bonne réponse était : ${correctAnswerDisplay(question.proposals, question.correctAnswers || [])}${question.explanation ? `\n\n${question.explanation}` : ""}\n\nPas de souci, passons à la suite !`,
               "feedback",
               { isCorrect: false }
             );
@@ -354,6 +363,7 @@ export function useChatbotPreview() {
     } else {
       const evaluation = await questionService.evaluateAnswer(body);
       isCorrect = evaluation.score >= 0.7;
+      isCheating = evaluation.isCheating || false;
     }
 
     dispatch({ type: "ANSWER_QUESTION", isCorrect });
@@ -380,8 +390,10 @@ export function useChatbotPreview() {
         } else {
           // For open questions: ask for reflection/explanation
           const retryPrompt = pickRandom(retryEncouragements);
+          const cheatMessage = pickRandom(cheatMessages);
+
           addBotMessage(
-            `${encouragement}\n\nLa bonne réponse est : ${correctAnswerDisplay(question.proposals, question.correctAnswers || [])}\n\n${retryPrompt}`,
+            isCheating ? cheatMessage : `${cheatMessage}\n\n${encouragement}\n\nLa bonne réponse est : ${correctAnswerDisplay(question.proposals, question.correctAnswers || [])}\n\n${retryPrompt}`,
             "feedback",
             { isCorrect: false }
           );
