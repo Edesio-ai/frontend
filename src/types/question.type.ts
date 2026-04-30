@@ -18,7 +18,7 @@ export interface Question {
   courseId: string;
   type: QuestionType;
   questionText: string;
-  proposals: unknown;
+  proposals: string[];
   correctAnswers: string[] | null;
   explanation: string | null;
   createdAt?: string;
@@ -41,4 +41,15 @@ export interface UpdateQuestionRequest {
   correctAnswers?: string[];
   explanation?: string | null;
   positionOrder?: number | null;
+}
+
+export interface QuestionCourse {
+  id: string;
+  courseId: string;
+  studentId: string;
+  questionText: string;
+  answer: string | null;
+  answeredAt: string | null;
+  createdAt: string;
+  studentName?: string;
 }
