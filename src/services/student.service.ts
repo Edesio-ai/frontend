@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { Student } from "@/types";
+import { JoinedSession, Student } from "@/types";
 
 export const studentService = {
     getStudent: async (): Promise<Student> => {
@@ -10,6 +10,10 @@ export const studentService = {
         const response = await apiFetch<Student>(`/api/student`, {
             method: "POST",
         });
+        return response;
+    },
+    getJoinedSessions: async (studentId: string): Promise<JoinedSession[]> => {
+        const response = await apiFetch<JoinedSession[]>(`/api/student/${studentId}/joined-sessions`);
         return response;
     },
 };
