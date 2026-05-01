@@ -16,4 +16,9 @@ export const studentService = {
         const response = await apiFetch<JoinedSession[]>(`/api/student/${studentId}/joined-sessions`);
         return response;
     },
+    joinSessionByCode: async (code: string): Promise<void> => {
+        await apiFetch<void>(`/api/student/join-session/${code}`, {
+            method: "POST",
+        });
+    },
 };
