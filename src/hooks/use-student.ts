@@ -2,12 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 import { useAuth } from "./use-auth";
-import { Course, CourseRanking, InsertStudentSession, Question, QuestionCourse, Session, Student, StudentCourseStats } from "@/types";
+import { Course, CourseRanking, InsertStudentSession, JoinedSession, Question, QuestionCourse, Session, Student, StudentCourseStats } from "@/types";
 import { studentService } from "@/services/student.service";
 
-interface JoinedSession extends Session {
-  joinedAt: string;
-}
 
 export function useStudent() {
   const { user, loading: authLoading } = useAuth();
@@ -49,31 +46,7 @@ export function useStudent() {
     }
 
     try {
-      const { data: memberships, error: fetchError } = await supabase
-        .from("eleve_sessions")
-        .select(`
-          joined_at,
-          sessions (*)
-        `)
-        .eq("student_id", student.id)
-        .order("joined_at", { ascending: false });
-
-      if (fetchError) {
-        console.error("Error fetching joined sessions:", fetchError);
-        setError("Une erreur est survenue. Merci de réessayer.");
-        return;
-      }
-
-      const sessions: JoinedSession[] = [];
-      for (const m of memberships || []) {
-        const sessionData = m.sessions as unknown as Session | null;
-        if (sessionData) {
-          sessions.push({
-            ...sessionData,
-            joinedAt: m.joined_at,
-          });
-        }
-      }
+      const sessions = await studentService.getJoinedSessions(student.id);
 
       setJoinedSessions(sessions);
       setError(null);

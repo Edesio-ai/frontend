@@ -7,6 +7,10 @@ export interface Session {
     createdAt: string;
 }
 
+export interface JoinedSession extends Session {
+    joinedAt: string;
+}
+
 export type SessionLanguage = 'francais' | 'anglais' | 'espagnol' | 'allemand';
 
 export interface SessionWithStudentCount extends Session {
