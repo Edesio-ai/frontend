@@ -69,7 +69,7 @@ export function useStudent() {
   }, [student, fetchJoinedSessions]);
 
   const joinSessionByCode = useCallback(
-    async (code: string): Promise<{ success: boolean; error?: string; session?: Session }> => {
+    async (code: string): Promise<{ success: boolean; error?: string}> => {
       if (!student) {
         return { success: false, error: "Vous devez être connecté pour rejoindre une session." };
       }
@@ -77,45 +77,10 @@ export function useStudent() {
       const normalizedCode = code.toUpperCase().trim();
 
       try {
-        const { data: session, error: sessionError } = await supabase
-          .from("sessions")
-          .select("*")
-          .eq("code", normalizedCode)
-          .maybeSingle();
-
-        if (sessionError) {
-          console.error("Error finding session:", sessionError);
-          return { success: false, error: "Erreur lors de la recherche de la session." };
-        }
-
-        if (!session) {
-          return { success: false, error: "Aucune session trouvée avec ce code." };
-        }
-
-        const existingMembership = joinedSessions.find((s) => s.id === session.id);
-        if (existingMembership) {
-          return { success: false, error: "Vous avez déjà rejoint cette session." };
-        }
-
-        const membershipData: InsertStudentSession = {
-          studentId: student.id,
-          sessionId: session.id,
-        };
-
-        const { error: joinError } = await supabase
-          .from("eleve_sessions")
-          .insert(membershipData);
-
-        if (joinError) {
-          console.error("Error joining session:", joinError);
-          if (joinError.code === "23505") {
-            return { success: false, error: "Vous avez déjà rejoint cette session." };
-          }
-          return { success: false, error: "Erreur lors de l'inscription à la session." };
-        }
+        await studentService.joinSessionByCode(normalizedCode);
 
         await fetchJoinedSessions();
-        return { success: true, session };
+        return { success: true };
       } catch (err) {
         console.error("Unexpected error:", err);
         return { success: false, error: "Une erreur inattendue s'est produite." };
