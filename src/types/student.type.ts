@@ -25,3 +25,7 @@ export interface StudentCourseStats {
 }
 
 export type InsertStudentSession = Omit<StudentSession, "id" | "joinedAt">;
+
+export interface SessionStudent extends Omit<Student, "createdAt" | "supabaseUserId"> {
+  joinedAt: string;
+}

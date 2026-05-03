@@ -12,11 +12,11 @@ import type {
   CourseQuestion,
   InsertSession,
   InsertCourse,
-  SessionParticipant,
   CourseRanking,
   CreateQuestionRequest,
   UpdateQuestionRequest,
-  UpdateCourseRequest
+  UpdateCourseRequest,
+  SessionStudent
 } from "@/types";
 import { teacherService } from "@/services/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
@@ -26,29 +26,8 @@ import { questionService } from "@/services/question.service";
 import { GenerateQuestionsConfig } from "@/types/question.type";
 import { fileService } from "@/services/file.service";
 import { exportService } from "@/services/export.service";
-type CoursesTableRow = {
-  id: string;
-  session_id: string;
-  title: string;
-  description: string | null;
-  text_content: string | null;
-  validated_questions: boolean | null;
-  position_order: number | null;
-  created_at: string;
-};
+import { studentService } from "@/services/student.service";
 
-function courseFromCoursesRow(row: CoursesTableRow): Course {
-  return {
-    id: row.id,
-    sessionId: row.session_id,
-    title: row.title,
-    description: row.description,
-    contentText: row.text_content,
-    validatedQuestions: Boolean(row.validated_questions),
-    positionOrder: row.position_order ?? undefined,
-    createdAt: row.created_at,
-  };
-}
 
 type CourseQuestionsTableRow = {
   id: string;
@@ -339,8 +318,6 @@ export function useTeacher() {
 
 
   const handleUploadPdfForCours = async (courseId: string, file: File): Promise<CourseFile> => {
-    console.log("🚀 ~ handleUploadPdfForCours ~ courseId:", courseId)
-    console.log("🚀 ~ handleUploadPdfForCours ~ file:", file)
     try {
       const { data } = await courseService.uploadFile(courseId, file);
       return data;
@@ -442,14 +419,8 @@ export function useTeacher() {
 
   const getPdfUrl = useCallback(
     async (fileId: string, fileName: string): Promise<void> => {
-      console.log("🚀 ~ useTeacher ~ fileId:", fileId)
       try {
         await exportService.exportCourseFilePdf(fileId, fileName);
-        // const { data } = await supabase.storage
-        //   .from("cours-pdf")
-        //   .createSignedUrl(filePath, 3600);
-
-        // return data?.signedUrl || null;
       } catch (err) {
         console.error("Error getting PDF URL:", err);
         setError("Une erreur est survenue. Merci de réessayer.");
@@ -568,48 +539,12 @@ export function useTeacher() {
     []
   );
 
-  const fetchSessionParticipants = useCallback(
-    async (sessionId: string): Promise<SessionParticipant[]> => {
+  const fetchSessionStudents = useCallback(
+    async (sessionId: string): Promise<SessionStudent[]> => {
       try {
-        const { data, error: fetchError } = await supabase
-          .from("student_sessions")
-          .select(`
-            joined_at,
-            students (
-              id,
-              name,
-              email,
-              photo_url
-            )
-          `)
-          .eq("session_id", sessionId)
-          .order("joined_at", { ascending: false });
+        const studentsSessions = await studentService.getSessionStudents(sessionId);
 
-        if (fetchError) {
-          console.error("Error fetching session participants:", fetchError);
-          return [];
-        }
-
-        const participants: SessionParticipant[] = [];
-        for (const row of data || []) {
-          const studentRow = row.students as unknown as {
-            id: string;
-            name: string;
-            email: string;
-            photo_url: string | null;
-          } | null;
-          if (studentRow) {
-            participants.push({
-              studentId: studentRow.id,
-              name: studentRow.name,
-              email: studentRow.email,
-              photoUrl: studentRow.photo_url,
-              joinedAt: row.joined_at,
-            });
-          }
-        }
-
-        return participants;
+        return studentsSessions;
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
@@ -828,7 +763,7 @@ export function useTeacher() {
     generateQuestions,
     validateQuestions,
     refreshSessions: fetchSessions,
-    fetchSessionParticipants,
+    fetchSessionStudents,
     fetchCourseRanking,
     fetchQuestionsCourseForCourse,
     fetchPendingQuestionsCount,
