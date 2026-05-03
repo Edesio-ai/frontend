@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/use-auth";
 
 import type {
@@ -14,6 +13,7 @@ import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { tokenService } from "@/services/token.service";
 import { sessionService } from "@/services/session.service";
 import { courseService } from "@/services/course.service";
+import { studentService } from "@/services/student.service";
 
 interface EtablissementStats {
   totalTeachers: number;
@@ -24,7 +24,7 @@ interface EtablissementStats {
 export function useEstablishment() {
   const { user, loading: authLoading } = useAuth();
   const [establishment, setEstablishment] = useState<Establishment | null>(null);
-  const [professeurs, setProfesseurs] = useState<TeacherWithStats[]>([]);
+  const [teachers, setTeachers] = useState<TeacherWithStats[]>([]);
   const [invitationTokens, setInvitationTokens] = useState<InvitationToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +40,7 @@ export function useEstablishment() {
       const establishment = await establishmentService.createEstablishment(user?.id || "", name, user?.email || "");
       setEstablishment(establishment);
       setStats({ totalTeachers: 0, totalSessions: 0, totalStudents: 0 });
-      setProfesseurs([]);
+      setTeachers([]);
       return establishment;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Merci de réessayer.";
@@ -53,7 +53,7 @@ export function useEstablishment() {
     try {
       const response = await establishmentService.getEstablishmentStats();
       setEstablishment(response.establishment);
-      setProfesseurs(response.teachers);
+      setTeachers(response.teachers);
       setStats(response.stats);
       return response;
     } catch (err) {
@@ -176,46 +176,11 @@ export function useEstablishment() {
   const getSessionStudents = useCallback(
     async (sessionId: string): Promise<Student[]> => {
       try {
-        const { data: links, error: esError } = await supabase
-          .from("student_sessions")
-          .select("student_id")
-          .eq("session_id", sessionId);
+        const studentsSessions = await studentService.getSessionStudents(sessionId);
+        const studentIds = studentsSessions.map((studentSession) => studentSession.id);
+        const students = await studentService.getStudentsByIds(studentIds);
 
-        if (esError || !links?.length) {
-          return [];
-        }
-
-        const studentIds = links.map((row) => row.student_id);
-        const { data: rows, error: studentsError } = await supabase
-          .from("students")
-          .select("*")
-          .in("id", studentIds);
-
-        if (studentsError || !rows) {
-          console.error("Error fetching students:", studentsError);
-          return [];
-        }
-
-        type StudentsRow = {
-          id: string;
-          supabase_user_id: string;
-          name: string;
-          email: string;
-          photo_url: string | null;
-          created_at: string;
-        };
-
-        return rows.map((row) => {
-          const r = row as StudentsRow;
-          return {
-            id: r.id,
-            supabaseUserId: r.supabase_user_id,
-            name: r.name,
-            email: r.email,
-            photoUrl: r.photo_url,
-            createdAt: r.created_at,
-          };
-        });
+        return students;
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
@@ -262,7 +227,7 @@ export function useEstablishment() {
 
   return {
     establishment,
-    professeurs,
+    teachers,
     invitationTokens,
     stats,
     loading: loading || authLoading,

@@ -46,7 +46,7 @@ export default function Establishment() {
   const { logout, getUserRole, loading: authLoading, user } = useAuth();
   const {
     establishment,
-    professeurs,
+    teachers,
     invitationTokens,
     stats,
     loading,
@@ -92,7 +92,7 @@ export default function Establishment() {
         loading: loading,
       },
   ];
-  }, [professeurs, stats]);
+  }, [teachers, stats]);
 
   const role = getUserRole();
 
@@ -270,7 +270,7 @@ export default function Establishment() {
               Professeurs ({stats.totalTeachers})
             </h2>
 
-            {professeurs.length === 0 ? (
+            {teachers.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <p>Aucun teacher dans votre établissement</p>
                 <p className="text-sm mt-1">
@@ -288,10 +288,10 @@ export default function Establishment() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {professeurs.map((prof: TeacherWithStats) => (
+                  {teachers.map((teacher: TeacherWithStats) => (
                     <TeacherRow
-                      key={prof.id}
-                      teacher={prof}
+                      key={teacher.id}
+                      teacher={teacher}
                       onViewStudents={handleViewStudents}
                       onViewCourse={handleViewCourse}
                       getSessionCourse={getSessionCourse}

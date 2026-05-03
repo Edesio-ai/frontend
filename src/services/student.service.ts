@@ -25,4 +25,11 @@ export const studentService = {
             method: "POST",
         });
     },
+    getStudentsByIds: async (studentIds: string[]): Promise<Student[]> => {
+        const response = await apiFetch<Student[]>(`/api/student/batch`, {
+            method: "POST",
+            body: JSON.stringify({studentIds}),
+        });
+        return response;
+    },
 };
