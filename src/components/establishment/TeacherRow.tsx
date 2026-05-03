@@ -69,7 +69,7 @@ export function TeacherRow({
                                                 data-testid={`button-view-students-${session.id}`}
                                             >
                                                 <Users className="h-4 w-4 mr-1" />
-                                                {session.studentsCount} élève(s)
+                                                {session.studentsCount || 0} élève(s)
                                             </Button>
                                         </div>
                                         <SessionCoursesList

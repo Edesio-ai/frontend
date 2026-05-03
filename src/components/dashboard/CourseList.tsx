@@ -80,7 +80,6 @@ interface CourseListProps {
   ) => Promise<{ success: boolean; questionsCreated?: number; error?: string }>;
   validateQuestions: (courseId: string) => Promise<{ success: boolean; cours?: Course; error?: string }>;
   fetchCourseRanking?: (courseId: string) => Promise<CourseRanking[]>;
-  onClose: () => void;
   initialCoursToOpen?: Course | null;
   onInitialCoursOpened?: () => void;
 }

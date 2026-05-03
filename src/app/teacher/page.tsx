@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -15,29 +15,21 @@ import {
 } from "@/components/ui/dialog";
 import {
   Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
 } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { useAuth } from "@/hooks/use-auth";
 import { useTeacher } from "@/hooks/use-teacher";
-import { CourseList, QuestionsCoursePanel } from "@/components/dashboard";
 import { SuggestionsModal } from "@/components/SuggestionsModal";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
 import { useToast } from "@/hooks/use-toast";
-import type { Session, SessionParticipant, SessionLanguage, Course } from "@/types";
+import type { Session, Course, SessionStudent } from "@/types";
 import {
   LogOut,
   Loader2,
-  Users,
   AlertCircle,
   UserCog,
   BookOpen,
-  Plus,
   GraduationCap,
-  MessageCircle,
   Lightbulb
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
@@ -49,6 +41,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateSessionFormValues } from "@/types/zod.type";
 import { createSessionFormSchema } from "@/utils/constants/zod";
 import { ClassListSection } from "@/components/teacher/section/classListSection";
+import { TabsListHeader } from "@/components/teacher/tabs/TabsList";
+import { CourseTab } from "@/components/teacher/tabs/CourseTab";
+import { StudentTab } from "@/components/teacher/tabs/StudentTab";
+import { QuestionCourseTab } from "@/components/teacher/tabs/QuestionCourseTab";
 
 export default function Teacher() {
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
@@ -77,7 +73,7 @@ export default function Teacher() {
     generateQuestions,
     validateQuestions,
     refreshSessions,
-    fetchSessionParticipants,
+    fetchSessionStudents,
     fetchCourseRanking,
     fetchQuestionsCourseForCourse,
     fetchPendingQuestionsCount,
@@ -94,9 +90,9 @@ export default function Teacher() {
   const [selectedPdfFiles, setSelectedPdfFiles] = useState<File[]>([]);
 
 
-  const [sessionTab, setSessionTab] = useState<"cours" | "eleves" | "qa">("cours");
-  const [participants, setParticipants] = useState<SessionParticipant[]>([]);
-  const [loadingParticipants, setLoadingParticipants] = useState(false);
+  const [sessionTab, setSessionTab] = useState<"course" | "students" | "qa">("course");
+  const [sessionStudents, setSessionStudents] = useState<SessionStudent[]>([]);
+  const [loadingSessionStudents, setLoadingSessionStudents] = useState(false);
   const [pendingQuestionsCount, setPendingQuestionsCount] = useState<number>(0);
   const [sessionPendingCounts, setSessionPendingCounts] = useState<Record<string, number>>({});
   const [newlyCreatedCours, setNewlyCreatedCourse] = useState<Course | null>(null);
@@ -159,8 +155,8 @@ export default function Teacher() {
 
   const handleSelectSession = async (session: Session) => {
     setSelectedSession(session);
-    setSessionTab("cours");
-    setParticipants([]);
+    setSessionTab("course");
+    setSessionStudents([]);
     setPendingQuestionsCount(0);
     const count = await fetchPendingQuestionsCount(session.id);
     setPendingQuestionsCount(count);
@@ -168,24 +164,25 @@ export default function Teacher() {
 
   const handleCloseSessionModal = () => {
     setSelectedSession(null);
-    setSessionTab("cours");
-    setParticipants([]);
+    setSessionTab("course");
+    setSessionStudents([]);
     setPendingQuestionsCount(0);
     setNewlyCreatedCourse(null);
   };
 
-  const loadParticipants = async (sessionId: string) => {
-    setLoadingParticipants(true);
-    const result = await fetchSessionParticipants(sessionId);
-    setParticipants(result);
-    setLoadingParticipants(false);
+  const loadSessionStudents = async (sessionId: string) => {
+    setLoadingSessionStudents(true);
+    const result = await fetchSessionStudents(sessionId);
+    setSessionStudents(result);
+    setLoadingSessionStudents(false);
   };
 
   const handleTabChange = (value: string) => {
-    const tab = value as "cours" | "eleves" | "qa";
+    const tab = value as "course" | "students" | "qa";
+    console.log("🚀 ~ handleTabChange ~ tab:", tab)
     setSessionTab(tab);
-    if (tab === "eleves" && selectedSession && participants.length === 0) {
-      loadParticipants(selectedSession.id);
+    if (tab === "students" && selectedSession && sessionStudents.length === 0) {
+      loadSessionStudents(selectedSession.id);
     }
   };
 
@@ -404,113 +401,42 @@ export default function Teacher() {
 
             {selectedSession && (
               <Tabs value={sessionTab} onValueChange={handleTabChange} className="flex-1 flex flex-col overflow-hidden">
-                <TabsList className="mx-6 mt-4 w-fit" data-testid="session-tabs">
-                  <TabsTrigger value="cours" data-testid="tab-cours">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Course
-                  </TabsTrigger>
-                  <TabsTrigger value="eleves" data-testid="tab-eleves">
-                    <Users className="h-4 w-4 mr-2" />
-                    Élèves ({participants.length || "..."})
-                  </TabsTrigger>
-                  <TabsTrigger value="qa" data-testid="tab-qa" className="relative">
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Questions
-                    {pendingQuestionsCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center">
-                        {pendingQuestionsCount}
-                      </span>
-                    )}
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="cours" className="flex-1 overflow-y-auto m-0 mt-0">
-                  <div className="p-6">
-                    <CourseList
-                      session={selectedSession}
-                      fetchCourses={fetchCourses}
-                      createCourse={createCourse}
-                      updateCourse={updateCourse}
-                      deleteCourse={deleteCourse}
-                      reorderCourse={reorderCourse}
-                      uploadPdfForCourse={uploadPdfForCourse}
-                      fetchCourseFiles={fetchCourseFiles}
-                      deleteCourseFile={deleteCourseFile}
-                      getPdfUrl={getPdfUrl}
-                      fetchQuestions={fetchQuestions}
-                      updateQuestion={updateQuestion}
-                      deleteQuestion={deleteQuestion}
-                      createQuestion={createQuestion}
-                      reorderQuestions={reorderQuestions}
-                      generateQuestions={generateQuestions}
-                      validateQuestions={validateQuestions}
-                      fetchCourseRanking={fetchCourseRanking}
-                      onClose={handleCloseSessionModal}
-                      initialCoursToOpen={newlyCreatedCours}
-                      onInitialCoursOpened={() => setNewlyCreatedCourse(null)}
-                    />
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="eleves" className="flex-1 overflow-y-auto m-0 mt-0">
-                  <div className="p-6">
-                    {loadingParticipants ? (
-                      <div className="flex items-center justify-center py-12">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                      </div>
-                    ) : participants.length === 0 ? (
-                      <div className="text-center py-12">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center mx-auto mb-4">
-                          <Users className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                        <h3 className="font-semibold text-lg mb-2">Aucun élève inscrit</h3>
-                        <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                          Partagez le code <span className="font-mono font-semibold text-primary">{selectedSession.code}</span> avec vos élèves pour qu'ils rejoignent cette session.
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {participants.map((participant) => (
-                          <div
-                            key={participant.studentId}
-                            className="flex items-center gap-4 p-4 rounded-lg bg-muted/30 border"
-                            data-testid={`participant-${participant.studentId}`}
-                          >
-                            <Avatar className="h-10 w-10">
-                              {participant.photoUrl ? (
-                                <AvatarImage src={participant.photoUrl} alt={participant.name} />
-                              ) : null}
-                              <AvatarFallback className="bg-primary/10 text-primary font-medium">
-                                {participant.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium truncate">{participant.name}</p>
-                              <p className="text-sm text-muted-foreground truncate">{participant.email}</p>
-                            </div>
-                            <div className="text-right text-sm text-muted-foreground">
-                              <p>Inscrit le</p>
-                              <p>{new Date(participant.joinedAt).toLocaleDateString("fr-FR")}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="qa" className="flex-1 overflow-y-auto m-0 mt-0">
-                  <div className="p-6">
-                    <QuestionsCoursePanel
-                      sessionId={selectedSession.id}
-                      fetchCourses={fetchCourses}
-                      fetchQuestionsCourseForCourse={fetchQuestionsCourseForCourse}
-                      answerQuestionCourse={answerQuestionCourse}
-                      deleteQuestionCourse={deleteQuestionCourse}
-                      onPendingCountChange={() => refreshPendingCount(selectedSession.id)}
-                    />
-                  </div>
-                </TabsContent>
+                <TabsListHeader sessionStudents={sessionStudents} pendingQuestionsCount={pendingQuestionsCount} />
+               <CourseTab
+                  session={selectedSession}
+                  fetchCourses={fetchCourses}
+                  createCourse={createCourse}
+                  updateCourse={updateCourse}
+                  deleteCourse={deleteCourse}
+                  reorderCourse={reorderCourse}
+                  uploadPdfForCourse={uploadPdfForCourse}
+                  fetchCourseFiles={fetchCourseFiles}
+                  deleteCourseFile={deleteCourseFile}
+                  getPdfUrl={getPdfUrl}
+                  fetchQuestions={fetchQuestions}
+                  updateQuestion={updateQuestion}
+                  deleteQuestion={deleteQuestion}
+                  createQuestion={createQuestion}
+                  reorderQuestions={reorderQuestions}
+                  generateQuestions={generateQuestions}
+                  validateQuestions={validateQuestions}
+                  fetchCourseRanking={fetchCourseRanking}
+                  newlyCreatedCours={newlyCreatedCours}
+                  setNewlyCreatedCourse={setNewlyCreatedCourse}
+                />
+                <StudentTab
+                  loadingSessionStudents={loadingSessionStudents}
+                  sessionStudents={sessionStudents}
+                  selectedSession={selectedSession}
+                />
+                <QuestionCourseTab
+                  sessionId={selectedSession?.id || ""}
+                  fetchCourses={fetchCourses}
+                  fetchQuestionsCourseForCourse={fetchQuestionsCourseForCourse}
+                  answerQuestionCourse={answerQuestionCourse}
+                  deleteQuestionCourse={deleteQuestionCourse}
+                  onPendingCountChange={() => refreshPendingCount(selectedSession.id)}
+                />
               </Tabs>
             )}
           </DialogContent>
