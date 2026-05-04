@@ -2,6 +2,10 @@ import { apiFetch } from "@/lib/api-client";
 import { CreateQuestionRequest, EvaluateAnswerRequest, GenerateQuestionsConfig, Question, UpdateQuestionRequest } from "@/types/question.type";
 
 export const questionService = {
+  getAnsweredQuestionsCourse: async (): Promise<{ answeredQuestions: number }> => {
+    const response = await apiFetch<{ answeredQuestions: number }>(`/api/question/answered/`);
+    return response;
+  },
   getPendingQuestionsCount: async (sessionId: string): Promise<{ count: number }> => {
     const response = await apiFetch<{ count: number }>(`/api/question/pending/${sessionId}`);
     return response;

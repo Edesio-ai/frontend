@@ -74,7 +74,7 @@ export default function Student() {
     fetchCoursClassement,
     askQuestionCours,
     fetchQuestionsCoursForCours,
-    countAnsweredQuestionsForCours,
+    countAnsweredQuestionsForCourse,
   } = useStudent();
   const { toast } = useToast();
   const router = useRouter();
@@ -194,14 +194,14 @@ export default function Student() {
         setLoadingCourses((prev) => ({ ...prev, [sessionId]: false }));
         
         for (const cours of courses) {
-          const count = await countAnsweredQuestionsForCours(cours.id);
+          const count = await countAnsweredQuestionsForCourse();
           if (count > 0) {
             setAnsweredQuestionsCount((prev) => ({ ...prev, [cours.id]: count }));
           }
         }
       }
     },
-    [expandedSessionId, sessionCourses, fetchCourse, countAnsweredQuestionsForCours]
+    [expandedSessionId, sessionCourses, fetchCourse, countAnsweredQuestionsForCourse]
   );
 
   const handleOpenChatbot = async (cours: Course) => {
