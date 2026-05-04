@@ -46,8 +46,8 @@ export const questionService = {
     });
     return response;
   },
-  evaluateAnswer: async (body: EvaluateAnswerRequest): Promise<{ score: number, isCheating: boolean }> => {
-    const response = await apiFetch<{ score: number, isCheating: boolean }>(`/api/question/evaluate-answer`, {
+  evaluateAnswer: async (body: EvaluateAnswerRequest): Promise<{ score: number, isCheating: boolean, feedback: string, missingElements: string[] }> => {
+    const response = await apiFetch<{ score: number, isCheating: boolean, feedback: string, missingElements: string[] }>(`/api/question/evaluate-answer`, {
       method: "POST",
       body: JSON.stringify(body),
     });

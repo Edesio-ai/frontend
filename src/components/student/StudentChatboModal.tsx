@@ -24,7 +24,8 @@ import {
   Star,
   ArrowRight,
 } from "lucide-react";
-import { Course, Question } from "@/types";
+import { Course, EvaluateAnswerRequest, Question } from "@/types";
+import { questionService } from "@/services/question.service";
 
 interface StudentChatbotModalProps {
   open: boolean;
@@ -374,6 +375,14 @@ export function StudentChatbotModal({
   const [isRetryAttempt, setIsRetryAttempt] = useState(false);
   const [waitingForRetry, setWaitingForRetry] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const chatStateRef = useRef(chatState);
+  chatStateRef.current = chatState;
+  const studentNameRef = useRef(studentName);
+  studentNameRef.current = studentName;
+  const coursTitleRef = useRef(cours.title);
+  coursTitleRef.current = cours.title;
+  const [conversationNonce, setConversationNonce] = useState(0);
+  const askQuestionRef = useRef<(index: number) => void>(() => {});
 
   const shuffledQuestions = useMemo(() => {
     if (questions.length === 0) return [];
@@ -446,56 +455,6 @@ export function StudentChatbotModal({
   };
 
   useEffect(() => {
-    if (open && chatState === "idle" && shuffledQuestions.length > 0) {
-      setMessages([]);
-      setCurrentQuestionIndex(0);
-      setScore(0);
-      setTotalAnswered(0);
-      setInputValue("");
-      setSelectedMultiIndices([]);
-      setChatState("greeting");
-
-      setTimeout(() => {
-        addMessage({
-          sender: "bot",
-          text: `Bonjour${studentName ? ` ${studentName}` : ""} ! Je suis Edesio, je vais t'aider à réviser "${cours.title}".`,
-          type: "greeting",
-        });
-
-        setTimeout(() => {
-          addMessage({
-            sender: "bot",
-            text: `J'ai ${shuffledQuestions.length} questions pour toi. Prêt(e) à réviser ?`,
-            type: "greeting",
-          });
-          setTimeout(() => {
-            askQuestion(0);
-          }, 1000);
-        }, 1500);
-      }, 500);
-    } else if (open && chatState === "idle" && shuffledQuestions.length === 0) {
-      setMessages([]);
-      setChatState("greeting");
-      
-      setTimeout(() => {
-        addMessage({
-          sender: "bot",
-          text: `Bonjour${studentName ? ` ${studentName}` : ""} ! Je suis Edesio. Malheureusement, il n'y a pas encore de questions pour "${cours.title}".`,
-          type: "greeting",
-        });
-        setTimeout(() => {
-          addMessage({
-            sender: "bot",
-            text: "Demande à ton professeur de générer des questions pour ce cours !",
-            type: "no_questions",
-          });
-          setChatState("completed");
-        }, 1500);
-      }, 500);
-    }
-  }, [open, chatState, cours.title, shuffledQuestions.length, studentName]);
-
-  useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
@@ -523,6 +482,85 @@ export function StudentChatbotModal({
     setSelectedMultiIndices([]);
     setChatState("asking");
   };
+
+  askQuestionRef.current = askQuestion;
+
+  useEffect(() => {
+    if (!open || chatStateRef.current !== "idle") {
+      return;
+    }
+
+    let cancelled = false;
+    let t1: ReturnType<typeof setTimeout> | undefined;
+    let t2: ReturnType<typeof setTimeout> | undefined;
+    let t3: ReturnType<typeof setTimeout> | undefined;
+
+    const name = studentNameRef.current;
+    const title = coursTitleRef.current;
+
+    if (shuffledQuestions.length > 0) {
+      setMessages([]);
+      setCurrentQuestionIndex(0);
+      setScore(0);
+      setTotalAnswered(0);
+      setInputValue("");
+      setSelectedMultiIndices([]);
+
+      t1 = setTimeout(() => {
+        if (cancelled) return;
+        setChatState("greeting");
+        addMessage({
+          sender: "bot",
+          text: `Bonjour${name ? ` ${name}` : ""} ! Je suis Edesio, je vais t'aider à réviser "${title}".`,
+          type: "greeting",
+        });
+
+        if (cancelled) return;
+
+        t2 = setTimeout(() => {
+          if (cancelled) return;
+          addMessage({
+            sender: "bot",
+            text: `J'ai ${shuffledQuestions.length} questions pour toi. Prêt(e) à réviser ?`,
+            type: "greeting",
+          });
+          if (cancelled) return;
+          t3 = setTimeout(() => {
+            if (cancelled) return;
+            askQuestionRef.current(0);
+          }, 1000);
+        }, 1500);
+      }, 500);
+    } else {
+      setMessages([]);
+      t1 = setTimeout(() => {
+        if (cancelled) return;
+        setChatState("greeting");
+        addMessage({
+          sender: "bot",
+          text: `Bonjour${name ? ` ${name}` : ""} ! Je suis Edesio. Malheureusement, il n'y a pas encore de questions pour "${title}".`,
+          type: "greeting",
+        });
+        if (cancelled) return;
+        t2 = setTimeout(() => {
+          if (cancelled) return;
+          addMessage({
+            sender: "bot",
+            text: "Demande à ton professeur de générer des questions pour ce cours !",
+            type: "no_questions",
+          });
+          setChatState("completed");
+        }, 1500);
+      }, 500);
+    }
+
+    return () => {
+      cancelled = true;
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, [open, cours.id, shuffledQuestions.length, conversationNonce]);
 
   const handleQCMAnswer = (selectedIndex: number) => {
     if (isProcessing || waitingForAcknowledge) return;
@@ -600,29 +638,15 @@ export function StudentChatbotModal({
     });
 
     try {
-      // Add timeout to prevent infinite loading
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
-      
-      const response = await fetch("/api/evaluate-answer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          question: question.questionText,
-          correctAnswer: question.correctAnswers?.[0] || "",
-          studentAnswer: answer,
-          explication: question.explanation || "",
-        }),
-        signal: controller.signal,
-      });
-      
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de l'évaluation");
+      const body: EvaluateAnswerRequest = {
+        questionText: question.questionText,
+        correctAnswer: question.correctAnswers?.[0] || "",
+        answer: answer,
+        explanation: question.explanation || "",
       }
 
-      const evaluation = await response.json();
+      const evaluation = await questionService.evaluateAnswer(body);
+
       processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] || "", evaluation.missingElements);
     } catch (error) {
       console.error("Error evaluating answer:", error);
@@ -800,6 +824,7 @@ export function StudentChatbotModal({
     setIsRetryAttempt(false);
     setWaitingForRetry(false);
     setChatState("idle");
+    setConversationNonce((n) => n + 1);
   };
 
   const handleClose = (isOpen: boolean) => {
