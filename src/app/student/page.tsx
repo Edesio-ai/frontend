@@ -93,8 +93,8 @@ export default function Student() {
   const [loadingCourses, setLoadingCourses] = useState<Record<string, boolean>>({});
   const [selectedCoursIdPerSession, setSelectedCoursIdPerSession] = useState<Record<string, string>>({});
 
-  const [selectedCours, setSelectedCours] = useState<Course | null>(null);
-  const [coursQuestions, setCoursQuestions] = useState<Question[]>([]);
+  const [selectedCours, setSelectedCourse] = useState<Course | null>(null);
+  const [coursQuestions, setCourseQuestions] = useState<Question[]>([]);
   const [chatbotOpen, setChatbotOpen] = useState(false);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
 
@@ -204,10 +204,10 @@ export default function Student() {
   );
 
   const handleOpenChatbot = async (cours: Course) => {
-    setSelectedCours(cours);
+    setSelectedCourse(cours);
     setLoadingQuestions(true);
     const questions = await fetchQuestions(cours.id);
-    setCoursQuestions(questions);
+    setCourseQuestions(questions);
     setLoadingQuestions(false);
     setChatbotOpen(true);
   };

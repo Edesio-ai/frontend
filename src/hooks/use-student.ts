@@ -106,18 +106,9 @@ export function useStudent() {
   );
 
   const fetchQuestions = useCallback(
-    async (coursId: string): Promise<Question[]> => {
+    async (courseId: string): Promise<Question[]> => {
       try {
-        const { data, error: fetchError } = await supabase
-          .from("questions")
-          .select("*")
-          .eq("cours_id", coursId)
-          .order("created_at", { ascending: true });
-
-        if (fetchError) {
-          console.error("Error fetching questions:", fetchError);
-          return [];
-        }
+        const data = await questionService.getCourseQuestions(courseId);
 
         return data || [];
       } catch (err) {
