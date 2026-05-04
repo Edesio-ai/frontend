@@ -2,6 +2,15 @@ import { apiFetch } from "@/lib/api-client";
 import { JoinedSession, SessionStudent, Student } from "@/types";
 
 export const studentService = {
+    uploadPhoto: async (file: File): Promise<{ photoUrl: string }> => {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await apiFetch<{ photoUrl: string }>(`/api/student/photo`, {
+            method: "POST",
+            body: formData,
+        });
+        return response;
+    },
     getSessionStudents: async (sessionId: string): Promise<SessionStudent[]> => {
         const response = await apiFetch<SessionStudent[]>(`/api/student/session/${sessionId}`);
         return response;
@@ -28,7 +37,7 @@ export const studentService = {
     getStudentsByIds: async (studentIds: string[]): Promise<Student[]> => {
         const response = await apiFetch<Student[]>(`/api/student/batch`, {
             method: "POST",
-            body: JSON.stringify({studentIds}),
+            body: JSON.stringify({ studentIds }),
         });
         return response;
     },
