@@ -133,16 +133,7 @@ export function useStudent() {
       if (!student) return false;
 
       try {
-        const { error: deleteError } = await supabase
-          .from("eleve_sessions")
-          .delete()
-          .eq("student_id", student.id)
-          .eq("session_id", sessionId);
-
-        if (deleteError) {
-          console.error("Error leaving session:", deleteError);
-          return false;
-        }
+        await studentService.deleteStudentSession(sessionId);
 
         await fetchJoinedSessions();
         return true;

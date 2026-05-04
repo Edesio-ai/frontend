@@ -6,7 +6,6 @@ type RouteContext = {
 
 export async function GET(request: NextRequest, { params }: RouteContext) {
     const { sessionId } = await params;
-    console.log("🚀 ~ GET ~ sessionId:", sessionId)
 
     const response = await fetch(`${process.env.BACKEND_URL}/student/session/${sessionId}`, {
         method: "GET",
@@ -24,4 +23,24 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
 
     const data = await response.json();
     return NextResponse.json(data);
+}
+
+export async function DELETE(request: NextRequest, { params }: RouteContext) {
+    const { sessionId } = await params;
+
+    const response = await fetch(`${process.env.BACKEND_URL}/student/session/${sessionId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Cookie": request.headers.get("Cookie") ?? "",
+            "x-csrf-token": request.headers.get("x-csrf-token") ?? "",
+        },
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        return NextResponse.json({ error: error.message, code: error?.code }, { status: response.status });
+    }
+
+    return NextResponse.json({ success: true });
 }
