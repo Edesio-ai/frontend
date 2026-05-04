@@ -179,36 +179,11 @@ export function useStudent() {
           return { success: false, error: "L'image est trop volumineuse (max 5 Mo)." };
         }
 
-        const fileName = `${user.id}/profile.${fileExt}`;
+        const uploadedPhoto = await studentService.uploadPhoto(file);
 
-        const { error: uploadError } = await supabase.storage
-          .from("profile-photos")
-          .upload(fileName, file, { upsert: true });
+        setStudent((prev) => prev ? { ...prev, photoUrl: uploadedPhoto.photoUrl } : null);
 
-        if (uploadError) {
-          console.error("Error uploading photo:", uploadError);
-          return { success: false, error: "Erreur lors du téléchargement de l'image." };
-        }
-
-        const { data: urlData } = supabase.storage
-          .from("profile-photos")
-          .getPublicUrl(fileName);
-
-        const photoUrl = `${urlData.publicUrl}?t=${Date.now()}`;
-
-        const { error: updateError } = await supabase
-          .from("eleves")
-          .update({ photo_url: photoUrl })
-          .eq("id", student.id);
-
-        if (updateError) {
-          console.error("Error updating profile:", updateError);
-          return { success: false, error: "Erreur lors de la mise à jour du profil." };
-        }
-
-        setStudent((prev) => prev ? { ...prev, photo_url: photoUrl } : null);
-
-        return { success: true, url: photoUrl };
+        return { success: true, url: uploadedPhoto.photoUrl };
       } catch (err) {
         console.error("Unexpected error:", err);
         return { success: false, error: "Une erreur inattendue s'est produite." };
