@@ -180,7 +180,7 @@ export function CourseTesterModal({
   // Question generation configuration (max 20 questions total for token safety)
 
   const [genTotalQuestions, setGenTotalQuestions] = useState(10);
-  const [multipleChoinceGenCount, setGenSingleCount] = useState(5);
+  const [singleGenCount, setGenSingleCount] = useState(5);
   const [openGenerateCount, setGenOpenCount] = useState(5);
   // Phase control: questions not validated = phase 1, validated = phase 2
   // Use local state to track validation status (refreshed from DB when modal opens)
@@ -329,7 +329,7 @@ export function CourseTesterModal({
     try {
       const config = {
         totalQuestions: genTotalQuestions,
-        multipleChoiceCount: multipleChoinceGenCount,
+        singleCount: singleGenCount,
         openedCount: openGenerateCount
       };
 
@@ -358,7 +358,7 @@ export function CourseTesterModal({
 
   const handleConfigChange = (field: 'single' | 'open', value: number) => {
     const newValue = Math.max(0, Math.min(MAX_QUESTIONS, value));
-    let newSingleQuestion = multipleChoinceGenCount;
+    let newSingleQuestion = singleGenCount;
     let newOpenQuestion = openGenerateCount;
 
     if (field === 'single') newSingleQuestion = newValue;
@@ -375,7 +375,6 @@ export function CourseTesterModal({
       }
       total = newSingleQuestion + newOpenQuestion;
     }
-
     setGenSingleCount(newSingleQuestion);
     setGenOpenCount(newOpenQuestion);
     setGenTotalQuestions(total);
@@ -645,7 +644,7 @@ export function CourseTesterModal({
             ) : showQuestionGenerator ? (
               <div className="flex-1 overflow-y-auto space-y-6 py-4">
                 <QuestionGenerator
-                  genMultipleChoiceCount={multipleChoinceGenCount}
+                  genSingleCount={singleGenCount}
                   genOpenedCount={openGenerateCount}
                   handleConfigChange={handleConfigChange}
                   executeGeneration={executeGeneration}
@@ -1108,6 +1107,7 @@ export function CourseTesterModal({
       </AlertDialog>
 
       <RegenerateQuestionModal
+        singleGenCount={singleGenCount}
         regenerateDialogOpen={regenerateDialogOpen}
         setRegenerateDialogOpen={setRegenerateDialogOpen}
         handleConfigChange={handleConfigChange}

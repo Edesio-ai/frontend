@@ -839,12 +839,17 @@ export default function Student() {
 
       {loadingQuestions && (
         <Dialog open={loadingQuestions} onOpenChange={() => {}}>
-          <DialogContent className="max-w-xs">
-            <div className="flex flex-col items-center py-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
+          <DialogContent className="max-w-xs [&>button]:hidden">
+            <DialogHeader className="text-center pb-2">
+              <DialogTitle className="text-base">Préparation du chatbot</DialogTitle>
+              <DialogDescription>
+                Chargement des questions pour la révision.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col items-center pb-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
-              <p className="text-sm text-muted-foreground">Préparation du chatbot...</p>
             </div>
           </DialogContent>
         </Dialog>

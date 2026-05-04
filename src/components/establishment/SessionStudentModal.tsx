@@ -1,11 +1,10 @@
 import { Student, SessionWithStudentCount } from "@/types";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Loader2, Users } from "lucide-react";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import { Avatar, AvatarImage } from "../ui/avatar";
-import { AvatarFallback } from "@radix-ui/react-avatar";
+import { AvatarFallback } from "../ui/avatar";
 
 export function SessionStudentsModal({
     session,

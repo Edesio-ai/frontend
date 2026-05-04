@@ -14,9 +14,10 @@ interface RegenerateQuestionModalProps {
     genTotalQuestions: number;
     questions: Question[];
     openGenerateCount: number;
+    singleGenCount: number;
 }
 
-export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDialogOpen, handleConfigChange, executeGeneration, genTotalQuestions, questions, openGenerateCount }: RegenerateQuestionModalProps) {
+export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDialogOpen, handleConfigChange, executeGeneration, genTotalQuestions, questions, openGenerateCount, singleGenCount }: RegenerateQuestionModalProps) {
     return (
         <Dialog open={regenerateDialogOpen} onOpenChange={setRegenerateDialogOpen}>
             <DialogContent className="sm:max-w-[480px]">
@@ -45,7 +46,7 @@ export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDia
                                 type="number"
                                 min={0}
                                 max={MAX_QUESTIONS}
-                                value={questions.filter(question => question.type === 'multiple').length}
+                                value={singleGenCount}
                                 onChange={(e) => handleConfigChange('single', parseInt(e.target.value) || 0)}
                                 className="w-16 h-9 text-center"
                                 data-testid="input-gen-qcm-count"

@@ -4,7 +4,7 @@ import { MAX_QUESTIONS } from "@/utils/constants/teacher";
 import { Button } from "../ui/button";
 
 interface QuestionGeneratorProps {
-    genMultipleChoiceCount: number;
+    genSingleCount: number;
     genOpenedCount: number;
     handleConfigChange: (field: 'single' | 'open', value: number) => void;
     executeGeneration: () => Promise<void>;
@@ -15,7 +15,7 @@ interface QuestionGeneratorProps {
 }
 
 export function QuestionGenerator({
-    genMultipleChoiceCount,
+    genSingleCount,
     genOpenedCount,
     handleConfigChange,
     executeGeneration,
@@ -42,7 +42,7 @@ export function QuestionGenerator({
                         type="number"
                         min={0}
                         max={MAX_QUESTIONS}
-                        value={genMultipleChoiceCount}
+                        value={genSingleCount}
                         onChange={(e) => handleConfigChange('single', parseInt(e.target.value) || 0)}
                         data-testid="input-qcm-count"
                     />
