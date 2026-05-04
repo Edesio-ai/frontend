@@ -41,4 +41,9 @@ export const studentService = {
         });
         return response;
     },
+    deleteStudentSession: async (sessionId: string): Promise<void> => {
+        await apiFetch<void>(`/api/student/session/${sessionId}`, {
+            method: "DELETE",
+        });
+    },
 };
