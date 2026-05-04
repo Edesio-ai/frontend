@@ -220,7 +220,7 @@ export default function Connexion() {
                 className="text-primary hover:underline"
                 data-testid="link-signup"
               >
-                Créer un compte gratuitement
+                Créer un compte
               </Link>
             </p>
           </div>
