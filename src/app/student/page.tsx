@@ -66,7 +66,7 @@ export default function Student() {
     loading: eleveLoading,
     error: eleveError,
     joinSessionByCode,
-    fetchCours,
+    fetchCourse,
     fetchQuestions,
     leaveSession,
     uploadProfilePhoto,
@@ -189,7 +189,7 @@ export default function Student() {
 
       if (!sessionCourses[sessionId]) {
         setLoadingCourses((prev) => ({ ...prev, [sessionId]: true }));
-        const courses = await fetchCours(sessionId);
+        const courses = await fetchCourse(sessionId);
         setSessionCourses((prev) => ({ ...prev, [sessionId]: courses }));
         setLoadingCourses((prev) => ({ ...prev, [sessionId]: false }));
         
@@ -201,7 +201,7 @@ export default function Student() {
         }
       }
     },
-    [expandedSessionId, sessionCourses, fetchCours, countAnsweredQuestionsForCours]
+    [expandedSessionId, sessionCourses, fetchCourse, countAnsweredQuestionsForCours]
   );
 
   const handleOpenChatbot = async (cours: Course) => {

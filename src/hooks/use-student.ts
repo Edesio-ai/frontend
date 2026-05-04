@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "./use-auth";
 import { Course, CourseRanking, InsertStudentSession, JoinedSession, Question, QuestionCourse, Session, Student, StudentCourseStats } from "@/types";
 import { studentService } from "@/services/student.service";
+import { sessionService } from "@/services/session.service";
 
 
 export function useStudent() {
@@ -89,21 +90,12 @@ export function useStudent() {
     [student, joinedSessions, fetchJoinedSessions]
   );
 
-  const fetchCours = useCallback(
+  const fetchCourse = useCallback(
     async (sessionId: string): Promise<Course[]> => {
       try {
-        const { data, error: fetchError } = await supabase
-          .from("cours")
-          .select("*")
-          .eq("session_id", sessionId)
-          .order("created_at", { ascending: true });
+        const courses = await sessionService.getSessionCourses(sessionId);
 
-        if (fetchError) {
-          console.error("Error fetching cours:", fetchError);
-          return [];
-        }
-
-        return data || [];
+        return courses || [];
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
@@ -405,7 +397,7 @@ export function useStudent() {
     loading: loading || authLoading,
     error,
     joinSessionByCode,
-    fetchCours,
+    fetchCourse,
     fetchQuestions,
     leaveSession,
     refreshSessions: fetchJoinedSessions,
