@@ -5,6 +5,7 @@ import { useAuth } from "./use-auth";
 import { Course, CourseRanking, InsertStudentSession, JoinedSession, Question, QuestionCourse, Session, Student, StudentCourseStats } from "@/types";
 import { studentService } from "@/services/student.service";
 import { sessionService } from "@/services/session.service";
+import { questionService } from "@/services/question.service";
 
 
 export function useStudent() {
@@ -365,24 +366,14 @@ export function useStudent() {
   );
 
   // Count answered questions for the current student per course
-  const countAnsweredQuestionsForCours = useCallback(
-    async (coursId: string): Promise<number> => {
+  const countAnsweredQuestionsForCourse = useCallback(
+    async (): Promise<number> => {
       if (!student) return 0;
       
       try {
-        const { count, error: fetchError } = await supabase
-          .from("questions_cours")
-          .select("*", { count: "exact", head: true })
-          .eq("cours_id", coursId)
-          .eq("student_id", student.id)
-          .not("reponse", "is", null);
+        const data = await questionService.getAnsweredQuestionsCourse()
 
-        if (fetchError) {
-          console.error("Error counting answered questions:", fetchError);
-          return 0;
-        }
-
-        return count || 0;
+        return data.answeredQuestions || 0;
       } catch (err) {
         console.error("Unexpected error:", err);
         return 0;
@@ -407,6 +398,6 @@ export function useStudent() {
     getMyCoursStats,
     askQuestionCours,
     fetchQuestionsCoursForCours,
-    countAnsweredQuestionsForCours,
+    countAnsweredQuestionsForCourse,
   };
 }
