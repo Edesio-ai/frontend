@@ -4,7 +4,7 @@ import type { CourseRanking } from "@/types";
 
 export function exportClassementPdf(
   rankings: CourseRanking[],
-  coursTitle: string,
+  courseTitle: string,
   sessionName: string
 ) {
   const doc = new jsPDF();
@@ -19,7 +19,7 @@ export function exportClassementPdf(
   
   doc.setFontSize(16);
   doc.setTextColor(0);
-  doc.text(`Résultats - ${coursTitle}`, 14, 40);
+  doc.text(`Résultats - ${courseTitle}`, 14, 40);
   
   doc.setFontSize(10);
   doc.setTextColor(100);
@@ -54,7 +54,7 @@ export function exportClassementPdf(
     },
   });
 
-  const fileName = `resultats_${coursTitle.replace(/[^a-zA-Z0-9]/g, "_")}_${new Date().toISOString().split("T")[0]}.pdf`;
+  const fileName = `resultats_${courseTitle.replace(/[^a-zA-Z0-9]/g, "_")}_${new Date().toISOString().split("T")[0]}.pdf`;
   doc.save(fileName);
 }
 

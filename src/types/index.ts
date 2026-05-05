@@ -5,3 +5,4 @@ export * from './course.type';
 export * from './establishment.type';
 export * from './billing.type';
 export * from './question.type';
+export * from './llm.type';

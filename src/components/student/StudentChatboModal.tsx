@@ -24,8 +24,9 @@ import {
   Star,
   ArrowRight,
 } from "lucide-react";
-import { Course, EvaluateAnswerRequest, Question } from "@/types";
+import { Course, EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, Question } from "@/types";
 import { questionService } from "@/services/question.service";
+import { llmService } from "@/services/llm.service";
 
 interface StudentChatbotModalProps {
   open: boolean;
@@ -413,20 +414,14 @@ export function StudentChatbotModal({
     const ratio = finalTotal > 0 ? finalScore / finalTotal : 0;
     const scoreDisplay = finalScore % 1 === 0 ? finalScore : finalScore.toFixed(1);
     
-    // Fetch personalized feedback from AI
     try {
-      const response = await fetch("/api/generate-completion-feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          coursTitle: cours.title,
-          score: finalScore,
-          total: finalTotal,
-          studentName: studentName || undefined,
-        }),
-      });
-      
-      const data = await response.json();
+      const body: GenerateCompletionFeedbackRequest = {
+        courseTitle: cours.title,
+        score: finalScore,
+        total: finalTotal,
+        studentName: studentName || undefined,
+      }
+      const data = await llmService.generateCompletionFeedback(body);
       const aiFeedback = data.feedback || "Bravo pour avoir terminé cette révision !";
       
       addMessage({
