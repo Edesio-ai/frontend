@@ -51,5 +51,4 @@ export interface QuestionCourse {
   answer: string | null;
   answeredAt: string | null;
   createdAt: string;
-  studentName?: string;
 }

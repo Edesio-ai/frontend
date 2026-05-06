@@ -1,7 +1,11 @@
 import { apiFetch } from "@/lib/api-client";
-import { JoinedSession, SessionStudent, Student, UpdateOrCreateStudentCourseStats } from "@/types";
+import { JoinedSession, QuestionCourse, SessionStudent, Student, UpdateOrCreateStudentCourseStats } from "@/types";
 
 export const studentService = {
+    getStudentQuestionsCourse: async (courseId: string): Promise<QuestionCourse[]> => {
+        const response = await apiFetch<QuestionCourse[]>(`/api/student/course/${courseId}/questions`);
+        return response;
+    },
     updateOrCreateStudentCourseStats: async (courseId: string, body: UpdateOrCreateStudentCourseStats): Promise<void> => {
         await apiFetch<void>(`/api/student/course/${courseId}/stats`, {
             method: "POST",
