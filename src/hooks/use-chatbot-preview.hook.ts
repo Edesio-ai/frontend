@@ -6,6 +6,7 @@ import {
   letterAnswerIsCorrect,
 } from "@/lib/proposition-labels";
 import { questionService } from "@/services/question.service";
+import { llmService } from "@/services/llm.service";
 
 export interface ChatMessage {
   id: string;
@@ -317,7 +318,7 @@ export function useChatbotPreview() {
 
     if (state.retryMode) {
       try {
-        const evaluation = await questionService.evaluateAnswer(body);
+        const evaluation = await llmService.evaluateAnswer(body);
         isCheating = evaluation.isCheating || false;
 
         const isReflectionValid = evaluation.score >= 0.3;
@@ -361,7 +362,7 @@ export function useChatbotPreview() {
         isCorrect = letterAnswerIsCorrect(question, answerIndex);
       }
     } else {
-      const evaluation = await questionService.evaluateAnswer(body);
+      const evaluation = await llmService.evaluateAnswer(body);
       isCorrect = evaluation.score >= 0.7;
       isCheating = evaluation.isCheating || false;
     }

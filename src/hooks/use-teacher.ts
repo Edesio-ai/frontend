@@ -27,6 +27,8 @@ import { GenerateQuestionsConfig } from "@/types/question.type";
 import { fileService } from "@/services/file.service";
 import { exportService } from "@/services/export.service";
 import { studentService } from "@/services/student.service";
+import { courseQuestionService } from "@/services/course-question.service";
+import { llmService } from "@/services/llm.service";
 
 
 type CourseQuestionsTableRow = {
@@ -507,7 +509,7 @@ export function useTeacher() {
       config?: GenerateQuestionsConfig
     ): Promise<{ success: boolean; questionCount?: number; questions?: Question[]; error?: string }> => {
       try {
-        const { questions, questionCount } = await questionService.generateQuestions(courseId, config);
+        const { questions, questionCount } = await llmService.generateQuestions(courseId, config);
 
         return {
           success: true,
@@ -605,7 +607,7 @@ export function useTeacher() {
   const fetchPendingQuestionsCount = useCallback(
     async (sessionId: string): Promise<number> => {
       try {
-        const { count } = await questionService.getPendingQuestionsCount(sessionId)
+        const { count } = await courseQuestionService.getPendingQuestionsCount(sessionId)
         return count || 0;
       } catch (err) {
         console.error("Unexpected error:", err);

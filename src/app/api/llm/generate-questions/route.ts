@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request): Promise<NextResponse> {
     const body = await request.json();
 
-    const response = await fetch(`${process.env.BACKEND_URL}/question/generate/`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/llm/generate/questions/`, {
         method: "POST",
         body: JSON.stringify(body),
         headers: {

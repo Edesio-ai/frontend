@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-    const response = await fetch(`${process.env.BACKEND_URL}/question/answered/`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/course-question/answered/`, {
         headers: {
             "Cookie": request.headers.get("Cookie") ?? "",
         },

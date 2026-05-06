@@ -640,7 +640,7 @@ export function StudentChatbotModal({
         explanation: question.explanation || "",
       }
 
-      const evaluation = await questionService.evaluateAnswer(body);
+      const evaluation = await llmService.evaluateAnswer(body);
 
       processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] || "", evaluation.missingElements);
     } catch (error) {

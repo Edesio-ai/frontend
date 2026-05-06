@@ -6,6 +6,7 @@ import { Course, CourseRanking, InsertStudentSession, JoinedSession, Question, Q
 import { studentService } from "@/services/student.service";
 import { sessionService } from "@/services/session.service";
 import { questionService } from "@/services/question.service";
+import { courseQuestionService } from "@/services/course-question.service";
 
 
 export function useStudent() {
@@ -309,7 +310,7 @@ export function useStudent() {
       if (!student) return 0;
 
       try {
-        const data = await questionService.getAnsweredQuestionsCourse()
+        const data = await courseQuestionService.getAnsweredQuestionsCourse()
 
         return data.answeredQuestions || 0;
       } catch (err) {
