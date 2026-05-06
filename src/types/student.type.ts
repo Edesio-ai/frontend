@@ -24,6 +24,10 @@ export interface StudentCourseStats {
   createdAt: string;
 }
 
+export interface UpdateOrCreateStudentCourseStats {
+  attemptedQuestions: number;
+  correctAnswers: number;
+}
 export type InsertStudentSession = Omit<StudentSession, "id" | "joinedAt">;
 
 export interface SessionStudent extends Omit<Student, "createdAt" | "supabaseUserId"> {
