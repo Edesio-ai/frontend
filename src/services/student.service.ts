@@ -1,7 +1,13 @@
 import { apiFetch } from "@/lib/api-client";
-import { JoinedSession, SessionStudent, Student } from "@/types";
+import { JoinedSession, SessionStudent, Student, UpdateOrCreateStudentCourseStats } from "@/types";
 
 export const studentService = {
+    updateOrCreateStudentCourseStats: async (courseId: string, body: UpdateOrCreateStudentCourseStats): Promise<void> => {
+        await apiFetch<void>(`/api/student/course/${courseId}/stats`, {
+            method: "POST",
+            body: JSON.stringify(body),
+        });
+    },
     uploadPhoto: async (file: File): Promise<{ photoUrl: string }> => {
         const formData = new FormData();
         formData.append("file", file);

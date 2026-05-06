@@ -24,7 +24,7 @@ export function useStudent() {
 
     try {
       const existingStudent = await studentService.getStudent();
-      
+
       if (existingStudent) {
         setStudent(existingStudent);
       } else {
@@ -71,7 +71,7 @@ export function useStudent() {
   }, [student, fetchJoinedSessions]);
 
   const joinSessionByCode = useCallback(
-    async (code: string): Promise<{ success: boolean; error?: string}> => {
+    async (code: string): Promise<{ success: boolean; error?: string }> => {
       if (!student) {
         return { success: false, error: "Vous devez être connecté pour rejoindre une session." };
       }
@@ -145,7 +145,7 @@ export function useStudent() {
       try {
         const fileExt = file.name.split(".").pop()?.toLowerCase();
         const allowedTypes = ["jpg", "jpeg", "png", "gif", "webp"];
-        
+
         if (!fileExt || !allowedTypes.includes(fileExt)) {
           return { success: false, error: "Format d'image non supporté. Utilisez JPG, PNG, GIF ou WebP." };
         }
@@ -167,58 +167,22 @@ export function useStudent() {
     [student, user]
   );
 
-  const updateCoursProgress = useCallback(
+  const updateCourseProgress = useCallback(
     async (
       coursId: string,
-      questionsTentees: number,
-      reponsesCorrectes: number
+      attemptedQuestions: number,
+      correctAnswers: number
     ): Promise<{ success: boolean; error?: string }> => {
       if (!student) {
         return { success: false, error: "Vous devez être connecté." };
       }
 
       try {
-        const { data: existingStat, error: fetchError } = await supabase
-          .from("eleve_cours_stats")
-          .select("*")
-          .eq("student_id", student.id)
-          .eq("cours_id", coursId)
-          .maybeSingle();
-
-        if (fetchError) {
-          console.error("Error fetching existing stat:", fetchError);
-          return { success: false, error: "Erreur lors de la récupération des statistiques." };
+        const body = {
+          attemptedQuestions,
+          correctAnswers,
         }
-
-        if (existingStat) {
-          const { error: updateError } = await supabase
-            .from("eleve_cours_stats")
-            .update({
-              questions_tentees: existingStat.questions_tentees + questionsTentees,
-              reponses_correctes: existingStat.reponses_correctes + reponsesCorrectes,
-              derniere_tentative: new Date().toISOString(),
-            })
-            .eq("id", existingStat.id);
-
-          if (updateError) {
-            console.error("Error updating stat:", updateError);
-            return { success: false, error: "Erreur lors de la mise à jour des statistiques." };
-          }
-        } else {
-          const { error: insertError } = await supabase
-            .from("eleve_cours_stats")
-            .insert({
-              student_id: student.id,
-              cours_id: coursId,
-              questions_tentees: questionsTentees,
-              reponses_correctes: reponsesCorrectes,
-            });
-
-          if (insertError) {
-            console.error("Error inserting stat:", insertError);
-            return { success: false, error: "Erreur lors de l'enregistrement des statistiques." };
-          }
-        }
+        await studentService.updateOrCreateStudentCourseStats(coursId, body);
 
         return { success: true };
       } catch (err) {
@@ -351,7 +315,7 @@ export function useStudent() {
   const countAnsweredQuestionsForCourse = useCallback(
     async (): Promise<number> => {
       if (!student) return 0;
-      
+
       try {
         const data = await questionService.getAnsweredQuestionsCourse()
 
@@ -375,7 +339,7 @@ export function useStudent() {
     leaveSession,
     refreshSessions: fetchJoinedSessions,
     uploadProfilePhoto,
-    updateCoursProgress,
+    updateCourseProgress,
     fetchCoursClassement,
     getMyCoursStats,
     askQuestionCours,

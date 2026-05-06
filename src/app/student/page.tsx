@@ -69,7 +69,7 @@ export default function Student() {
     fetchQuestions,
     leaveSession,
     uploadProfilePhoto,
-    updateCoursProgress,
+    updateCourseProgress,
     fetchCoursClassement,
     askQuestionCours,
     fetchQuestionsCoursForCours,
@@ -808,8 +808,8 @@ export default function Student() {
           studentPhotoUrl={student?.photoUrl}
           onComplete={async (totalAnswered, correctAnswers) => {
             console.log("onComplete called:", { totalAnswered, correctAnswers, coursId: selectedCours.id });
-            const result = await updateCoursProgress(selectedCours.id, totalAnswered, correctAnswers);
-            console.log("updateCoursProgress result:", result);
+            const result = await updateCourseProgress(selectedCours.id, totalAnswered, correctAnswers);
+            console.log("updateCourseProgress result:", result);
             if (result.success) {
               toast({
                 title: "Progression enregistrée",
