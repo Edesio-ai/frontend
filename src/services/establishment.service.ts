@@ -17,10 +17,6 @@ export const establishmentService = {
         });
         return response;
     },
-    async getInvitationTokens(establishmentId: string): Promise<any> {
-        const response = await apiFetch(`/api/establishment/invitation-tokens/${establishmentId}`);
-        return response;
-    },
 
     async createInvitationToken(body: { establishmentId: string, token: string, invitedEmail: string, expiresAt: string, assignedChatbots: number }): Promise<any> {
         const response = await apiFetch("/api/establishment/invitation-tokens/create", {

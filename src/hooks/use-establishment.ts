@@ -10,9 +10,8 @@ import type {
 } from "@/types";
 import { establishmentService } from "@/services/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
-import { tokenService } from "@/services/token.service";
+import { invitationTokenService } from "@/services/invitation-token.service";
 import { sessionService } from "@/services/session.service";
-import { courseService } from "@/services/course.service";
 import { studentService } from "@/services/student.service";
 
 interface EtablissementStats {
@@ -93,7 +92,7 @@ export function useEstablishment() {
     }
     
     try {
-      const tokens = await establishmentService.getInvitationTokens(establishment.id);
+      const tokens = await invitationTokenService.getInvitationTokens(establishment.id);
       setInvitationTokens(tokens);
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -159,7 +158,7 @@ export function useEstablishment() {
 
   const deleteInvitationToken = useCallback(
     async (tokenId: string): Promise<boolean> => {
-        const { success } = await tokenService.deleteInvitationToken(tokenId);
+        const { success } = await invitationTokenService.deleteInvitationToken(tokenId);
 
         if(!success) {
           const message = "Une erreur est survenue. Merci de réessayer.";

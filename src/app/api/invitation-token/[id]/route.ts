@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     console.log("🚀 ~ DELETE ~ id:", request.headers.get("x-csrf-token") ?? "")
-    const response = await fetch(`${process.env.BACKEND_URL}/establishment/invitation-token/${id}`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/invitation-token/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
