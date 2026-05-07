@@ -1,4 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
+import { CourseFile } from "@/types/course.type";
 
 export const fileService = {
     deleteFile: async (fileId: string): Promise<void> => {
@@ -7,4 +8,15 @@ export const fileService = {
         });
         return response;
     },
+    uploadFile: async (courseId: string, file: File): Promise<{data: CourseFile} > => {
+        const formData = new FormData();  
+        formData.append("file", file);
+    
+        const response = await apiFetch<{ data: CourseFile }>(`/api/file/course/${courseId}`, {
+          method: "POST",
+          body: formData,
+        });
+    
+        return response;
+      },
 }

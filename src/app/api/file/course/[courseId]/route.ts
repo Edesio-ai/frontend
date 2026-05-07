@@ -19,7 +19,7 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch(`${process.env.BACKEND_URL}/course/${courseId}/file`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/file/course/${courseId}`, {
         method: "POST",
         headers: {
             "Cookie": request.headers.get("Cookie") ?? "",
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
 export async function GET(request: NextRequest, { params }: RouteContext) {
     const { courseId } = await params;
 
-    const response = await fetch(`${process.env.BACKEND_URL}/course/${courseId}/files`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/file/course/${courseId}`, {
         method: "GET",
         headers: {
             "Cookie": request.headers.get("Cookie") ?? "",

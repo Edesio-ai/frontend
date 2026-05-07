@@ -199,7 +199,7 @@ export function useEstablishment() {
 
   const getCourseDetails = useCallback(
     async (courseId: string): Promise<CourseDetails | null> => {
-      const { data } = await courseService.getCourseDetails(courseId);
+      const { data } = await sessionService.getSessionDetails(courseId);
 
       return data || null;
     },

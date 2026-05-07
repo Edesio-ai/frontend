@@ -29,6 +29,7 @@ import { exportService } from "@/services/export.service";
 import { studentService } from "@/services/student.service";
 import { courseQuestionService } from "@/services/course-question.service";
 import { llmService } from "@/services/llm.service";
+import { courseStudentStatsService } from "@/services/course-student-stats.service";
 
 
 type CourseQuestionsTableRow = {
@@ -321,7 +322,7 @@ export function useTeacher() {
 
   const handleUploadPdfForCours = async (courseId: string, file: File): Promise<CourseFile> => {
     try {
-      const { data } = await courseService.uploadFile(courseId, file);
+      const { data } = await fileService.uploadFile(courseId, file);
       return data;
     } catch (err) {
       console.error("Error uploading PDF:", err);
@@ -559,7 +560,7 @@ export function useTeacher() {
     async (courseId: string): Promise<CourseRanking[]> => {
       try {
 
-        const rankingData = await courseService.getCourseRanking(courseId);
+        const rankingData = await courseStudentStatsService.getCourseRanking(courseId);
 
         return rankingData;
       } catch (err) {

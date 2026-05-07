@@ -37,10 +37,6 @@ export const courseService = {
     const response = await apiFetch<{ validatedQuestions: boolean }>(`/api/course/${courseId}/validated-questions`);
     return response;
   },
-  getCourseRanking: async (courseId: string): Promise<CourseRanking[]> => {
-    const response = await apiFetch<CourseRanking[]>(`/api/course/${courseId}/ranking`);
-    return response;
-  },
   deleteCourse: async (courseId: string): Promise<void> => {
     const response = await apiFetch<void>(`/api/course/${courseId}`, {
       method: "DELETE",
@@ -51,10 +47,6 @@ export const courseService = {
     const response = await apiFetch<{ data: Course }>(`/api/course/${courseId}/validate-questions`, {
       method: "POST",
     });
-    return response;
-  },
-  getCourseDetails: async (courseId: string): Promise<{ data: CourseDetails}> => {
-    const response = await apiFetch<{ data: CourseDetails }>(`/api/course/${courseId}/details`);
     return response;
   },
 }
