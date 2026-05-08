@@ -15,6 +15,7 @@ import { sessionService } from "@/services/session.service";
 import { studentService } from "@/services/student.service";
 import { courseService } from "@/services/course.service";
 import { studentSessionService } from "@/services/student-session.service";
+import { emailService } from "@/services/email.service";
 
 interface EtablissementStats {
   totalTeachers: number;
@@ -94,7 +95,7 @@ export function useEstablishment() {
     }
     
     try {
-      const tokens = await invitationTokenService.getInvitationTokens(establishment.id);
+      const tokens = await invitationTokenService.getEstablishmentInvitationTokens(establishment.id);
       setInvitationTokens(tokens);
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -121,7 +122,7 @@ export function useEstablishment() {
             assignedChatbots,
           }
 
-          const { success } = await establishmentService.createInvitationToken(body);
+          const { success } = await invitationTokenService.createInvitationToken(body);
 
           if(!success) {
             const message = "Une erreur est survenue. Merci de réessayer.";
@@ -137,7 +138,7 @@ export function useEstablishment() {
               assignedChatbots,
             }
 
-            const response: { success: boolean } = await establishmentService.sendInvitationEmail(sendInvitationBody);
+            const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
 
             if(!response.success) {
               const message = "Une erreur est survenue. Merci de réessayer.";

@@ -9,7 +9,7 @@ type RouteContext = {
 export async function GET(request: Request,  { params }: RouteContext) {
     const { token } = await params;
 
-    const response = await fetch(`${process.env.BACKEND_URL}/auth/invitation-preview/${token}`);
+    const response = await fetch(`${process.env.BACKEND_URL}/invitation-token/preview/${token}`);
 
     if (!response.ok) {
         const error = await response.json();

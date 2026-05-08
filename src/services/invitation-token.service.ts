@@ -6,8 +6,8 @@ export const invitationTokenService = {
             method: "DELETE",
         });
     },
-    async getInvitationTokens(establishmentId: string): Promise<any> {
-        const response = await apiFetch(`/api/establishment/invitation-tokens/${establishmentId}`);
+    async getEstablishmentInvitationTokens(establishmentId: string): Promise<any> {
+        const response = await apiFetch(`/api/invitation-token/establishment/${establishmentId}`);
         return response;
     },
     validateInvitationToken: async (invitationToken: string): Promise<any> => {
@@ -17,4 +17,17 @@ export const invitationTokenService = {
         });
         return reponse as any;
       },
+      async getInvitationTokenPreview(token: string): Promise<any> {
+        return await apiFetch<any>(`/invitation-token/preview/${token}`, {
+            method: "GET",
+        });
+    },
+    async createInvitationToken(body: { establishmentId: string, token: string, invitedEmail: string, expiresAt: string, assignedChatbots: number }): Promise<any> {
+        const response = await apiFetch("/api/invitation-token", {
+            method: "POST",
+            body: JSON.stringify(body),
+        });
+
+        return response;
+    },
 };

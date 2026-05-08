@@ -5,7 +5,7 @@ export async function GET(
     { params }: { params: Promise<{ establishmentId: string }> }
   ) {
     const { establishmentId } = await params;
-    const response = await fetch(`${process.env.BACKEND_URL}/establishment/invitation-token/${establishmentId}`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/invitation-token/establishment/${establishmentId}`, {
         method: "GET",
         headers: {
             cookie: req.headers.get("cookie") ?? "",

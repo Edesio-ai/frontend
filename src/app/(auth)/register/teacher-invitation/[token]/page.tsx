@@ -21,6 +21,7 @@ import {
 import { GraduationCap, Loader2, CheckCircle2, XCircle, Building2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { authService } from "@/services/auth.service";
+import { invitationTokenService } from "@/services/invitation-token.service";
 
 
 function translateSupabaseError(message: string): string {
@@ -112,7 +113,7 @@ export default function TeacherInvitation() {
     }
 
     try {
-      const response = await authService.checkInvitationToken(token);
+      const response = await invitationTokenService.getInvitationTokenPreview(token);
 
       setInvitationData({
         maskedEmail: response.maskedEmail,
