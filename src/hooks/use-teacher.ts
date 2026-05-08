@@ -30,6 +30,7 @@ import { courseQuestionService } from "@/services/course-question.service";
 import { llmService } from "@/services/llm.service";
 import { courseStudentStatsService } from "@/services/student-course-stats.service";
 import { studentSessionService } from "@/services/student-session.service";
+import { invitationTokenService } from "@/services/invitation-token.service";
 
 
 type CourseQuestionsTableRow = {
@@ -84,7 +85,7 @@ export function useTeacher() {
 
   const handleInvitationValidation = useCallback(async (invitationToken: string): Promise<any> => {
     try {
-      const response = await teacherService.validateInvitationToken(invitationToken);
+      const response = await invitationTokenService.validateInvitationToken(invitationToken);
       return response;
     } catch (err) {
       console.error("Error validating invitation token:", err);

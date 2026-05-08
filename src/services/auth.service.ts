@@ -41,7 +41,7 @@ export const authService = {
             method: "POST",
         });
     },
-    async validateInvitationToken(token: string): Promise<any> {
+    async checkInvitationToken(token: string): Promise<any> {
         return await apiFetch<any>(`/check-invitation/${token}`, {
             method: "GET",
         });

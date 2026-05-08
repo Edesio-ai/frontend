@@ -112,7 +112,7 @@ export default function TeacherInvitation() {
     }
 
     try {
-      const response = await authService.validateInvitationToken(token);
+      const response = await authService.checkInvitationToken(token);
 
       setInvitationData({
         maskedEmail: response.maskedEmail,

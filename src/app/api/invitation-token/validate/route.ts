@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
     const { token } = await request.json();
-    const response = await fetch(`${process.env.BACKEND_URL}/teacher/validate-invitation`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/invitation-token/validate`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

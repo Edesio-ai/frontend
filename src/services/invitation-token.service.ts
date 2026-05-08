@@ -10,4 +10,11 @@ export const invitationTokenService = {
         const response = await apiFetch(`/api/establishment/invitation-tokens/${establishmentId}`);
         return response;
     },
+    validateInvitationToken: async (invitationToken: string): Promise<any> => {
+        const reponse = await apiFetch(`/api/invitation-token/validate`, {
+          method: "POST",
+          body: JSON.stringify({ token: invitationToken }),
+        });
+        return reponse as any;
+      },
 };

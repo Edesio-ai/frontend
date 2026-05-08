@@ -16,11 +16,4 @@ export const teacherService = {
     });
     return reponse;
   },
-  validateInvitationToken: async (invitationToken: string): Promise<any> => {
-    const reponse = await apiFetch(`/api/teacher/validate-invitation`, {
-      method: "POST",
-      body: JSON.stringify({ token: invitationToken }),
-    });
-    return reponse as any;
-  },
 }
