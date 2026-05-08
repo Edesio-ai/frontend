@@ -18,18 +18,18 @@ import type {
   UpdateCourseRequest,
   StudentSession
 } from "@/types";
-import { teacherService } from "@/services/teacher.service";
+import { teacherService } from "@/services/teaching/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
-import { sessionService } from "@/services/session.service";
-import { courseService } from "@/services/course.service";
-import { questionService } from "@/services/question.service";
-import { GenerateQuestionsConfig } from "@/types/question.type";
-import { fileService } from "@/services/file.service";
+import { sessionService } from "@/services/teaching/session.service";
+import { courseService } from "@/services/teaching/course.service";
+import { questionService } from "@/services/teaching/question.service";
+import { GenerateQuestionsConfig } from "@/types";
+import { fileService } from "@/services/teaching/file.service";
 import { exportService } from "@/services/export.service";
-import { courseQuestionService } from "@/services/course-question.service";
+import { courseQuestionService } from "@/services/teaching/course-question.service";
 import { llmService } from "@/services/llm.service";
-import { courseStudentStatsService } from "@/services/student-course-stats.service";
-import { studentSessionService } from "@/services/student-session.service";
+import { courseStudentStatsService } from "@/services/teaching/student-course-stats.service";
+import { studentSessionService } from "@/services/teaching/student-session.service";
 import { invitationTokenService } from "@/services/invitation-token.service";
 
 

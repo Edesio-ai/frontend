@@ -25,7 +25,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Course, EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, Question } from "@/types";
-import { questionService } from "@/services/question.service";
+import { questionService } from "@/services/teaching/question.service";
 import { llmService } from "@/services/llm.service";
 
 interface StudentChatbotModalProps {

@@ -1,4 +1,4 @@
-import { sessionService } from "@/services/session.service";
+import { sessionService } from "@/services/teaching/session.service";
 
 export const generateSessionCode = (length: number = 6): string => {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";

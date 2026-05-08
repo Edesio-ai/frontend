@@ -1,6 +1,6 @@
 import { QuestionsCoursePanel } from "@/components/dashboard";
 import { TabsContent } from "@/components/ui/tabs";
-import { Course, CourseQuestion } from "@/types/course.type";
+import { Course, CourseQuestion } from "@/types";
 
 interface QuestionCourseTabProps {
     sessionId: string;

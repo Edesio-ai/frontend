@@ -5,7 +5,7 @@ import {
   correctAnswerDisplay,
   letterAnswerIsCorrect,
 } from "@/lib/proposition-labels";
-import { questionService } from "@/services/question.service";
+import { questionService } from "@/services/teaching/question.service";
 import { llmService } from "@/services/llm.service";
 
 export interface ChatMessage {

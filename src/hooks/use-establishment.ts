@@ -8,13 +8,13 @@ import type {
   Student,
   CourseDetails
 } from "@/types";
-import { establishmentService } from "@/services/establishment.service";
+import { establishmentService } from "@/services/teaching/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { invitationTokenService } from "@/services/invitation-token.service";
-import { sessionService } from "@/services/session.service";
-import { studentService } from "@/services/student.service";
-import { courseService } from "@/services/course.service";
-import { studentSessionService } from "@/services/student-session.service";
+import { sessionService } from "@/services/teaching/session.service";
+import { studentService } from "@/services/teaching/student.service";
+import { courseService } from "@/services/teaching/course.service";
+import { studentSessionService } from "@/services/teaching/student-session.service";
 import { emailService } from "@/services/email.service";
 
 interface EtablissementStats {

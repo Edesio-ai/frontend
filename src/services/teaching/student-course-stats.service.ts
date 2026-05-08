@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/api-client";
 import { UpdateOrCreateStudentCourseStats } from "@/types";
-import { CourseRanking } from "@/types/course.type";
+import { CourseRanking } from "@/types";
 
 export const courseStudentStatsService = {
     getCourseRanking: async (courseId: string): Promise<CourseRanking[]> => {

@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/api-client";
 import { GenerateCompletionFeedbackRequest } from "@/types/llm.type";
-import { EvaluateAnswerRequest, GenerateQuestionsConfig, Question } from "@/types/question.type";
+import { EvaluateAnswerRequest, GenerateQuestionsConfig, Question } from "@/types";
 
 export const llmService = {
   generateCompletionFeedback: async (body: GenerateCompletionFeedbackRequest): Promise<{ feedback: string }> => {
@@ -23,7 +23,7 @@ export const llmService = {
     return response;
   },
   evaluateAnswer: async (body: EvaluateAnswerRequest): Promise<{ score: number, isCheating: boolean, feedback: string, missingElements: string[] }> => {
-    const response = await apiFetch<{ score: number, isCheating: boolean, feedback: string, missingElements: string[] }>(`/api/llm/evaluate-answer`, {
+    const response = await apiFetch<{ score: number, isCheating: boolean, feedback: string, missingElements: string[] }>(`/api/llm/evaluate/answer`, {
       method: "POST",
       body: JSON.stringify(body),
     });

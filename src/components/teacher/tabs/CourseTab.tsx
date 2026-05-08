@@ -1,9 +1,7 @@
 import { CourseList } from "@/components/dashboard/CourseList";
 import { TabsContent } from "@/components/ui/tabs";
 import { Session } from "@/types";
-import { Course, CourseFile, CourseRanking } from "@/types/course.type";
-import { Question } from "@/types/question.type";
-import { UpdateQuestionRequest } from "@/types/question.type";
+import { Course, CourseFile, CourseRanking, Question, UpdateQuestionRequest } from "@/types";
 
 interface CourseTabProps {
     session: Session;

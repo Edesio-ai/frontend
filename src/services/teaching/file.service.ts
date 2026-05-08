@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { CourseFile } from "@/types/course.type";
+import { CourseFile } from "@/types";
 
 export const fileService = {
     deleteFile: async (fileId: string): Promise<void> => {

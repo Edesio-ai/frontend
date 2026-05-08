@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { CreateQuestionRequest, EvaluateAnswerRequest, GenerateQuestionsConfig, Question, QuestionCourse, UpdateQuestionRequest } from "@/types/question.type";
+import { CreateQuestionRequest, Question, UpdateQuestionRequest } from "@/types";
 
 export const questionService = {
   getCourseQuestions: async (courseId: string): Promise<Question[]> => {

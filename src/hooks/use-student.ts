@@ -3,12 +3,12 @@ import { supabase } from "@/lib/supabaseClient";
 
 import { useAuth } from "./use-auth";
 import { Course, CourseRanking, JoinedSession, Question, QuestionCourse, Student, StudentCourseStats } from "@/types";
-import { studentService } from "@/services/student.service";
-import { questionService } from "@/services/question.service";
-import { courseQuestionService } from "@/services/course-question.service";
-import { courseService } from "@/services/course.service";
-import { studentSessionService } from "@/services/student-session.service";
-import { courseStudentStatsService } from "@/services/student-course-stats.service";
+import { studentService } from "@/services/teaching/student.service";
+import { questionService } from "@/services/teaching/question.service";
+import { courseQuestionService } from "@/services/teaching/course-question.service";
+import { courseService } from "@/services/teaching/course.service";
+import { studentSessionService } from "@/services/teaching/student-session.service";
+import { courseStudentStatsService } from "@/services/teaching/student-course-stats.service";
 
 
 export function useStudent() {
