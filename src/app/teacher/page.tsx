@@ -22,7 +22,7 @@ import { useTeacher } from "@/hooks/use-teacher";
 import { SuggestionsModal } from "@/components/SuggestionsModal";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
 import { useToast } from "@/hooks/use-toast";
-import type { Session, Course, SessionStudent } from "@/types";
+import type { Session, Course, StudentSession } from "@/types";
 import {
   LogOut,
   Loader2,
@@ -91,7 +91,7 @@ export default function Teacher() {
 
 
   const [sessionTab, setSessionTab] = useState<"course" | "students" | "qa">("course");
-  const [sessionStudents, setSessionStudents] = useState<SessionStudent[]>([]);
+  const [sessionStudents, setSessionStudents] = useState<StudentSession[]>([]);
   const [loadingSessionStudents, setLoadingSessionStudents] = useState(false);
   const [pendingQuestionsCount, setPendingQuestionsCount] = useState<number>(0);
   const [sessionPendingCounts, setSessionPendingCounts] = useState<Record<string, number>>({});

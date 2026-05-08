@@ -7,6 +7,8 @@ import { studentService } from "@/services/student.service";
 import { questionService } from "@/services/question.service";
 import { courseQuestionService } from "@/services/course-question.service";
 import { courseService } from "@/services/course.service";
+import { studentSessionService } from "@/services/student-session.service";
+import { courseStudentStatsService } from "@/services/student-course-stats.service";
 
 
 export function useStudent() {
@@ -49,7 +51,7 @@ export function useStudent() {
     }
 
     try {
-      const sessions = await studentService.getJoinedSessions(student.id);
+      const sessions = await studentSessionService.getJoinedSessions(student.id);
 
       setJoinedSessions(sessions);
       setError(null);
@@ -80,7 +82,7 @@ export function useStudent() {
       const normalizedCode = code.toUpperCase().trim();
 
       try {
-        await studentService.joinSessionByCode(normalizedCode);
+        await studentSessionService.joinSessionByCode(normalizedCode);
 
         await fetchJoinedSessions();
         return { success: true };
@@ -125,7 +127,7 @@ export function useStudent() {
       if (!student) return false;
 
       try {
-        await studentService.deleteStudentSession(sessionId);
+        await studentSessionService.deleteStudentSession(sessionId);
 
         await fetchJoinedSessions();
         return true;
@@ -183,7 +185,7 @@ export function useStudent() {
           attemptedQuestions,
           correctAnswers,
         }
-        await studentService.updateOrCreateStudentCourseStats(coursId, body);
+        await courseStudentStatsService.updateOrCreateStudentCourseStats(coursId, body);
 
         return { success: true };
       } catch (err) {
@@ -293,7 +295,7 @@ export function useStudent() {
     async (coursId: string): Promise<QuestionCourse[]> => {
       try {
 
-        const data = await studentService.getStudentQuestionsCourse(coursId);
+        const data = await courseQuestionService.getStudentCourseQuestions(coursId);
 
         return data || [];
       } catch (err) {

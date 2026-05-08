@@ -16,7 +16,7 @@ import type {
   CreateQuestionRequest,
   UpdateQuestionRequest,
   UpdateCourseRequest,
-  SessionStudent
+  StudentSession
 } from "@/types";
 import { teacherService } from "@/services/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
@@ -26,10 +26,10 @@ import { questionService } from "@/services/question.service";
 import { GenerateQuestionsConfig } from "@/types/question.type";
 import { fileService } from "@/services/file.service";
 import { exportService } from "@/services/export.service";
-import { studentService } from "@/services/student.service";
 import { courseQuestionService } from "@/services/course-question.service";
 import { llmService } from "@/services/llm.service";
-import { courseStudentStatsService } from "@/services/course-student-stats.service";
+import { courseStudentStatsService } from "@/services/student-course-stats.service";
+import { studentSessionService } from "@/services/student-session.service";
 
 
 type CourseQuestionsTableRow = {
@@ -543,9 +543,9 @@ export function useTeacher() {
   );
 
   const fetchSessionStudents = useCallback(
-    async (sessionId: string): Promise<SessionStudent[]> => {
+    async (sessionId: string): Promise<StudentSession[]> => {
       try {
-        const studentsSessions = await studentService.getSessionStudents(sessionId);
+        const studentsSessions = await studentSessionService.getStudentSession(sessionId);
 
         return studentsSessions;
       } catch (err) {

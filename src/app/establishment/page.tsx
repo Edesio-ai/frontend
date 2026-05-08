@@ -53,7 +53,7 @@ export default function Establishment() {
     error,
     createInvitationToken,
     deleteInvitationToken,
-    getSessionStudents,
+    getStudentSessions,
     getSessionCourse,
     getCourseDetails,
   } = useEstablishment();
@@ -141,7 +141,7 @@ export default function Establishment() {
   const handleViewStudents = async (session: SessionWithStudentCount) => {
     setSelectedSession(session);
     setLoadingStudents(true);
-    const students = await getSessionStudents(session.id);
+    const students = await getStudentSessions(session.id);
     setSessionStudents(students);
     setLoadingStudents(false);
   };

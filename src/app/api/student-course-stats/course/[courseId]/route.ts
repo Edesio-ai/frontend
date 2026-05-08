@@ -8,7 +8,7 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
     const { courseId } = await params;
     const body = await request.json();
 
-    const response = await fetch(`${process.env.BACKEND_URL}/student/course/${courseId}/stats`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/student-course-stats/course/${courseId}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

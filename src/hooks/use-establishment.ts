@@ -14,6 +14,7 @@ import { invitationTokenService } from "@/services/invitation-token.service";
 import { sessionService } from "@/services/session.service";
 import { studentService } from "@/services/student.service";
 import { courseService } from "@/services/course.service";
+import { studentSessionService } from "@/services/student-session.service";
 
 interface EtablissementStats {
   totalTeachers: number;
@@ -173,10 +174,10 @@ export function useEstablishment() {
     [fetchInvitationTokens]
   );
 
-  const getSessionStudents = useCallback(
+  const getStudentSessions = useCallback(
     async (sessionId: string): Promise<Student[]> => {
       try {
-        const studentsSessions = await studentService.getSessionStudents(sessionId);
+        const studentsSessions = await studentSessionService.getStudentSession(sessionId);
         const studentIds = studentsSessions.map((studentSession) => studentSession.id);
         const students = await studentService.getStudentsByIds(studentIds);
 
@@ -235,7 +236,7 @@ export function useEstablishment() {
     refreshData,
     createInvitationToken,
     deleteInvitationToken,
-    getSessionStudents,
+    getStudentSessions,
     getSessionCourse,
     getCourseDetails,
   };

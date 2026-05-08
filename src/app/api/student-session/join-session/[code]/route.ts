@@ -7,7 +7,7 @@ type RouteContext = {
 export async function POST(request: NextRequest, { params }: RouteContext) {
     const { code } = await params;
 
-    const response = await fetch(`${process.env.BACKEND_URL}/student/join-session/${code}`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/student-session/join-session/${code}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

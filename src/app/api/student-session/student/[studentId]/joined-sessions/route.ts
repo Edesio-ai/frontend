@@ -7,7 +7,7 @@ type RouteContext = {
 export async function GET(request: NextRequest, { params }: RouteContext) {
     const { studentId } = await params;
 
-    const response = await fetch(`${process.env.BACKEND_URL}/student/${studentId}/joined-sessions`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/student-session/student/${studentId}/joined-sessions`, {
         method: "GET",
         headers: {
             "Cookie": request.headers.get("Cookie") ?? "",
