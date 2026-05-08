@@ -2,11 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 import { useAuth } from "./use-auth";
-import { Course, CourseRanking, InsertStudentSession, JoinedSession, Question, QuestionCourse, Session, Student, StudentCourseStats } from "@/types";
+import { Course, CourseRanking, JoinedSession, Question, QuestionCourse, Student, StudentCourseStats } from "@/types";
 import { studentService } from "@/services/student.service";
-import { sessionService } from "@/services/session.service";
 import { questionService } from "@/services/question.service";
 import { courseQuestionService } from "@/services/course-question.service";
+import { courseService } from "@/services/course.service";
 
 
 export function useStudent() {
@@ -95,7 +95,7 @@ export function useStudent() {
   const fetchCourse = useCallback(
     async (sessionId: string): Promise<Course[]> => {
       try {
-        const courses = await sessionService.getSessionCourses(sessionId);
+        const courses = await courseService.getSessionCourses(sessionId);
 
         return courses || [];
       } catch (err) {

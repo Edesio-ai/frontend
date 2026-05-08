@@ -44,18 +44,6 @@ export const sessionService = {
     });
     return reponse;
   },
-  getSessionCoursesCount: async (
-    sessionId: string,
-  ): Promise<{ coursesCount: number }> => {
-    const reponse = await apiFetch<{ coursesCount: number }>(`/api/session/${sessionId}/courses-count`);
-
-    return reponse;
-  },
-  getSessionCourses: async (sessionId: string): Promise<Course[]> => {
-    const reponse = await apiFetch<Course[]>(`/api/session/${sessionId}/courses`);
-
-    return reponse;
-  },
   getSessionDetails: async (courseId: string): Promise<{ data: CourseDetails}> => {
     const response = await apiFetch<{ data: CourseDetails }>(`/api/session/course/${courseId}/details`);
     return response;

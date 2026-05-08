@@ -13,6 +13,7 @@ import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { invitationTokenService } from "@/services/invitation-token.service";
 import { sessionService } from "@/services/session.service";
 import { studentService } from "@/services/student.service";
+import { courseService } from "@/services/course.service";
 
 interface EtablissementStats {
   totalTeachers: number;
@@ -190,7 +191,7 @@ export function useEstablishment() {
 
   const getSessionCourse = useCallback(
     async (sessionId: string): Promise<any> => {
-      const courses = await sessionService.getSessionCourses(sessionId);
+      const courses = await courseService.getSessionCourses(sessionId);
       return courses || [];
     },
     ["session"]

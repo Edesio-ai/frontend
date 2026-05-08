@@ -259,7 +259,7 @@ export function useTeacher() {
   const fetchCourses = useCallback(
     async (sessionId: string): Promise<Course[]> => {
       try {
-        const courses = await sessionService.getSessionCourses(sessionId);
+        const courses = await courseService.getSessionCourses(sessionId);
 
         setError(null);
         return courses || [];
@@ -300,7 +300,7 @@ export function useTeacher() {
 
   const handleGetCoursesCount = async (sessionId: string): Promise<number> => {
     try {
-      const { coursesCount } = await sessionService.getSessionCoursesCount(sessionId);
+      const { coursesCount } = await courseService.getCourseSessionCount(sessionId);
       return coursesCount;
     } catch (err) {
       console.error("Error counting cours:", err);
