@@ -66,10 +66,10 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { exportClassementPdf } from "@/lib/pdf-export";
-import { courseService } from "@/services/course.service";
+import { courseService } from "@/services/teaching/course.service";
 import { QuestionGenerator } from "../teacher/QuestionGenerator";
 import { MAX_QUESTIONS } from "@/utils/constants/teacher";
-import { GenerateQuestionsConfig } from "@/types/question.type";
+import { GenerateQuestionsConfig } from "@/types";
 import { SortableQuestionItem } from "../teacher/SotableQuestionItem";
 import { exportService } from "@/services/export.service";
 import { EditQuestionTesterModalSection } from "../teacher/CourseTesterModal/EditQuestionTesterModalSection";

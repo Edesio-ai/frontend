@@ -25,7 +25,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Course, EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, Question } from "@/types";
-import { questionService } from "@/services/question.service";
+import { questionService } from "@/services/teaching/question.service";
 import { llmService } from "@/services/llm.service";
 
 interface StudentChatbotModalProps {
@@ -640,7 +640,7 @@ export function StudentChatbotModal({
         explanation: question.explanation || "",
       }
 
-      const evaluation = await questionService.evaluateAnswer(body);
+      const evaluation = await llmService.evaluateAnswer(body);
 
       processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] || "", evaluation.missingElements);
     } catch (error) {

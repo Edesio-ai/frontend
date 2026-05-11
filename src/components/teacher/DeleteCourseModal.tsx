@@ -2,7 +2,7 @@ import { Loader2, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "../ui/dialog";
 import { DialogHeader } from "../ui/dialog";
-import { Course } from "@/types/course.type";
+import { Course } from "@/types";
 
 interface DeleteCourseModalProps {
     deleteModalOpen: boolean;

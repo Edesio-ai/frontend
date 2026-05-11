@@ -1,11 +1,11 @@
 import { TabsContent } from "@/components/ui/tabs";
-import { Session, SessionStudent } from "@/types";
+import { Session, StudentSessionWithStudent } from "@/types";
 import { Loader2, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface StudentTabProps {
     loadingSessionStudents: boolean;
-    sessionStudents: SessionStudent[];
+    sessionStudents: StudentSessionWithStudent[];
     selectedSession: Session;
 }
 

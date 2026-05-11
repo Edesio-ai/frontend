@@ -1,7 +1,7 @@
 import { BookOpen, FileText, HelpCircle, Loader2, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { DialogFooter, DialogContent, DialogHeader, DialogTitle, DialogDescription, Dialog } from "../ui/dialog";
-import { CourseDetails } from "@/types";
+import { SessionDetails } from "@/types";
 import {
   propositionLabels,
   correctAnswerDisplay,
@@ -13,12 +13,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 export function CourseViewModal({
     isOpen,
     onClose,
-    courseDetails,
+    sessionDetails,
     loading,
   }: {
     isOpen: boolean;
     onClose: () => void;
-    courseDetails: CourseDetails | null;
+    sessionDetails: SessionDetails | null;
     loading: boolean;
   }) {
     if (!isOpen) return null;
@@ -29,11 +29,11 @@ export function CourseViewModal({
           <DialogHeader>
             <DialogTitle className="flex flex-wrap items-center gap-2">
               <BookOpen className="h-5 w-5" />
-              {courseDetails?.course.title || "Cours"}
+              {sessionDetails?.course.title || "Cours"}
             </DialogTitle>
-            {courseDetails?.course.description && (
+            {sessionDetails?.course.description && (
               <DialogDescription>
-                {courseDetails.course.description}
+                {sessionDetails.course.description}
               </DialogDescription>
             )}
           </DialogHeader>
@@ -42,28 +42,28 @@ export function CourseViewModal({
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
-          ) : courseDetails ? (
+          ) : sessionDetails ? (
             <div className="flex-1 overflow-y-auto space-y-6 py-4">
-              {courseDetails.course.contentText && (
+              {sessionDetails.course.contentText && (
                 <div className="space-y-2">
                   <h3 className="font-medium text-sm flex flex-wrap items-center gap-2">
                     <FileText className="h-4 w-4" />
                     Contenu texte
                   </h3>
                   <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg whitespace-pre-wrap">
-                    {courseDetails.course.contentText}
+                    {sessionDetails.course.contentText}
                   </p>
                 </div>
               )}
   
-              {courseDetails.files.length > 0 && (
+              {sessionDetails.files.length > 0 && (
                 <div className="space-y-2">
                   <h3 className="font-medium text-sm flex flex-wrap items-center gap-2">
                     <FileText className="h-4 w-4" />
-                    Fichiers PDF ({courseDetails.files.length})
+                    Fichiers PDF ({sessionDetails.files.length})
                   </h3>
                   <div className="space-y-1">
-                    {courseDetails.files.map((f) => (
+                    {sessionDetails.files.map((f) => (
                       <div key={f.id} className="flex items-center gap-2 p-2 rounded bg-muted/30 text-sm">
                         <FileText className="h-4 w-4 flex-shrink-0" />
                         <span className="truncate">{f.fileName}</span>
@@ -76,13 +76,13 @@ export function CourseViewModal({
               <div className="space-y-2">
                 <h3 className="font-medium text-sm flex flex-wrap items-center gap-2">
                   <HelpCircle className="h-4 w-4" />
-                  Questions ({courseDetails.questions.length})
+                  Questions ({sessionDetails.questions.length})
                 </h3>
-                {courseDetails.questions.length === 0 ? (
+                {sessionDetails.questions.length === 0 ? (
                   <p className="text-sm text-muted-foreground">Aucune question créée.</p>
                 ) : (
                   <Accordion type="single" collapsible className="w-full">
-                    {courseDetails.questions.map((q, index) => (
+                    {sessionDetails.questions.map((q, index: number) => (
                       <AccordionItem key={q.id} value={q.id}>
                         <AccordionTrigger className="text-sm text-left">
                           <div className="flex flex-wrap items-center gap-2">
@@ -124,7 +124,7 @@ export function CourseViewModal({
                               <span className="text-green-600">
                                 {q.correctAnswers?.length
                                   ? q.correctAnswers
-                                      .map((c) =>
+                                      .map((c: string) =>
                                         correctAnswerDisplay(q.proposals, q.correctAnswers || []),
                                       )
                                       .join(", ")
@@ -145,19 +145,19 @@ export function CourseViewModal({
               <div className="space-y-2">
                 <h3 className="font-medium text-sm flex flex-wrap items-center gap-2">
                   <Users className="h-4 w-4" />
-                  Élèves ayant travaillé sur ce cours ({courseDetails.students.length})
+                  Élèves ayant travaillé sur ce cours ({sessionDetails.students.length})
                 </h3>
-                {courseDetails.students.length === 0 ? (
+                {sessionDetails.students.length === 0 ? (
                   <p className="text-sm text-muted-foreground">Aucun élève n'a encore travaillé sur ce cours.</p>
                 ) : (
                   <div className="space-y-2 max-h-[200px] overflow-y-auto">
-                    {courseDetails.students.map((student) => (
+                    {sessionDetails.students.map((student) => (
                       <div key={student.id} className="flex flex-wrap items-center justify-between gap-2 p-2 rounded bg-muted/30 text-sm">
                         <div className="flex items-center gap-2">
                           <Avatar className="h-6 w-6">
                             <AvatarImage src={student.photoUrl || undefined} />
                             <AvatarFallback className="text-xs">
-                              {student.name.split(" ").map((n) => n[0]).join("").toUpperCase()}
+                              {student.name.split(" ").map((n: string) => n[0]).join("").toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
                           <span className="font-medium">{student.name}</span>

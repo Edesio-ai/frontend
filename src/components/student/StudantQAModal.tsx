@@ -11,14 +11,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageCircle, Send, Check, Clock, HelpCircle } from "lucide-react";
-import { Course, QuestionCourse } from "@/types";
+import { Course, CourseQuestion } from "@/types";
 
 interface StudentQAModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   cours: Course;
-  fetchQuestionsCoursForCours: (coursId: string) => Promise<QuestionCourse[]>;
-  askQuestionCours: (coursId: string, questionText: string) => Promise<{ success: boolean; error?: string; question?: QuestionCourse }>;
+  fetchQuestionsCoursForCours: (coursId: string) => Promise<CourseQuestion[]>;
+  askQuestionCours: (coursId: string, questionText: string) => Promise<{ success: boolean; error?: string; question?: CourseQuestion }>;
 }
 
 export function StudentQAModal({
@@ -29,7 +29,7 @@ export function StudentQAModal({
   askQuestionCours,
 }: StudentQAModalProps) {
   const [loading, setLoading] = useState(true);
-  const [questions, setQuestions] = useState<QuestionCourse[]>([]);
+  const [questions, setQuestions] = useState<CourseQuestion[]>([]);
   const [newQuestion, setNewQuestion] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");

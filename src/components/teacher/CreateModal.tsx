@@ -8,7 +8,7 @@ import { FormControl } from "../ui/form";
 import { Input } from "../ui/input";
 import { Select } from "../ui/select";
 import { UseFormReturn } from "react-hook-form";
-import { Course, Session, SessionLanguage } from "@/types";
+import { Course, Session, Language } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Button } from "../ui/button";
@@ -17,7 +17,7 @@ import { CreateSessionFormValues } from "@/types/zod.type";
 import { Textarea } from "../ui/textarea";
 
 
-const langueLabels: Record<SessionLanguage, string> = {
+const langueLabels: Record<Language, string> = {
     francais: "Français",
     anglais: "Anglais",
     espagnol: "Espagnol",
@@ -28,7 +28,7 @@ type CreateModalProps = {
     createModalOpen: boolean;
     onOpenChange: (open: boolean) => void;
     form: UseFormReturn<CreateSessionFormValues>;
-    createSession: (sessionNom: string, sessionLangue: SessionLanguage) => Promise<Session | null>;
+    createSession: (sessionNom: string, sessionLangue: Language) => Promise<Session | null>;
     createCourse: (sessionId: string, coursTitre: string, coursDescription: string, coursContenu: string, pdfFiles: File[] | undefined) => Promise<Course | null>;
     setSelectedPdfFiles: Dispatch<SetStateAction<File[]>>;
     selectedPdfFiles: File[];
@@ -181,7 +181,7 @@ export function CreateModal({
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {(Object.keys(langueLabels) as SessionLanguage[]).map((lang) => (
+                                                        {(Object.keys(langueLabels) as Language[]).map((lang) => (
                                                             <SelectItem key={lang} value={lang}>
                                                                 {langueLabels[lang]}
                                                             </SelectItem>

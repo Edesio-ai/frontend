@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import type {
   Teacher,
   Session,
-  SessionLanguage,
+  Language,
   Course,
   CourseFile,
   Question,
@@ -16,17 +16,21 @@ import type {
   CreateQuestionRequest,
   UpdateQuestionRequest,
   UpdateCourseRequest,
-  SessionStudent
+  StudentSessionWithStudent
 } from "@/types";
-import { teacherService } from "@/services/teacher.service";
+import { teacherService } from "@/services/teaching/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
-import { sessionService } from "@/services/session.service";
-import { courseService } from "@/services/course.service";
-import { questionService } from "@/services/question.service";
-import { GenerateQuestionsConfig } from "@/types/question.type";
-import { fileService } from "@/services/file.service";
+import { sessionService } from "@/services/teaching/session.service";
+import { courseService } from "@/services/teaching/course.service";
+import { questionService } from "@/services/teaching/question.service";
+import { GenerateQuestionsConfig } from "@/types";
+import { CoursefileService } from "@/services/teaching/course-file.service";
 import { exportService } from "@/services/export.service";
-import { studentService } from "@/services/student.service";
+import { courseQuestionService } from "@/services/teaching/course-question.service";
+import { llmService } from "@/services/llm.service";
+import { courseStudentStatsService } from "@/services/teaching/student-course-stats.service";
+import { studentSessionService } from "@/services/teaching/student-session.service";
+import { invitationTokenService } from "@/services/invitation-token.service";
 
 
 type CourseQuestionsTableRow = {
@@ -45,7 +49,7 @@ function courseQuestionFromRow(row: CourseQuestionsTableRow): CourseQuestion {
     id: row.id,
     courseId: row.course_id,
     studentId: row.student_id,
-    question: row.question,
+    questionText: row.question,
     answer: row.answer,
     answeredAt: row.answered_at,
     createdAt: row.created_at,
@@ -81,7 +85,7 @@ export function useTeacher() {
 
   const handleInvitationValidation = useCallback(async (invitationToken: string): Promise<any> => {
     try {
-      const response = await teacherService.validateInvitationToken(invitationToken);
+      const response = await invitationTokenService.validateInvitationToken(invitationToken);
       return response;
     } catch (err) {
       console.error("Error validating invitation token:", err);
@@ -162,7 +166,7 @@ export function useTeacher() {
 
 
   const createSession = useCallback(
-    async (name: string, language: SessionLanguage = 'francais'): Promise<Session | null> => {
+    async (name: string, language: Language = 'francais'): Promise<Session | null> => {
       if (!teacher) return null;
 
       try {
@@ -256,7 +260,7 @@ export function useTeacher() {
   const fetchCourses = useCallback(
     async (sessionId: string): Promise<Course[]> => {
       try {
-        const courses = await sessionService.getSessionCourses(sessionId);
+        const courses = await courseService.getSessionCourses(sessionId);
 
         setError(null);
         return courses || [];
@@ -297,7 +301,7 @@ export function useTeacher() {
 
   const handleGetCoursesCount = async (sessionId: string): Promise<number> => {
     try {
-      const { coursesCount } = await sessionService.getSessionCoursesCount(sessionId);
+      const { coursesCount } = await courseService.getCourseSessionCount(sessionId);
       return coursesCount;
     } catch (err) {
       console.error("Error counting cours:", err);
@@ -319,7 +323,7 @@ export function useTeacher() {
 
   const handleUploadPdfForCours = async (courseId: string, file: File): Promise<CourseFile> => {
     try {
-      const { data } = await courseService.uploadFile(courseId, file);
+      const { data } = await CoursefileService.uploadFile(courseId, file);
       return data;
     } catch (err) {
       console.error("Error uploading PDF:", err);
@@ -405,7 +409,7 @@ export function useTeacher() {
   const deleteCourseFile = useCallback(
     async (file: CourseFile): Promise<boolean> => {
       try {
-        await fileService.deleteFile(file.id);
+        await CoursefileService.deleteFile(file.id);
 
         return true;
       } catch (err) {
@@ -507,7 +511,7 @@ export function useTeacher() {
       config?: GenerateQuestionsConfig
     ): Promise<{ success: boolean; questionCount?: number; questions?: Question[]; error?: string }> => {
       try {
-        const { questions, questionCount } = await questionService.generateQuestions(courseId, config);
+        const { questions, questionCount } = await llmService.generateQuestions(courseId, config);
 
         return {
           success: true,
@@ -540,9 +544,9 @@ export function useTeacher() {
   );
 
   const fetchSessionStudents = useCallback(
-    async (sessionId: string): Promise<SessionStudent[]> => {
+    async (sessionId: string): Promise<StudentSessionWithStudent[]> => {
       try {
-        const studentsSessions = await studentService.getSessionStudents(sessionId);
+        const studentsSessions = await studentSessionService.getStudentSession(sessionId);
 
         return studentsSessions;
       } catch (err) {
@@ -557,7 +561,7 @@ export function useTeacher() {
     async (courseId: string): Promise<CourseRanking[]> => {
       try {
 
-        const rankingData = await courseService.getCourseRanking(courseId);
+        const rankingData = await courseStudentStatsService.getCourseRanking(courseId);
 
         return rankingData;
       } catch (err) {
@@ -605,7 +609,7 @@ export function useTeacher() {
   const fetchPendingQuestionsCount = useCallback(
     async (sessionId: string): Promise<number> => {
       try {
-        const { count } = await questionService.getPendingQuestionsCount(sessionId)
+        const { count } = await courseQuestionService.getPendingQuestionsCount(sessionId)
         return count || 0;
       } catch (err) {
         console.error("Unexpected error:", err);
@@ -615,7 +619,7 @@ export function useTeacher() {
     []
   );
 
-  const answerQuestionCourse = useCallback(
+  const answerCourseQuestion = useCallback(
     async (questionId: string, reponse: string): Promise<CourseQuestion | null> => {
       try {
         const { data, error: updateError } = await supabase
@@ -645,7 +649,7 @@ export function useTeacher() {
     []
   );
 
-  const deleteQuestionCourse = useCallback(
+  const deleteCourseQuestion = useCallback(
     async (questionId: string): Promise<boolean> => {
       try {
         const { error: deleteError } = await supabase
@@ -767,7 +771,7 @@ export function useTeacher() {
     fetchCourseRanking,
     fetchQuestionsCourseForCourse,
     fetchPendingQuestionsCount,
-    answerQuestionCourse,
-    deleteQuestionCourse,
+    answerCourseQuestion,
+    deleteCourseQuestion,
   };
 }

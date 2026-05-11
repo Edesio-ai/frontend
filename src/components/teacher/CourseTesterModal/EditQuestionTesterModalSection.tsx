@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { FileText, Loader2, Save, Pencil } from 'lucide-react'
-import { Course } from '@/types/course.type'
+import { Course } from '@/types'
 
 type EditQuestionTesterModalSectionProps = {
     isEditing: boolean;

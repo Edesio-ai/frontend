@@ -6,14 +6,16 @@ import type {
   InvitationToken,
   TeacherWithStats,
   Student,
-  CourseDetails
+  SessionDetails
 } from "@/types";
-import { establishmentService } from "@/services/establishment.service";
+import { establishmentService } from "@/services/teaching/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
-import { tokenService } from "@/services/token.service";
-import { sessionService } from "@/services/session.service";
-import { courseService } from "@/services/course.service";
-import { studentService } from "@/services/student.service";
+import { invitationTokenService } from "@/services/invitation-token.service";
+import { sessionService } from "@/services/teaching/session.service";
+import { studentService } from "@/services/teaching/student.service";
+import { courseService } from "@/services/teaching/course.service";
+import { studentSessionService } from "@/services/teaching/student-session.service";
+import { emailService } from "@/services/email.service";
 
 interface EtablissementStats {
   totalTeachers: number;
@@ -93,7 +95,7 @@ export function useEstablishment() {
     }
     
     try {
-      const tokens = await establishmentService.getInvitationTokens(establishment.id);
+      const tokens = await invitationTokenService.getEstablishmentInvitationTokens(establishment.id);
       setInvitationTokens(tokens);
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -120,7 +122,7 @@ export function useEstablishment() {
             assignedChatbots,
           }
 
-          const { success } = await establishmentService.createInvitationToken(body);
+          const { success } = await invitationTokenService.createInvitationToken(body);
 
           if(!success) {
             const message = "Une erreur est survenue. Merci de réessayer.";
@@ -136,7 +138,7 @@ export function useEstablishment() {
               assignedChatbots,
             }
 
-            const response: { success: boolean } = await establishmentService.sendInvitationEmail(sendInvitationBody);
+            const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
 
             if(!response.success) {
               const message = "Une erreur est survenue. Merci de réessayer.";
@@ -159,7 +161,7 @@ export function useEstablishment() {
 
   const deleteInvitationToken = useCallback(
     async (tokenId: string): Promise<boolean> => {
-        const { success } = await tokenService.deleteInvitationToken(tokenId);
+        const { success } = await invitationTokenService.deleteInvitationToken(tokenId);
 
         if(!success) {
           const message = "Une erreur est survenue. Merci de réessayer.";
@@ -173,10 +175,10 @@ export function useEstablishment() {
     [fetchInvitationTokens]
   );
 
-  const getSessionStudents = useCallback(
+  const getStudentSessions = useCallback(
     async (sessionId: string): Promise<Student[]> => {
       try {
-        const studentsSessions = await studentService.getSessionStudents(sessionId);
+        const studentsSessions = await studentSessionService.getStudentSession(sessionId);
         const studentIds = studentsSessions.map((studentSession) => studentSession.id);
         const students = await studentService.getStudentsByIds(studentIds);
 
@@ -191,15 +193,15 @@ export function useEstablishment() {
 
   const getSessionCourse = useCallback(
     async (sessionId: string): Promise<any> => {
-      const courses = await sessionService.getSessionCourses(sessionId);
+      const courses = await courseService.getSessionCourses(sessionId);
       return courses || [];
     },
     ["session"]
   );
 
-  const getCourseDetails = useCallback(
-    async (courseId: string): Promise<CourseDetails | null> => {
-      const { data } = await courseService.getCourseDetails(courseId);
+  const getSessionDetails = useCallback(
+    async (courseId: string): Promise<SessionDetails | null> => {
+      const { data } = await sessionService.getSessionDetails(courseId);
 
       return data || null;
     },
@@ -235,8 +237,8 @@ export function useEstablishment() {
     refreshData,
     createInvitationToken,
     deleteInvitationToken,
-    getSessionStudents,
+    getStudentSessions,
     getSessionCourse,
-    getCourseDetails,
+    getSessionDetails,
   };
 }

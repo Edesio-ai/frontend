@@ -2,10 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 import { useAuth } from "./use-auth";
-import { Course, CourseRanking, InsertStudentSession, JoinedSession, Question, QuestionCourse, Session, Student, StudentCourseStats } from "@/types";
-import { studentService } from "@/services/student.service";
-import { sessionService } from "@/services/session.service";
-import { questionService } from "@/services/question.service";
+import { Course, CourseRanking, JoinedSession, Question, CourseQuestion, Student, StudentCourseStats } from "@/types";
+import { studentService } from "@/services/teaching/student.service";
+import { questionService } from "@/services/teaching/question.service";
+import { courseQuestionService } from "@/services/teaching/course-question.service";
+import { courseService } from "@/services/teaching/course.service";
+import { studentSessionService } from "@/services/teaching/student-session.service";
+import { courseStudentStatsService } from "@/services/teaching/student-course-stats.service";
 
 
 export function useStudent() {
@@ -48,7 +51,7 @@ export function useStudent() {
     }
 
     try {
-      const sessions = await studentService.getJoinedSessions(student.id);
+      const sessions = await studentSessionService.getJoinedSessions(student.id);
 
       setJoinedSessions(sessions);
       setError(null);
@@ -79,7 +82,7 @@ export function useStudent() {
       const normalizedCode = code.toUpperCase().trim();
 
       try {
-        await studentService.joinSessionByCode(normalizedCode);
+        await studentSessionService.joinSessionByCode(normalizedCode);
 
         await fetchJoinedSessions();
         return { success: true };
@@ -94,7 +97,7 @@ export function useStudent() {
   const fetchCourse = useCallback(
     async (sessionId: string): Promise<Course[]> => {
       try {
-        const courses = await sessionService.getSessionCourses(sessionId);
+        const courses = await courseService.getSessionCourses(sessionId);
 
         return courses || [];
       } catch (err) {
@@ -124,7 +127,7 @@ export function useStudent() {
       if (!student) return false;
 
       try {
-        await studentService.deleteStudentSession(sessionId);
+        await studentSessionService.deleteStudentSession(sessionId);
 
         await fetchJoinedSessions();
         return true;
@@ -182,7 +185,7 @@ export function useStudent() {
           attemptedQuestions,
           correctAnswers,
         }
-        await studentService.updateOrCreateStudentCourseStats(coursId, body);
+        await courseStudentStatsService.updateOrCreateStudentCourseStats(coursId, body);
 
         return { success: true };
       } catch (err) {
@@ -254,7 +257,7 @@ export function useStudent() {
   );
 
   const askQuestionCours = useCallback(
-    async (coursId: string, questionText: string): Promise<{ success: boolean; error?: string; question?: QuestionCourse }> => {
+    async (coursId: string, questionText: string): Promise<{ success: boolean; error?: string; question?: CourseQuestion }> => {
       if (!student) {
         return { success: false, error: "Vous devez être connecté." };
       }
@@ -289,10 +292,10 @@ export function useStudent() {
   );
 
   const fetchQuestionsCoursForCours = useCallback(
-    async (coursId: string): Promise<QuestionCourse[]> => {
+    async (coursId: string): Promise<CourseQuestion[]> => {
       try {
 
-        const data = await studentService.getStudentQuestionsCourse(coursId);
+        const data = await courseQuestionService.getStudentCourseQuestions(coursId);
 
         return data || [];
       } catch (err) {
@@ -309,7 +312,7 @@ export function useStudent() {
       if (!student) return 0;
 
       try {
-        const data = await questionService.getAnsweredQuestionsCourse()
+        const data = await courseQuestionService.getAnsweredQuestionsCourse()
 
         return data.answeredQuestions || 0;
       } catch (err) {
