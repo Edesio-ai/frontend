@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { Course, CourseDetails, InsertSession, Session } from "@/types";
+import { Course, SessionDetails, InsertSession, Session } from "@/types";
 
 export const sessionService = {
   getSessions: async (): Promise<Session[]> => {
@@ -44,8 +44,8 @@ export const sessionService = {
     });
     return reponse;
   },
-  getSessionDetails: async (courseId: string): Promise<{ data: CourseDetails}> => {
-    const response = await apiFetch<{ data: CourseDetails }>(`/api/session/course/${courseId}/details`);
+  getSessionDetails: async (courseId: string): Promise<{ data: SessionDetails}> => {
+    const response = await apiFetch<{ data: SessionDetails }>(`/api/session/course/${courseId}/details`);
     return response;
   },
 };

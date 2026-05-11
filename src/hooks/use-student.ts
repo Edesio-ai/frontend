@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 import { useAuth } from "./use-auth";
-import { Course, CourseRanking, JoinedSession, Question, QuestionCourse, Student, StudentCourseStats } from "@/types";
+import { Course, CourseRanking, JoinedSession, Question, CourseQuestion, Student, StudentCourseStats } from "@/types";
 import { studentService } from "@/services/teaching/student.service";
 import { questionService } from "@/services/teaching/question.service";
 import { courseQuestionService } from "@/services/teaching/course-question.service";
@@ -257,7 +257,7 @@ export function useStudent() {
   );
 
   const askQuestionCours = useCallback(
-    async (coursId: string, questionText: string): Promise<{ success: boolean; error?: string; question?: QuestionCourse }> => {
+    async (coursId: string, questionText: string): Promise<{ success: boolean; error?: string; question?: CourseQuestion }> => {
       if (!student) {
         return { success: false, error: "Vous devez être connecté." };
       }
@@ -292,7 +292,7 @@ export function useStudent() {
   );
 
   const fetchQuestionsCoursForCours = useCallback(
-    async (coursId: string): Promise<QuestionCourse[]> => {
+    async (coursId: string): Promise<CourseQuestion[]> => {
       try {
 
         const data = await courseQuestionService.getStudentCourseQuestions(coursId);

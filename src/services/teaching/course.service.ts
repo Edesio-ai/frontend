@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { Course, CourseDetails, CourseFile, CourseRanking, InsertCourse, UpdateCourseRequest } from "@/types";
+import { Course, CourseFile, InsertCourse, UpdateCourseRequest } from "@/types";
 
 export const courseService = {
   updateCourse: async (courseId: string, body: UpdateCourseRequest): Promise<{data: Course }> => {

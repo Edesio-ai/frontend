@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { QuestionCourse } from "@/types";
+import { CourseQuestion } from "@/types";
 
 export const courseQuestionService = {
   getAnsweredQuestionsCourse: async (): Promise<{ answeredQuestions: number }> => {
@@ -10,8 +10,8 @@ export const courseQuestionService = {
     const response = await apiFetch<{ count: number }>(`/api/course-question/pending/${sessionId}`);
     return response;
   },
-  getStudentCourseQuestions: async (courseId: string): Promise<QuestionCourse[]> => {
-    const response = await apiFetch<QuestionCourse[]>(`/api/course-question/course/${courseId}`);
+  getStudentCourseQuestions: async (courseId: string): Promise<CourseQuestion[]> => {
+    const response = await apiFetch<CourseQuestion[]>(`/api/course-question/course/${courseId}`);
     return response;
 },
 }

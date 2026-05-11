@@ -7,13 +7,6 @@ export interface Student {
   createdAt: string;
 }
 
-export interface StudentSession {
-  id: string;
-  studentId: string;
-  sessionId: string;
-  joinedAt: string;
-}
-
 export interface StudentCourseStats {
   id: string;
   studentId: string;
@@ -27,9 +20,4 @@ export interface StudentCourseStats {
 export interface UpdateOrCreateStudentCourseStats {
   attemptedQuestions: number;
   correctAnswers: number;
-}
-export type InsertStudentSession = Omit<StudentSession, "id" | "joinedAt">;
-
-export interface StudentSession extends Omit<Student, "createdAt" | "supabaseUserId"> {
-  joinedAt: string;
 }

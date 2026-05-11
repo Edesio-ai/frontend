@@ -30,7 +30,7 @@ import {
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
 import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 
-import type { TeacherWithStats, SessionWithStudentCount, Student, InvitationToken, CourseDetails } from "@/types";
+import type { TeacherWithStats, SessionWithStudentCount, Student, InvitationToken, SessionDetails } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
@@ -55,7 +55,7 @@ export default function Establishment() {
     deleteInvitationToken,
     getStudentSessions,
     getSessionCourse,
-    getCourseDetails,
+    getSessionDetails,
   } = useEstablishment();
 
   const [showInvitationModal, setShowInvitationModal] = useState(false);
@@ -67,7 +67,7 @@ export default function Establishment() {
   const [sessionStudents, setSessionStudents] = useState<Student[]>([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
 
-  const [selectedCourseDetails, setselectedCourseDetails] = useState<CourseDetails | null>(null);
+  const [selectedSessionDetails, setSelectedSessionDetails] = useState<SessionDetails | null>(null);
   const [showCourseModal, setShowCourseModal] = useState(false);
   const [loadingCourse, setLoadingCourse] = useState(false);
 
@@ -149,9 +149,9 @@ export default function Establishment() {
   const handleViewCourse = async (courseId: string) => {
     setShowCourseModal(true);
     setLoadingCourse(true);
-    setselectedCourseDetails(null);
-    const details = await getCourseDetails(courseId);
-    setselectedCourseDetails(details);
+    setSelectedSessionDetails(null);
+    const details = await getSessionDetails(courseId);
+    setSelectedSessionDetails(details);
     setLoadingCourse(false);
   };
 
@@ -321,9 +321,9 @@ export default function Establishment() {
           isOpen={showCourseModal}
           onClose={() => {
             setShowCourseModal(false);
-            setselectedCourseDetails(null);
+            setSelectedSessionDetails(null);
           }}
-          courseDetails={selectedCourseDetails}
+          sessionDetails={selectedSessionDetails}
           loading={loadingCourse}
         />
       </div>

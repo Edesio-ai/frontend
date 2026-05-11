@@ -1,7 +1,7 @@
 import { apiFetch } from "@/lib/api-client";
 import { CourseFile } from "@/types";
 
-export const fileService = {
+export const CoursefileService = {
     deleteFile: async (fileId: string): Promise<void> => {
         const response = await apiFetch<void>(`/api/file/${fileId}`, {
             method: "DELETE",

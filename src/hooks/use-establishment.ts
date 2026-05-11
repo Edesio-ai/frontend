@@ -6,7 +6,7 @@ import type {
   InvitationToken,
   TeacherWithStats,
   Student,
-  CourseDetails
+  SessionDetails
 } from "@/types";
 import { establishmentService } from "@/services/teaching/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
@@ -199,8 +199,8 @@ export function useEstablishment() {
     ["session"]
   );
 
-  const getCourseDetails = useCallback(
-    async (courseId: string): Promise<CourseDetails | null> => {
+  const getSessionDetails = useCallback(
+    async (courseId: string): Promise<SessionDetails | null> => {
       const { data } = await sessionService.getSessionDetails(courseId);
 
       return data || null;
@@ -239,6 +239,6 @@ export function useEstablishment() {
     deleteInvitationToken,
     getStudentSessions,
     getSessionCourse,
-    getCourseDetails,
+    getSessionDetails,
   };
 }

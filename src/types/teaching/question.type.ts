@@ -1,16 +1,3 @@
-export interface GenerateQuestionsConfig {
-    totalQuestions?: number;
-    simpleCount?: number;
-    openedCount?: number;
-}
-
-export interface EvaluateAnswerRequest {
-    questionText: string;
-    correctAnswer: string;
-    answer: string;
-    explanation: string;
-}
-
 export type QuestionType = "single" | "multiple" | "open";
 
 export interface Question {
@@ -41,14 +28,4 @@ export interface UpdateQuestionRequest {
   correctAnswers?: string[];
   explanation?: string | null;
   positionOrder?: number | null;
-}
-
-export interface QuestionCourse {
-  id: string;
-  courseId: string;
-  studentId: string;
-  questionText: string;
-  answer: string | null;
-  answeredAt: string | null;
-  createdAt: string;
 }

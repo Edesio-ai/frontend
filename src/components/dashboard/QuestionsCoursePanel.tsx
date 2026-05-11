@@ -24,8 +24,8 @@ interface QuestionsCoursPanelProps {
   sessionId: string;
   fetchCourses: (sessionId: string) => Promise<Course[]>;
   fetchQuestionsCourseForCourse: (courseId: string) => Promise<CourseQuestion[]>;
-  answerQuestionCourse: (questionId: string, reponse: string) => Promise<CourseQuestion | null>;
-  deleteQuestionCourse: (questionId: string) => Promise<boolean>;
+  answerCourseQuestion: (questionId: string, reponse: string) => Promise<CourseQuestion | null>;
+  deleteCourseQuestion: (questionId: string) => Promise<boolean>;
   onPendingCountChange?: () => void;
 }
 
@@ -33,8 +33,8 @@ export function QuestionsCoursePanel({
   sessionId,
   fetchCourses,
   fetchQuestionsCourseForCourse,
-  answerQuestionCourse,
-  deleteQuestionCourse,
+  answerCourseQuestion,
+  deleteCourseQuestion,
   onPendingCountChange,
 }: QuestionsCoursPanelProps) {
   const [loading, setLoading] = useState(true);
@@ -99,7 +99,7 @@ export function QuestionsCoursePanel({
     if (!answeringId || !answerText.trim()) return;
     
     setSubmitting(true);
-    const result = await answerQuestionCourse(answeringId, answerText.trim());
+    const result = await answerCourseQuestion(answeringId, answerText.trim());
     setSubmitting(false);
     
     if (result) {
@@ -121,7 +121,7 @@ export function QuestionsCoursePanel({
     const wasUnanswered = questionToDelete && !questionToDelete.answer;
     
     setDeleting(true);
-    const success = await deleteQuestionCourse(deleteConfirmId);
+    const success = await deleteCourseQuestion(deleteConfirmId);
     setDeleting(false);
     
     if (success) {
@@ -196,7 +196,7 @@ export function QuestionsCoursePanel({
                     )}
                   </div>
                   <p className="text-sm font-medium" data-testid={`question-text-${question.id}`}>
-                    {question.question}
+                    {question.questionText}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     Par <span className="font-medium">{question.studentName || "Élève"}</span> le {new Date(question.createdAt).toLocaleDateString("fr-FR")} à {new Date(question.createdAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}

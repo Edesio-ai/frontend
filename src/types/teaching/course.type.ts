@@ -1,6 +1,3 @@
-import { Question } from "./question.type";
-import { Student } from "./student.type";
-
 export interface Course {
   id: string;
   sessionId: string;
@@ -30,39 +27,10 @@ export type CourseRanking = {
   lastAttempt: string;
 };
 
-export interface CourseFile {
-  id: string;
-  courseId: string;
-  fileUrl: string;
-  fileName: string;
-  createdAt: string;
-}
-
-export interface CourseQuestion {
-  id: string;
-  courseId: string;
-  studentId: string;
-  question: string;
-  answer: string | null;
-  answeredAt: string | null;
-  createdAt: string;
-  studentName?: string;
-}
-
 export type InsertCourse = Omit<
   Course,
   "id" | "createdAt" | "validatedQuestions" | "positionOrder"
 >;
-
-export interface CourseDetails {
-  course: Partial<Pick<Course, 'id' | 'title' | 'description' | 'contentText' | 'validatedQuestions'>>;
-  questions: (Pick<Question, 'id' | 'questionText'> & Partial<Pick<Question, 'type' | 'proposals' | 'correctAnswers'>>)[];
-  students: (Pick<Student, 'id' | 'name'> & Partial<Pick<Student, 'email' | 'photoUrl'>> & {
-    correctAnswers: number;
-    totalAnswers: number;
-  })[];
-  files: Partial<Pick<CourseFile, 'id' | 'fileName'>>[];
-}
 
 export type UpdateCourseRequest = {
   title?: string;

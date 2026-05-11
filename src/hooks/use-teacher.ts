@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import type {
   Teacher,
   Session,
-  SessionLanguage,
+  Language,
   Course,
   CourseFile,
   Question,
@@ -16,7 +16,7 @@ import type {
   CreateQuestionRequest,
   UpdateQuestionRequest,
   UpdateCourseRequest,
-  StudentSession
+  StudentSessionWithStudent
 } from "@/types";
 import { teacherService } from "@/services/teaching/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
@@ -24,7 +24,7 @@ import { sessionService } from "@/services/teaching/session.service";
 import { courseService } from "@/services/teaching/course.service";
 import { questionService } from "@/services/teaching/question.service";
 import { GenerateQuestionsConfig } from "@/types";
-import { fileService } from "@/services/teaching/file.service";
+import { CoursefileService } from "@/services/teaching/course-file.service";
 import { exportService } from "@/services/export.service";
 import { courseQuestionService } from "@/services/teaching/course-question.service";
 import { llmService } from "@/services/llm.service";
@@ -49,7 +49,7 @@ function courseQuestionFromRow(row: CourseQuestionsTableRow): CourseQuestion {
     id: row.id,
     courseId: row.course_id,
     studentId: row.student_id,
-    question: row.question,
+    questionText: row.question,
     answer: row.answer,
     answeredAt: row.answered_at,
     createdAt: row.created_at,
@@ -166,7 +166,7 @@ export function useTeacher() {
 
 
   const createSession = useCallback(
-    async (name: string, language: SessionLanguage = 'francais'): Promise<Session | null> => {
+    async (name: string, language: Language = 'francais'): Promise<Session | null> => {
       if (!teacher) return null;
 
       try {
@@ -323,7 +323,7 @@ export function useTeacher() {
 
   const handleUploadPdfForCours = async (courseId: string, file: File): Promise<CourseFile> => {
     try {
-      const { data } = await fileService.uploadFile(courseId, file);
+      const { data } = await CoursefileService.uploadFile(courseId, file);
       return data;
     } catch (err) {
       console.error("Error uploading PDF:", err);
@@ -409,7 +409,7 @@ export function useTeacher() {
   const deleteCourseFile = useCallback(
     async (file: CourseFile): Promise<boolean> => {
       try {
-        await fileService.deleteFile(file.id);
+        await CoursefileService.deleteFile(file.id);
 
         return true;
       } catch (err) {
@@ -544,7 +544,7 @@ export function useTeacher() {
   );
 
   const fetchSessionStudents = useCallback(
-    async (sessionId: string): Promise<StudentSession[]> => {
+    async (sessionId: string): Promise<StudentSessionWithStudent[]> => {
       try {
         const studentsSessions = await studentSessionService.getStudentSession(sessionId);
 
@@ -619,7 +619,7 @@ export function useTeacher() {
     []
   );
 
-  const answerQuestionCourse = useCallback(
+  const answerCourseQuestion = useCallback(
     async (questionId: string, reponse: string): Promise<CourseQuestion | null> => {
       try {
         const { data, error: updateError } = await supabase
@@ -649,7 +649,7 @@ export function useTeacher() {
     []
   );
 
-  const deleteQuestionCourse = useCallback(
+  const deleteCourseQuestion = useCallback(
     async (questionId: string): Promise<boolean> => {
       try {
         const { error: deleteError } = await supabase
@@ -771,7 +771,7 @@ export function useTeacher() {
     fetchCourseRanking,
     fetchQuestionsCourseForCourse,
     fetchPendingQuestionsCount,
-    answerQuestionCourse,
-    deleteQuestionCourse,
+    answerCourseQuestion,
+    deleteCourseQuestion,
   };
 }

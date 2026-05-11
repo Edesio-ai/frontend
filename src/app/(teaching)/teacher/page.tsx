@@ -22,7 +22,7 @@ import { useTeacher } from "@/hooks/use-teacher";
 import { SuggestionsModal } from "@/components/SuggestionsModal";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
 import { useToast } from "@/hooks/use-toast";
-import type { Session, Course, StudentSession } from "@/types";
+import type { Session, Course, StudentSessionWithStudent } from "@/types";
 import {
   LogOut,
   Loader2,
@@ -44,7 +44,7 @@ import { ClassListSection } from "@/components/teacher/section/classListSection"
 import { TabsListHeader } from "@/components/teacher/tabs/TabsList";
 import { CourseTab } from "@/components/teacher/tabs/CourseTab";
 import { StudentTab } from "@/components/teacher/tabs/StudentTab";
-import { QuestionCourseTab } from "@/components/teacher/tabs/QuestionCourseTab";
+import { CourseQuestionTab } from "@/components/teacher/tabs/CourseQuestionTab";
 
 export default function Teacher() {
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
@@ -77,8 +77,8 @@ export default function Teacher() {
     fetchCourseRanking,
     fetchQuestionsCourseForCourse,
     fetchPendingQuestionsCount,
-    answerQuestionCourse,
-    deleteQuestionCourse,
+    answerCourseQuestion,
+    deleteCourseQuestion,
   } = useTeacher();
   const { toast } = useToast();
   const router = useRouter();
@@ -91,7 +91,7 @@ export default function Teacher() {
 
 
   const [sessionTab, setSessionTab] = useState<"course" | "students" | "qa">("course");
-  const [sessionStudents, setSessionStudents] = useState<StudentSession[]>([]);
+  const [sessionStudents, setSessionStudents] = useState<StudentSessionWithStudent[]>([]);
   const [loadingSessionStudents, setLoadingSessionStudents] = useState(false);
   const [pendingQuestionsCount, setPendingQuestionsCount] = useState<number>(0);
   const [sessionPendingCounts, setSessionPendingCounts] = useState<Record<string, number>>({});
@@ -429,12 +429,12 @@ export default function Teacher() {
                   sessionStudents={sessionStudents}
                   selectedSession={selectedSession}
                 />
-                <QuestionCourseTab
+                <CourseQuestionTab
                   sessionId={selectedSession?.id || ""}
                   fetchCourses={fetchCourses}
                   fetchQuestionsCourseForCourse={fetchQuestionsCourseForCourse}
-                  answerQuestionCourse={answerQuestionCourse}
-                  deleteQuestionCourse={deleteQuestionCourse}
+                  answerCourseQuestion={answerCourseQuestion}
+                  deleteCourseQuestion={deleteCourseQuestion}
                   onPendingCountChange={() => refreshPendingCount(selectedSession.id)}
                 />
               </Tabs>

@@ -1,9 +1,9 @@
 import { BookOpen, MessageCircle, Users } from "lucide-react";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StudentSession } from "@/types";
+import { StudentSessionWithStudent } from "@/types";
 
 interface TabsListHeaderProps {
-    sessionStudents: StudentSession[];
+    sessionStudents: StudentSessionWithStudent[];
     pendingQuestionsCount: number;
 }
 

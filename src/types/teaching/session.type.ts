@@ -1,17 +1,20 @@
+import { Course } from "./course.type";
+import { CourseFile } from "./course-file.type";
+import { Question } from "./question.type";
+import { Student } from "./student.type";
+
 export interface Session {
     id: string;
     teacherId: string;
     name: string;
     code: string;
-    language: SessionLanguage;
+    language: Language;
     createdAt: string;
 }
 
-export interface JoinedSession extends Session {
-    joinedAt: string;
-}
 
-export type SessionLanguage = 'francais' | 'anglais' | 'espagnol' | 'allemand';
+
+export type Language = 'francais' | 'anglais' | 'espagnol' | 'allemand';
 
 export interface SessionWithStudentCount extends Session {
     studentsCount: number;
@@ -20,10 +23,12 @@ export interface SessionWithStudentCount extends Session {
 
 export type InsertSession = Omit<Session, "id" | "createdAt">;
 
-export interface SessionParticipant {
-    studentId: string;
-    name: string;
-    email: string;
-    photoUrl: string | null;
-    joinedAt: string;
+export interface SessionDetails {
+    course: Partial<Pick<Course, 'id' | 'title' | 'description' | 'contentText' | 'validatedQuestions'>>;
+    questions: (Pick<Question, 'id' | 'questionText'> & Partial<Pick<Question, 'type' | 'proposals' | 'correctAnswers'>>)[];
+    students: (Pick<Student, 'id' | 'name'> & Partial<Pick<Student, 'email' | 'photoUrl'>> & {
+        correctAnswers: number;
+        totalAnswers: number;
+    })[];
+    files: Partial<Pick<CourseFile, 'id' | 'fileName'>>[];
 }
