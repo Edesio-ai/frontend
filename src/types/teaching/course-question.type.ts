@@ -10,3 +10,7 @@ export interface CourseQuestion {
 }
 
 export interface SendCourseQuestionBody extends Pick<CourseQuestion, "courseId" | "questionText"> {}
+
+export interface AnswerCourseQuestionBody extends Pick<CourseQuestion, "answer"> {
+  courseQuestionId: string;
+}
