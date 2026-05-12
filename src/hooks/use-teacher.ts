@@ -16,7 +16,8 @@ import type {
   CreateQuestionRequest,
   UpdateQuestionRequest,
   UpdateCourseRequest,
-  StudentSessionWithStudent
+  StudentSessionWithStudent,
+  AnswerCourseQuestionBody
 } from "@/types";
 import { teacherService } from "@/services/teaching/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
@@ -31,31 +32,6 @@ import { llmService } from "@/services/llm.service";
 import { courseStudentStatsService } from "@/services/teaching/student-course-stats.service";
 import { studentSessionService } from "@/services/teaching/student-session.service";
 import { invitationTokenService } from "@/services/invitation-token.service";
-
-
-type CourseQuestionsTableRow = {
-  id: string;
-  course_id: string;
-  student_id: string;
-  question: string;
-  answer: string | null;
-  answered_at: string | null;
-  created_at: string;
-  student_name?: string | null;
-};
-
-function courseQuestionFromRow(row: CourseQuestionsTableRow): CourseQuestion {
-  return {
-    id: row.id,
-    courseId: row.course_id,
-    studentId: row.student_id,
-    questionText: row.question,
-    answer: row.answer,
-    answeredAt: row.answered_at,
-    createdAt: row.created_at,
-    studentName: row.student_name ?? undefined,
-  };
-}
 
 interface TeacherWithEtab extends Teacher {
   establishmentId?: string | null;
@@ -599,26 +575,16 @@ export function useTeacher() {
   );
 
   const answerCourseQuestion = useCallback(
-    async (questionId: string, reponse: string): Promise<CourseQuestion | null> => {
+    async (courseQuestionId: string, answer: string): Promise<CourseQuestion | null> => {
       try {
-        const { data, error: updateError } = await supabase
-          .from("course_questions")
-          .update({
-            answer: reponse,
-            answered_at: new Date().toISOString(),
-          })
-          .eq("id", questionId)
-          .select()
-          .single();
-
-        if (updateError) {
-          console.error("Error answering question:", updateError);
-          setError("Erreur lors de la réponse à la question.");
-          return null;
-        }
+        const body: AnswerCourseQuestionBody = {
+          courseQuestionId,
+          answer,
+        };
+        const data = await courseQuestionService.answerCourseQuestion(body);
 
         setError(null);
-        return courseQuestionFromRow(data as CourseQuestionsTableRow);
+        return data;
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue.");

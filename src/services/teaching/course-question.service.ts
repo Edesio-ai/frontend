@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { CourseQuestion, SendCourseQuestionBody } from "@/types";
+import { AnswerCourseQuestionBody, CourseQuestion, SendCourseQuestionBody } from "@/types";
 
 export const courseQuestionService = {
   getAnsweredQuestionsCourse: async (): Promise<{ answeredQuestions: number }> => {
@@ -17,6 +17,13 @@ export const courseQuestionService = {
   sendCourseQuestion: async (body: SendCourseQuestionBody ): Promise<CourseQuestion> => {
     const response = await apiFetch<CourseQuestion>(`/api/course-question/`, {
       method: "POST",
+      body: JSON.stringify(body),
+    });
+    return response;
+  },
+  answerCourseQuestion: async (body: AnswerCourseQuestionBody): Promise<CourseQuestion> => {
+    const response = await apiFetch<CourseQuestion>(`/api/course-question/`, {
+      method: "PATCH",
       body: JSON.stringify(body),
     });
     return response;
