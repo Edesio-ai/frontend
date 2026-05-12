@@ -256,8 +256,8 @@ export function useStudent() {
     [student]
   );
 
-  const askQuestionCours = useCallback(
-    async (coursId: string, questionText: string): Promise<{ success: boolean; error?: string; question?: CourseQuestion }> => {
+  const sendCourseQuestion = useCallback(
+    async (courseId: string, questionText: string): Promise<{ success: boolean; error?: string; question?: CourseQuestion }> => {
       if (!student) {
         return { success: false, error: "Vous devez être connecté." };
       }
@@ -267,20 +267,11 @@ export function useStudent() {
       }
 
       try {
-        const { data, error: insertError } = await supabase
-          .from("questions_cours")
-          .insert({
-            cours_id: coursId,
-            student_id: student.id,
-            question: questionText.trim(),
-          })
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error("Error inserting question:", insertError);
-          return { success: false, error: "Erreur lors de l'envoi de la question." };
+        const body = {
+          courseId,
+          questionText: questionText.trim(),
         }
+        const data = await courseQuestionService.sendCourseQuestion(body);
 
         return { success: true, question: data };
       } catch (err) {
@@ -337,7 +328,7 @@ export function useStudent() {
     updateCourseProgress,
     fetchCoursClassement,
     getMyCoursStats,
-    askQuestionCours,
+    sendCourseQuestion,
     fetchQuestionsCoursForCours,
     countAnsweredQuestionsForCourse,
   };

@@ -18,7 +18,7 @@ interface StudentQAModalProps {
   onOpenChange: (open: boolean) => void;
   cours: Course;
   fetchQuestionsCoursForCours: (coursId: string) => Promise<CourseQuestion[]>;
-  askQuestionCours: (coursId: string, questionText: string) => Promise<{ success: boolean; error?: string; question?: CourseQuestion }>;
+  sendCourseQuestion: (coursId: string, questionText: string) => Promise<{ success: boolean; error?: string; question?: CourseQuestion }>;
 }
 
 export function StudentQAModal({
@@ -26,7 +26,7 @@ export function StudentQAModal({
   onOpenChange,
   cours,
   fetchQuestionsCoursForCours,
-  askQuestionCours,
+  sendCourseQuestion,
 }: StudentQAModalProps) {
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<CourseQuestion[]>([]);
@@ -63,7 +63,7 @@ export function StudentQAModal({
     setSubmitting(true);
     setSubmitError("");
     
-    const result = await askQuestionCours(cours.id, newQuestion.trim());
+    const result = await sendCourseQuestion(cours.id, newQuestion.trim());
     
     if (result.success && result.question) {
       setQuestions(prev => [result.question!, ...prev]);
