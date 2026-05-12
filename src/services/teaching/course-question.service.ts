@@ -28,4 +28,9 @@ export const courseQuestionService = {
     });
     return response;
   },
+  deleteCourseQuestion: async (courseQuestionId: string): Promise<void> => {
+    await apiFetch<void>(`/api/course-question/${courseQuestionId}`, {
+      method: "DELETE",
+    });
+  },
 }
