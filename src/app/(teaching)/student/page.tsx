@@ -71,7 +71,7 @@ export default function Student() {
     uploadProfilePhoto,
     updateCourseProgress,
     fetchCoursClassement,
-    askQuestionCours,
+    sendCourseQuestion,
     fetchQuestionsCoursForCours,
     countAnsweredQuestionsForCourse,
   } = useStudent();
@@ -833,7 +833,7 @@ export default function Student() {
           onOpenChange={setQaModalOpen}
           cours={selectedCoursForQA}
           fetchQuestionsCoursForCours={fetchQuestionsCoursForCours}
-          askQuestionCours={askQuestionCours}
+          sendCourseQuestion={sendCourseQuestion}
         />
       )}
 
