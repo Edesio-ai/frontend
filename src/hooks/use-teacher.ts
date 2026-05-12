@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/use-auth";
 
 import type {
@@ -595,19 +594,9 @@ export function useTeacher() {
   );
 
   const deleteCourseQuestion = useCallback(
-    async (questionId: string): Promise<boolean> => {
+    async (courseQuestionId: string): Promise<boolean> => {
       try {
-        const { error: deleteError } = await supabase
-          .from("course_questions")
-          .delete()
-          .eq("id", questionId);
-
-        if (deleteError) {
-          console.error("Error deleting question:", deleteError);
-          setError("Erreur lors de la suppression de la question.");
-          return false;
-        }
-
+        await courseQuestionService.deleteCourseQuestion(courseQuestionId);
         setError(null);
         return true;
       } catch (err) {
