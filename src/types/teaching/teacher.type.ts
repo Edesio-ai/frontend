@@ -18,3 +18,7 @@ export interface TeacherWithStats {
   studentsCount: number;
   sessions: SessionWithStudentCount[];
 }
+
+export interface TeacherWithEstablishment extends Teacher {
+  establishmentId?: string | null;
+}

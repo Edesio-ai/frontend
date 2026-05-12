@@ -16,7 +16,8 @@ import type {
   UpdateQuestionRequest,
   UpdateCourseRequest,
   StudentSessionWithStudent,
-  AnswerCourseQuestionBody
+  AnswerCourseQuestionBody,
+  TeacherWithEstablishment
 } from "@/types";
 import { teacherService } from "@/services/teaching/teacher.service";
 import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
@@ -31,10 +32,6 @@ import { llmService } from "@/services/llm.service";
 import { courseStudentStatsService } from "@/services/teaching/student-course-stats.service";
 import { studentSessionService } from "@/services/teaching/student-session.service";
 import { invitationTokenService } from "@/services/invitation-token.service";
-
-interface TeacherWithEtab extends Teacher {
-  establishmentId?: string | null;
-}
 
 
 export function useTeacher() {
@@ -90,7 +87,7 @@ export function useTeacher() {
     if (teacher) {
       setTeacher(teacher);
       const invitationToken = user.metadata?.invitationToken;
-      const teacherWithEstab = teacher as TeacherWithEtab;
+      const teacherWithEstab = teacher as TeacherWithEstablishment;
       if (invitationToken && !teacherWithEstab.establishmentId) {
         await handleInvitationValidation(invitationToken);
       }
