@@ -286,7 +286,7 @@ export default function Teacher() {
                     {firstName}
                   </span>
                 </div>
-                <Link href="/profil">
+                <Link href="/profile">
                   <Button
                     variant="ghost"
                     size="sm"

@@ -297,7 +297,7 @@ export default function Student() {
                   {firstname}
                 </span>
               </div>
-              <Link href="/profil">
+              <Link href="/profile">
                 <Button
                   variant="ghost"
                   size="sm"
