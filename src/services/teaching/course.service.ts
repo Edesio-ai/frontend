@@ -18,21 +18,6 @@ export const courseService = {
 
     return response;
   },
-  uploadFile: async (courseId: string, file: File): Promise<{data: CourseFile} > => {
-    const formData = new FormData();  
-    formData.append("file", file);
-
-    const response = await apiFetch<{ data: CourseFile }>(`/api/course/${courseId}/file`, {
-      method: "POST",
-      body: formData,
-    });
-
-    return response;
-  },
-  getCoursesFiles: async (courseId: string): Promise<CourseFile[]> => {
-    const response = await apiFetch<CourseFile[]>(`/api/course/${courseId}/file`);
-    return response;
-  },
   getCourseValidatedQuestions: async (courseId: string): Promise<{ validatedQuestions: boolean }> => {
     const response = await apiFetch<{ validatedQuestions: boolean }>(`/api/course/${courseId}/validated-questions`);
     return response;

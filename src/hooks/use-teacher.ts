@@ -349,7 +349,7 @@ export function useTeacher() {
   const fetchCourseFiles = useCallback(
     async (courseId: string): Promise<CourseFile[]> => {
       try {
-        const fileData = await courseService.getCoursesFiles(courseId);
+        const fileData = await CoursefileService.getCoursesFiles(courseId);
 
         return fileData;
       } catch (err) {
