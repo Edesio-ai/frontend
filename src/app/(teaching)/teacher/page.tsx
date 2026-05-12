@@ -179,7 +179,6 @@ export default function Teacher() {
 
   const handleTabChange = (value: string) => {
     const tab = value as "course" | "students" | "qa";
-    console.log("🚀 ~ handleTabChange ~ tab:", tab)
     setSessionTab(tab);
     if (tab === "students" && selectedSession && sessionStudents.length === 0) {
       loadSessionStudents(selectedSession.id);
