@@ -129,7 +129,7 @@ export default function Establishment() {
       </div>
     );
   }
-  // Prevent rendering while redirecting unauthorized roles/users
+  
   if (!user || (role && role !== "establishment")) {
     return null;
   }
@@ -210,7 +210,7 @@ export default function Establishment() {
                 <Lightbulb className="h-4 w-4 mr-1.5" />
                 Suggestions
               </Button>
-              <Link href="/profil">
+              <Link href="/profile">
                 <Button variant="ghost" data-testid="button-profile">
                   <UserCog className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Profil</span>
