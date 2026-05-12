@@ -240,7 +240,7 @@ export function useStudent() {
     async (coursId: string): Promise<CourseQuestion[]> => {
       try {
 
-        const data = await courseQuestionService.getStudentCourseQuestions(coursId);
+        const data = await courseQuestionService.getCourseQuestions(coursId);
 
         return data || [];
       } catch (err) {

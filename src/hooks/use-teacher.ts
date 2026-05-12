@@ -575,29 +575,8 @@ export function useTeacher() {
   const fetchQuestionsCourseForCourse = useCallback(
     async (courseId: string): Promise<CourseQuestion[]> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
-
-        if (!accessToken) {
-          console.error("No access token available");
-          return [];
-        }
-
-        const response = await fetch(`/api/cours/${courseId}/questions-cours`, {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Error fetching questions cours:", errorData.error);
-          return [];
-        }
-
-        const data = await response.json();
-        return (Array.isArray(data) ? data : []) as CourseQuestion[];
+        const questionsData = await courseQuestionService.getCourseQuestions(courseId);
+        return questionsData;
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
