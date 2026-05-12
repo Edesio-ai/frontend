@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabaseClient";
-
 import { useAuth } from "./use-auth";
-import { Course, CourseRanking, JoinedSession, Question, CourseQuestion, Student, StudentCourseStats } from "@/types";
+import { Course, CourseRanking, JoinedSession, Question, CourseQuestion, Student } from "@/types";
 import { studentService } from "@/services/teaching/student.service";
 import { questionService } from "@/services/teaching/question.service";
 import { courseQuestionService } from "@/services/teaching/course-question.service";
@@ -196,61 +194,17 @@ export function useStudent() {
     [student]
   );
 
-  const fetchCoursClassement = useCallback(
+  const fetchCourseRanking = useCallback(
     async (coursId: string): Promise<CourseRanking[]> => {
       if (!student) return [];
 
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
+        const ranking = await courseStudentStatsService.getCourseRanking(coursId);
 
-        if (!accessToken) {
-          console.error("No access token available");
-          return [];
-        }
-
-        const response = await fetch(`/api/cours/${coursId}/classement`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          console.error("Error fetching course classement:", response.statusText);
-          return [];
-        }
-
-        const rankings: CourseRanking[] = await response.json();
-        return rankings;
+        return ranking;
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
-      }
-    },
-    [student]
-  );
-
-  const getMyCoursStats = useCallback(
-    async (coursId: string): Promise<StudentCourseStats | null> => {
-      if (!student) return null;
-
-      try {
-        const { data, error } = await supabase
-          .from("eleve_cours_stats")
-          .select("*")
-          .eq("student_id", student.id)
-          .eq("cours_id", coursId)
-          .maybeSingle();
-
-        if (error) {
-          console.error("Error fetching my stats:", error);
-          return null;
-        }
-
-        return data;
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        return null;
       }
     },
     [student]
@@ -297,7 +251,6 @@ export function useStudent() {
     []
   );
 
-  // Count answered questions for the current student per course
   const countAnsweredQuestionsForCourse = useCallback(
     async (): Promise<number> => {
       if (!student) return 0;
@@ -326,8 +279,7 @@ export function useStudent() {
     refreshSessions: fetchJoinedSessions,
     uploadProfilePhoto,
     updateCourseProgress,
-    fetchCoursClassement,
-    getMyCoursStats,
+    fetchCourseRanking,
     sendCourseQuestion,
     fetchQuestionsCoursForCours,
     countAnsweredQuestionsForCourse,

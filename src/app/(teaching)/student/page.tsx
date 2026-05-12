@@ -70,7 +70,7 @@ export default function Student() {
     leaveSession,
     uploadProfilePhoto,
     updateCourseProgress,
-    fetchCoursClassement,
+    fetchCourseRanking,
     sendCourseQuestion,
     fetchQuestionsCoursForCours,
     countAnsweredQuestionsForCourse,
@@ -216,7 +216,7 @@ export default function Student() {
     setSelectedCoursForRankings(cours);
     setRankingsModalOpen(true);
     setLoadingRankings(true);
-    const rankingsData = await fetchCoursClassement(cours.id);
+    const rankingsData = await fetchCourseRanking(cours.id);
     setRankings(rankingsData);
     setLoadingRankings(false);
   };
