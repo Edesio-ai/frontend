@@ -47,12 +47,13 @@ import {
 import { apiFetch } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
+import { profileService } from "@/services/profile.service";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY || "");
 
 const profileSchema = z.object({
-  firstName: z.string().min(1, "Le prénom est requis"),
-  lastName: z.string().min(1, "Le nom est requis"),
+  firstname: z.string().min(1, "Le prénom est requis"),
+  lastname: z.string().min(1, "Le nom est requis"),
   email: z.string().email("Adresse email invalide"),
 });
 
@@ -88,7 +89,7 @@ function PaymentMethodForm({ onSuccess, onCancel }: { onSuccess: () => void; onC
 
     try {
       const response = await apiFetch<{ clientSecret: string }>("/api/stripe/create-setup-intent", { method: "POST" });
-      const { clientSecret } = await response;
+      const { clientSecret } = response;
 
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) {
@@ -529,7 +530,7 @@ function SubscriptionSection() {
   );
 }
 
-export default function Profil() {
+export default function Profile() {
   const { user, loading: authLoading, getUserRole } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
@@ -538,8 +539,8 @@ export default function Profil() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      firstname: "",
+      lastname: "",
       email: "",
     },
   });
@@ -555,8 +556,8 @@ export default function Profil() {
   useEffect(() => {
     if (user) {
       form.reset({
-        firstName: user.metadata?.firstname || user.metadata?.firstname || "",
-        lastName: user.metadata?.lastname || user.metadata?.lastname || "",
+        firstname: user.metadata?.firstname || user.metadata?.firstname || "",
+        lastname: user.metadata?.lastname || user.metadata?.lastname || "",
         email: user.email || "",
       });
     }
@@ -580,24 +581,7 @@ export default function Profil() {
   const onSubmit = async (data: ProfileFormValues) => {
     setIsSaving(true);
     try {
-      const token = "session?.access_token";
-      if (!token) {
-        throw new Error("Non authentifié");
-      }
-
-      const response = await fetch("/api/user/profile", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Erreur lors de la mise à jour");
-      }
+      await profileService.updateProfile(data);
 
       toast({
         title: "Profil mis à jour",
@@ -664,7 +648,7 @@ export default function Profil() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="firstname"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Prénom</FormLabel>
@@ -682,7 +666,7 @@ export default function Profil() {
 
                   <FormField
                     control={form.control}
-                    name="lastName"
+                    name="lastname"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nom</FormLabel>
