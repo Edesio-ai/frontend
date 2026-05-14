@@ -7,6 +7,7 @@ export interface Teacher {
   name: string;
   email: string;
   createdAt: string;
+  establishmentId?: string | null;
 }
 
 export interface TeacherWithStats {
