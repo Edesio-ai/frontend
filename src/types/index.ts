@@ -10,3 +10,4 @@ export * from './teaching/student-session.type';
 export * from './billing.type';
 export * from './llm.type';
 export * from './invitation-token.type';
+export * from './profile.type';
