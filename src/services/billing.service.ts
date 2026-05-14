@@ -12,4 +12,10 @@ export const BillingService = {
         });
         return response;
     },
+    async getSubscription(): Promise<any> {
+        const response = await apiFetch("/api/billing/subscription", {
+            method: "GET",
+        });
+        return response;
+    },
 }

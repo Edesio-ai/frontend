@@ -48,6 +48,7 @@ import { apiFetch } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { profileService } from "@/services/profile.service";
+import { BillingService } from "@/services/billing.service";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY || "");
 
@@ -178,8 +179,8 @@ function SubscriptionSection() {
 
   const fetchSubscription = async () => {
     try {
-      const response = await apiFetch<Subscription>("/api/stripe/subscription", { method: "GET" });
-      setSubscription(response);
+      const { subscription } = await BillingService.getSubscription();
+      setSubscription(subscription);
     } catch (error) {
       console.error("Error fetching subscription:", error);
     } finally {
