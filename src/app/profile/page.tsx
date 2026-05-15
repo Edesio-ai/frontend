@@ -71,6 +71,7 @@ interface Subscription {
   cancelAtPeriodEnd: boolean;
   last4: string | null;
   cardBrand: string | null;
+  isEstablishmentSubscription: boolean;
 }
 
 function PaymentMethodForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: () => void }) {
@@ -319,7 +320,7 @@ function SubscriptionSection() {
     );
   }
 
-  if (!subscription) {
+  if (!subscription || subscription.isEstablishmentSubscription) {
     return (
       <Card className="p-6">
         <div className="flex items-center gap-3 mb-6">
@@ -334,11 +335,13 @@ function SubscriptionSection() {
         <div className="text-center py-8">
           <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground mb-4">
-            Vous n'avez pas d'abonnement actif.
+            {subscription?.isEstablishmentSubscription ? "Vous êtes sous l'abonnement de votre établissement." : "Vous n'avez pas d'abonnement actif."}
           </p>
-          <Link href="/choisir-plan">
-            <Button>Choisir un forfait</Button>
-          </Link>
+          {!subscription?.isEstablishmentSubscription && (
+            <Link href="/choisir-plan">
+              <Button>Choisir un forfait</Button>
+            </Link>
+          )}
         </div>
       </Card>
     );
