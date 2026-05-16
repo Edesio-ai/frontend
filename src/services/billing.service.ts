@@ -18,4 +18,10 @@ export const BillingService = {
         });
         return response;
     },
+    async cancelSubscription(): Promise<any> {
+        const response = await apiFetch<void>("/api/billing/subscription/cancel", {
+          method: "POST",
+        });
+        return response;
+    },
 }

@@ -7,4 +7,4 @@ export type User = {
 
 export type UserMetadata = {
     [key: string]: any;
-  };
+};
