@@ -362,7 +362,7 @@ function SubscriptionSection() {
             <p className="font-semibold" data-testid="text-subscription-date">{formatDate(subscription.currentPeriodEnd)}</p>
           </div>
 
-          {subscription.last4 && (
+          {(subscription.last4 && !subscription.cancelAtPeriodEnd) && (
             <div className="p-4 rounded-lg border">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
