@@ -30,4 +30,10 @@ export const BillingService = {
         });
         return response;
     },
+    async getCustomerPortalUrl(): Promise<{ url: string }> {
+        const response = await apiFetch<{ url: string }>("/api/billing/portal", {
+          method: "GET",
+        });
+        return response;
+    },
 }
