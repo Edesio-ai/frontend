@@ -35,5 +35,5 @@ export async function POST(request: NextRequest) {
 
     const text = await response.text();
     const data = text ? JSON.parse(text) : null;
-    return NextResponse.json(data);
+    return NextResponse.json({ data});
 }
