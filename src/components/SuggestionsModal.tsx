@@ -37,6 +37,7 @@ import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { suggestionService } from "@/services/suggestion.service";
 import { Suggestion } from "@/types/suggestion.type";
+import { useAuth } from "@/hooks/use-auth";
 
 interface SuggestionsModalProps {
   open: boolean;
@@ -65,7 +66,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
   const [likingIds, setLikingIds] = useState<Set<string>>(new Set());
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
   const [showForm, setShowForm] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const { user } = useAuth();
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -82,7 +83,6 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
 
       const response = await suggestionService.getSuggestions(category);
-
       if (response) {
         setSuggestions(response);
       }
@@ -397,7 +397,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                           </span>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          {currentUserId === suggestion.userId && (
+                          {user?.id === suggestion.userId && (
                             <Button
                               variant="ghost"
                               size="sm"
