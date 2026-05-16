@@ -21,12 +21,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  ArrowLeft, 
-  Loader2, 
-  User, 
-  CreditCard, 
-  Mail, 
+import {
+  ArrowLeft,
+  Loader2,
+  User,
+  CreditCard,
+  Mail,
   Save,
   Calendar,
   AlertTriangle,
@@ -178,11 +178,11 @@ function SubscriptionSection() {
     try {
       await BillingService.cancelSubscription();
 
-        toast({
-          title: "Abonnement annulé",
-          description: "Votre abonnement sera résilié à la fin de la période en cours.",
-        });
-        fetchSubscription();
+      toast({
+        title: "Abonnement annulé",
+        description: "Votre abonnement sera résilié à la fin de la période en cours.",
+      });
+      fetchSubscription();
     } catch (error) {
       console.error("Error canceling subscription:", error);
       toast({
@@ -199,13 +199,13 @@ function SubscriptionSection() {
   const handleReactivateSubscription = async () => {
     setIsReactivating(true);
     try {
-      const response = await apiFetch<void>("/api/stripe/reactivate-subscription", { method: "POST" });
+      await BillingService.reactivateSubscription();
 
-        toast({
-          title: "Abonnement réactivé",
-          description: "Votre abonnement a été réactivé avec succès.",
-        });
-        fetchSubscription();
+      toast({
+        title: "Abonnement réactivé",
+        description: "Votre abonnement a été réactivé avec succès.",
+      });
+      fetchSubscription();
     } catch (error) {
       console.error("Error reactivating subscription:", error);
       toast({
@@ -373,8 +373,8 @@ function SubscriptionSection() {
                   </p>
                 </div>
                 {!showCardForm && (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => setShowCardForm(true)}
                     data-testid="button-change-card"
@@ -388,7 +388,7 @@ function SubscriptionSection() {
                 <div className="mt-4 pt-4 border-t">
                   <p className="text-sm font-medium mb-3">Nouvelle carte bancaire</p>
                   <Elements stripe={stripePromise}>
-                    <PaymentMethodForm 
+                    <PaymentMethodForm
                       onSuccess={() => {
                         setShowCardForm(false);
                         fetchSubscription();
@@ -404,8 +404,8 @@ function SubscriptionSection() {
           {!subscription.last4 && !showCardForm && (
             <div className="p-4 rounded-lg border">
               <p className="text-sm text-muted-foreground mb-3">Aucun moyen de paiement enregistré</p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => setShowCardForm(true)}
                 data-testid="button-add-card"
@@ -416,7 +416,7 @@ function SubscriptionSection() {
               {showCardForm && (
                 <div className="mt-4 pt-4 border-t">
                   <Elements stripe={stripePromise}>
-                    <PaymentMethodForm 
+                    <PaymentMethodForm
                       onSuccess={() => {
                         setShowCardForm(false);
                         fetchSubscription();

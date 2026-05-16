@@ -24,4 +24,10 @@ export const BillingService = {
         });
         return response;
     },
+    async reactivateSubscription(): Promise<any> {
+        const response = await apiFetch<void>("/api/billing/subscription/reactivate", {
+          method: "POST",
+        });
+        return response;
+    },
 }
