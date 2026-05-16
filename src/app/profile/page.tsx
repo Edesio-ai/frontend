@@ -20,16 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { 
   ArrowLeft, 
@@ -49,6 +39,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { profileService } from "@/services/profile.service";
 import { BillingService } from "@/services/billing.service";
+import { Subscription } from "@/types";
+import { formatDate } from "@/utils/functions/date.utils";
+import { CancelSubscriptionModal } from "@/components/profile/CancelSubscriptionModal";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY || "");
 
@@ -60,19 +53,6 @@ const profileSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
-interface Subscription {
-  id: string;
-  status: string;
-  plan: string;
-  interval: string;
-  amount: number;
-  currency: string;
-  currentPeriodEnd: number;
-  cancelAtPeriodEnd: boolean;
-  last4: string | null;
-  cardBrand: string | null;
-  isEstablishmentSubscription: boolean;
-}
 
 function PaymentMethodForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: () => void }) {
   const stripe = useStripe();
@@ -196,7 +176,7 @@ function SubscriptionSection() {
   const handleCancelSubscription = async () => {
     setIsCanceling(true);
     try {
-      const response = await apiFetch<void>("/api/stripe/cancel-subscription", { method: "POST" });
+      await BillingService.cancelSubscription();
 
         toast({
           title: "Abonnement annulé",
@@ -236,14 +216,6 @@ function SubscriptionSection() {
     } finally {
       setIsReactivating(false);
     }
-  };
-
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
   };
 
   const formatAmount = (amount: number, currency: string) => {
@@ -501,35 +473,13 @@ function SubscriptionSection() {
         </div>
       </Card>
 
-      <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Annuler votre abonnement ?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Votre abonnement sera résilié à la fin de la période de facturation en cours 
-              (le {formatDate(subscription.currentPeriodEnd)}). Vous conserverez l'accès à 
-              toutes les fonctionnalités jusqu'à cette date.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Garder mon abonnement</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleCancelSubscription}
-              disabled={isCanceling}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {isCanceling ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Annulation...
-                </>
-              ) : (
-                "Confirmer l'annulation"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <CancelSubscriptionModal
+        showCancelDialog={showCancelDialog}
+        setShowCancelDialog={setShowCancelDialog}
+        subscription={subscription}
+        handleCancelSubscription={handleCancelSubscription}
+        isCanceling={isCanceling}
+      />
     </>
   );
 }
