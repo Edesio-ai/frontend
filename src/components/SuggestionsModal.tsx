@@ -35,19 +35,8 @@ import { supabase } from "@/lib/supabaseClient";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
-
-interface Suggestion {
-  id: string;
-  user_id: string;
-  user_email: string | null;
-  user_name: string | null;
-  category: string;
-  title: string;
-  contenu: string;
-  likes_count: number;
-  created_at: string;
-  userHasLiked: boolean;
-}
+import { suggestionService } from "@/services/suggestion.service";
+import { Suggestion } from "@/types/suggestion.type";
 
 interface SuggestionsModalProps {
   open: boolean;
@@ -57,7 +46,7 @@ interface SuggestionsModalProps {
 
 const formSchema = z.object({
   title: z.string().min(3, "Le title doit faire au moins 3 caractères").max(200, "Le title est trop long"),
-  contenu: z.string().min(10, "La description doit faire au moins 10 caractères").max(2000, "La description est trop longue"),
+  content: z.string().min(10, "La description doit faire au moins 10 caractères").max(2000, "La description est trop longue"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -83,32 +72,19 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      contenu: "",
+      content: "",
     },
   });
 
   const fetchSuggestions = async () => {
     try {
       setIsLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
 
-      if (session?.user?.id) {
-        setCurrentUserId(session.user.id);
-      }
 
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
+      const response = await suggestionService.getSuggestions(category);
 
-      if (session?.access_token) {
-        headers["Authorization"] = `Bearer ${session.access_token}`;
-      }
-
-      const response = await fetch(`/api/suggestions/${category}`, { headers });
-      const data = await response.json();
-
-      if (data.suggestions) {
-        setSuggestions(data.suggestions);
+      if (response) {
+        setSuggestions(response);
       }
     } catch (error) {
       console.error("Error fetching suggestions:", error);
@@ -148,7 +124,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
         body: JSON.stringify({
           category,
           title: values.title,
-          contenu: values.contenu,
+          content: values.content,
         }),
       });
 
@@ -347,7 +323,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                   />
                   <FormField
                     control={form.control}
-                    name="contenu"
+                    name="content"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Description</FormLabel>
@@ -431,21 +407,21 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                         </h3>
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
-                        {suggestion.contenu}
+                        {suggestion.content}
                       </p>
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-2 text-xs text-muted-foreground min-w-0 flex-shrink">
-                          <span className="truncate max-w-[120px] sm:max-w-none">{suggestion.user_email || "Anonyme"}</span>
+                          <span className="truncate max-w-[120px] sm:max-w-none">{suggestion.userEmail || "Anonyme"}</span>
                           <span>•</span>
                           <span className="whitespace-nowrap">
-                            {formatDistanceToNow(new Date(suggestion.created_at), {
+                            {formatDistanceToNow(new Date(suggestion.createdAt), {
                               addSuffix: true,
                               locale: fr
                             })}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          {currentUserId === suggestion.user_id && (
+                          {currentUserId === suggestion.userId && (
                             <Button
                               variant="ghost"
                               size="sm"
@@ -478,7 +454,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                               <ThumbsUp className={`h-4 w-4 ${suggestion.userHasLiked ? "fill-current" : ""}`} />
                             )}
                             <span>Voter</span>
-                            <span>{suggestion.likes_count}</span>
+                            <span>{suggestion.likesCount}</span>
                           </Button>
                         </div>
                       </div>
