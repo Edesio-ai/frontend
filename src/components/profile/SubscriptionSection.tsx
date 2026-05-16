@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Subscription } from "@/types";
 import { BillingService } from "@/services/billing.service";
@@ -9,7 +10,6 @@ import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
 import { CreditCard } from "lucide-react";
 import { formatDate } from "@/utils/functions/date.utils";
-import { Link } from "lucide-react";
 import { CancelSubscriptionModal } from "./CancelSubscriptionModal";
 
 export function SubscriptionSection() {
@@ -176,8 +176,8 @@ export function SubscriptionSection() {
             <p className="text-muted-foreground mb-4">
               {subscription?.isEstablishmentSubscription ? "Vous êtes sous l'abonnement de votre établissement." : "Vous n'avez pas d'abonnement actif."}
             </p>
-            {!subscription?.isEstablishmentSubscription && (
-              <Link href="/choisir-plan">
+            {(!subscription?.isEstablishmentSubscription )&& (
+              <Link href="/billing/choose-plan">
                 <Button>Choisir un forfait</Button>
               </Link>
             )}
