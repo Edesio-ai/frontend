@@ -10,3 +10,8 @@ export interface Suggestion {
     createdAt: string;
     userHasLiked: boolean;
 }
+
+export interface LikeSuggestionResponse {
+    liked: boolean;
+    likesCount: number;
+}

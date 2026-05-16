@@ -6,7 +6,7 @@ type RouteContext = {
 
 export async function GET(request: Request, { params }: RouteContext) {
     const { category } = await params;
-    const response = await fetch(`${process.env.BACKEND_URL}/suggestion/${category}`,{
+    const response = await fetch(`${process.env.BACKEND_URL}/suggestion/category/${category}`,{
         headers: {
             "Cookie": request.headers.get("Cookie") ?? "",
         }

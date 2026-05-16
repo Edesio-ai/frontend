@@ -37,6 +37,7 @@ import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { suggestionService } from "@/services/suggestion.service";
 import { Suggestion } from "@/types/suggestion.type";
+import { useAuth } from "@/hooks/use-auth";
 
 interface SuggestionsModalProps {
   open: boolean;
@@ -65,7 +66,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
   const [likingIds, setLikingIds] = useState<Set<string>>(new Set());
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
   const [showForm, setShowForm] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const { user } = useAuth();
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -82,7 +83,6 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
 
       const response = await suggestionService.getSuggestions(category);
-
       if (response) {
         setSuggestions(response);
       }
@@ -159,42 +159,18 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
   const handleLike = async (suggestionId: string) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session?.access_token) {
-        toast({
-          title: "Connexion requise",
-          description: "Vous devez être connecté pour voter.",
-          variant: "destructive",
-        });
-        return;
-      }
-
       setLikingIds(prev => new Set(prev).add(suggestionId));
 
-      const response = await fetch(`/api/suggestions/${suggestionId}/like`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.access_token}`,
-        },
-      });
+      const response = await suggestionService.likeSuggestion(suggestionId);
 
-      const data = await response.json();
+      const { likesCount, liked } = response;
 
-      if (data.likesCount !== undefined) {
         setSuggestions(prev => prev.map(s =>
           s.id === suggestionId
-            ? { ...s, likes_count: data.likesCount, userHasLiked: data.liked }
+            ? { ...s, likesCount, userHasLiked: liked }
             : s
         ));
-      } else if (data.error) {
-        toast({
-          title: "Erreur",
-          description: data.error,
-          variant: "destructive",
-        });
-      }
+
     } catch (error) {
       console.error("Error liking suggestion:", error);
       toast({
@@ -421,7 +397,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                           </span>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          {currentUserId === suggestion.userId && (
+                          {user?.id === suggestion.userId && (
                             <Button
                               variant="ghost"
                               size="sm"
