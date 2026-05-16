@@ -159,42 +159,18 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
   const handleLike = async (suggestionId: string) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session?.access_token) {
-        toast({
-          title: "Connexion requise",
-          description: "Vous devez être connecté pour voter.",
-          variant: "destructive",
-        });
-        return;
-      }
-
       setLikingIds(prev => new Set(prev).add(suggestionId));
 
-      const response = await fetch(`/api/suggestions/${suggestionId}/like`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.access_token}`,
-        },
-      });
+      const response = await suggestionService.likeSuggestion(suggestionId);
 
-      const data = await response.json();
+      const { likesCount, liked } = response;
 
-      if (data.likesCount !== undefined) {
         setSuggestions(prev => prev.map(s =>
           s.id === suggestionId
-            ? { ...s, likes_count: data.likesCount, userHasLiked: data.liked }
+            ? { ...s, likesCount, userHasLiked: liked }
             : s
         ));
-      } else if (data.error) {
-        toast({
-          title: "Erreur",
-          description: data.error,
-          variant: "destructive",
-        });
-      }
+
     } catch (error) {
       console.error("Error liking suggestion:", error);
       toast({
