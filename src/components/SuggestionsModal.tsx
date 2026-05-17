@@ -141,11 +141,11 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
       const { likesCount, liked } = response;
 
-        setSuggestions(prev => prev.map(s =>
-          s.id === suggestionId
-            ? { ...s, likesCount, userHasLiked: liked }
-            : s
-        ));
+      setSuggestions(prev => prev.map(s =>
+        s.id === suggestionId
+          ? { ...s, likesCount, userHasLiked: liked }
+          : s
+      ));
 
     } catch (error) {
       console.error("Error liking suggestion:", error);
@@ -165,42 +165,15 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
   const handleDelete = async (suggestionId: string) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session?.access_token) {
-        toast({
-          title: "Connexion requise",
-          description: "Vous devez être connecté pour supprimer une suggestion.",
-          variant: "destructive",
-        });
-        return;
-      }
-
       setDeletingIds(prev => new Set(prev).add(suggestionId));
 
-      const response = await fetch(`/api/suggestions/${suggestionId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.access_token}`,
-        },
+      await suggestionService.deleteSuggestion(suggestionId);
+
+      setSuggestions(prev => prev.filter(s => s.id !== suggestionId));
+      toast({
+        title: "Suggestion supprimée",
+        description: "Votre suggestion a été supprimée avec succès.",
       });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setSuggestions(prev => prev.filter(s => s.id !== suggestionId));
-        toast({
-          title: "Suggestion supprimée",
-          description: "Votre suggestion a été supprimée avec succès.",
-        });
-      } else if (data.error) {
-        toast({
-          title: "Erreur",
-          description: data.error,
-          variant: "destructive",
-        });
-      }
     } catch (error) {
       console.error("Error deleting suggestion:", error);
       toast({
@@ -395,8 +368,8 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                             onClick={() => handleLike(suggestion.id)}
                             disabled={likingIds.has(suggestion.id)}
                             className={`gap-1.5 !ring-0 !ring-offset-0 focus:outline-none ${suggestion.userHasLiked
-                                ? "bg-primary hover:bg-primary/90"
-                                : "hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                              ? "bg-primary hover:bg-primary/90"
+                              : "hover:bg-primary/10 hover:text-primary hover:border-primary/30"
                               }`}
                             data-testid={`button-like-${suggestion.id}`}
                           >
