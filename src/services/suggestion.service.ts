@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { LikeSuggestionResponse, Suggestion } from "@/types/suggestion.type";
+import { CreateSuggestion, LikeSuggestionResponse, Suggestion } from "@/types/suggestion.type";
 
 export const suggestionService = {
     async getSuggestions(category: string): Promise<Suggestion[]> {
@@ -9,6 +9,13 @@ export const suggestionService = {
     async likeSuggestion(suggestionId: string): Promise<LikeSuggestionResponse> {
         const response = await apiFetch<LikeSuggestionResponse>(`/api/suggestion/${suggestionId}/like`, {
             method: "POST",
+        });
+        return response;
+    },
+    async createSuggestion(suggestion: CreateSuggestion): Promise<Suggestion | null> {
+        const response = await apiFetch<Suggestion | null>(`/api/suggestion`, {
+            method: "POST",
+            body: JSON.stringify(suggestion),
         });
         return response;
     },

@@ -11,6 +11,8 @@ export interface Suggestion {
     userHasLiked: boolean;
 }
 
+export interface CreateSuggestion extends Pick<Suggestion, "category" | "title" | "content"> {}
+
 export interface LikeSuggestionResponse {
     liked: boolean;
     likesCount: number;
