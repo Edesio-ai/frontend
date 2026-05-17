@@ -19,4 +19,10 @@ export const suggestionService = {
         });
         return response;
     },
+    async deleteSuggestion(suggestionId: string): Promise<void> {
+        const response = await apiFetch<void>(`/api/suggestion/${suggestionId}`, {
+            method: "DELETE",
+        });
+        return response;
+    },
 };
