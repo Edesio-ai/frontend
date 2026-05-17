@@ -103,46 +103,22 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
   const onSubmit = async (values: FormValues) => {
     try {
-      setIsSubmitting(true);
-      const { data: { session } } = await supabase.auth.getSession();
+      const { title, content } = values;
 
-      if (!session?.access_token) {
-        toast({
-          title: "Connexion requise",
-          description: "Vous devez être connecté pour proposer une suggestion.",
-          variant: "destructive",
-        });
-        return;
+      const suggestionToCreate = {
+        category,
+        title,
+        content,
       }
+      const data = await suggestionService.createSuggestion(suggestionToCreate);
 
-      const response = await fetch("/api/suggestions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          category,
-          title: values.title,
-          content: values.content,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.suggestion) {
-        setSuggestions(prev => [data.suggestion, ...prev]);
+      if (data) {
+        setSuggestions(prev => [data, ...prev]);
         form.reset();
         setShowForm(false);
         toast({
           title: "Suggestion publiée",
           description: "Merci pour votre contribution !",
-        });
-      } else if (data.error) {
-        toast({
-          title: "Erreur",
-          description: data.error,
-          variant: "destructive",
         });
       }
     } catch (error) {
