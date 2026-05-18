@@ -157,7 +157,7 @@ export default function Connexion() {
                     <div className="flex items-center justify-between">
                       <FormLabel>Mot de passe</FormLabel>
                       <Link
-                        href="/mot-de-passe-oublie"
+                        href="/forgotten-password"
                         className="text-xs text-primary hover:underline"
                         data-testid="link-forgot-password"
                       >
