@@ -1,13 +1,29 @@
 // src/app/api/auth/me/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
+interface Options {
+  method: "GET";
+  headers: {
+    cookie: string;
+    authorization?: string;
+  };
+}
+
 export async function GET(req: NextRequest) {
-  const response = await fetch(`${process.env.BACKEND_URL}/auth/session`, {
+  const authToken = req.headers.get("authorization");
+
+  const options: Options = {
     method: "GET",
     headers: {
       cookie: req.headers.get("cookie") ?? "",
     },
-  });
+  }
+
+  if (authToken) {
+    options.headers.authorization = authToken;
+  }
+
+  const response = await fetch(`${process.env.BACKEND_URL}/auth/session`, options);
 
   if(!response.ok) {
     const error = await response.json();

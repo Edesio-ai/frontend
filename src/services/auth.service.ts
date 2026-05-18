@@ -32,9 +32,14 @@ export const authService = {
         });
     },
     async getUserSession(): Promise<any> {
-        return await apiFetch<any>("/api/auth/session", {
+        const authToken = localStorage.getItem("sb-127-auth-token") ? JSON.parse(localStorage.getItem("sb-127-auth-token") ?? "") : null;
+        
+        return await apiFetch<any>("/api/auth/session", authToken ? {
             method: "GET",
-        });
+            headers: {
+                authorization: `Bearer ${authToken.access_token}`,
+            },
+        } : { method: "GET" });
     },
     async logout(): Promise<any> {
         return await apiFetch<any>("/api/auth/logout", {
@@ -46,5 +51,24 @@ export const authService = {
             method: "POST",
             body: JSON.stringify(body),
         });
+    },
+    async resetPassword(email: string): Promise<void> {
+        return await apiFetch<void>("/api/auth/reset-password", {
+            method: "POST",
+            body: JSON.stringify({ email }),
+        });
+    },
+    async updatePassword(password: string): Promise<void> {
+        const authToken = JSON.parse(localStorage.getItem("sb-127-auth-token") || "{}");
+
+        await apiFetch<void>("/api/auth/update-password", {
+            method: "POST",
+            body: JSON.stringify({ password }),
+            headers: {
+                "authorization": `Bearer ${authToken.access_token}`,
+            },
+        });
+        
+        localStorage.removeItem("sb-127-auth-token");
     },
 };

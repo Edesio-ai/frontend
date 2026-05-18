@@ -31,7 +31,6 @@ import {
   X,
   Trash2
 } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
