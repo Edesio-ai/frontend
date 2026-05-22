@@ -41,7 +41,7 @@ import { useAuth } from "@/hooks/use-auth";
 interface SuggestionsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  category: "teacher" | "student" | "establishment" | "standalone";
+  category: "teacher" | "student" | "establishment" | "self-learner";
 }
 
 const formSchema = z.object({

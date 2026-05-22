@@ -3,7 +3,7 @@ import { Plan } from "@/types";
 
 export const plans: Plan[] = [
     {
-      id: "standalone",
+      id: "self-learner",
       name: "Edesio Solo",
       icon: User,
       monthlyPrice: 4.90,

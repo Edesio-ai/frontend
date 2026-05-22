@@ -106,8 +106,8 @@ export default function Establishment() {
     if (role && role !== "establishment") {
       if (role === "teacher") {
         router.replace("/teacher");
-      } else if (role === "standalone") {
-        router.replace("/standalone");
+      } else if (role === "self-learner") {
+        router.replace("/self-learner");
       } else {
         router.replace("/student");
       }

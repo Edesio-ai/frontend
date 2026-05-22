@@ -43,8 +43,8 @@ export default function Connexion() {
         router.push("/studer");
       } else if (role === "establishment") {
         router.push("/establishment");
-      } else if (role === "standalone") {
-        router.push("/standalone");
+      } else if (role === "self-learner") {
+        router.push("/self-learner");
       }
     }
   }, [user, loading, getUserRole, router]);
@@ -89,8 +89,8 @@ export default function Connexion() {
           case "establishment":
             router.push("/establishment");
             break;
-          case "standalone":
-            router.push("/standalone");
+          case "self-learner":
+            router.push("/self-learner");
             break;
           default:
             router.push("/");
