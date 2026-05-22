@@ -18,9 +18,9 @@ export default function ChoisirPlan() {
 
   // Map user role to plan id
   const roleToPlanId: Record<string, string> = {
-    standalone: "standalone",
-    teacher: "teacher",
-    establishment: "establishment",
+    "self-learner": "self-learner",
+    "teacher": "teacher",
+    "establishment": "establishment",
   };
 
   // Filter plans based on user role - only show the relevant plan

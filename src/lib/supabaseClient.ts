@@ -14,7 +14,7 @@ export const supabase = createClient(
     supabaseAnonKey || ""
 );
 
-export type UserRole = "teacher" | "student" | "establishment" | "standalone";
+export type UserRole = "teacher" | "student" | "establishment" | "self-learner";
 
 export interface UserMetadata {
     role: UserRole;

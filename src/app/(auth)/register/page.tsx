@@ -139,7 +139,7 @@ export default function Register() {
       router.push("/student");
     } else {
       const planMapping: Record<string, string> = {
-        standalone: "standalone",
+        selfLearner: "self-learner",
         teacher: "teacher",
         establishment: "establishment",
       };
@@ -174,10 +174,10 @@ export default function Register() {
             <div>
               <p className="text-sm font-medium text-muted-foreground mb-3">Pour les particuliers</p>
               <Card
-                className={`p-6 cursor-pointer hover-elevate transition-all border-2 ${selectedRole === "standalone" ? "border-primary" : "border-transparent"
+                className={`p-6 cursor-pointer hover-elevate transition-all border-2 ${selectedRole === "self-learner" ? "border-primary" : "border-transparent"
                   }`}
-                onClick={() => handleRoleSelect("standalone")}
-                data-testid="card-role-standalone"
+                onClick={() => handleRoleSelect("self-learner")}
+                data-testid="card-role-self-learner"
               >
                 <div className="flex flex-wrap items-center gap-4">
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
@@ -280,7 +280,7 @@ export default function Register() {
               Changer de profil
             </button>
 
-            <div className={`flex items-center gap-3 mb-6 p-3 rounded-lg ${selectedRole === "standalone"
+            <div className={`flex items-center gap-3 mb-6 p-3 rounded-lg ${selectedRole === "self-learner"
               ? "bg-amber-500/10 border border-amber-500/20"
               : selectedRole === "teacher"
                 ? "bg-emerald-500/10 border border-emerald-500/20"
@@ -288,7 +288,7 @@ export default function Register() {
               }`}>
               {selectedRole === "student" ? (
                 <Users className="h-5 w-5 text-primary" />
-              ) : selectedRole === "standalone" ? (
+              ) : selectedRole === "self-learner" ? (
                 <Sparkles className="h-5 w-5 text-amber-600" />
               ) : selectedRole === "teacher" ? (
                 <GraduationCap className="h-5 w-5 text-emerald-600" />
@@ -298,7 +298,7 @@ export default function Register() {
               <span className="font-medium">
                 {selectedRole === "student"
                   ? "Compte Élève"
-                  : selectedRole === "standalone"
+                  : selectedRole === "self-learner"
                     ? "Edesio Solo"
                     : selectedRole === "teacher"
                       ? "Compte Professeur"
@@ -432,7 +432,7 @@ export default function Register() {
                   )}
                 />
 
-                {selectedRole !== "establishment" && selectedRole !== "standalone" && (
+                {selectedRole !== "establishment" && selectedRole !== "self-learner" && (
                   <FormField
                     control={form.control}
                     name="establishment"

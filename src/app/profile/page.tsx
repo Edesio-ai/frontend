@@ -77,8 +77,8 @@ export default function Profile() {
         return "/teacher";
       case "student":
         return "/student";
-      case "standalone":
-        return "/standalone";
+      case "self-learner":
+        return "/self-learner";
       case "establishment":
         return "/establishment";
       default:

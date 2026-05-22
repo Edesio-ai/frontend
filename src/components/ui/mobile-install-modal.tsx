@@ -157,14 +157,14 @@ export function MobileInstallModal({ open, onOpenChange }: MobileInstallModalPro
 
 export function MobileInstallBanner({ onOpenModal }: { onOpenModal: () => void }) {
     const [dismissed, setDismissed] = useState(false);
-    const [isStandalone, setIsStandalone] = useState(false);
+    const [isStandalone, setIsSelfLearner] = useState(false);
     const [platform, setPlatform] = useState<Platform>("desktop");
 
     useEffect(() => {
         if (typeof window === "undefined") return;
 
-        const standalone = window.matchMedia("(display-mode: standalone)").matches;
-        setIsStandalone(standalone);
+        const selfLearner = window.matchMedia("(display-mode: self-learner)").matches;
+        setIsSelfLearner(selfLearner);
         setPlatform(detectPlatform());
 
         const wasDismissed = localStorage.getItem("edesio_install_dismissed");
