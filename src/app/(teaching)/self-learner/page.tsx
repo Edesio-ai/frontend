@@ -188,7 +188,7 @@ export default function SelfLearner() {
 
   useEffect(() => {
     if (!authLoading && (!user || role !== "self-learner")) {
-      router.push("/connexion");
+      router.push("/login");
     }
   }, [authLoading, user, role, router]);
 
