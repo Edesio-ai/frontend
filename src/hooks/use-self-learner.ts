@@ -9,6 +9,7 @@ import type {
   SelfLearnerCourseFile,
   SelfLearnerQuestion
 } from "@/types";
+import { selfLearnerService } from "@/services/teaching/self-learner.service";
 
 
 export function useSelfLearner() {
@@ -26,45 +27,14 @@ export function useSelfLearner() {
     }
 
     try {
-      const { data: existingAuto, error: fetchError } = await supabase
-        .from("autodidactes")
-        .select("*")
-        .eq("supabase_user_id", user.id)
-        .maybeSingle();
+      const existingSelfLearner = await selfLearnerService.getSelfLearner();
 
-      if (fetchError) {
-        console.error("Error fetching autodidacte:", fetchError);
-        setError("Une erreur est survenue. Merci de réessayer.");
-        setLoading(false);
-        return;
-      }
-
-      if (existingAuto) {
-        setSelfLearner(existingAuto);
+      if (existingSelfLearner) {
+        setSelfLearner(existingSelfLearner);
       } else {
-        const nom =
-          user.metadata?.firstname && user.metadata?.lastname
-            ? `${user.metadata.firstname} ${user.metadata.lastname}`
-            : user.metadata?.firstname || "Apprenant";
+        const newSelfLearner = await selfLearnerService.createSelfLearner();
 
-        const { data: newAuto, error: insertError } = await supabase
-          .from("autodidactes")
-          .insert({
-            supabase_user_id: user.id,
-            nom,
-            email: user.email || "",
-          })
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error("Error creating autodidacte:", insertError);
-          setError("Une erreur est survenue. Merci de réessayer.");
-          setLoading(false);
-          return;
-        }
-
-        setSelfLearner(newAuto);
+        setSelfLearner(newSelfLearner);
       }
 
       setError(null);
