@@ -10,6 +10,7 @@ import type {
   SelfLearnerQuestion
 } from "@/types";
 import { selfLearnerService } from "@/services/teaching/self-learner.service";
+import { selfLearnerCourseService } from "@/services/teaching/self-learner-courses.service";
 
 
 export function useSelfLearner() {
@@ -19,7 +20,7 @@ export function useSelfLearner() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOrCreateAutodidacte = useCallback(async () => {
+  const fetchOrCreateSelfLearner = useCallback(async () => {
     if (!user) {
       setSelfLearner(null);
       setLoading(false);
@@ -46,24 +47,20 @@ export function useSelfLearner() {
     }
   }, [user]);
 
-  const fetchCours = useCallback(async () => {
+  const fetchSelfLearnerCourses = useCallback(async () => {
     if (!selfLearner) {
       setCours([]);
       return;
     }
 
     try {
-      const { data, error: fetchError } = await supabase
-        .from("autodidacte_cours")
-        .select("*")
-        .eq("self_learner_id", selfLearner.id)
-        .order("created_at", { ascending: false });
+      // const { data, error: fetchError } = await supabase
+      //   .from("autodidacte_cours")
+      //   .select("*")
+      //   .eq("self_learner_id", selfLearner.id)
+      //   .order("created_at", { ascending: false });
 
-      if (fetchError) {
-        console.error("Error fetching cours:", fetchError);
-        setError("Une erreur est survenue. Merci de réessayer.");
-        return;
-      }
+      const data = await selfLearnerCourseService.getSelfLearnerCourses();
 
       setCours(data || []);
       setError(null);
@@ -447,8 +444,8 @@ export function useSelfLearner() {
   );
 
   const refreshCours = useCallback(async () => {
-    await fetchCours();
-  }, [fetchCours]);
+    await fetchSelfLearnerCourses();
+  }, [fetchSelfLearnerCourses]);
 
   const addOneQuestion = useCallback(
     async (
@@ -532,15 +529,15 @@ export function useSelfLearner() {
 
   useEffect(() => {
     if (!authLoading) {
-      fetchOrCreateAutodidacte();
+      fetchOrCreateSelfLearner();
     }
-  }, [authLoading, fetchOrCreateAutodidacte]);
+  }, [authLoading, fetchOrCreateSelfLearner]);
 
   useEffect(() => {
     if (selfLearner) {
-      fetchCours();
+      fetchSelfLearnerCourses();
     }
-  }, [selfLearner, fetchCours]);
+  }, [selfLearner, fetchSelfLearnerCourses]);
 
   return {
     selfLearner,
