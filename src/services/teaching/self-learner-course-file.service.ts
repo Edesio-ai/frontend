@@ -10,5 +10,12 @@ export const selfLearnerCourseFileService = {
             body: formData,
         });
         return response;
+    },
+
+    async getSelfLearnerCourseFiles(courseId: string): Promise<SelfLearnerCourseFile[]> {
+        const response = await apiFetch<SelfLearnerCourseFile[]>(`/api/self-learner-course-file/self-learner-course/${courseId}`, {
+            method: "GET",
+        });
+        return response;
     }
 }

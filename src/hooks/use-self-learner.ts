@@ -213,19 +213,10 @@ export function useSelfLearner() {
     []
   );
 
-  const fetchCoursFichiers = useCallback(
-    async (coursId: string): Promise<SelfLearnerCourseFile[]> => {
+  const fetchSelfLearnerCourseFiles = useCallback(
+    async (courseId: string): Promise<SelfLearnerCourseFile[]> => {
       try {
-        const { data, error: fetchError } = await supabase
-          .from("autodidacte_cours_fichiers")
-          .select("*")
-          .eq("cours_id", coursId)
-          .order("created_at", { ascending: false });
-
-        if (fetchError) {
-          console.error("Error fetching fichiers:", fetchError);
-          return [];
-        }
+        const data = await selfLearnerCourseFileService.getSelfLearnerCourseFiles(courseId);
 
         return data || [];
       } catch (err) {
@@ -494,7 +485,7 @@ export function useSelfLearner() {
     updateCours,
     deleteCours,
     uploadCoursePdf,
-    fetchCoursFichiers,
+    fetchSelfLearnerCourseFiles,
     deleteCoursFichier,
     getPdfUrl,
     fetchQuestions,
