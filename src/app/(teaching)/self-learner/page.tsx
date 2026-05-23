@@ -108,7 +108,7 @@ export default function SelfLearner() {
     error,
     createSelfLearnerCourse,
     updateSelfLearnerCourse,
-    deleteCours,
+    deleteSelfLearnerCourse,
     uploadCoursePdf,
     fetchSelfLearnerCourseFiles,
     deleteCoursFichier,
@@ -460,14 +460,14 @@ export default function SelfLearner() {
     }
   };
 
-  const handleDeleteCours = async (coursId: string) => {
-    const success = await deleteCours(coursId);
+  const handleDeleteCourse = async (courseId: string) => {
+    const success = await deleteSelfLearnerCourse(courseId);
     if (success) {
       toast({
         title: "Cours supprimé",
         description: "Le cours et toutes ses questions ont été supprimés.",
       });
-      if (selectedCours?.id === coursId) {
+      if (selectedCours?.id === courseId) {
         setSelectedCours(null);
       }
     } else {
@@ -901,7 +901,7 @@ export default function SelfLearner() {
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-muted-foreground opacity-60 group-hover:opacity-100 transition-opacity hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleDeleteCours(c.id)}
+                          onClick={() => handleDeleteCourse(c.id)}
                           data-testid={`button-delete-cours-${c.id}`}
                         >
                           <Trash2 className="h-4 w-4" />

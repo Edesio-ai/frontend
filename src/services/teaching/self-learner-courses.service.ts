@@ -23,5 +23,10 @@ export const selfLearnerCourseService = {
             body: JSON.stringify(courseData),
         });
         return response;
+    },
+    async deleteSelfLearnerCourse(courseId: string): Promise<void> {
+        const response = await apiFetch<void>(`/api/self-learner-course/${courseId}`, {
+            method: "DELETE",
+        });
     }
 }

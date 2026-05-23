@@ -141,41 +141,12 @@ export function useSelfLearner() {
     []
   );
 
-  const deleteCours = useCallback(
-    async (coursId: string): Promise<boolean> => {
+  const deleteSelfLearnerCourse = useCallback(
+    async (courseId: string): Promise<boolean> => {
       try {
-        const { data: fichiers } = await supabase
-          .from("autodidacte_cours_fichiers")
-          .select("fichier_url")
-          .eq("cours_id", coursId);
+        await selfLearnerCourseService.deleteSelfLearnerCourse(courseId);
 
-        if (fichiers && fichiers.length > 0) {
-          const filePaths = fichiers.map((f) => f.fichier_url);
-          await supabase.storage.from("cours-pdf").remove(filePaths);
-        }
-
-        await supabase
-          .from("autodidacte_cours_fichiers")
-          .delete()
-          .eq("cours_id", coursId);
-
-        await supabase
-          .from("autodidacte_questions")
-          .delete()
-          .eq("cours_id", coursId);
-
-        const { error: deleteError } = await supabase
-          .from("autodidacte_cours")
-          .delete()
-          .eq("id", coursId);
-
-        if (deleteError) {
-          console.error("Error deleting cours:", deleteError);
-          setError("Erreur lors de la suppression du cours.");
-          return false;
-        }
-
-        setCourse((prev) => prev.filter((c) => c.id !== coursId));
+        setCourse((prev) => prev.filter((c) => c.id !== courseId));
         setError(null);
         return true;
       } catch (err) {
@@ -473,7 +444,7 @@ export function useSelfLearner() {
     error,
     createSelfLearnerCourse,
     updateSelfLearnerCourse,
-    deleteCours,
+    deleteSelfLearnerCourse,
     uploadCoursePdf,
     fetchSelfLearnerCourseFiles,
     deleteCoursFichier,
