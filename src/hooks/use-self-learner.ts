@@ -205,11 +205,9 @@ export function useSelfLearner() {
   );
 
   const getPdfUrl = useCallback(
-    async (filePath: string): Promise<string | null> => {
+    async (courseId: string): Promise<string | null> => {
       try {
-        const { data } = await supabase.storage
-          .from("cours-pdf")
-          .createSignedUrl(filePath, 3600);
+        const data = await selfLearnerCourseFileService.getSelfLearnerCourseFileSignedUrl(courseId);
 
         return data?.signedUrl || null;
       } catch (err) {

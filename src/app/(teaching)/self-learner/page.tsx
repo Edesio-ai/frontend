@@ -550,7 +550,8 @@ export default function SelfLearner() {
   };
 
   const handleOpenPdf = async (fichier: SelfLearnerCourseFile) => {
-    const url = await getPdfUrl(fichier.fileUrl);
+    const url = await getPdfUrl(fichier.id);
+
     if (url) {
       setPdfViewerUrl(url);
       setPdfViewerOpen(true);
@@ -1698,17 +1699,6 @@ export default function SelfLearner() {
                 <FileText className="h-5 w-5 text-amber-500" />
                 Document PDF
               </DialogTitle>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  setPdfViewerOpen(false);
-                  setPdfViewerUrl(null);
-                }}
-                data-testid="button-close-pdf-viewer"
-              >
-                <X className="h-5 w-5" />
-              </Button>
             </div>
           </DialogHeader>
           <div className="flex-1 overflow-hidden bg-muted/30">
