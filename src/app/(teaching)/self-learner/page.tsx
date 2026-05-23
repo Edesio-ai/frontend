@@ -110,7 +110,7 @@ export default function SelfLearner() {
     updateCours,
     deleteCours,
     uploadCoursePdf,
-    fetchCoursFichiers,
+    fetchSelfLearnerCourseFiles,
     deleteCoursFichier,
     getPdfUrl,
     fetchQuestions,
@@ -139,7 +139,7 @@ export default function SelfLearner() {
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const [coursTab, setCoursTab] = useState<"contenu" | "questions">("contenu");
-  const [coursFichiers, setCoursFichiers] = useState<SelfLearnerCourseFile[]>([]);
+  const [coursFichiers, setCourseFiles] = useState<SelfLearnerCourseFile[]>([]);
   const [coursQuestions, setCoursQuestions] = useState<SelfLearnerQuestion[]>([]);
   const [loadingFichiers, setLoadingFichiers] = useState(false);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
@@ -230,12 +230,12 @@ export default function SelfLearner() {
   const handleSelectCours = async (c: SelfLearnerCourse) => {
     setSelectedCours(c);
     setCoursTab("contenu");
-    setCoursFichiers([]);
+    setCourseFiles([]);
     setCoursQuestions([]);
     
     setLoadingFichiers(true);
-    const fichiers = await fetchCoursFichiers(c.id);
-    setCoursFichiers(fichiers);
+    const files = await fetchSelfLearnerCourseFiles(c.id);
+    setCourseFiles(files);
     setLoadingFichiers(false);
   };
 
@@ -243,12 +243,12 @@ export default function SelfLearner() {
   const handleSelectCoursForQuestions = async (c: SelfLearnerCourse) => {
     setSelectedCours(c);
     setCoursTab("questions");
-    setCoursFichiers([]);
+    setCourseFiles([]);
     setCoursQuestions([]);
     
     setLoadingFichiers(true);
-    const fichiers = await fetchCoursFichiers(c.id);
-    setCoursFichiers(fichiers);
+    const files = await fetchSelfLearnerCourseFiles(c.id);
+    setCourseFiles(files);
     setLoadingFichiers(false);
   };
 
@@ -261,7 +261,7 @@ export default function SelfLearner() {
   const handleCloseCoursModal = () => {
     setSelectedCours(null);
     setCoursTab("contenu");
-    setCoursFichiers([]);
+    setCourseFiles([]);
     setCoursQuestions([]);
     setEditingQuestionId(null);
     setEditingQuestionText("");
@@ -309,7 +309,7 @@ export default function SelfLearner() {
       for (const file of pdfFiles) {
         const result = await uploadCoursePdf(selectedCours.id, file);
         if (result) {
-          setCoursFichiers((prev) => [...prev, result]);
+          setCourseFiles((prev) => [...prev, result]);
         }
       }
       toast({
@@ -1303,7 +1303,7 @@ export default function SelfLearner() {
                                     onClick={async () => {
                                       const success = await deleteCoursFichier(fichier);
                                       if (success) {
-                                        setCoursFichiers((prev) => prev.filter((f) => f.id !== fichier.id));
+                                        setCourseFiles((prev) => prev.filter((f) => f.id !== fichier.id));
                                         toast({ title: "Fichier supprimé" });
                                       }
                                     }}
