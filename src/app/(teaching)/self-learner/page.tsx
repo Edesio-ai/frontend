@@ -107,7 +107,7 @@ export default function SelfLearner() {
     loading: autoLoading,
     error,
     createSelfLearnerCourse,
-    updateCours,
+    updateSelfLearnerCourse,
     deleteCours,
     uploadCoursePdf,
     fetchSelfLearnerCourseFiles,
@@ -171,7 +171,7 @@ export default function SelfLearner() {
   const renameInputRef = useRef<HTMLInputElement>(null);
 
   const [renameCardModalOpen, setRenameCardModalOpen] = useState(false);
-  const [renameCardCoursId, setRenameCardCoursId] = useState<string | null>(null);
+  const [renameCardCourseId, setRenameCardCourseId] = useState<string | null>(null);
   const [renameCardValue, setRenameCardValue] = useState("");
   const [isSavingCardRename, setIsSavingCardRename] = useState(false);
 
@@ -409,7 +409,7 @@ export default function SelfLearner() {
       return;
     }
     setIsSavingRename(true);
-    const updated = await updateCours(
+    const updated = await updateSelfLearnerCourse(
       selectedCours.id,
       renamingCoursValue.trim(),
       selectedCours.description || null,
@@ -428,29 +428,29 @@ export default function SelfLearner() {
 
   const handleCardRenameClick = (e: React.MouseEvent, c: SelfLearnerCourse) => {
     e.stopPropagation();
-    setRenameCardCoursId(c.id);
+    setRenameCardCourseId(c.id);
     setRenameCardValue(c.title);
     setRenameCardModalOpen(true);
   };
 
   const handleConfirmCardRename = async () => {
-    if (!renameCardCoursId || !renameCardValue.trim()) return;
-    const coursToRename = cours.find(c => c.id === renameCardCoursId);
+    if (!renameCardCourseId || !renameCardValue.trim()) return;
+    const coursToRename = cours.find(c => c.id === renameCardCourseId);
     if (!coursToRename) return;
     if (renameCardValue.trim() === coursToRename.title) {
       setRenameCardModalOpen(false);
       return;
     }
     setIsSavingCardRename(true);
-    const updated = await updateCours(
-      renameCardCoursId,
+    const updated = await updateSelfLearnerCourse(
+      renameCardCourseId,
       renameCardValue.trim(),
       coursToRename.description || null,
       coursToRename.contentText || null
     );
     setIsSavingCardRename(false);
     if (updated) {
-      if (selectedCours?.id === renameCardCoursId) {
+      if (selectedCours?.id === renameCardCourseId) {
         setSelectedCours(updated);
       }
       toast({ title: "Cours renommé", description: "Le nom du cours a été mis à jour." });
@@ -721,7 +721,7 @@ export default function SelfLearner() {
                   {firstName}
                 </span>
               </div>
-              <Link href="/profil">
+              <Link href="/profile">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -1643,7 +1643,7 @@ export default function SelfLearner() {
       <Dialog open={renameCardModalOpen} onOpenChange={(open: boolean) => {
         if (!open) {
           setRenameCardModalOpen(false);
-          setRenameCardCoursId(null);
+          setRenameCardCourseId(null);
           setRenameCardValue("");
         }
       }}>

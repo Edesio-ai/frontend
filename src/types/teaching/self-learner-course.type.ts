@@ -11,3 +11,4 @@ export type SelfLearnerCourse = {
 }
 
 export type InsertSelfLearnerCourse = Omit<SelfLearnerCourse, "id" | "createdAt" | "selfLearnerId">;
+export type UpdateSelfLearnerCourse = Partial<SelfLearnerCourse>;
