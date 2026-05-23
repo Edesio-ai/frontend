@@ -188,21 +188,10 @@ export function useSelfLearner() {
     []
   );
 
-  const deleteCoursFichier = useCallback(
-    async (fichier: SelfLearnerCourseFile): Promise<boolean> => {
+  const deleteSelfLearnerCourseFile = useCallback(
+    async (file: SelfLearnerCourseFile): Promise<boolean> => {
       try {
-        await supabase.storage.from("cours-pdf").remove([fichier.fileUrl]);
-
-        const { error: deleteError } = await supabase
-          .from("autodidacte_cours_fichiers")
-          .delete()
-          .eq("id", fichier.id);
-
-        if (deleteError) {
-          console.error("Error deleting file record:", deleteError);
-          setError("Erreur lors de la suppression de l'enregistrement.");
-          return false;
-        }
+        await selfLearnerCourseFileService.deleteSelfLearnerCourseFile(file.id);
 
         setError(null);
         return true;
@@ -447,7 +436,7 @@ export function useSelfLearner() {
     deleteSelfLearnerCourse,
     uploadCoursePdf,
     fetchSelfLearnerCourseFiles,
-    deleteCoursFichier,
+    deleteSelfLearnerCourseFile,
     getPdfUrl,
     fetchQuestions,
     generateQuestions,

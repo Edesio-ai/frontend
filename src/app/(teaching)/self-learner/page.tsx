@@ -111,7 +111,7 @@ export default function SelfLearner() {
     deleteSelfLearnerCourse,
     uploadCoursePdf,
     fetchSelfLearnerCourseFiles,
-    deleteCoursFichier,
+    deleteSelfLearnerCourseFile,
     getPdfUrl,
     fetchQuestions,
     generateQuestions,
@@ -138,7 +138,7 @@ export default function SelfLearner() {
   const [isSearching, setIsSearching] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  const [coursTab, setCoursTab] = useState<"contenu" | "questions">("contenu");
+  const [courseTab, setCourseTab] = useState<"content" | "questions">("content");
   const [coursFichiers, setCourseFiles] = useState<SelfLearnerCourseFile[]>([]);
   const [coursQuestions, setCoursQuestions] = useState<SelfLearnerQuestion[]>([]);
   const [loadingFichiers, setLoadingFichiers] = useState(false);
@@ -229,7 +229,7 @@ export default function SelfLearner() {
 
   const handleSelectCours = async (c: SelfLearnerCourse) => {
     setSelectedCours(c);
-    setCoursTab("contenu");
+    setCourseTab("content");
     setCourseFiles([]);
     setCoursQuestions([]);
     
@@ -242,7 +242,7 @@ export default function SelfLearner() {
   // For new course creation - go directly to questions tab
   const handleSelectCoursForQuestions = async (c: SelfLearnerCourse) => {
     setSelectedCours(c);
-    setCoursTab("questions");
+    setCourseTab("questions");
     setCourseFiles([]);
     setCoursQuestions([]);
     
@@ -260,7 +260,7 @@ export default function SelfLearner() {
 
   const handleCloseCoursModal = () => {
     setSelectedCours(null);
-    setCoursTab("contenu");
+    setCourseTab("content");
     setCourseFiles([]);
     setCoursQuestions([]);
     setEditingQuestionId(null);
@@ -274,8 +274,8 @@ export default function SelfLearner() {
   };
 
   const handleTabChange = async (value: string) => {
-    const tab = value as "contenu" | "questions";
-    setCoursTab(tab);
+    const tab = value as "content" | "questions";
+    setCourseTab(tab);
     
     if (tab === "questions" && selectedCours && coursQuestions.length === 0) {
       setLoadingQuestions(true);
@@ -1193,9 +1193,9 @@ export default function SelfLearner() {
               </DialogHeader>
               
               <div className="flex-1 min-h-0 overflow-hidden">
-                <Tabs value={coursTab} onValueChange={handleTabChange} className="h-full flex flex-col">
+                <Tabs value={courseTab} onValueChange={handleTabChange} className="h-full flex flex-col">
                   <TabsList className="w-full justify-start px-6 pt-2 bg-transparent border-b rounded-none">
-                    <TabsTrigger value="contenu" className="gap-2">
+                    <TabsTrigger value="content" className="gap-2">
                       <FileText className="h-4 w-4" />
                       Contenu
                     </TabsTrigger>
@@ -1205,7 +1205,7 @@ export default function SelfLearner() {
                     </TabsTrigger>
                   </TabsList>
 
-                  <TabsContent value="contenu" className="flex-1 overflow-y-auto p-6 m-0">
+                  <TabsContent value="content" className="flex-1 overflow-y-auto p-6 m-0">
                     <div className="space-y-6">
                       <div>
                         <h4 className="font-medium mb-2">Langue du cours</h4>
@@ -1301,7 +1301,7 @@ export default function SelfLearner() {
                                     size="icon"
                                     className="h-8 w-8"
                                     onClick={async () => {
-                                      const success = await deleteCoursFichier(fichier);
+                                      const success = await deleteSelfLearnerCourseFile(fichier);
                                       if (success) {
                                         setCourseFiles((prev) => prev.filter((f) => f.id !== fichier.id));
                                         toast({ title: "Fichier supprimé" });
@@ -1326,7 +1326,7 @@ export default function SelfLearner() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setCoursTab("contenu")}
+                          onClick={() => setCourseTab("content")}
                           data-testid="button-back-to-content"
                         >
                           <ChevronRight className="h-4 w-4 mr-1 rotate-180" />

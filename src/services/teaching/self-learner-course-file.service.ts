@@ -17,5 +17,11 @@ export const selfLearnerCourseFileService = {
             method: "GET",
         });
         return response;
+    },
+    async deleteSelfLearnerCourseFile(fileId: string): Promise<void> {
+        const response = await apiFetch<void>(`/api/self-learner-course-file/${fileId}`, {
+            method: "DELETE",
+        });
+        return response;
     }
 }
