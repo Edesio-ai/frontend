@@ -26,3 +26,23 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
     const data = await response.json();
     return NextResponse.json(data);
 }
+
+export async function DELETE(req: NextRequest, context: RouteContext) {
+    const { courseId } = await context.params;
+
+    const response = await fetch(`${process.env.BACKEND_URL}/self-learner-course/${courseId}`, {
+        method: "DELETE",
+        headers: {
+            "cookie": req.headers.get("cookie") ?? "",
+            "Content-Type": "application/json",
+            "x-csrf-token": req.headers.get("x-csrf-token") ?? "",
+        },
+    });
+
+    if(!response.ok) {
+        const error = await response.json();
+        return NextResponse.json({ error: error.message, code: error.code }, { status: response.status });
+    }
+
+    return NextResponse.json({ success: true });
+}
