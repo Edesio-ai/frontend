@@ -54,12 +54,6 @@ export function useSelfLearner() {
     }
 
     try {
-      // const { data, error: fetchError } = await supabase
-      //   .from("autodidacte_cours")
-      //   .select("*")
-      //   .eq("self_learner_id", selfLearner.id)
-      //   .order("created_at", { ascending: false });
-
       const data = await selfLearnerCourseService.getSelfLearnerCourses();
 
       setCours(data || []);
