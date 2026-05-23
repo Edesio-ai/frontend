@@ -106,10 +106,10 @@ export default function SelfLearner() {
     cours,
     loading: autoLoading,
     error,
-    createCours,
+    createSelfLearnerCourse,
     updateCours,
     deleteCours,
-    uploadPdfForCours,
+    uploadCoursePdf,
     fetchCoursFichiers,
     deleteCoursFichier,
     getPdfUrl,
@@ -307,7 +307,7 @@ export default function SelfLearner() {
     try {
       const pdfFiles = Array.from(files);
       for (const file of pdfFiles) {
-        const result = await uploadPdfForCours(selectedCours.id, file);
+        const result = await uploadCoursePdf(selectedCours.id, file);
         if (result) {
           setCoursFichiers((prev) => [...prev, result]);
         }
@@ -349,7 +349,7 @@ export default function SelfLearner() {
     setIsCreating(true);
     
     try {
-      const newCours = await createCours(
+      const newCours = await createSelfLearnerCourse(
         data.titre,
         "",
         data.contenu || "",

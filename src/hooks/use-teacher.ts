@@ -75,7 +75,7 @@ export function useTeacher() {
       return;
     }
   }, [user]);
-  const fetchOrCreateProfesseur = useCallback(async () => {
+  const fetchOrCreateTeacher = useCallback(async () => {
     if (!user) {
       setTeacher(null);
       setLoading(false);
@@ -607,9 +607,9 @@ export function useTeacher() {
 
   useEffect(() => {
     if (!authLoading) {
-      fetchOrCreateProfesseur();
+      fetchOrCreateTeacher();
     }
-  }, [authLoading, fetchOrCreateProfesseur]);
+  }, [authLoading, fetchOrCreateTeacher]);
 
   useEffect(() => {
     if (teacher) {

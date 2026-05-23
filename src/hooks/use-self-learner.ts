@@ -11,6 +11,8 @@ import type {
 } from "@/types";
 import { selfLearnerService } from "@/services/teaching/self-learner.service";
 import { selfLearnerCourseService } from "@/services/teaching/self-learner-courses.service";
+import { MAX_COURSES } from "@/utils/constants/self-learner";
+import { selfLearnerCourseFileService } from "@/services/teaching/self-learner-course-file.service";
 
 
 export function useSelfLearner() {
@@ -64,7 +66,7 @@ export function useSelfLearner() {
     }
   }, [selfLearner]);
 
-  const createCours = useCallback(
+  const createSelfLearnerCourse = useCallback(
     async (
       title: string,
       description: string,
@@ -75,46 +77,26 @@ export function useSelfLearner() {
       if (!selfLearner) return null;
 
       try {
-        const { count, error: countError } = await supabase
-          .from("autodidacte_cours")
-          .select("*", { count: "exact", head: true })
-          .eq("self_learner_id", selfLearner.id);
 
-        if (countError) {
-          console.error("Error counting cours:", countError);
-          setError("Erreur lors de la vérification du nombre de cours.");
-          return null;
-        }
+        const { count } = await selfLearnerCourseService.getSelfLearnerCoursesCount();
 
-        const MAX_COURS = 50;
-        if (count !== null && count >= MAX_COURS) {
-          setError(`Vous avez atteint la limite de ${MAX_COURS} cours.`);
+        if (count !== null && count >= MAX_COURSES) {
+          setError(`Vous avez atteint la limite de ${MAX_COURSES} cours.`);
           return null;
         }
 
         const coursData: InsertSelfLearnerCourse = {
-          selfLearnerId: selfLearner.id,
           title,
-          description: description || null,
-          contentText: contentText || null,
+          description,
+          contentText,
           language,
         };
 
-        const { data, error: insertError } = await supabase
-          .from("autodidacte_cours")
-          .insert(coursData)
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error("Error creating cours:", insertError);
-          setError("Une erreur est survenue. Merci de réessayer.");
-          return null;
-        }
+        const data = await selfLearnerCourseService.createSelfLearnerCourse(coursData);
 
         if (pdfFiles && pdfFiles.length > 0 && data) {
           for (const pdfFile of pdfFiles) {
-            await uploadPdfForCours(data.id, pdfFile);
+            await uploadCoursePdf(data.id, pdfFile);
           }
         }
 
@@ -215,43 +197,13 @@ export function useSelfLearner() {
     []
   );
 
-  const uploadPdfForCours = useCallback(
-    async (coursId: string, file: File): Promise<SelfLearnerCourseFile | null> => {
+  const uploadCoursePdf = useCallback(
+    async (courseId: string, file: File): Promise<SelfLearnerCourseFile | null> => {
       try {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `autodidacte/${coursId}/${Date.now()}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from("cours-pdf")
-          .upload(fileName, file, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-        if (uploadError) {
-          console.error("Error uploading PDF:", uploadError);
-          setError(`Erreur upload: ${uploadError.message || "Erreur inconnue"}`);
-          return null;
-        }
-
-        const { data: fichierData, error: insertError } = await supabase
-          .from("autodidacte_cours_fichiers")
-          .insert({
-            courseId: coursId,
-            fileUrl: fileName,
-            fileName: file.name,
-          })
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error("Error inserting file record:", insertError);
-          setError("Erreur lors de l'enregistrement du fichier.");
-          return null;
-        }
-
+        const { data } = await selfLearnerCourseFileService.uploadPdfForCourse(courseId, file);
+        
         setError(null);
-        return fichierData;
+        return data;
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("Une erreur est survenue lors de l'upload.");
@@ -538,10 +490,10 @@ export function useSelfLearner() {
     cours,
     loading,
     error,
-    createCours,
+    createSelfLearnerCourse,
     updateCours,
     deleteCours,
-    uploadPdfForCours,
+    uploadCoursePdf,
     fetchCoursFichiers,
     deleteCoursFichier,
     getPdfUrl,
