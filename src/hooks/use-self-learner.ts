@@ -18,7 +18,7 @@ import { selfLearnerCourseFileService } from "@/services/teaching/self-learner-c
 export function useSelfLearner() {
   const { user, loading: authLoading } = useAuth();
   const [selfLearner, setSelfLearner] = useState<SelfLearner | null>(null);
-  const [cours, setCours] = useState<SelfLearnerCourse[]>([]);
+  const [cours, setCourse] = useState<SelfLearnerCourse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,14 +51,14 @@ export function useSelfLearner() {
 
   const fetchSelfLearnerCourses = useCallback(async () => {
     if (!selfLearner) {
-      setCours([]);
+      setCourse([]);
       return;
     }
 
     try {
       const data = await selfLearnerCourseService.getSelfLearnerCourses();
 
-      setCours(data || []);
+      setCourse(data || []);
       setError(null);
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -100,7 +100,7 @@ export function useSelfLearner() {
           }
         }
 
-        setCours((prev) => [data, ...prev]);
+        setCourse((prev) => [data, ...prev]);
         setError(null);
         return data;
       } catch (err) {
@@ -112,7 +112,7 @@ export function useSelfLearner() {
     [selfLearner]
   );
 
-  const updateCours = useCallback(
+  const updateSelfLearnerCourse = useCallback(
     async (
       coursId: string,
       titre: string,
@@ -120,24 +120,14 @@ export function useSelfLearner() {
       contenuTexte: string | null
     ): Promise<SelfLearnerCourse | null> => {
       try {
-        const { data, error: updateError } = await supabase
-          .from("autodidacte_cours")
-          .update({
-            titre,
-            description: description || null,
-            contenu_texte: contenuTexte || null,
-          })
-          .eq("id", coursId)
-          .select()
-          .single();
+        const body = {
+          title: titre,
+          description: description || null,
+          contentText: contenuTexte || null,
+        };
 
-        if (updateError) {
-          console.error("Error updating cours:", updateError);
-          setError("Erreur lors de la mise à jour du cours.");
-          return null;
-        }
-
-        setCours((prev) =>
+        const data = await selfLearnerCourseService.updateSelfLearnerCourse(coursId, body);
+        setCourse((prev) =>
           prev.map((c) => (c.id === coursId ? data : c))
         );
         setError(null);
@@ -185,7 +175,7 @@ export function useSelfLearner() {
           return false;
         }
 
-        setCours((prev) => prev.filter((c) => c.id !== coursId));
+        setCourse((prev) => prev.filter((c) => c.id !== coursId));
         setError(null);
         return true;
       } catch (err) {
@@ -482,7 +472,7 @@ export function useSelfLearner() {
     loading,
     error,
     createSelfLearnerCourse,
-    updateCours,
+    updateSelfLearnerCourse,
     deleteCours,
     uploadCoursePdf,
     fetchSelfLearnerCourseFiles,
