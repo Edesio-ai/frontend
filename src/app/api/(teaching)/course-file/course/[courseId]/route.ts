@@ -39,7 +39,6 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
 
 export async function GET(request: NextRequest, { params }: RouteContext) {
     const { courseId } = await params;
-    console.log("🚀 ~ GET ~ courseId:", courseId)
 
     const response = await fetch(`${process.env.BACKEND_URL}/course-file/course/${courseId}`, {
         method: "GET",

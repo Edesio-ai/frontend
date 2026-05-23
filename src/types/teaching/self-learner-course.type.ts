@@ -10,4 +10,4 @@ export type SelfLearnerCourse = {
     createdAt: string;
 }
 
-export type InsertSelfLearnerCourse = Omit<SelfLearnerCourse, "id" | "createdAt">;
+export type InsertSelfLearnerCourse = Omit<SelfLearnerCourse, "id" | "createdAt" | "selfLearnerId">;
