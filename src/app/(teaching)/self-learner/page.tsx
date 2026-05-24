@@ -224,7 +224,7 @@ export default function SelfLearner() {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     await logout();
-    router.push("/connexion");
+    router.push("/login");
   };
 
   const handleSelectCours = async (c: SelfLearnerCourse) => {
@@ -484,9 +484,9 @@ export default function SelfLearner() {
     
     setIsGenerating(true);
     const result = await generateQuestions(selectedCours.id, {
-      qcm: qcmCount,
-      multi: 0,
-      ouverte: ouverteCount,
+      simpleCount: qcmCount,
+      openedCount: ouverteCount,
+      totalQuestions: qcmCount + ouverteCount,
     });
 
     if (result.success) {
@@ -509,8 +509,8 @@ export default function SelfLearner() {
 
   const handleStartEditQuestion = (q: SelfLearnerQuestion) => {
     setEditingQuestionId(q.id);
-    setEditingQuestionText(q.question);
-    setEditingAnswerText(q.correctAnswer || "");
+    setEditingQuestionText(q.questionText);
+    setEditingAnswerText(q.correctAnswers?.[0] || "");
   };
 
   const handleCancelEditQuestion = () => {
@@ -1484,27 +1484,27 @@ export default function SelfLearner() {
                                       <div className="flex items-center gap-2 mb-2">
                                         <Badge 
                                           variant="outline" 
-                                          className={`text-xs ${q.type === 'multiple' ? 'border-indigo-500/50 text-indigo-600 dark:text-indigo-400' : ''}`}
+                                          className={`text-xs ${q.type === 'single' ? 'border-indigo-500/50 text-indigo-600 dark:text-indigo-400' : ''}`}
                                         >
-                                          {q.type === 'multiple' ? 'QCM' : 'Question ouverte'}
+                                          {q.type === 'single' ? 'QCM' : 'Question ouverte'}
                                         </Badge>
                                         <span className="text-xs text-muted-foreground">#{index + 1}</span>
                                       </div>
-                                      <p className="text-sm font-medium mb-2">{q.question}</p>
+                                      <p className="text-sm font-medium mb-2">{q.questionText}</p>
                                       
                                       {/* QCM propositions */}
-                                      {q.type === 'multiple' && q.propositions && q.propositions.length > 0 && (
+                                      {q.type === 'single' && q.proposals && q.proposals.length > 0 && (
                                         <div className="space-y-1 mb-2">
-                                          {q.propositions.map((prop: string, propIndex: number) => (
+                                          {q.proposals.map((prop: string, propIndex: number) => (
                                             <div
                                               key={propIndex}
                                               className={`text-xs p-2 rounded flex items-center gap-2 ${
-                                                prop === q.correctAnswer
+                                                prop === q.correctAnswers?.[0]
                                                   ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                                   : 'bg-muted/50 text-muted-foreground'
                                               }`}
                                             >
-                                              {prop === q.correctAnswer && (
+                                              {prop === q.correctAnswers?.[0] && (
                                                 <CheckCircle2 className="h-3 w-3 shrink-0" />
                                               )}
                                               <span>{prop}</span>
@@ -1514,10 +1514,10 @@ export default function SelfLearner() {
                                       )}
                                       
                                       {/* Open question answer */}
-                                      {q.type === 'open' && q.correctAnswer && (
+                                      {q.type === 'open' && q.correctAnswers?.[0] && (
                                         <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
                                           <span className="font-medium">Réponse attendue : </span>
-                                          {q.correctAnswer}
+                                          {q.correctAnswers?.[0]}
                                         </div>
                                       )}
                                     </div>
@@ -1636,7 +1636,7 @@ export default function SelfLearner() {
           }}
           cours={coursForChatbot}
           generateQuestions={async (coursId: string) => {
-            return generateQuestions(coursId, { qcm: qcmCount, multi: 0, ouverte: ouverteCount });
+            return generateQuestions(coursId, { simpleCount: qcmCount, openedCount: ouverteCount, totalQuestions: qcmCount + ouverteCount });
           }}
         />
       )}
@@ -2193,7 +2193,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     }
 
     const question = questions[index];
-    let questionText = `Question ${index + 1}/${questions.length}\n\n${question.question}`;
+    let questionText = `Question ${index + 1}/${questions.length}\n\n${question.questionText}`;
 
     if (question.type === "multiple") {
       questionText += "\n\n(Plusieurs réponses possibles)";
@@ -2252,7 +2252,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     if (!question) return;
 
     setIsProcessing(true);
-    const propositions = question.shuffledPropositions || question.propositions;
+    const propositions = question.shuffledPropositions || question.proposals;
     const selectedOption = propositions?.[selectedIndex] || "";
     
     addMessage({
@@ -2261,8 +2261,8 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
       type: "answer",
     });
 
-    const isCorrect = selectedOption === question.correctAnswer;
-    processAnswer(isCorrect, question.correctAnswer || "", question.explication);
+    const isCorrect = selectedOption === question.correctAnswers?.[0];
+    processAnswer(isCorrect, question.correctAnswers?.[0] || "", question.explanation);
   };
 
   const handleMultiAnswer = () => {
@@ -2272,7 +2272,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     if (!question) return;
 
     setIsProcessing(true);
-    const propositions = question.shuffledPropositions || question.propositions;
+    const propositions = question.shuffledPropositions || question.proposals;
     const selectedOptions = selectedMultiIndices
       .sort((a, b) => a - b)
       .map(i => propositions?.[i] || "");
@@ -2300,7 +2300,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
       selectedNormalized.every((opt, i) => opt === correctNormalized[i]);
 
     const correctDisplay = correctAnswers.join(", ");
-    processAnswer(isCorrect, correctDisplay, question.explication);
+    processAnswer(isCorrect, correctDisplay, question.explanation);
   };
 
   const handleOpenAnswer = async (answer: string) => {
@@ -2324,10 +2324,10 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: question.question,
-          correctAnswer: question.correctAnswer || "",
+          question: question.questionText,
+          correctAnswer: question.correctAnswers?.[0] || "",
           studentAnswer: answer,
-          explication: question.explication || "",
+          explication: question.explanation || "",
         }),
       });
 
@@ -2336,12 +2336,12 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
       }
 
       const evaluation = await response.json();
-      processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswer || "", evaluation.missingElements);
+      processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] || "", evaluation.missingElements);
     } catch (error) {
       console.error("Error evaluating answer:", error);
       setShowTyping(false);
-      const isCorrect = answer.toLowerCase().includes((question.correctAnswer || "").toLowerCase().substring(0, 10));
-      processAnswer(isCorrect, question.correctAnswer || "", question.explication);
+      const isCorrect = answer.toLowerCase().includes((question.correctAnswers?.[0] || "").toLowerCase().substring(0, 10));
+      processAnswer(isCorrect, question.correctAnswers?.[0] || "", question.explanation);
     }
   };
 
@@ -2502,7 +2502,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
   };
 
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
-  const currentPropositions = currentQuestion?.shuffledPropositions || currentQuestion?.propositions;
+  const currentPropositions = currentQuestion?.shuffledPropositions || currentQuestion?.proposals;
   
   const showQCMOptions =
     chatState === "asking" &&
