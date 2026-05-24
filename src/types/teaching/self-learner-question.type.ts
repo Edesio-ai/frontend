@@ -4,10 +4,9 @@ export interface SelfLearnerQuestion {
     id: string;
     courseId: string;
     type: QuestionType;
-    question: string;
-    propositions: string[] | null;
-    correctAnswer: string | null;
+    questionText: string;
+    proposals: string[] | null;
     correctAnswers: string[] | null;
-    explication: string | null;
+    explanation: string | null;
     createdAt: string;
 }

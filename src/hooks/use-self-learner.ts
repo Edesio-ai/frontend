@@ -7,13 +7,15 @@ import type {
   InsertSelfLearnerCourse,
   Language,
   SelfLearnerCourseFile,
-  SelfLearnerQuestion
+  SelfLearnerQuestion,
+  GenerateQuestionsConfig
 } from "@/types";
 import { selfLearnerService } from "@/services/teaching/self-learner.service";
 import { selfLearnerCourseService } from "@/services/teaching/self-learner-courses.service";
 import { MAX_COURSES } from "@/utils/constants/self-learner";
 import { selfLearnerCourseFileService } from "@/services/teaching/self-learner-course-file.service";
 import { selfLearnerQuestionService } from "@/services/teaching/self-learner-question.service";
+import { llmService } from "@/services/llm.service";
 
 
 export function useSelfLearner() {
@@ -236,32 +238,12 @@ export function useSelfLearner() {
   const generateQuestions = useCallback(
     async (
       coursId: string,
-      config?: { qcm?: number; multi?: number; ouverte?: number }
+      config: GenerateQuestionsConfig
     ): Promise<{ success: boolean; questionsCreated?: number; error?: string }> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
+        const result = await llmService.generateQuestions(coursId, config);
 
-        if (!accessToken) {
-          return { success: false, error: "Vous devez être connecté" };
-        }
-
-        const response = await fetch("/api/autonome/generate-questions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ coursId, config }),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          return { success: false, error: result.error || "Erreur lors de la génération" };
-        }
-
-        return { success: true, questionsCreated: result.questionsCreated };
+        return { success: true, questionsCreated: result.questionCount };
       } catch (err) {
         console.error("Unexpected error:", err);
         return { success: false, error: "Une erreur est survenue. Merci de réessayer." };
