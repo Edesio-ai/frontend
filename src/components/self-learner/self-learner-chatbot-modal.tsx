@@ -447,7 +447,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     }
 
     const question = questions[index];
-    let questionText = `Question ${index + 1}/${questions.length}\n\n${question.question}`;
+    let questionText = `Question ${index + 1}/${questions.length}\n\n${question.questionText}`;
 
     if (question.type === "multiple") {
       questionText += "\n\n(Plusieurs réponses possibles)";
@@ -544,7 +544,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
 
     setWaitingForRetry(false);
     setIsProcessing(true);
-    const propositions = question.shuffledPropositions || question.propositions;
+    const propositions = question.shuffledPropositions || question.proposals;
     const selectedOption = propositions?.[selectedIndex] || "";
     
     addMessage({
@@ -553,8 +553,8 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
       type: "answer",
     });
 
-    const isCorrect = selectedOption === question.correctAnswer;
-    processAnswer(isCorrect, question.correctAnswer || "", question.explication);
+    const isCorrect = selectedOption === question.correctAnswers?.[0];
+    processAnswer(isCorrect, question.correctAnswers?.[0] || "", question.explanation);
   };
 
   const handleMultiAnswer = () => {
@@ -566,7 +566,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
 
     setWaitingForRetry(false);
     setIsProcessing(true);
-    const propositions = question.shuffledPropositions || question.propositions;
+    const propositions = question.shuffledPropositions || question.proposals;
     const selectedOptions = selectedMultiIndices
       .sort((a, b) => a - b)
       .map(i => propositions?.[i] || "");
@@ -589,7 +589,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
       correctAnswers.every(ans => selectedOptions.includes(ans));
 
     const correctDisplay = correctAnswers.join(", ");
-    processAnswer(isCorrect, correctDisplay, question.explication);
+    processAnswer(isCorrect, correctDisplay, question.explanation);
   };
 
   const extractStudentQuestion = (input: string): string | null => {
@@ -650,10 +650,10 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: question.question,
-          correctAnswer: question.correctAnswer || "",
+          question: question.questionText,
+          correctAnswer: question.correctAnswers?.[0] || "",
           studentAnswer: answer,
-          explication: question.explication || "",
+          explication: question.explanation || "",
         }),
         signal: controller.signal,
       });
@@ -665,12 +665,12 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
       }
 
       const evaluation = await response.json();
-      processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswer || "", evaluation.missingElements, studentQuestion, question);
+      processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] ?? "", evaluation.missingElements, studentQuestion, { question: question.questionText, correctAnswer: question.correctAnswers?.[0] ?? "", explication: question.explanation ?? "" });
     } catch (error) {
       console.error("Error evaluating answer:", error);
       setShowTyping(false);
-      const isCorrect = validateOpenAnswer(answer, question.correctAnswer || "");
-      processAnswer(isCorrect, question.correctAnswer || "", question.explication);
+      const isCorrect = validateOpenAnswer(answer, question.correctAnswers?.[0]  || "");
+      processAnswer(isCorrect, question.correctAnswers?.[0] || "", question.explanation);
     }
   };
 
@@ -852,7 +852,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
   }, [waitingForAcknowledge]);
 
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
-  const currentPropositions = currentQuestion?.shuffledPropositions || currentQuestion?.propositions;
+  const currentPropositions = currentQuestion?.shuffledPropositions || currentQuestion?.proposals;
 
   // Show QCM buttons during asking or retry mode
   const showQCMOptions =
