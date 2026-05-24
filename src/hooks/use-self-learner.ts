@@ -13,6 +13,7 @@ import { selfLearnerService } from "@/services/teaching/self-learner.service";
 import { selfLearnerCourseService } from "@/services/teaching/self-learner-courses.service";
 import { MAX_COURSES } from "@/utils/constants/self-learner";
 import { selfLearnerCourseFileService } from "@/services/teaching/self-learner-course-file.service";
+import { selfLearnerQuestionService } from "@/services/teaching/self-learner-question.service";
 
 
 export function useSelfLearner() {
@@ -218,21 +219,12 @@ export function useSelfLearner() {
     []
   );
 
-  const fetchQuestions = useCallback(
-    async (coursId: string): Promise<SelfLearnerQuestion[]> => {
+  const fetchSelfLearnerQuestions = useCallback(
+    async (courseId: string): Promise<SelfLearnerQuestion[]> => {
       try {
-        const { data, error: fetchError } = await supabase
-          .from("autodidacte_questions")
-          .select("*")
-          .eq("cours_id", coursId)
-          .order("created_at", { ascending: true });
+        const data = await selfLearnerQuestionService.getSelfLearnerQuestions(courseId);
 
-        if (fetchError) {
-          console.error("Error fetching questions:", fetchError);
-          return [];
-        }
-
-        return data || [];
+        return data;
       } catch (err) {
         console.error("Unexpected error:", err);
         return [];
@@ -436,7 +428,7 @@ export function useSelfLearner() {
     fetchSelfLearnerCourseFiles,
     deleteSelfLearnerCourseFile,
     getPdfUrl,
-    fetchQuestions,
+    fetchSelfLearnerQuestions,
     generateQuestions,
     addOneQuestion,
     createManualQuestion,

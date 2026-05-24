@@ -113,7 +113,7 @@ export default function SelfLearner() {
     fetchSelfLearnerCourseFiles,
     deleteSelfLearnerCourseFile,
     getPdfUrl,
-    fetchQuestions,
+    fetchSelfLearnerQuestions,
     generateQuestions,
     addOneQuestion,
     createManualQuestion,
@@ -279,7 +279,7 @@ export default function SelfLearner() {
     
     if (tab === "questions" && selectedCours && coursQuestions.length === 0) {
       setLoadingQuestions(true);
-      const questions = await fetchQuestions(selectedCours.id);
+      const questions = await fetchSelfLearnerQuestions(selectedCours.id);
       setCoursQuestions(questions);
       setLoadingQuestions(false);
     }
@@ -494,7 +494,7 @@ export default function SelfLearner() {
         title: "Questions générées",
         description: `${result.questionsCreated} questions ont été créées.`,
       });
-      const questions = await fetchQuestions(selectedCours.id);
+      const questions = await fetchSelfLearnerQuestions(selectedCours.id);
       setCoursQuestions(questions);
       setQuestionsModified(true);
     } else {
