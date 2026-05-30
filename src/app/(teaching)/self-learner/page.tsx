@@ -117,7 +117,7 @@ export default function SelfLearner() {
     generateQuestions,
     generateSelfLearnerQuestion,
     createManualQuestion,
-    deleteQuestion,
+    deleteSelfLearnerQuestion,
     updateSelfLearnerQuestion,
   } = useSelfLearner();
   const { toast } = useToast();
@@ -643,7 +643,7 @@ export default function SelfLearner() {
   };
 
   const handleDeleteQuestion = async (questionId: string) => {
-    const success = await deleteQuestion(questionId);
+    const success = await deleteSelfLearnerQuestion(questionId);
     if (success) {
       setCoursQuestions((prev) => prev.filter((q) => q.id !== questionId));
       setQuestionsModified(true);

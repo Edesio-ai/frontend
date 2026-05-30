@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/use-auth";
 import type { 
   SelfLearner, 
@@ -255,19 +254,10 @@ export function useSelfLearner() {
     []
   );
 
-  const deleteQuestion = useCallback(
+  const deleteSelfLearnerQuestion = useCallback(
     async (questionId: string): Promise<boolean> => {
       try {
-        const { error: deleteError } = await supabase
-          .from("autodidacte_questions")
-          .delete()
-          .eq("id", questionId);
-
-        if (deleteError) {
-          console.error("Error deleting question:", deleteError);
-          setError("Erreur lors de la suppression de la question.");
-          return false;
-        }
+        await selfLearnerQuestionService.deleteSelfLearnerQuestion(questionId);
 
         setError(null);
         return true;
@@ -362,7 +352,7 @@ export function useSelfLearner() {
     generateQuestions,
     generateSelfLearnerQuestion,
     createManualQuestion,
-    deleteQuestion,
+    deleteSelfLearnerQuestion,
     updateSelfLearnerQuestion,
     refreshCours,
   };
