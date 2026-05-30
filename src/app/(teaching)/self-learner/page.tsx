@@ -158,7 +158,7 @@ export default function SelfLearner() {
   const [pdfViewerOpen, setPdfViewerOpen] = useState(false);
   
   const [manualQuestionModalOpen, setManualQuestionModalOpen] = useState(false);
-  const [manualQuestionType, setManualQuestionType] = useState<'qcm' | 'ouverte'>('ouverte');
+  const [manualQuestionType, setManualQuestionType] = useState<'single' | 'open'>('open');
   const [manualQuestionText, setManualQuestionText] = useState("");
   const [manualQuestionAnswer, setManualQuestionAnswer] = useState("");
   const [manualQuestionExplication, setManualQuestionExplication] = useState("");
@@ -584,7 +584,7 @@ export default function SelfLearner() {
     setIsGenerating(false);
   };
 
-  const openManualQuestionModal = (type: 'qcm' | 'ouverte') => {
+  const openManualQuestionModal = (type: 'single' | 'open') => {
     setManualQuestionType(type);
     setManualQuestionText("");
     setManualQuestionAnswer("");
@@ -606,7 +606,7 @@ export default function SelfLearner() {
       return;
     }
 
-    if (manualQuestionType === 'qcm') {
+    if (manualQuestionType === 'single') {
       const validPropositions = manualQcmPropositions.filter(p => p.trim());
       if (validPropositions.length < 2) {
         toast({ title: "Erreur", description: "Un QCM doit avoir au moins 2 propositions.", variant: "destructive" });
@@ -621,11 +621,11 @@ export default function SelfLearner() {
     setIsCreatingManualQuestion(true);
     
     const result = await createManualQuestion(selectedCours.id, {
-      type: manualQuestionType,
-      question: manualQuestionText.trim(),
-      propositions: manualQuestionType === 'qcm' ? manualQcmPropositions.filter(p => p.trim()) : undefined,
-      bonne_reponse: manualQuestionAnswer.trim(),
-      explication: manualQuestionExplication.trim() || undefined,
+      type: manualQuestionType as 'single' | 'open',
+      questionText: manualQuestionText.trim(),
+      proposals: manualQuestionType === 'single' ? manualQcmPropositions.filter(p => p.trim()) : [],
+      correctAnswers: [manualQuestionAnswer.trim()],
+      explanation: manualQuestionExplication.trim() || undefined,
     });
 
     if (result.success && result.question) {
@@ -1580,7 +1580,7 @@ export default function SelfLearner() {
                                 <Button
                                   variant="outline"
                                   className="flex-1 border-dashed"
-                                  onClick={() => openManualQuestionModal('qcm')}
+                                  onClick={() => openManualQuestionModal('single')}
                                   disabled={isGenerating || isCreatingManualQuestion}
                                   data-testid="button-manual-qcm"
                                 >
@@ -1590,7 +1590,7 @@ export default function SelfLearner() {
                                 <Button
                                   variant="outline"
                                   className="flex-1 border-dashed"
-                                  onClick={() => openManualQuestionModal('ouverte')}
+                                  onClick={() => openManualQuestionModal('open')}
                                   disabled={isGenerating || isCreatingManualQuestion}
                                   data-testid="button-manual-ouverte"
                                 >
@@ -1718,7 +1718,7 @@ export default function SelfLearner() {
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {manualQuestionType === 'qcm' ? 'Créer un QCM' : 'Créer une question ouverte'}
+              {manualQuestionType === 'single' ? 'Créer un QCM' : 'Créer une question ouverte'}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 max-h-[60vh] overflow-y-auto">
@@ -1733,7 +1733,7 @@ export default function SelfLearner() {
               />
             </div>
 
-            {manualQuestionType === 'qcm' && (
+            {manualQuestionType === 'single' && (
               <div className="space-y-2">
                 <Label>Propositions (4 max)</Label>
                 {manualQcmPropositions.map((prop: string, index: number) => (
@@ -1755,8 +1755,8 @@ export default function SelfLearner() {
             )}
 
             <div className="space-y-2">
-              <Label>{manualQuestionType === 'qcm' ? 'Bonne réponse (texte exact d\'une proposition)' : 'Réponse attendue'}</Label>
-              {manualQuestionType === 'qcm' ? (
+              <Label>{manualQuestionType === 'single' ? 'Bonne réponse (texte exact d\'une proposition)' : 'Réponse attendue'}</Label>
+              {manualQuestionType === 'single' ? (
                 <Select value={manualQuestionAnswer} onValueChange={setManualQuestionAnswer}>
                   <SelectTrigger data-testid="select-correct-answer">
                     <SelectValue placeholder="Sélectionner la bonne réponse" />

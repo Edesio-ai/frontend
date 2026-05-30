@@ -8,7 +8,8 @@ import type {
   Language,
   SelfLearnerCourseFile,
   SelfLearnerQuestion,
-  GenerateQuestionsConfig
+  GenerateQuestionsConfig,
+  CreateManualQuestionRequest
 } from "@/types";
 import { selfLearnerService } from "@/services/teaching/self-learner.service";
 import { selfLearnerCourseService } from "@/services/teaching/self-learner-courses.service";
@@ -346,38 +347,12 @@ export function useSelfLearner() {
   const createManualQuestion = useCallback(
     async (
       coursId: string,
-      data: {
-        type: 'qcm' | 'ouverte';
-        question: string;
-        propositions?: string[];
-        bonne_reponse: string;
-        explication?: string;
-      }
+      data: CreateManualQuestionRequest
     ): Promise<{ success: boolean; question?: SelfLearnerQuestion; error?: string }> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
+        const question = await selfLearnerQuestionService.createSelfLearnerQuestion(coursId, data);
 
-        if (!accessToken) {
-          return { success: false, error: "Vous devez être connecté" };
-        }
-
-        const response = await fetch("/api/autonome/create-question", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ coursId, ...data }),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          return { success: false, error: result.error || "Erreur lors de la création" };
-        }
-
-        return { success: true, question: result.question };
+        return { success: true, question: question };
       } catch (err) {
         console.error("Unexpected error:", err);
         return { success: false, error: "Une erreur est survenue. Merci de réessayer." };

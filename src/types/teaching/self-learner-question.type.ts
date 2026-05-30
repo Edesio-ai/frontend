@@ -10,3 +10,8 @@ export interface SelfLearnerQuestion {
     explanation: string | null;
     createdAt: string;
 }
+
+export type CreateManualQuestionRequest = Pick<SelfLearnerQuestion, 'type' | 'questionText' | 'correctAnswers'> & {
+    proposals?: string[];
+    explanation?: string;
+}
