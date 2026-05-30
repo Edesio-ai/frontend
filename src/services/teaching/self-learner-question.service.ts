@@ -22,4 +22,10 @@ export const selfLearnerQuestionService = {
         });
         return response;
     },
+    deleteSelfLearnerQuestion: async (questionId: string): Promise<void> => {
+        const response = await apiFetch<void>(`/api/self-learner-question/${questionId}`, {
+            method: "DELETE",
+        });
+        return response;
+    },
 }
