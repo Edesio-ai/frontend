@@ -47,15 +47,15 @@ import { SuggestionsModal } from "@/components/SuggestionsModal";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabaseClient";
-import { 
-  LogOut, 
-  Loader2, 
-  AlertCircle, 
+import {
+  LogOut,
+  Loader2,
+  AlertCircle,
   BookOpen,
-  UserCog, 
-  Plus, 
-  Search, 
-  FileText, 
+  UserCog,
+  Plus,
+  Search,
+  FileText,
   ChevronRight,
   Upload,
   X,
@@ -118,8 +118,7 @@ export default function SelfLearner() {
     generateSelfLearnerQuestion,
     createManualQuestion,
     deleteQuestion,
-    updateQuestion,
-    refreshCours,
+    updateSelfLearnerQuestion,
   } = useSelfLearner();
   const { toast } = useToast();
   const router = useRouter();
@@ -132,12 +131,12 @@ export default function SelfLearner() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const existingCoursFileInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingPdf, setIsUploadingPdf] = useState(false);
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SelfLearnerCourse[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   const [courseTab, setCourseTab] = useState<"content" | "questions">("content");
   const [coursFichiers, setCourseFiles] = useState<SelfLearnerCourseFile[]>([]);
   const [coursQuestions, setCoursQuestions] = useState<SelfLearnerQuestion[]>([]);
@@ -146,17 +145,17 @@ export default function SelfLearner() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [qcmCount, setQcmCount] = useState(5);
   const [ouverteCount, setOuverteCount] = useState(5);
-  
+
   const [chatbotModalOpen, setChatbotModalOpen] = useState(false);
   const [coursForChatbot, setCoursForChatbot] = useState<SelfLearnerCourse | null>(null);
-  
+
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
   const [editingQuestionText, setEditingQuestionText] = useState("");
   const [editingAnswerText, setEditingAnswerText] = useState("");
   const [questionsModified, setQuestionsModified] = useState(false);
   const [pdfViewerUrl, setPdfViewerUrl] = useState<string | null>(null);
   const [pdfViewerOpen, setPdfViewerOpen] = useState(false);
-  
+
   const [manualQuestionModalOpen, setManualQuestionModalOpen] = useState(false);
   const [manualQuestionType, setManualQuestionType] = useState<'single' | 'open'>('open');
   const [manualQuestionText, setManualQuestionText] = useState("");
@@ -196,7 +195,7 @@ export default function SelfLearner() {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
-    
+
     if (!searchQuery.trim()) {
       setSearchResults([]);
       setIsSearching(false);
@@ -204,7 +203,7 @@ export default function SelfLearner() {
     }
 
     setIsSearching(true);
-    
+
     searchTimeoutRef.current = setTimeout(() => {
       const query = searchQuery.toLowerCase();
       const filtered = cours.filter(
@@ -213,7 +212,7 @@ export default function SelfLearner() {
       setSearchResults(filtered);
       setIsSearching(false);
     }, 300);
-    
+
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
@@ -232,7 +231,7 @@ export default function SelfLearner() {
     setCourseTab("content");
     setCourseFiles([]);
     setCoursQuestions([]);
-    
+
     setLoadingFichiers(true);
     const files = await fetchSelfLearnerCourseFiles(c.id);
     setCourseFiles(files);
@@ -245,7 +244,7 @@ export default function SelfLearner() {
     setCourseTab("questions");
     setCourseFiles([]);
     setCoursQuestions([]);
-    
+
     setLoadingFichiers(true);
     const files = await fetchSelfLearnerCourseFiles(c.id);
     setCourseFiles(files);
@@ -276,7 +275,7 @@ export default function SelfLearner() {
   const handleTabChange = async (value: string) => {
     const tab = value as "content" | "questions";
     setCourseTab(tab);
-    
+
     if (tab === "questions" && selectedCours && coursQuestions.length === 0) {
       setLoadingQuestions(true);
       const questions = await fetchSelfLearnerQuestions(selectedCours.id);
@@ -302,7 +301,7 @@ export default function SelfLearner() {
   const handleAddPdfToExistingCours = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0 || !selectedCours) return;
-    
+
     setIsUploadingPdf(true);
     try {
       const pdfFiles = Array.from(files);
@@ -314,7 +313,7 @@ export default function SelfLearner() {
       }
       toast({
         title: "Succès",
-        description: pdfFiles.length > 1 
+        description: pdfFiles.length > 1
           ? `${pdfFiles.length} fichiers ajoutés avec succès`
           : "Fichier ajouté avec succès",
       });
@@ -347,7 +346,7 @@ export default function SelfLearner() {
 
   const onCreateSubmit = async (data: CreateCoursFormValues) => {
     setIsCreating(true);
-    
+
     try {
       const newCours = await createSelfLearnerCourse(
         data.titre,
@@ -356,9 +355,9 @@ export default function SelfLearner() {
         data.langue,
         selectedPdfFiles.length > 0 ? selectedPdfFiles : undefined
       );
-      
+
       handleCloseCreateModal();
-      
+
       if (!newCours) {
         toast({
           title: "Erreur",
@@ -481,7 +480,7 @@ export default function SelfLearner() {
 
   const handleGenerateQuestions = async () => {
     if (!selectedCours) return;
-    
+
     setIsGenerating(true);
     const result = await generateQuestions(selectedCours.id, {
       simpleCount: qcmCount,
@@ -521,13 +520,13 @@ export default function SelfLearner() {
 
   const handleSaveQuestion = async () => {
     if (!editingQuestionId) return;
-    
-    const success = await updateQuestion(editingQuestionId, {
-      question: editingQuestionText,
-      bonne_reponse: editingAnswerText,
-    });
-    
-    if (success) {
+
+    try {
+      await updateSelfLearnerQuestion(editingQuestionId, {
+        questionText: editingQuestionText,
+        correctAnswers: [editingAnswerText],
+      });
+
       setCoursQuestions((prev) =>
         prev.map((q) =>
           q.id === editingQuestionId
@@ -540,7 +539,7 @@ export default function SelfLearner() {
       setEditingQuestionText("");
       setEditingAnswerText("");
       toast({ title: "Question mise à jour" });
-    } else {
+    } catch (err) {
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour la question.",
@@ -566,7 +565,7 @@ export default function SelfLearner() {
 
   const handleGenerateSelfLearnerQuestion = async (type: Omit<QuestionType, 'multiple'> = 'open') => {
     if (!selectedCours) return;
-    
+
     setIsGenerating(true);
     const result = await generateSelfLearnerQuestion(selectedCours.id, type);
 
@@ -595,12 +594,12 @@ export default function SelfLearner() {
 
   const handleCreateManualQuestion = async () => {
     if (!selectedCours) return;
-    
+
     if (!manualQuestionText.trim()) {
       toast({ title: "Erreur", description: "La question est requise.", variant: "destructive" });
       return;
     }
-    
+
     if (!manualQuestionAnswer.trim()) {
       toast({ title: "Erreur", description: "La réponse est requise.", variant: "destructive" });
       return;
@@ -619,7 +618,7 @@ export default function SelfLearner() {
     }
 
     setIsCreatingManualQuestion(true);
-    
+
     const result = await createManualQuestion(selectedCours.id, {
       type: manualQuestionType as 'single' | 'open',
       questionText: manualQuestionText.trim(),
@@ -662,13 +661,13 @@ export default function SelfLearner() {
 
   const handleValidateQuestions = async () => {
     if (!selectedCours || coursQuestions.length === 0) return;
-    
+
     // Mark questions as validated
     toast({
       title: "Questions validées",
       description: `${coursQuestions.length} questions sont prêtes pour le chatbot.`,
     });
-    
+
     // Close the details modal and open the chatbot modal
     const coursToOpen = selectedCours;
     handleCloseCoursModal();
@@ -692,1116 +691,1115 @@ export default function SelfLearner() {
   return (
     <SubscriptionBlockModal>
       <div className="min-h-screen bg-gradient-to-br from-amber-500/5 via-background to-amber-500/10">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
-      </div>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
+        </div>
 
-      <header className="sticky top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            <Link href="/" className="flex items-center gap-2 text-xl font-bold">
-              <img src="/edesio-logo-square.png" alt="Edesio" className="w-10 h-10 rounded-lg object-cover" />
-              <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
-            </Link>
+        <header className="sticky top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <div className="flex items-center justify-between h-16 md:h-20">
+              <Link href="/" className="flex items-center gap-2 text-xl font-bold">
+                <img src="/edesio-logo-square.png" alt="Edesio" className="w-10 h-10 rounded-lg object-cover" />
+                <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+              </Link>
 
-            <div className="flex items-center gap-2 sm:gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowSuggestionsModal(true)}
-                className="border-amber-300 text-amber-600 dark:border-amber-600 dark:text-amber-400"
-                data-testid="button-suggestions"
-              >
-                <Lightbulb className="h-4 w-4 mr-1.5" />
-                Suggestions
-              </Button>
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20">
-                <Sparkles className="h-4 w-4 text-amber-500" />
-                <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
-                  {firstName}
-                </span>
-              </div>
-              <Link href="/profile">
+              <div className="flex items-center gap-2 sm:gap-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSuggestionsModal(true)}
+                  className="border-amber-300 text-amber-600 dark:border-amber-600 dark:text-amber-400"
+                  data-testid="button-suggestions"
+                >
+                  <Lightbulb className="h-4 w-4 mr-1.5" />
+                  Suggestions
+                </Button>
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+                  <Sparkles className="h-4 w-4 text-amber-500" />
+                  <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
+                    {firstName}
+                  </span>
+                </div>
+                <Link href="/profile">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    data-testid="button-profile"
+                  >
+                    <UserCog className="h-4 w-4 mr-2" />
+                    <span className="hidden sm:inline">Profil</span>
+                  </Button>
+                </Link>
                 <Button
                   variant="ghost"
                   size="sm"
-                  data-testid="button-profile"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  data-testid="button-logout"
                 >
-                  <UserCog className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Profil</span>
-                </Button>
-              </Link>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                disabled={isLoggingOut}
-                data-testid="button-logout"
-              >
-                {isLoggingOut ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">Déconnexion</span>
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <EmailVerificationBanner />
-      <SuggestionsModal open={showSuggestionsModal} onOpenChange={setShowSuggestionsModal} category="self-learner" />
-
-      <main className="relative max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
-        <div className="mb-10">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/25">
-              <Sparkles className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h1
-                className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text"
-                data-testid="text-self-learner-welcome"
-              >
-                Edesio Solo
-              </h1>
-              <p className="text-muted-foreground">
-                Créez vos cours, générez des questions et entraînez-vous avec l'IA.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {error && (
-          <Card className="p-4 mb-6 bg-destructive/10 border-destructive/20">
-            <div className="flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
-              <p className="text-destructive" data-testid="text-error-message">
-                {error}
-              </p>
-            </div>
-          </Card>
-        )}
-
-        <div className="space-y-8">
-          <section>
-            <Card className="p-6 bg-card/80 backdrop-blur-sm border-border/50 shadow-xl" data-testid="card-search-and-create">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Rechercher un cours..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-background/50"
-                    data-testid="input-search-cours"
-                  />
-                  
-                  {searchQuery && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-10 max-h-80 overflow-y-auto">
-                      {isSearching ? (
-                        <div className="p-4 text-center text-muted-foreground">
-                          <Loader2 className="h-4 w-4 animate-spin mx-auto" />
-                        </div>
-                      ) : searchResults.length === 0 ? (
-                        <div className="p-4 text-center text-muted-foreground">
-                          Aucun cours trouvé pour "{searchQuery}"
-                        </div>
-                      ) : (
-                        <div className="py-2">
-                          {searchResults.map((c) => (
-                            <button
-                              key={c.id}
-                              className="w-full px-4 py-3 text-left hover:bg-muted/50 flex items-center gap-3"
-                              onClick={() => handleSelectSearchResult(c)}
-                              data-testid={`search-result-${c.id}`}
-                            >
-                              <BookOpen className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium truncate">{c.title}</p>
-                                <p className="text-sm text-muted-foreground truncate">
-                                  {langueLabels[c.language as Language]}
-                                </p>
-                              </div>
-                              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                  {isLoggingOut ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      <span className="hidden sm:inline">Déconnexion</span>
+                    </>
                   )}
-                </div>
-                
-                <Button 
-                  onClick={handleOpenCreateModal} 
-                  className="shadow-lg shadow-amber-500/25 bg-amber-500 hover:bg-amber-600 focus-visible:ring-amber-500"
-                  data-testid="button-open-create-modal"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Nouveau cours
                 </Button>
               </div>
-            </Card>
-          </section>
+            </div>
+          </div>
+        </header>
 
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center">
-                <BookOpen className="h-5 w-5 text-amber-600" />
+        <EmailVerificationBanner />
+        <SuggestionsModal open={showSuggestionsModal} onOpenChange={setShowSuggestionsModal} category="self-learner" />
+
+        <main className="relative max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/25">
+                <Sparkles className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">Mes cours</h2>
-                <p className="text-sm text-muted-foreground">{cours.length} cours créé{cours.length > 1 ? 's' : ''}</p>
+                <h1
+                  className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text"
+                  data-testid="text-self-learner-welcome"
+                >
+                  Edesio Solo
+                </h1>
+                <p className="text-muted-foreground">
+                  Créez vos cours, générez des questions et entraînez-vous avec l'IA.
+                </p>
               </div>
             </div>
+          </div>
 
-            {cours.length === 0 ? (
-              <Card className="p-10 text-center bg-card/50 backdrop-blur-sm border-dashed">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-500/10 flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="h-8 w-8 text-amber-500" />
-                </div>
-                <h3 className="font-semibold text-lg mb-2">Aucun cours créé</h3>
-                <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                  Créez votre premier cours pour commencer à générer des questions et vous entraîner avec l'IA.
+          {error && (
+            <Card className="p-4 mb-6 bg-destructive/10 border-destructive/20">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
+                <p className="text-destructive" data-testid="text-error-message">
+                  {error}
                 </p>
-                <Button onClick={handleOpenCreateModal} className="shadow-lg shadow-amber-500/25 bg-amber-500 hover:bg-amber-600 focus-visible:ring-amber-500" data-testid="button-create-first-cours">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Créer mon premier cours
-                </Button>
-              </Card>
-            ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {cours.map((c) => (
-                  <Card
-                    key={c.id}
-                    className="p-5 transition-all border-border/50 bg-card/80 backdrop-blur-sm group"
-                    data-testid={`card-cours-${c.id}`}
-                  >
-                    <div className="flex items-start justify-between gap-2 mb-3">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold truncate">{c.title}</h3>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {langueLabels[c.language as Language]}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1 shrink-0">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground opacity-60 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => handleCardRenameClick(e, c)}
-                          data-testid={`button-rename-cours-${c.id}`}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground opacity-60 group-hover:opacity-100 transition-opacity hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleDeleteCourse(c.id)}
-                          data-testid={`button-delete-cours-${c.id}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(c.createdAt).toLocaleDateString('fr-FR')}
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => handleSelectCours(c)}
-                        data-testid={`button-details-cours-${c.id}`}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        Détails
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="flex-1 bg-amber-500 hover:bg-amber-600"
-                        onClick={() => handleReviserCours(c)}
-                        data-testid={`button-reviser-cours-${c.id}`}
-                      >
-                        <MessageCircle className="h-4 w-4 mr-1" />
-                        Réviser
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
               </div>
-            )}
-          </section>
-        </div>
-      </main>
+            </Card>
+          )}
 
-      <Dialog open={createModalOpen} onOpenChange={(open) => !open && handleCloseCreateModal()}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col p-0">
-          <DialogHeader className="px-6 pt-6 pb-4 border-b flex-shrink-0">
-            <DialogTitle className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
-                <Plus className="h-4 w-4 text-white" />
+          <div className="space-y-8">
+            <section>
+              <Card className="p-6 bg-card/80 backdrop-blur-sm border-border/50 shadow-xl" data-testid="card-search-and-create">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Rechercher un cours..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 bg-background/50"
+                      data-testid="input-search-cours"
+                    />
+
+                    {searchQuery && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-10 max-h-80 overflow-y-auto">
+                        {isSearching ? (
+                          <div className="p-4 text-center text-muted-foreground">
+                            <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                          </div>
+                        ) : searchResults.length === 0 ? (
+                          <div className="p-4 text-center text-muted-foreground">
+                            Aucun cours trouvé pour "{searchQuery}"
+                          </div>
+                        ) : (
+                          <div className="py-2">
+                            {searchResults.map((c) => (
+                              <button
+                                key={c.id}
+                                className="w-full px-4 py-3 text-left hover:bg-muted/50 flex items-center gap-3"
+                                onClick={() => handleSelectSearchResult(c)}
+                                data-testid={`search-result-${c.id}`}
+                              >
+                                <BookOpen className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-medium truncate">{c.title}</p>
+                                  <p className="text-sm text-muted-foreground truncate">
+                                    {langueLabels[c.language as Language]}
+                                  </p>
+                                </div>
+                                <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <Button
+                    onClick={handleOpenCreateModal}
+                    className="shadow-lg shadow-amber-500/25 bg-amber-500 hover:bg-amber-600 focus-visible:ring-amber-500"
+                    data-testid="button-open-create-modal"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Nouveau cours
+                  </Button>
+                </div>
+              </Card>
+            </section>
+
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center">
+                  <BookOpen className="h-5 w-5 text-amber-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold">Mes cours</h2>
+                  <p className="text-sm text-muted-foreground">{cours.length} cours créé{cours.length > 1 ? 's' : ''}</p>
+                </div>
               </div>
-              Créer un nouveau cours
-            </DialogTitle>
-            <DialogDescription>
-              Ajoutez du contenu texte et/ou des fichiers PDF pour générer des questions.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="flex-1 overflow-y-auto px-6 py-6">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onCreateSubmit)} className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row gap-4">
+
+              {cours.length === 0 ? (
+                <Card className="p-10 text-center bg-card/50 backdrop-blur-sm border-dashed">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-500/10 flex items-center justify-center mx-auto mb-4">
+                    <BookOpen className="h-8 w-8 text-amber-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Aucun cours créé</h3>
+                  <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+                    Créez votre premier cours pour commencer à générer des questions et vous entraîner avec l'IA.
+                  </p>
+                  <Button onClick={handleOpenCreateModal} className="shadow-lg shadow-amber-500/25 bg-amber-500 hover:bg-amber-600 focus-visible:ring-amber-500" data-testid="button-create-first-cours">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Créer mon premier cours
+                  </Button>
+                </Card>
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {cours.map((c) => (
+                    <Card
+                      key={c.id}
+                      className="p-5 transition-all border-border/50 bg-card/80 backdrop-blur-sm group"
+                      data-testid={`card-cours-${c.id}`}
+                    >
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold truncate">{c.title}</h3>
+                          <p className="text-sm text-muted-foreground truncate">
+                            {langueLabels[c.language as Language]}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-muted-foreground opacity-60 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => handleCardRenameClick(e, c)}
+                            data-testid={`button-rename-cours-${c.id}`}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-muted-foreground opacity-60 group-hover:opacity-100 transition-opacity hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => handleDeleteCourse(c.id)}
+                            data-testid={`button-delete-cours-${c.id}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(c.createdAt).toLocaleDateString('fr-FR')}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1"
+                          onClick={() => handleSelectCours(c)}
+                          data-testid={`button-details-cours-${c.id}`}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Détails
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="flex-1 bg-amber-500 hover:bg-amber-600"
+                          onClick={() => handleReviserCours(c)}
+                          data-testid={`button-reviser-cours-${c.id}`}
+                        >
+                          <MessageCircle className="h-4 w-4 mr-1" />
+                          Réviser
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        </main>
+
+        <Dialog open={createModalOpen} onOpenChange={(open) => !open && handleCloseCreateModal()}>
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col p-0">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b flex-shrink-0">
+              <DialogTitle className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+                  <Plus className="h-4 w-4 text-white" />
+                </div>
+                Créer un nouveau cours
+              </DialogTitle>
+              <DialogDescription>
+                Ajoutez du contenu texte et/ou des fichiers PDF pour générer des questions.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex-1 overflow-y-auto px-6 py-6">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onCreateSubmit)} className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <FormField
+                        control={form.control}
+                        name="titre"
+                        render={({ field }) => (
+                          <FormItem className="flex-1">
+                            <FormLabel>Titre du cours</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Ex: Introduction à la philosophie"
+                                {...field}
+                                data-testid="input-new-cours-titre"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="langue"
+                        render={({ field }) => (
+                          <FormItem className="w-full sm:w-44">
+                            <FormLabel>Langue</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger data-testid="select-new-cours-langue">
+                                  <Globe className="h-4 w-4 mr-2 text-muted-foreground" />
+                                  <SelectValue placeholder="Langue" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {(Object.keys(langueLabels) as Language[]).map((lang) => (
+                                  <SelectItem key={lang} value={lang}>
+                                    {langueLabels[lang]}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
                     <FormField
                       control={form.control}
-                      name="titre"
+                      name="contenu"
                       render={({ field }) => (
-                        <FormItem className="flex-1">
-                          <FormLabel>Titre du cours</FormLabel>
+                        <FormItem>
+                          <FormLabel>Contenu du cours (optionnel)</FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="Ex: Introduction à la philosophie"
+                            <Textarea
+                              placeholder="Collez ici le contenu de votre cours..."
+                              className="resize-none min-h-[150px]"
                               {...field}
-                              data-testid="input-new-cours-titre"
+                              data-testid="textarea-new-cours-contenu"
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="langue"
-                      render={({ field }) => (
-                        <FormItem className="w-full sm:w-44">
-                          <FormLabel>Langue</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger data-testid="select-new-cours-langue">
-                                <Globe className="h-4 w-4 mr-2 text-muted-foreground" />
-                                <SelectValue placeholder="Langue" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {(Object.keys(langueLabels) as Language[]).map((lang) => (
-                                <SelectItem key={lang} value={lang}>
-                                  {langueLabels[lang]}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="contenu"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Contenu du cours (optionnel)</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Collez ici le contenu de votre cours..."
-                            className="resize-none min-h-[150px]"
-                            {...field}
-                            data-testid="textarea-new-cours-contenu"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="space-y-2">
-                    <FormLabel>Fichiers PDF (optionnels)</FormLabel>
-                    <div className="border-2 border-dashed rounded-lg p-4 text-center">
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileSelect}
-                        accept=".pdf"
-                        multiple
-                        className="hidden"
-                        data-testid="input-pdf-files"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => fileInputRef.current?.click()}
-                        data-testid="button-upload-pdf"
-                      >
-                        <Upload className="h-4 w-4 mr-2" />
-                        Ajouter des PDF
-                      </Button>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        PDF uniquement
-                      </p>
-                    </div>
-                    
-                    {selectedPdfFiles.length > 0 && (
-                      <div className="space-y-2 mt-3">
-                        {selectedPdfFiles.map((file, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center justify-between p-2 bg-muted/50 rounded-lg"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <FileText className="h-4 w-4 text-amber-500 shrink-0" />
-                              <span className="text-sm truncate">{file.name}</span>
-                            </div>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6 shrink-0"
-                              onClick={() => removeSelectedFile(index)}
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex justify-end gap-3 pt-4 border-t">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleCloseCreateModal}
-                    disabled={isCreating}
-                  >
-                    Annuler
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    disabled={isCreating}
-                    className="bg-amber-500 hover:bg-amber-600"
-                    data-testid="button-submit-create-cours"
-                  >
-                    {isCreating ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Création...
-                      </>
-                    ) : (
-                      <>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Créer le cours
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={!!selectedCours} onOpenChange={(open) => !open && handleCloseCoursModal()}>
-        <DialogContent 
-          className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 !max-w-none !w-screen !h-[100dvh] !rounded-none !border-0 flex flex-col p-0 overflow-hidden [&>button]:hidden sm:!inset-auto sm:!left-1/2 sm:!top-1/2 sm:!-translate-x-1/2 sm:!-translate-y-1/2 sm:!max-w-2xl sm:!w-[95vw] sm:!h-[85vh] sm:!rounded-2xl sm:!border"
-        >
-          {selectedCours && (
-            <>
-              <DialogHeader className="px-4 pt-4 pb-3 border-b flex-shrink-0 sm:px-6 sm:pt-6 sm:pb-4" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}>
-                <div className="flex items-center justify-between gap-2">
-                  <DialogTitle className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shrink-0">
-                      <BookOpen className="h-4 w-4 text-white" />
-                    </div>
-                    {isRenamingCours ? (
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <Input
-                          ref={renameInputRef}
-                          value={renamingCoursValue}
-                          onChange={(e) => setRenamingCoursValue(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleSaveRename();
-                            if (e.key === "Escape") handleCancelRename();
-                          }}
-                          className="h-8 text-sm"
-                          maxLength={200}
-                          disabled={isSavingRename}
-                          data-testid="input-rename-cours"
+                    <div className="space-y-2">
+                      <FormLabel>Fichiers PDF (optionnels)</FormLabel>
+                      <div className="border-2 border-dashed rounded-lg p-4 text-center">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileSelect}
+                          accept=".pdf"
+                          multiple
+                          className="hidden"
+                          data-testid="input-pdf-files"
                         />
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="shrink-0 h-8 w-8"
-                          onClick={handleSaveRename}
-                          disabled={isSavingRename || !renamingCoursValue.trim()}
-                          data-testid="button-save-rename"
+                          type="button"
+                          variant="outline"
+                          onClick={() => fileInputRef.current?.click()}
+                          data-testid="button-upload-pdf"
                         >
-                          {isSavingRename ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4 text-emerald-600" />}
+                          <Upload className="h-4 w-4 mr-2" />
+                          Ajouter des PDF
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="shrink-0 h-8 w-8"
-                          onClick={handleCancelRename}
-                          disabled={isSavingRename}
-                          data-testid="button-cancel-rename"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          PDF uniquement
+                        </p>
                       </div>
-                    ) : (
-                      <div className="flex items-center gap-1.5 flex-1 min-w-0 group">
-                        <span className="truncate">{selectedCours.title}</span>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="shrink-0 h-7 w-7 invisible group-hover:visible"
-                          onClick={handleStartRename}
-                          data-testid="button-start-rename"
-                        >
-                          <PenLine className="h-3.5 w-3.5 text-muted-foreground" />
-                        </Button>
-                      </div>
-                    )}
-                  </DialogTitle>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="shrink-0"
-                    onClick={() => handleCloseCoursModal()}
-                    data-testid="button-close-cours-modal"
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
-                </div>
-                <DialogDescription>
-                  Gérez votre cours et générez des questions
-                </DialogDescription>
-              </DialogHeader>
-              
-              <div className="flex-1 min-h-0 overflow-hidden">
-                <Tabs value={courseTab} onValueChange={handleTabChange} className="h-full flex flex-col">
-                  <TabsList className="w-full justify-start px-6 pt-2 bg-transparent border-b rounded-none">
-                    <TabsTrigger value="content" className="gap-2">
-                      <FileText className="h-4 w-4" />
-                      Contenu
-                    </TabsTrigger>
-                    <TabsTrigger value="questions" className="gap-2">
-                      <Sparkles className="h-4 w-4" />
-                      Questions
-                    </TabsTrigger>
-                  </TabsList>
 
-                  <TabsContent value="content" className="flex-1 overflow-y-auto p-6 m-0">
-                    <div className="space-y-6">
-                      <div>
-                        <h4 className="font-medium mb-2">Langue du cours</h4>
-                        <Badge variant="outline">
-                          {langueLabels[selectedCours.language as Language]}
-                        </Badge>
-                      </div>
-                      
-                      {selectedCours.contentText && (
-                        <div>
-                          <h4 className="font-medium mb-2">Contenu texte</h4>
-                          <div className="p-4 bg-muted/50 rounded-lg text-sm whitespace-pre-wrap max-h-60 overflow-y-auto">
-                            {selectedCours.contentText}
-                          </div>
+                      {selectedPdfFiles.length > 0 && (
+                        <div className="space-y-2 mt-3">
+                          {selectedPdfFiles.map((file, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between p-2 bg-muted/50 rounded-lg"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <FileText className="h-4 w-4 text-amber-500 shrink-0" />
+                                <span className="text-sm truncate">{file.name}</span>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 shrink-0"
+                                onClick={() => removeSelectedFile(index)}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
                         </div>
                       )}
-
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium">Fichiers PDF</h4>
-                          <div>
-                            <input
-                              type="file"
-                              ref={existingCoursFileInputRef}
-                              onChange={handleAddPdfToExistingCours}
-                              accept=".pdf"
-                              multiple
-                              className="hidden"
-                              data-testid="input-add-pdf-existing"
-                            />
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => existingCoursFileInputRef.current?.click()}
-                              disabled={isUploadingPdf}
-                              data-testid="button-add-pdf-existing"
-                            >
-                              {isUploadingPdf ? (
-                                <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                              ) : (
-                                <Plus className="h-4 w-4 mr-1" />
-                              )}
-                              Ajouter
-                            </Button>
-                          </div>
-                        </div>
-                        {loadingFichiers ? (
-                          <div className="flex items-center justify-center py-4">
-                            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                          </div>
-                        ) : coursFichiers.length === 0 ? (
-                          <div className="border-2 border-dashed rounded-lg p-6 text-center">
-                            <FileText className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                            <p className="text-sm text-muted-foreground mb-3">Aucun fichier PDF</p>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => existingCoursFileInputRef.current?.click()}
-                              disabled={isUploadingPdf}
-                              data-testid="button-add-first-pdf"
-                            >
-                              {isUploadingPdf ? (
-                                <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                              ) : (
-                                <Upload className="h-4 w-4 mr-1" />
-                              )}
-                              Ajouter un PDF
-                            </Button>
-                          </div>
-                        ) : (
-                          <div className="space-y-2">
-                            {coursFichiers.map((fichier) => (
-                              <div
-                                key={fichier.id}
-                                className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
-                              >
-                                <div className="flex items-center gap-2">
-                                  <FileText className="h-4 w-4 text-amber-500" />
-                                  <span className="text-sm">{fichier.fileName}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                    onClick={() => handleOpenPdf(fichier)}
-                                    data-testid={`button-view-pdf-${fichier.id}`}
-                                  >
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                    onClick={async () => {
-                                      const success = await deleteSelfLearnerCourseFile(fichier);
-                                      if (success) {
-                                        setCourseFiles((prev) => prev.filter((f) => f.id !== fichier.id));
-                                        toast({ title: "Fichier supprimé" });
-                                      }
-                                    }}
-                                  >
-                                    <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
                     </div>
-                  </TabsContent>
+                  </div>
 
-                  <TabsContent value="questions" className="flex-1 flex flex-col overflow-hidden m-0">
-                    <div className="flex-1 flex flex-col overflow-hidden">
-                      {/* Header with back button */}
-                      <div className="flex items-center gap-3 p-4 border-b shrink-0">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setCourseTab("content")}
-                          data-testid="button-back-to-content"
-                        >
-                          <ChevronRight className="h-4 w-4 mr-1 rotate-180" />
-                          Retour au cours
-                        </Button>
-                        <div className="flex-1" />
-                        <Badge variant="outline" className="text-sm">
-                          {coursQuestions.length} question{coursQuestions.length !== 1 ? 's' : ''}
-                        </Badge>
+                  <div className="flex justify-end gap-3 pt-4 border-t">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleCloseCreateModal}
+                      disabled={isCreating}
+                    >
+                      Annuler
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isCreating}
+                      className="bg-amber-500 hover:bg-amber-600"
+                      data-testid="button-submit-create-cours"
+                    >
+                      {isCreating ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Création...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Créer le cours
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={!!selectedCours} onOpenChange={(open) => !open && handleCloseCoursModal()}>
+          <DialogContent
+            className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 !max-w-none !w-screen !h-[100dvh] !rounded-none !border-0 flex flex-col p-0 overflow-hidden [&>button]:hidden sm:!inset-auto sm:!left-1/2 sm:!top-1/2 sm:!-translate-x-1/2 sm:!-translate-y-1/2 sm:!max-w-2xl sm:!w-[95vw] sm:!h-[85vh] sm:!rounded-2xl sm:!border"
+          >
+            {selectedCours && (
+              <>
+                <DialogHeader className="px-4 pt-4 pb-3 border-b flex-shrink-0 sm:px-6 sm:pt-6 sm:pb-4" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}>
+                  <div className="flex items-center justify-between gap-2">
+                    <DialogTitle className="flex items-center gap-2 flex-1 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shrink-0">
+                        <BookOpen className="h-4 w-4 text-white" />
                       </div>
+                      {isRenamingCours ? (
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <Input
+                            ref={renameInputRef}
+                            value={renamingCoursValue}
+                            onChange={(e) => setRenamingCoursValue(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleSaveRename();
+                              if (e.key === "Escape") handleCancelRename();
+                            }}
+                            className="h-8 text-sm"
+                            maxLength={200}
+                            disabled={isSavingRename}
+                            data-testid="input-rename-cours"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="shrink-0 h-8 w-8"
+                            onClick={handleSaveRename}
+                            disabled={isSavingRename || !renamingCoursValue.trim()}
+                            data-testid="button-save-rename"
+                          >
+                            {isSavingRename ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4 text-emerald-600" />}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="shrink-0 h-8 w-8"
+                            onClick={handleCancelRename}
+                            disabled={isSavingRename}
+                            data-testid="button-cancel-rename"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 flex-1 min-w-0 group">
+                          <span className="truncate">{selectedCours.title}</span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="shrink-0 h-7 w-7 invisible group-hover:visible"
+                            onClick={handleStartRename}
+                            data-testid="button-start-rename"
+                          >
+                            <PenLine className="h-3.5 w-3.5 text-muted-foreground" />
+                          </Button>
+                        </div>
+                      )}
+                    </DialogTitle>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="shrink-0"
+                      onClick={() => handleCloseCoursModal()}
+                      data-testid="button-close-cours-modal"
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
+                  <DialogDescription>
+                    Gérez votre cours et générez des questions
+                  </DialogDescription>
+                </DialogHeader>
 
-                      {/* Main scrollable content */}
-                      <div className="flex-1 overflow-y-auto p-6">
-                        {/* Question generation section - only show if no questions yet */}
-                        {coursQuestions.length === 0 && !loadingQuestions && (
-                          <Card className="p-5 bg-amber-500/5 border-amber-500/20 mb-6">
-                            <h4 className="font-medium mb-4 flex items-center gap-2">
-                              <Sparkles className="h-4 w-4 text-amber-500" />
-                              Générer des questions avec l'IA
-                            </h4>
-                            
-                            <div className="flex items-center gap-4 p-3 rounded-lg border bg-muted/30 mb-3">
-                              <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center shrink-0">
-                                <CheckCircle2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-sm">QCM</p>
-                                <p className="text-xs text-muted-foreground">Choix parmi plusieurs réponses</p>
-                              </div>
-                              <div className="flex items-center gap-2 shrink-0">
-                                <Input
-                                  type="number"
-                                  min={0}
-                                  max={20}
-                                  value={qcmCount}
-                                  onChange={(e) => setQcmCount(parseInt(e.target.value) || 0)}
-                                  className="w-16 h-9 text-center"
-                                  data-testid="input-qcm-count"
-                                />
-                              </div>
+                <div className="flex-1 min-h-0 overflow-hidden">
+                  <Tabs value={courseTab} onValueChange={handleTabChange} className="h-full flex flex-col">
+                    <TabsList className="w-full justify-start px-6 pt-2 bg-transparent border-b rounded-none">
+                      <TabsTrigger value="content" className="gap-2">
+                        <FileText className="h-4 w-4" />
+                        Contenu
+                      </TabsTrigger>
+                      <TabsTrigger value="questions" className="gap-2">
+                        <Sparkles className="h-4 w-4" />
+                        Questions
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="content" className="flex-1 overflow-y-auto p-6 m-0">
+                      <div className="space-y-6">
+                        <div>
+                          <h4 className="font-medium mb-2">Langue du cours</h4>
+                          <Badge variant="outline">
+                            {langueLabels[selectedCours.language as Language]}
+                          </Badge>
+                        </div>
+
+                        {selectedCours.contentText && (
+                          <div>
+                            <h4 className="font-medium mb-2">Contenu texte</h4>
+                            <div className="p-4 bg-muted/50 rounded-lg text-sm whitespace-pre-wrap max-h-60 overflow-y-auto">
+                              {selectedCours.contentText}
                             </div>
-                            
-                            <div className="flex items-center gap-4 p-3 rounded-lg border bg-muted/30 mb-5">
-                              <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
-                                <PenLine className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-sm">Questions ouvertes</p>
-                                <p className="text-xs text-muted-foreground">Réponse libre à rédiger</p>
-                              </div>
-                              <div className="flex items-center gap-2 shrink-0">
-                                <Input
-                                  type="number"
-                                  min={0}
-                                  max={20}
-                                  value={ouverteCount}
-                                  onChange={(e) => setOuverteCount(parseInt(e.target.value) || 0)}
-                                  className="w-16 h-9 text-center"
-                                  data-testid="input-ouverte-count"
-                                />
-                              </div>
-                            </div>
-
-                            <Button
-                              onClick={handleGenerateQuestions}
-                              disabled={isGenerating || (qcmCount === 0 && ouverteCount === 0)}
-                              className="w-full bg-amber-500 hover:bg-amber-600"
-                              data-testid="button-generate-questions"
-                            >
-                              {isGenerating ? (
-                                <>
-                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                  Génération en cours...
-                                </>
-                              ) : (
-                                <>
-                                  <Sparkles className="h-4 w-4 mr-2" />
-                                  Générer {qcmCount + ouverteCount} questions
-                                </>
-                              )}
-                            </Button>
-                          </Card>
-                        )}
-
-                        {/* Loading state */}
-                        {loadingQuestions && (
-                          <div className="flex items-center justify-center py-8">
-                            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                           </div>
                         )}
 
-                        {/* Generating state */}
-                        {isGenerating && (
-                          <div className="flex flex-col items-center justify-center py-12">
-                            <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
-                            <p className="text-sm text-muted-foreground">Génération des questions en cours...</p>
-                          </div>
-                        )}
-
-                        {/* Questions list - scrollable */}
-                        {!loadingQuestions && !isGenerating && coursQuestions.length > 0 && (
-                          <div className="space-y-3">
-                            {coursQuestions.map((q, index) => (
-                              <Card key={q.id} className="p-4">
-                                {editingQuestionId === q.id ? (
-                                  <div className="space-y-3">
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <Badge variant="outline" className="text-xs">
-                                        Question ouverte
-                                      </Badge>
-                                      <span className="text-xs text-muted-foreground">#{index + 1}</span>
-                                    </div>
-                                    <div>
-                                      <label className="text-xs font-medium text-muted-foreground mb-1 block">Question</label>
-                                      <Textarea
-                                        value={editingQuestionText}
-                                        onChange={(e) => setEditingQuestionText(e.target.value)}
-                                        className="min-h-[80px] text-sm"
-                                        data-testid={`textarea-edit-question-${index}`}
-                                      />
-                                    </div>
-                                    <div>
-                                      <label className="text-xs font-medium text-muted-foreground mb-1 block">Réponse attendue</label>
-                                      <Textarea
-                                        value={editingAnswerText}
-                                        onChange={(e) => setEditingAnswerText(e.target.value)}
-                                        className="min-h-[60px] text-sm"
-                                        data-testid={`textarea-edit-answer-${index}`}
-                                      />
-                                    </div>
-                                    <div className="flex items-center gap-2 justify-end">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={handleCancelEditQuestion}
-                                        data-testid={`button-cancel-edit-${index}`}
-                                      >
-                                        Annuler
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        onClick={handleSaveQuestion}
-                                        className="bg-amber-500 hover:bg-amber-600"
-                                        data-testid={`button-save-question-${index}`}
-                                      >
-                                        <Check className="h-4 w-4 mr-1" />
-                                        Enregistrer
-                                      </Button>
-                                    </div>
-                                  </div>
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-medium">Fichiers PDF</h4>
+                            <div>
+                              <input
+                                type="file"
+                                ref={existingCoursFileInputRef}
+                                onChange={handleAddPdfToExistingCours}
+                                accept=".pdf"
+                                multiple
+                                className="hidden"
+                                data-testid="input-add-pdf-existing"
+                              />
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => existingCoursFileInputRef.current?.click()}
+                                disabled={isUploadingPdf}
+                                data-testid="button-add-pdf-existing"
+                              >
+                                {isUploadingPdf ? (
+                                  <Loader2 className="h-4 w-4 mr-1 animate-spin" />
                                 ) : (
-                                  <div className="flex items-start justify-between gap-2">
-                                    <div className="flex-1">
+                                  <Plus className="h-4 w-4 mr-1" />
+                                )}
+                                Ajouter
+                              </Button>
+                            </div>
+                          </div>
+                          {loadingFichiers ? (
+                            <div className="flex items-center justify-center py-4">
+                              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                            </div>
+                          ) : coursFichiers.length === 0 ? (
+                            <div className="border-2 border-dashed rounded-lg p-6 text-center">
+                              <FileText className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                              <p className="text-sm text-muted-foreground mb-3">Aucun fichier PDF</p>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => existingCoursFileInputRef.current?.click()}
+                                disabled={isUploadingPdf}
+                                data-testid="button-add-first-pdf"
+                              >
+                                {isUploadingPdf ? (
+                                  <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                                ) : (
+                                  <Upload className="h-4 w-4 mr-1" />
+                                )}
+                                Ajouter un PDF
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              {coursFichiers.map((fichier) => (
+                                <div
+                                  key={fichier.id}
+                                  className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <FileText className="h-4 w-4 text-amber-500" />
+                                    <span className="text-sm">{fichier.fileName}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-8 w-8"
+                                      onClick={() => handleOpenPdf(fichier)}
+                                      data-testid={`button-view-pdf-${fichier.id}`}
+                                    >
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-8 w-8"
+                                      onClick={async () => {
+                                        const success = await deleteSelfLearnerCourseFile(fichier);
+                                        if (success) {
+                                          setCourseFiles((prev) => prev.filter((f) => f.id !== fichier.id));
+                                          toast({ title: "Fichier supprimé" });
+                                        }
+                                      }}
+                                    >
+                                      <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="questions" className="flex-1 flex flex-col overflow-hidden m-0">
+                      <div className="flex-1 flex flex-col overflow-hidden">
+                        {/* Header with back button */}
+                        <div className="flex items-center gap-3 p-4 border-b shrink-0">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setCourseTab("content")}
+                            data-testid="button-back-to-content"
+                          >
+                            <ChevronRight className="h-4 w-4 mr-1 rotate-180" />
+                            Retour au cours
+                          </Button>
+                          <div className="flex-1" />
+                          <Badge variant="outline" className="text-sm">
+                            {coursQuestions.length} question{coursQuestions.length !== 1 ? 's' : ''}
+                          </Badge>
+                        </div>
+
+                        {/* Main scrollable content */}
+                        <div className="flex-1 overflow-y-auto p-6">
+                          {/* Question generation section - only show if no questions yet */}
+                          {coursQuestions.length === 0 && !loadingQuestions && (
+                            <Card className="p-5 bg-amber-500/5 border-amber-500/20 mb-6">
+                              <h4 className="font-medium mb-4 flex items-center gap-2">
+                                <Sparkles className="h-4 w-4 text-amber-500" />
+                                Générer des questions avec l'IA
+                              </h4>
+
+                              <div className="flex items-center gap-4 p-3 rounded-lg border bg-muted/30 mb-3">
+                                <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center shrink-0">
+                                  <CheckCircle2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-medium text-sm">QCM</p>
+                                  <p className="text-xs text-muted-foreground">Choix parmi plusieurs réponses</p>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    max={20}
+                                    value={qcmCount}
+                                    onChange={(e) => setQcmCount(parseInt(e.target.value) || 0)}
+                                    className="w-16 h-9 text-center"
+                                    data-testid="input-qcm-count"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-4 p-3 rounded-lg border bg-muted/30 mb-5">
+                                <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
+                                  <PenLine className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-medium text-sm">Questions ouvertes</p>
+                                  <p className="text-xs text-muted-foreground">Réponse libre à rédiger</p>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    max={20}
+                                    value={ouverteCount}
+                                    onChange={(e) => setOuverteCount(parseInt(e.target.value) || 0)}
+                                    className="w-16 h-9 text-center"
+                                    data-testid="input-ouverte-count"
+                                  />
+                                </div>
+                              </div>
+
+                              <Button
+                                onClick={handleGenerateQuestions}
+                                disabled={isGenerating || (qcmCount === 0 && ouverteCount === 0)}
+                                className="w-full bg-amber-500 hover:bg-amber-600"
+                                data-testid="button-generate-questions"
+                              >
+                                {isGenerating ? (
+                                  <>
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    Génération en cours...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Sparkles className="h-4 w-4 mr-2" />
+                                    Générer {qcmCount + ouverteCount} questions
+                                  </>
+                                )}
+                              </Button>
+                            </Card>
+                          )}
+
+                          {/* Loading state */}
+                          {loadingQuestions && (
+                            <div className="flex items-center justify-center py-8">
+                              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                            </div>
+                          )}
+
+                          {/* Generating state */}
+                          {isGenerating && (
+                            <div className="flex flex-col items-center justify-center py-12">
+                              <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
+                              <p className="text-sm text-muted-foreground">Génération des questions en cours...</p>
+                            </div>
+                          )}
+
+                          {/* Questions list - scrollable */}
+                          {!loadingQuestions && !isGenerating && coursQuestions.length > 0 && (
+                            <div className="space-y-3">
+                              {coursQuestions.map((q, index) => (
+                                <Card key={q.id} className="p-4">
+                                  {editingQuestionId === q.id ? (
+                                    <div className="space-y-3">
                                       <div className="flex items-center gap-2 mb-2">
-                                        <Badge 
-                                          variant="outline" 
-                                          className={`text-xs ${q.type === 'single' ? 'border-indigo-500/50 text-indigo-600 dark:text-indigo-400' : ''}`}
-                                        >
-                                          {q.type === 'single' ? 'QCM' : 'Question ouverte'}
+                                        <Badge variant="outline" className="text-xs">
+                                          Question ouverte
                                         </Badge>
                                         <span className="text-xs text-muted-foreground">#{index + 1}</span>
                                       </div>
-                                      <p className="text-sm font-medium mb-2">{q.questionText}</p>
-                                      
-                                      {/* QCM propositions */}
-                                      {q.type === 'single' && q.proposals && q.proposals.length > 0 && (
-                                        <div className="space-y-1 mb-2">
-                                          {q.proposals.map((prop: string, propIndex: number) => (
-                                            <div
-                                              key={propIndex}
-                                              className={`text-xs p-2 rounded flex items-center gap-2 ${
-                                                prop === q.correctAnswers?.[0]
+                                      <div>
+                                        <label className="text-xs font-medium text-muted-foreground mb-1 block">Question</label>
+                                        <Textarea
+                                          value={editingQuestionText}
+                                          onChange={(e) => setEditingQuestionText(e.target.value)}
+                                          className="min-h-[80px] text-sm"
+                                          data-testid={`textarea-edit-question-${index}`}
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="text-xs font-medium text-muted-foreground mb-1 block">Réponse attendue</label>
+                                        <Textarea
+                                          value={editingAnswerText}
+                                          onChange={(e) => setEditingAnswerText(e.target.value)}
+                                          className="min-h-[60px] text-sm"
+                                          data-testid={`textarea-edit-answer-${index}`}
+                                        />
+                                      </div>
+                                      <div className="flex items-center gap-2 justify-end">
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={handleCancelEditQuestion}
+                                          data-testid={`button-cancel-edit-${index}`}
+                                        >
+                                          Annuler
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          onClick={handleSaveQuestion}
+                                          className="bg-amber-500 hover:bg-amber-600"
+                                          data-testid={`button-save-question-${index}`}
+                                        >
+                                          <Check className="h-4 w-4 mr-1" />
+                                          Enregistrer
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-start justify-between gap-2">
+                                      <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-2">
+                                          <Badge
+                                            variant="outline"
+                                            className={`text-xs ${q.type === 'single' ? 'border-indigo-500/50 text-indigo-600 dark:text-indigo-400' : ''}`}
+                                          >
+                                            {q.type === 'single' ? 'QCM' : 'Question ouverte'}
+                                          </Badge>
+                                          <span className="text-xs text-muted-foreground">#{index + 1}</span>
+                                        </div>
+                                        <p className="text-sm font-medium mb-2">{q.questionText}</p>
+
+                                        {/* QCM propositions */}
+                                        {q.type === 'single' && q.proposals && q.proposals.length > 0 && (
+                                          <div className="space-y-1 mb-2">
+                                            {q.proposals.map((prop: string, propIndex: number) => (
+                                              <div
+                                                key={propIndex}
+                                                className={`text-xs p-2 rounded flex items-center gap-2 ${prop === q.correctAnswers?.[0]
                                                   ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                                   : 'bg-muted/50 text-muted-foreground'
-                                              }`}
-                                            >
-                                              {prop === q.correctAnswers?.[0] && (
-                                                <CheckCircle2 className="h-3 w-3 shrink-0" />
-                                              )}
-                                              <span>{prop}</span>
-                                            </div>
-                                          ))}
-                                        </div>
-                                      )}
-                                      
-                                      {/* Open question answer */}
-                                      {q.type === 'open' && q.correctAnswers?.[0] && (
-                                        <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
-                                          <span className="font-medium">Réponse attendue : </span>
-                                          {q.correctAnswers?.[0]}
-                                        </div>
-                                      )}
-                                    </div>
-                                    <div className="flex items-center gap-1 shrink-0">
-                                      {q.type === 'open' && (
+                                                  }`}
+                                              >
+                                                {prop === q.correctAnswers?.[0] && (
+                                                  <CheckCircle2 className="h-3 w-3 shrink-0" />
+                                                )}
+                                                <span>{prop}</span>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        )}
+
+                                        {/* Open question answer */}
+                                        {q.type === 'open' && q.correctAnswers?.[0] && (
+                                          <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
+                                            <span className="font-medium">Réponse attendue : </span>
+                                            {q.correctAnswers?.[0]}
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="flex items-center gap-1 shrink-0">
+                                        {q.type === 'open' && (
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8"
+                                            onClick={() => handleStartEditQuestion(q)}
+                                            data-testid={`button-edit-question-${index}`}
+                                          >
+                                            <Pencil className="h-4 w-4 text-muted-foreground" />
+                                          </Button>
+                                        )}
                                         <Button
                                           variant="ghost"
                                           size="icon"
                                           className="h-8 w-8"
-                                          onClick={() => handleStartEditQuestion(q)}
-                                          data-testid={`button-edit-question-${index}`}
+                                          onClick={() => handleDeleteQuestion(q.id)}
+                                          data-testid={`button-delete-question-${index}`}
                                         >
-                                          <Pencil className="h-4 w-4 text-muted-foreground" />
+                                          <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                                         </Button>
-                                      )}
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8"
-                                        onClick={() => handleDeleteQuestion(q.id)}
-                                        data-testid={`button-delete-question-${index}`}
-                                      >
-                                        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-                                      </Button>
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
-                              </Card>
-                            ))}
+                                  )}
+                                </Card>
+                              ))}
 
-                            {/* Add question buttons - AI generated */}
-                            <div className="space-y-3">
-                              <div className="text-xs text-muted-foreground font-medium">Générer avec l'IA</div>
-                              <div className="flex gap-2">
-                                <Button
-                                  variant="outline"
-                                  className="flex-1 border-dashed"
-                                  onClick={() => handleGenerateSelfLearnerQuestion('single')}
-                                  disabled={isGenerating || isCreatingManualQuestion}
-                                  data-testid="button-add-one-qcm"
-                                >
-                                  {isGenerating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
-                                  Ajouter un QCM
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  className="flex-1 border-dashed"
-                                  onClick={() => handleGenerateSelfLearnerQuestion('open')}
-                                  disabled={isGenerating || isCreatingManualQuestion}
-                                  data-testid="button-add-one-ouverte"
-                                >
-                                  {isGenerating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
-                                  Ajouter une question ouverte
-                                </Button>
-                              </div>
+                              {/* Add question buttons - AI generated */}
+                              <div className="space-y-3">
+                                <div className="text-xs text-muted-foreground font-medium">Générer avec l'IA</div>
+                                <div className="flex gap-2">
+                                  <Button
+                                    variant="outline"
+                                    className="flex-1 border-dashed"
+                                    onClick={() => handleGenerateSelfLearnerQuestion('single')}
+                                    disabled={isGenerating || isCreatingManualQuestion}
+                                    data-testid="button-add-one-qcm"
+                                  >
+                                    {isGenerating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
+                                    Ajouter un QCM
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    className="flex-1 border-dashed"
+                                    onClick={() => handleGenerateSelfLearnerQuestion('open')}
+                                    disabled={isGenerating || isCreatingManualQuestion}
+                                    data-testid="button-add-one-ouverte"
+                                  >
+                                    {isGenerating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
+                                    Ajouter une question ouverte
+                                  </Button>
+                                </div>
 
-                              {/* Add question buttons - Manual */}
-                              <div className="text-xs text-muted-foreground font-medium mt-4">Créer manuellement</div>
-                              <div className="flex gap-2">
-                                <Button
-                                  variant="outline"
-                                  className="flex-1 border-dashed"
-                                  onClick={() => openManualQuestionModal('single')}
-                                  disabled={isGenerating || isCreatingManualQuestion}
-                                  data-testid="button-manual-qcm"
-                                >
-                                  <Plus className="h-4 w-4 mr-2" />
-                                  QCM manuel
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  className="flex-1 border-dashed"
-                                  onClick={() => openManualQuestionModal('open')}
-                                  disabled={isGenerating || isCreatingManualQuestion}
-                                  data-testid="button-manual-ouverte"
-                                >
-                                  <Plus className="h-4 w-4 mr-2" />
-                                  Question ouverte manuelle
-                                </Button>
+                                {/* Add question buttons - Manual */}
+                                <div className="text-xs text-muted-foreground font-medium mt-4">Créer manuellement</div>
+                                <div className="flex gap-2">
+                                  <Button
+                                    variant="outline"
+                                    className="flex-1 border-dashed"
+                                    onClick={() => openManualQuestionModal('single')}
+                                    disabled={isGenerating || isCreatingManualQuestion}
+                                    data-testid="button-manual-qcm"
+                                  >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    QCM manuel
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    className="flex-1 border-dashed"
+                                    onClick={() => openManualQuestionModal('open')}
+                                    disabled={isGenerating || isCreatingManualQuestion}
+                                    data-testid="button-manual-ouverte"
+                                  >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Question ouverte manuelle
+                                  </Button>
+                                </div>
                               </div>
                             </div>
+                          )}
+                        </div>
+
+                        {/* Sticky validate button at bottom - only show if modifications were made */}
+                        {questionsModified && coursQuestions.length > 0 && !loadingQuestions && (
+                          <div className="shrink-0 border-t bg-background p-4">
+                            <Button
+                              onClick={handleValidateQuestions}
+                              className="w-full bg-green-600 hover:bg-green-700"
+                              size="lg"
+                              data-testid="button-validate-questions"
+                            >
+                              <Check className="h-5 w-5 mr-2" />
+                              Valider les questions et accéder au chatbot
+                            </Button>
                           </div>
                         )}
                       </div>
+                    </TabsContent>
 
-                      {/* Sticky validate button at bottom - only show if modifications were made */}
-                      {questionsModified && coursQuestions.length > 0 && !loadingQuestions && (
-                        <div className="shrink-0 border-t bg-background p-4">
-                          <Button
-                            onClick={handleValidateQuestions}
-                            className="w-full bg-green-600 hover:bg-green-700"
-                            size="lg"
-                            data-testid="button-validate-questions"
-                          >
-                            <Check className="h-5 w-5 mr-2" />
-                            Valider les questions et accéder au chatbot
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </TabsContent>
+                  </Tabs>
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
 
-                </Tabs>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+        {coursForChatbot && (
+          <SelfLearnerChatbotModal
+            open={chatbotModalOpen}
+            onOpenChange={(open: boolean) => {
+              setChatbotModalOpen(open);
+              if (!open) setCoursForChatbot(null);
+            }}
+            cours={coursForChatbot}
+            generateQuestions={async (coursId: string) => {
+              return generateQuestions(coursId, { simpleCount: qcmCount, openedCount: ouverteCount, totalQuestions: qcmCount + ouverteCount });
+            }}
+          />
+        )}
 
-      {coursForChatbot && (
-        <SelfLearnerChatbotModal
-          open={chatbotModalOpen}
-          onOpenChange={(open: boolean) => {
-            setChatbotModalOpen(open);
-            if (!open) setCoursForChatbot(null);
-          }}
-          cours={coursForChatbot}
-          generateQuestions={async (coursId: string) => {
-            return generateQuestions(coursId, { simpleCount: qcmCount, openedCount: ouverteCount, totalQuestions: qcmCount + ouverteCount });
-          }}
-        />
-      )}
-
-      <Dialog open={renameCardModalOpen} onOpenChange={(open: boolean) => {
-        if (!open) {
-          setRenameCardModalOpen(false);
-          setRenameCardCourseId(null);
-          setRenameCardValue("");
-        }
-      }}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Renommer le cours</DialogTitle>
-            <DialogDescription>Modifiez le nom de votre cours</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 pt-2">
-            <Input
-              value={renameCardValue}
-              onChange={(e) => setRenameCardValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleConfirmCardRename();
-              }}
-              maxLength={200}
-              disabled={isSavingCardRename}
-              data-testid="input-rename-card-cours"
-            />
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setRenameCardModalOpen(false)}
+        <Dialog open={renameCardModalOpen} onOpenChange={(open: boolean) => {
+          if (!open) {
+            setRenameCardModalOpen(false);
+            setRenameCardCourseId(null);
+            setRenameCardValue("");
+          }
+        }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Renommer le cours</DialogTitle>
+              <DialogDescription>Modifiez le nom de votre cours</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 pt-2">
+              <Input
+                value={renameCardValue}
+                onChange={(e) => setRenameCardValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleConfirmCardRename();
+                }}
+                maxLength={200}
                 disabled={isSavingCardRename}
-                data-testid="button-cancel-card-rename"
-              >
-                Annuler
-              </Button>
-              <Button
-                onClick={handleConfirmCardRename}
-                disabled={isSavingCardRename || !renameCardValue.trim()}
-                className="bg-amber-500 hover:bg-amber-600"
-                data-testid="button-confirm-card-rename"
-              >
-                {isSavingCardRename ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Renommer
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* PDF Viewer Dialog */}
-      <Dialog open={pdfViewerOpen} onOpenChange={(open) => {
-        setPdfViewerOpen(open);
-        if (!open) setPdfViewerUrl(null);
-      }}>
-        <DialogContent className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 !max-w-none !w-screen !h-[100dvh] !rounded-none !border-0 flex flex-col p-0 overflow-hidden sm:!inset-auto sm:!left-1/2 sm:!top-1/2 sm:!-translate-x-1/2 sm:!-translate-y-1/2 sm:!max-w-4xl sm:!w-[95vw] sm:!h-[90vh] sm:!rounded-2xl sm:!border">
-          <DialogHeader className="px-4 pt-4 pb-3 border-b flex-shrink-0 sm:px-6" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}>
-            <div className="flex items-center justify-between gap-2">
-              <DialogTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-amber-500" />
-                Document PDF
-              </DialogTitle>
-            </div>
-          </DialogHeader>
-          <div className="flex-1 overflow-hidden bg-muted/30">
-            {pdfViewerUrl && (
-              <iframe
-                src={pdfViewerUrl}
-                className="w-full h-full border-0"
-                title="PDF Viewer"
+                data-testid="input-rename-card-cours"
               />
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Manual Question Creation Modal */}
-      <Dialog open={manualQuestionModalOpen} onOpenChange={setManualQuestionModalOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>
-              {manualQuestionType === 'single' ? 'Créer un QCM' : 'Créer une question ouverte'}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 max-h-[60vh] overflow-y-auto">
-            <div className="space-y-2">
-              <Label>Question</Label>
-              <Textarea
-                value={manualQuestionText}
-                onChange={(e) => setManualQuestionText(e.target.value)}
-                placeholder="Entrez votre question..."
-                className="min-h-[80px]"
-                data-testid="input-manual-question"
-              />
-            </div>
-
-            {manualQuestionType === 'single' && (
-              <div className="space-y-2">
-                <Label>Propositions (4 max)</Label>
-                {manualQcmPropositions.map((prop: string, index: number) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <span className="text-sm font-medium w-6">{String.fromCharCode(65 + index)}.</span>
-                    <Input
-                      value={prop}
-                      onChange={(e) => {
-                        const newProps = [...manualQcmPropositions];
-                        newProps[index] = e.target.value;
-                        setManualQcmPropositions(newProps);
-                      }}
-                      placeholder={`Proposition ${String.fromCharCode(65 + index)}`}
-                      data-testid={`input-proposition-${index}`}
-                    />
-                  </div>
-                ))}
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setRenameCardModalOpen(false)}
+                  disabled={isSavingCardRename}
+                  data-testid="button-cancel-card-rename"
+                >
+                  Annuler
+                </Button>
+                <Button
+                  onClick={handleConfirmCardRename}
+                  disabled={isSavingCardRename || !renameCardValue.trim()}
+                  className="bg-amber-500 hover:bg-amber-600"
+                  data-testid="button-confirm-card-rename"
+                >
+                  {isSavingCardRename ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  Renommer
+                </Button>
               </div>
-            )}
+            </div>
+          </DialogContent>
+        </Dialog>
 
-            <div className="space-y-2">
-              <Label>{manualQuestionType === 'single' ? 'Bonne réponse (texte exact d\'une proposition)' : 'Réponse attendue'}</Label>
-              {manualQuestionType === 'single' ? (
-                <Select value={manualQuestionAnswer} onValueChange={setManualQuestionAnswer}>
-                  <SelectTrigger data-testid="select-correct-answer">
-                    <SelectValue placeholder="Sélectionner la bonne réponse" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {manualQcmPropositions.filter((p: string) => p.trim()).map((prop: string, index: number) => (
-                      <SelectItem key={index} value={prop}>
-                        {String.fromCharCode(65 + index)}. {prop}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <Textarea
-                  value={manualQuestionAnswer}
-                  onChange={(e) => setManualQuestionAnswer(e.target.value)}
-                  placeholder="Entrez la réponse attendue..."
-                  className="min-h-[60px]"
-                  data-testid="input-manual-answer"
+        {/* PDF Viewer Dialog */}
+        <Dialog open={pdfViewerOpen} onOpenChange={(open) => {
+          setPdfViewerOpen(open);
+          if (!open) setPdfViewerUrl(null);
+        }}>
+          <DialogContent className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 !max-w-none !w-screen !h-[100dvh] !rounded-none !border-0 flex flex-col p-0 overflow-hidden sm:!inset-auto sm:!left-1/2 sm:!top-1/2 sm:!-translate-x-1/2 sm:!-translate-y-1/2 sm:!max-w-4xl sm:!w-[95vw] sm:!h-[90vh] sm:!rounded-2xl sm:!border">
+            <DialogHeader className="px-4 pt-4 pb-3 border-b flex-shrink-0 sm:px-6" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}>
+              <div className="flex items-center justify-between gap-2">
+                <DialogTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-amber-500" />
+                  Document PDF
+                </DialogTitle>
+              </div>
+            </DialogHeader>
+            <div className="flex-1 overflow-hidden bg-muted/30">
+              {pdfViewerUrl && (
+                <iframe
+                  src={pdfViewerUrl}
+                  className="w-full h-full border-0"
+                  title="PDF Viewer"
                 />
               )}
             </div>
+          </DialogContent>
+        </Dialog>
 
-            <div className="space-y-2">
-              <Label>Explication (optionnel)</Label>
-              <Textarea
-                value={manualQuestionExplication}
-                onChange={(e) => setManualQuestionExplication(e.target.value)}
-                placeholder="Explication qui sera affichée après la réponse..."
-                className="min-h-[60px]"
-                data-testid="input-manual-explication"
-              />
+        {/* Manual Question Creation Modal */}
+        <Dialog open={manualQuestionModalOpen} onOpenChange={setManualQuestionModalOpen}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>
+                {manualQuestionType === 'single' ? 'Créer un QCM' : 'Créer une question ouverte'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+              <div className="space-y-2">
+                <Label>Question</Label>
+                <Textarea
+                  value={manualQuestionText}
+                  onChange={(e) => setManualQuestionText(e.target.value)}
+                  placeholder="Entrez votre question..."
+                  className="min-h-[80px]"
+                  data-testid="input-manual-question"
+                />
+              </div>
+
+              {manualQuestionType === 'single' && (
+                <div className="space-y-2">
+                  <Label>Propositions (4 max)</Label>
+                  {manualQcmPropositions.map((prop: string, index: number) => (
+                    <div key={index} className="flex gap-2 items-center">
+                      <span className="text-sm font-medium w-6">{String.fromCharCode(65 + index)}.</span>
+                      <Input
+                        value={prop}
+                        onChange={(e) => {
+                          const newProps = [...manualQcmPropositions];
+                          newProps[index] = e.target.value;
+                          setManualQcmPropositions(newProps);
+                        }}
+                        placeholder={`Proposition ${String.fromCharCode(65 + index)}`}
+                        data-testid={`input-proposition-${index}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label>{manualQuestionType === 'single' ? 'Bonne réponse (texte exact d\'une proposition)' : 'Réponse attendue'}</Label>
+                {manualQuestionType === 'single' ? (
+                  <Select value={manualQuestionAnswer} onValueChange={setManualQuestionAnswer}>
+                    <SelectTrigger data-testid="select-correct-answer">
+                      <SelectValue placeholder="Sélectionner la bonne réponse" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {manualQcmPropositions.filter((p: string) => p.trim()).map((prop: string, index: number) => (
+                        <SelectItem key={index} value={prop}>
+                          {String.fromCharCode(65 + index)}. {prop}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Textarea
+                    value={manualQuestionAnswer}
+                    onChange={(e) => setManualQuestionAnswer(e.target.value)}
+                    placeholder="Entrez la réponse attendue..."
+                    className="min-h-[60px]"
+                    data-testid="input-manual-answer"
+                  />
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label>Explication (optionnel)</Label>
+                <Textarea
+                  value={manualQuestionExplication}
+                  onChange={(e) => setManualQuestionExplication(e.target.value)}
+                  placeholder="Explication qui sera affichée après la réponse..."
+                  className="min-h-[60px]"
+                  data-testid="input-manual-explication"
+                />
+              </div>
             </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setManualQuestionModalOpen(false)} disabled={isCreatingManualQuestion}>
-              Annuler
-            </Button>
-            <Button onClick={handleCreateManualQuestion} disabled={isCreatingManualQuestion} data-testid="button-create-manual-question">
-              {isCreatingManualQuestion ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-              Créer la question
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setManualQuestionModalOpen(false)} disabled={isCreatingManualQuestion}>
+                Annuler
+              </Button>
+              <Button onClick={handleCreateManualQuestion} disabled={isCreatingManualQuestion} data-testid="button-create-manual-question">
+                {isCreatingManualQuestion ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                Créer la question
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </SubscriptionBlockModal>
   );
@@ -1884,11 +1882,10 @@ function MessageBubbleAutonome({ message }: { message: ChatMessage }) {
       data-testid={`message-${message.id}`}
     >
       <Avatar
-        className={`h-10 w-10 flex-shrink-0 shadow-md ${
-          isBot 
-            ? "ring-2 ring-amber-500/20" 
-            : "ring-2 ring-amber-500/30"
-        }`}
+        className={`h-10 w-10 flex-shrink-0 shadow-md ${isBot
+          ? "ring-2 ring-amber-500/20"
+          : "ring-2 ring-amber-500/30"
+          }`}
       >
         {isBot ? (
           <AvatarImage src="/edesio-logo-square.png" alt="Edesio" className="object-cover" />
@@ -1898,66 +1895,55 @@ function MessageBubbleAutonome({ message }: { message: ChatMessage }) {
         </AvatarFallback>
       </Avatar>
       <div
-        className={`max-w-[85%] shadow-sm ${
-          isBot 
-            ? "bg-card border border-border text-foreground rounded-2xl rounded-tl-md" 
-            : "bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-2xl rounded-tr-md"
-        } ${
-          message.type === "feedback" && message.isCorrect === true
+        className={`max-w-[85%] shadow-sm ${isBot
+          ? "bg-card border border-border text-foreground rounded-2xl rounded-tl-md"
+          : "bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-2xl rounded-tr-md"
+          } ${message.type === "feedback" && message.isCorrect === true
             ? "!border-2 !border-emerald-400/60 !bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/40 dark:to-green-900/40"
             : ""
-        } ${
-          message.type === "feedback" && message.isCorrect === false && message.isPartial
+          } ${message.type === "feedback" && message.isCorrect === false && message.isPartial
             ? "!border-2 !border-orange-400/60 !bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/40 dark:to-amber-900/40"
             : ""
-        } ${
-          message.type === "feedback" && message.isCorrect === false && !message.isPartial
+          } ${message.type === "feedback" && message.isCorrect === false && !message.isPartial
             ? "!border-2 !border-red-400/60 !bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/40 dark:to-rose-900/40"
             : ""
-        } ${
-          message.type === "completion" && message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+          } ${message.type === "completion" && message.scoreRatio !== undefined && message.scoreRatio >= 0.7
             ? "!border-2 !border-emerald-400/60 !bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/40 dark:to-green-900/40"
             : ""
-        } ${
-          message.type === "completion" && message.scoreRatio !== undefined && message.scoreRatio >= 0.5 && message.scoreRatio < 0.7
+          } ${message.type === "completion" && message.scoreRatio !== undefined && message.scoreRatio >= 0.5 && message.scoreRatio < 0.7
             ? "!border-2 !border-orange-400/60 !bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/40 dark:to-amber-900/40"
             : ""
-        } ${
-          message.type === "completion" && (message.scoreRatio === undefined || message.scoreRatio < 0.5)
+          } ${message.type === "completion" && (message.scoreRatio === undefined || message.scoreRatio < 0.5)
             ? "!border-2 !border-red-400/60 !bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/40 dark:to-rose-900/40"
             : ""
-        } px-4 py-3`}
+          } px-4 py-3`}
       >
         {message.type === "completion" && (
-          <div className={`flex items-center gap-2 mb-2 pb-2 border-b ${
-            message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-              ? "border-emerald-300/30" 
-              : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                ? "border-orange-300/30" 
-                : "border-red-300/30"
-          }`}>
-            <div className={`p-1.5 rounded-full ${
-              message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                ? "bg-emerald-500/20" 
-                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                  ? "bg-orange-500/20" 
-                  : "bg-red-500/20"
+          <div className={`flex items-center gap-2 mb-2 pb-2 border-b ${message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+            ? "border-emerald-300/30"
+            : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+              ? "border-orange-300/30"
+              : "border-red-300/30"
             }`}>
-              <Trophy className={`h-4 w-4 ${
-                message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                  ? "text-emerald-600 dark:text-emerald-400" 
-                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                    ? "text-orange-600 dark:text-orange-400" 
-                    : "text-red-600 dark:text-red-400"
-              }`} />
+            <div className={`p-1.5 rounded-full ${message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+              ? "bg-emerald-500/20"
+              : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                ? "bg-orange-500/20"
+                : "bg-red-500/20"
+              }`}>
+              <Trophy className={`h-4 w-4 ${message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                ? "text-emerald-600 dark:text-emerald-400"
+                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                  ? "text-orange-600 dark:text-orange-400"
+                  : "text-red-600 dark:text-red-400"
+                }`} />
             </div>
-            <span className={`font-bold text-sm ${
-              message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                ? "text-emerald-700 dark:text-emerald-300" 
-                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                  ? "text-orange-700 dark:text-orange-300" 
-                  : "text-red-700 dark:text-red-300"
-            }`}>Session terminée !</span>
+            <span className={`font-bold text-sm ${message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+              ? "text-emerald-700 dark:text-emerald-300"
+              : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                ? "text-orange-700 dark:text-orange-300"
+                : "text-red-700 dark:text-red-300"
+              }`}>Session terminée !</span>
           </div>
         )}
         <p className="text-sm sm:text-base whitespace-pre-wrap leading-relaxed">{message.text}</p>
@@ -2054,16 +2040,14 @@ function MultiOptionsAutonome({
               key={i}
               onClick={() => onToggle(i)}
               disabled={disabled}
-              className={`group flex items-start gap-3 p-4 rounded-xl font-medium text-sm transition-all duration-200 min-h-[68px] ${
-                isSelected 
-                  ? 'bg-amber-500 border-2 border-amber-600 text-white shadow-md' 
-                  : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 shadow-sm'
-              } ${!disabled ? (isSelected ? 'hover:bg-amber-600' : 'hover:bg-amber-100 dark:hover:bg-amber-900/40 hover:border-amber-300 dark:hover:border-amber-600') + ' active:scale-[0.98]' : 'opacity-60'}`}
+              className={`group flex items-start gap-3 p-4 rounded-xl font-medium text-sm transition-all duration-200 min-h-[68px] ${isSelected
+                ? 'bg-amber-500 border-2 border-amber-600 text-white shadow-md'
+                : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 shadow-sm'
+                } ${!disabled ? (isSelected ? 'hover:bg-amber-600' : 'hover:bg-amber-100 dark:hover:bg-amber-900/40 hover:border-amber-300 dark:hover:border-amber-600') + ' active:scale-[0.98]' : 'opacity-60'}`}
               data-testid={`button-multi-option-${i}`}
             >
-              <span className={`flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-sm font-bold mt-0.5 ${
-                isSelected ? 'bg-white/20 border border-white/30' : 'bg-white dark:bg-amber-800/50 border border-amber-200 dark:border-amber-700'
-              }`}>
+              <span className={`flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-sm font-bold mt-0.5 ${isSelected ? 'bg-white/20 border border-white/30' : 'bg-white dark:bg-amber-800/50 border border-amber-200 dark:border-amber-700'
+                }`}>
                 {String.fromCharCode(65 + i)}
               </span>
               <span className="flex-1 text-left leading-snug">{prop}</span>
@@ -2127,7 +2111,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
       .order("created_at", { ascending: true });
 
     const questions = data || [];
-    
+
     if (questions.length === 0) {
       setChatState("greeting");
       setTimeout(() => {
@@ -2211,7 +2195,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
   const showCompletion = async (finalScore: number, finalTotal: number) => {
     const ratio = finalTotal > 0 ? finalScore / finalTotal : 0;
     const scoreDisplay = finalScore % 1 === 0 ? finalScore : finalScore.toFixed(1);
-    
+
     let feedbackText = "Bravo pour avoir terminé cette révision !";
     if (ratio >= 0.8) {
       feedbackText = "Excellent travail ! Tu maîtrises très bien ce sujet.";
@@ -2229,7 +2213,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
       type: "completion",
       scoreRatio: ratio,
     });
-    
+
     setChatState("completed");
   };
 
@@ -2254,7 +2238,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     setIsProcessing(true);
     const propositions = question.shuffledPropositions || question.proposals;
     const selectedOption = propositions?.[selectedIndex] || "";
-    
+
     addMessage({
       sender: "user",
       text: `${String.fromCharCode(65 + selectedIndex)}. ${selectedOption}`,
@@ -2276,12 +2260,12 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     const selectedOptions = selectedMultiIndices
       .sort((a, b) => a - b)
       .map(i => propositions?.[i] || "");
-    
+
     const answerText = selectedMultiIndices
       .sort((a, b) => a - b)
       .map(i => `${String.fromCharCode(65 + i)}. ${propositions?.[i]}`)
       .join(", ");
-    
+
     addMessage({
       sender: "user",
       text: answerText,
@@ -2289,13 +2273,13 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     });
 
     const correctAnswers = question.correctAnswers || [];
-    
+
     // Normalize strings for case-insensitive comparison
     const normalize = (s: string) => s.toLowerCase().trim();
     const selectedNormalized = selectedOptions.map(normalize).sort();
     const correctNormalized = correctAnswers.map(normalize).sort();
-    
-    const isCorrect = 
+
+    const isCorrect =
       selectedNormalized.length === correctNormalized.length &&
       selectedNormalized.every((opt, i) => opt === correctNormalized[i]);
 
@@ -2312,7 +2296,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
 
     setIsProcessing(true);
     setShowTyping(true);
-    
+
     addMessage({
       sender: "user",
       text: answer,
@@ -2346,8 +2330,8 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
   };
 
   const processOpenAnswer = (
-    scorePoints: number, 
-    feedback: string, 
+    scorePoints: number,
+    feedback: string,
     correctAnswer: string,
     missingElements?: string[]
   ) => {
@@ -2357,7 +2341,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     const isFullyCorrect = scorePoints === 1;
     const isPartiallyCorrect = scorePoints === 0.5;
     const shouldCountQuestion = isFullyCorrect || isPartiallyCorrect || isRetryAttempt;
-    
+
     if (shouldCountQuestion) {
       setScore((prev) => prev + scorePoints);
       setTotalAnswered((prev) => prev + 1);
@@ -2365,10 +2349,10 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
 
     setTimeout(() => {
       if (isFullyCorrect) {
-        const successMessage = isRetryAttempt 
+        const successMessage = isRetryAttempt
           ? "Bravo ! C'est la bonne réponse ! Continue comme ça."
           : feedback;
-        
+
         addMessage({
           sender: "bot",
           text: successMessage,
@@ -2381,7 +2365,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
         setWaitingForAcknowledge(true);
         setIsProcessing(false);
       } else if (isPartiallyCorrect) {
-        const missingInfo = missingElements && missingElements.length > 0 
+        const missingInfo = missingElements && missingElements.length > 0
           ? `\n\nÉléments manquants : ${missingElements.join(", ")}`
           : "";
         addMessage({
@@ -2494,8 +2478,8 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
   };
 
   const toggleMultiOption = (index: number) => {
-    setSelectedMultiIndices(prev => 
-      prev.includes(index) 
+    setSelectedMultiIndices(prev =>
+      prev.includes(index)
         ? prev.filter(i => i !== index)
         : [...prev, index]
     );
@@ -2503,23 +2487,23 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
 
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
   const currentPropositions = currentQuestion?.shuffledPropositions || currentQuestion?.proposals;
-  
+
   const showQCMOptions =
     chatState === "asking" &&
     currentQuestion?.type === "multiple" &&
     !isProcessing &&
     messages[messages.length - 1]?.type === "question";
-  
+
   const showMultiOptions =
     chatState === "asking" &&
     currentQuestion?.type === "multiple" &&
     !isProcessing &&
     messages[messages.length - 1]?.type === "question";
-  
+
   const showTextInput =
     ((chatState === "asking" &&
-    currentQuestion?.type === "open" &&
-    !isProcessing) || waitingForRetry) && !waitingForAcknowledge;
+      currentQuestion?.type === "open" &&
+      !isProcessing) || waitingForRetry) && !waitingForAcknowledge;
 
   const progressPercent = shuffledQuestions.length > 0 ? Math.min((totalAnswered / shuffledQuestions.length) * 100, 100) : 0;
 
@@ -2529,10 +2513,10 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
         <div className="flex items-center gap-3">
           <div className="relative shrink-0">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 p-0.5 shadow-lg shadow-amber-500/25">
-              <img 
-                src="/edesio-logo-square.png" 
-                alt="Edesio" 
-                className="w-full h-full rounded-[10px] object-cover bg-white dark:bg-background" 
+              <img
+                src="/edesio-logo-square.png"
+                alt="Edesio"
+                className="w-full h-full rounded-[10px] object-cover bg-white dark:bg-background"
               />
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-background flex items-center justify-center shadow-sm">
@@ -2575,7 +2559,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
         </div>
       )}
 
-      <div 
+      <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-background to-muted/20"
         data-testid="chatbot-messages"
@@ -2616,26 +2600,24 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
       )}
 
       {waitingForAcknowledge && (
-        <div 
-          className={`flex-shrink-0 px-4 py-4 border-t backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300 ${
-            lastAnswerResult === "correct" 
-              ? "bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20" 
-              : lastAnswerResult === "partial"
+        <div
+          className={`flex-shrink-0 px-4 py-4 border-t backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300 ${lastAnswerResult === "correct"
+            ? "bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20"
+            : lastAnswerResult === "partial"
               ? "bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20"
               : "bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20"
-          }`}
+            }`}
           style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}
         >
           <div className="flex justify-center">
             <Button
               onClick={handleAcknowledge}
-              className={`w-full max-w-xs h-12 rounded-xl font-semibold shadow-md ${
-                lastAnswerResult === "correct"
-                  ? "bg-[#16A34A] hover:bg-[#15803D] text-white"
-                  : lastAnswerResult === "partial"
+              className={`w-full max-w-xs h-12 rounded-xl font-semibold shadow-md ${lastAnswerResult === "correct"
+                ? "bg-[#16A34A] hover:bg-[#15803D] text-white"
+                : lastAnswerResult === "partial"
                   ? "bg-[#F59E0B] hover:bg-[#D97706] text-white"
                   : "bg-[#3B82F6] hover:bg-[#2563EB] text-white"
-              }`}
+                }`}
               data-testid="button-acknowledge"
             >
               <ArrowRight className="h-5 w-5 mr-2" />

@@ -15,3 +15,5 @@ export type CreateManualQuestionRequest = Pick<SelfLearnerQuestion, 'type' | 'qu
     proposals?: string[];
     explanation?: string;
 }
+
+export type UpdateQuestion = Pick<SelfLearnerQuestion, 'questionText' | 'correctAnswers'>;

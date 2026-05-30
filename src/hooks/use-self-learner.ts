@@ -10,7 +10,8 @@ import type {
   SelfLearnerQuestion,
   GenerateQuestionsConfig,
   CreateManualQuestionRequest,
-  QuestionType
+  QuestionType,
+  UpdateQuestion
 } from "@/types";
 import { selfLearnerService } from "@/services/teaching/self-learner.service";
 import { selfLearnerCourseService } from "@/services/teaching/self-learner-courses.service";
@@ -279,20 +280,11 @@ export function useSelfLearner() {
     []
   );
 
-  const updateQuestion = useCallback(
-    async (questionId: string, updates: { question?: string; bonne_reponse?: string }): Promise<boolean> => {
+  const updateSelfLearnerQuestion = useCallback(
+    async (questionId: string, updates: UpdateQuestion): Promise<boolean> => {
       try {
-        const { error: updateError } = await supabase
-          .from("autodidacte_questions")
-          .update(updates)
-          .eq("id", questionId);
-
-        if (updateError) {
-          console.error("Error updating question:", updateError);
-          setError("Erreur lors de la mise à jour de la question.");
-          return false;
-        }
-
+        await selfLearnerQuestionService.updateSelfLearnerQuestion(questionId, updates);
+        
         setError(null);
         return true;
       } catch (err) {
@@ -371,7 +363,7 @@ export function useSelfLearner() {
     generateSelfLearnerQuestion,
     createManualQuestion,
     deleteQuestion,
-    updateQuestion,
+    updateSelfLearnerQuestion,
     refreshCours,
   };
 }
