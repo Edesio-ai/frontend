@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { CreateManualQuestionRequest, SelfLearnerQuestion } from "@/types";
+import { CreateManualQuestionRequest, SelfLearnerQuestion, UpdateQuestion } from "@/types";
 
 export const selfLearnerQuestionService = {
     getSelfLearnerQuestions: async (courseId: string): Promise<SelfLearnerQuestion[]> => {
@@ -11,6 +11,13 @@ export const selfLearnerQuestionService = {
     createSelfLearnerQuestion: async (courseId: string, data: CreateManualQuestionRequest): Promise<SelfLearnerQuestion> => {
         const response = await apiFetch<SelfLearnerQuestion>(`/api/self-learner-question/self-learner-course/${courseId}`, {
             method: "POST",
+            body: JSON.stringify(data),
+        });
+        return response;
+    },
+    updateSelfLearnerQuestion: async (questionId: string, data: UpdateQuestion): Promise<SelfLearnerQuestion> => {
+        const response = await apiFetch<SelfLearnerQuestion>(`/api/self-learner-question/${questionId}`, {
+            method: "PATCH",
             body: JSON.stringify(data),
         });
         return response;
