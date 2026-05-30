@@ -9,7 +9,8 @@ import type {
   SelfLearnerCourseFile,
   SelfLearnerQuestion,
   GenerateQuestionsConfig,
-  CreateManualQuestionRequest
+  CreateManualQuestionRequest,
+  QuestionType
 } from "@/types";
 import { selfLearnerService } from "@/services/teaching/self-learner.service";
 import { selfLearnerCourseService } from "@/services/teaching/self-learner-courses.service";
@@ -307,35 +308,15 @@ export function useSelfLearner() {
     await fetchSelfLearnerCourses();
   }, [fetchSelfLearnerCourses]);
 
-  const addOneQuestion = useCallback(
+  const generateSelfLearnerQuestion = useCallback(
     async (
-      coursId: string,
-      type: 'qcm' | 'ouverte'
+      courseId: string,
+      type: Omit<QuestionType, 'multiple'>
     ): Promise<{ success: boolean; question?: SelfLearnerQuestion; error?: string }> => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token;
+        const question = await llmService.generateSelfLearnerQuestion(courseId, type);
 
-        if (!accessToken) {
-          return { success: false, error: "Vous devez être connecté" };
-        }
-
-        const response = await fetch("/api/autonome/add-question", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ coursId, type }),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          return { success: false, error: result.error || "Erreur lors de la génération" };
-        }
-
-        return { success: true, question: result.question };
+        return { success: true, question: question };
       } catch (err) {
         console.error("Unexpected error:", err);
         return { success: false, error: "Une erreur est survenue. Merci de réessayer." };
@@ -387,7 +368,7 @@ export function useSelfLearner() {
     getPdfUrl,
     fetchSelfLearnerQuestions,
     generateQuestions,
-    addOneQuestion,
+    generateSelfLearnerQuestion,
     createManualQuestion,
     deleteQuestion,
     updateQuestion,

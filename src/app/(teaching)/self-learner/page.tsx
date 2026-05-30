@@ -82,7 +82,7 @@ import {
 import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 import { SelfLearnerChatbotModal } from "@/components/self-learner/self-learner-chatbot-modal";
 import { useAuth } from "@/hooks/use-auth";
-import { Language, SelfLearnerCourse, SelfLearnerCourseFile, SelfLearnerQuestion } from "@/types";
+import { Language, QuestionType, SelfLearnerCourse, SelfLearnerCourseFile, SelfLearnerQuestion } from "@/types";
 
 const langueLabels: Record<Language, string> = {
   francais: "Français",
@@ -115,7 +115,7 @@ export default function SelfLearner() {
     getPdfUrl,
     fetchSelfLearnerQuestions,
     generateQuestions,
-    addOneQuestion,
+    generateSelfLearnerQuestion,
     createManualQuestion,
     deleteQuestion,
     updateQuestion,
@@ -564,11 +564,11 @@ export default function SelfLearner() {
     }
   };
 
-  const handleAddOneQuestion = async (type: 'qcm' | 'ouverte' = 'ouverte') => {
+  const handleGenerateSelfLearnerQuestion = async (type: Omit<QuestionType, 'multiple'> = 'open') => {
     if (!selectedCours) return;
     
     setIsGenerating(true);
-    const result = await addOneQuestion(selectedCours.id, type);
+    const result = await generateSelfLearnerQuestion(selectedCours.id, type);
 
     if (result.success && result.question) {
       toast({ title: "Question ajoutée" });
@@ -1555,7 +1555,7 @@ export default function SelfLearner() {
                                 <Button
                                   variant="outline"
                                   className="flex-1 border-dashed"
-                                  onClick={() => handleAddOneQuestion('qcm')}
+                                  onClick={() => handleGenerateSelfLearnerQuestion('single')}
                                   disabled={isGenerating || isCreatingManualQuestion}
                                   data-testid="button-add-one-qcm"
                                 >
@@ -1565,7 +1565,7 @@ export default function SelfLearner() {
                                 <Button
                                   variant="outline"
                                   className="flex-1 border-dashed"
-                                  onClick={() => handleAddOneQuestion('ouverte')}
+                                  onClick={() => handleGenerateSelfLearnerQuestion('open')}
                                   disabled={isGenerating || isCreatingManualQuestion}
                                   data-testid="button-add-one-ouverte"
                                 >
