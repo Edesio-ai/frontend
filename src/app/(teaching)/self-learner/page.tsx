@@ -147,7 +147,7 @@ export default function SelfLearner() {
   const [ouverteCount, setOuverteCount] = useState(5);
 
   const [chatbotModalOpen, setChatbotModalOpen] = useState(false);
-  const [coursForChatbot, setCoursForChatbot] = useState<SelfLearnerCourse | null>(null);
+  const [courseForChatbot, setCourseForChatbot] = useState<SelfLearnerCourse | null>(null);
 
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
   const [editingQuestionText, setEditingQuestionText] = useState("");
@@ -252,8 +252,8 @@ export default function SelfLearner() {
   };
 
   // Open dedicated chatbot modal for revision
-  const handleReviserCours = (c: SelfLearnerCourse) => {
-    setCoursForChatbot(c);
+  const handleCourseReview = (c: SelfLearnerCourse) => {
+    setCourseForChatbot(c);
     setChatbotModalOpen(true);
   };
 
@@ -671,7 +671,7 @@ export default function SelfLearner() {
     // Close the details modal and open the chatbot modal
     const coursToOpen = selectedCours;
     handleCloseCoursModal();
-    setCoursForChatbot(coursToOpen);
+    setCourseForChatbot(coursToOpen);
     setChatbotModalOpen(true);
   };
 
@@ -927,7 +927,7 @@ export default function SelfLearner() {
                         <Button
                           size="sm"
                           className="flex-1 bg-amber-500 hover:bg-amber-600"
-                          onClick={() => handleReviserCours(c)}
+                          onClick={() => handleCourseReview(c)}
                           data-testid={`button-reviser-cours-${c.id}`}
                         >
                           <MessageCircle className="h-4 w-4 mr-1" />
@@ -1625,14 +1625,14 @@ export default function SelfLearner() {
           </DialogContent>
         </Dialog>
 
-        {coursForChatbot && (
+        {courseForChatbot && (
           <SelfLearnerChatbotModal
             open={chatbotModalOpen}
             onOpenChange={(open: boolean) => {
               setChatbotModalOpen(open);
-              if (!open) setCoursForChatbot(null);
+              if (!open) setCourseForChatbot(null);
             }}
-            cours={coursForChatbot}
+            cours={courseForChatbot}
             generateQuestions={async (coursId: string) => {
               return generateQuestions(coursId, { simpleCount: qcmCount, openedCount: ouverteCount, totalQuestions: qcmCount + ouverteCount });
             }}

@@ -10,8 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/lib/supabaseClient";
-import type { SelfLearnerCourse, SelfLearnerQuestion } from "@/types";
+import type { EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, SelfLearnerCourse, SelfLearnerQuestion } from "@/types";
 import {
   Send,
   User,
@@ -27,6 +26,9 @@ import {
   ArrowRight,
   Loader2,
 } from "lucide-react";
+import { selfLearnerQuestionService } from "@/services/teaching/self-learner-question.service";
+import { llmService } from "@/services/llm.service";
+import { useAuth } from "@/hooks/use-auth";
 
 interface SelfLearnerChatbotModalProps {
   open: boolean;
@@ -357,6 +359,8 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
   const [shuffledQuestions, setShuffledQuestions] = useState<ShuffledQuestion[]>([]);
   const [isGeneratingNew, setIsGeneratingNew] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const loadStartedRef = useRef(false);
+  const { user } = useAuth();
 
   const addMessage = (message: Omit<ChatMessage, "id">) => {
     setMessages((prev) => [...prev, { ...message, id: generateId() }]);
@@ -374,14 +378,8 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     setIsRetryAttempt(false);
     setWaitingForRetry(false);
 
-    const { data } = await supabase
-      .from("autodidacte_questions")
-      .select("*")
-      .eq("cours_id", cours.id)
-      .order("created_at", { ascending: true });
+    const questions = await selfLearnerQuestionService.getSelfLearnerQuestions(cours.id);
 
-    const questions = data || [];
-    
     if (questions.length === 0) {
       setChatState("greeting");
       setTimeout(() => {
@@ -404,10 +402,10 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
 
     const shuffled = shuffleArray(questions);
     const processedQuestions = shuffled.map(q => {
-      if ((q.type === "qcm" || q.type === "multi") && q.propositions && q.propositions.length > 0) {
-        const indices: number[] = q.propositions.map((_: string, i: number) => i);
+      if ((q.type === "single" || q.type === "multiple") && q.proposals && q.proposals.length > 0) {
+        const indices: number[] = q.proposals.map((_: string, i: number) => i);
         const shuffledIndices = shuffleArray<number>(indices);
-        const shuffledPropositions = shuffledIndices.map((i) => q.propositions![i]);
+        const shuffledPropositions = shuffledIndices.map((i) => q.proposals![i]);
         return {
           ...q,
           shuffledPropositions,
@@ -467,18 +465,14 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     const scoreDisplay = finalScore % 1 === 0 ? finalScore : finalScore.toFixed(1);
     
     try {
-      const response = await fetch("/api/generate-completion-feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          coursTitle: cours.title,
-          score: finalScore,
-          total: finalTotal,
-        }),
-      });
-      
-      const data = await response.json();
-      const aiFeedback = data.feedback || "Bravo pour avoir terminé cette révision !";
+      const body: GenerateCompletionFeedbackRequest = {
+        courseTitle: cours.title,
+        score: finalScore,
+        total: finalTotal,
+        studentName: user?.metadata.firstname || 'Élève',
+      };
+      const feedback = await llmService.generateCompletionFeedback(body);
+      const aiFeedback = feedback.feedback || "Bravo pour avoir terminé cette révision !";
       
       addMessage({
         sender: "bot",
@@ -500,7 +494,12 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
   };
 
   useEffect(() => {
-    if (open && chatState === "idle") {
+    if (!open) {
+      loadStartedRef.current = false;
+      return;
+    }
+    if (chatState === "idle" && !loadStartedRef.current) {
+      loadStartedRef.current = true;
       loadAndStartQuiz();
     }
   }, [open, cours.id]);
@@ -513,6 +512,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
 
   const handleClose = (newOpen: boolean) => {
     if (!newOpen) {
+      loadStartedRef.current = false;
       setChatState("idle");
       setMessages([]);
       setShuffledQuestions([]);
@@ -643,28 +643,13 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     });
 
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
-      
-      const response = await fetch("/api/evaluate-answer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          question: question.questionText,
-          correctAnswer: question.correctAnswers?.[0] || "",
-          studentAnswer: answer,
-          explication: question.explanation || "",
-        }),
-        signal: controller.signal,
-      });
-      
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de l'évaluation");
-      }
-
-      const evaluation = await response.json();
+      const body: EvaluateAnswerRequest = {
+        questionText: question.questionText,
+        correctAnswer: question.correctAnswers?.[0] || "",
+        answer: answer,
+        explanation: question.explanation || "",
+      };
+      const evaluation = await llmService.evaluateAnswer(body);
       processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] ?? "", evaluation.missingElements, studentQuestion, { question: question.questionText, correctAnswer: question.correctAnswers?.[0] ?? "", explication: question.explanation ?? "" });
     } catch (error) {
       console.error("Error evaluating answer:", error);
@@ -857,7 +842,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
   // Show QCM buttons during asking or retry mode
   const showQCMOptions =
     (chatState === "asking" || waitingForRetry) &&
-    currentQuestion?.type === "multiple" &&
+    currentQuestion?.type === "single" &&
     !isProcessing &&
     !waitingForAcknowledge;
   
