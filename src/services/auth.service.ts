@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import { UserRole } from "@/lib/supabaseClient";
+import { UserRole } from "@/types";
 import { User } from "@/types/user.type";
 
 export const authService = {

@@ -28,7 +28,6 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
-import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 
 import type { TeacherWithStats, SessionWithStudentCount, Student, InvitationToken, SessionDetails } from "@/types";
 import Link from "next/link";
@@ -224,7 +223,6 @@ export default function Establishment() {
           </div>
         </header>
 
-        <EmailVerificationBanner />
         <MobileInstallBanner onOpenModal={() => setShowInstallModal(true)} />
         <MobileInstallModal open={showInstallModal} onOpenChange={setShowInstallModal} />
         <SuggestionsModal open={showSuggestionsModal} onOpenChange={setShowSuggestionsModal} category="establishment" />

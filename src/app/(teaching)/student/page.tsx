@@ -46,7 +46,6 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
-import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 import { useAuth } from "@/hooks/use-auth";
 import { StudentChatbotModal } from "@/components/student/StudentChatboModal";
 import { StudentQAModal } from "@/components/student/StudantQAModal";
@@ -328,7 +327,6 @@ export default function Student() {
         </div>
       </header>
 
-      <EmailVerificationBanner />
       <MobileInstallBanner onOpenModal={() => setShowInstallModal(true)} />
       <MobileInstallModal open={showInstallModal} onOpenChange={setShowInstallModal} />
       <SuggestionsModal open={showSuggestionsModal} onOpenChange={setShowSuggestionsModal} category="student" />

@@ -46,7 +46,6 @@ import { useSelfLearner } from "@/hooks/use-self-learner";
 import { SuggestionsModal } from "@/components/SuggestionsModal";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabaseClient";
 import {
   LogOut,
   Loader2,
@@ -79,7 +78,6 @@ import {
   Lightbulb
 } from "lucide-react";
 
-import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 import { SelfLearnerChatbotModal } from "@/components/self-learner/self-learner-chatbot-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { Language, QuestionType, SelfLearnerCourse, SelfLearnerCourseFile, SelfLearnerQuestion } from "@/types";
@@ -751,8 +749,6 @@ export default function SelfLearner() {
             </div>
           </div>
         </header>
-
-        <EmailVerificationBanner />
         <SuggestionsModal open={showSuggestionsModal} onOpenChange={setShowSuggestionsModal} category="self-learner" />
 
         <main className="relative max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
@@ -2092,84 +2088,6 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     setMessages((prev) => [...prev, { ...message, id: generateId() }]);
   };
 
-  const loadAndStartQuiz = async () => {
-    setChatState("loading");
-    setMessages([]);
-    setCurrentQuestionIndex(0);
-    setScore(0);
-    setTotalAnswered(0);
-    setSelectedMultiIndices([]);
-    setWaitingForAcknowledge(false);
-    setLastAnswerResult(null);
-    setIsRetryAttempt(false);
-    setWaitingForRetry(false);
-
-    const { data } = await supabase
-      .from("autodidacte_questions")
-      .select("*")
-      .eq("cours_id", coursId)
-      .order("created_at", { ascending: true });
-
-    const questions = data || [];
-
-    if (questions.length === 0) {
-      setChatState("greeting");
-      setTimeout(() => {
-        addMessage({
-          sender: "bot",
-          text: "Bonjour ! Je suis Edesio. Malheureusement, il n'y a pas encore de questions pour ce cours.",
-          type: "greeting",
-        });
-        setTimeout(() => {
-          addMessage({
-            sender: "bot",
-            text: "Génère d'abord des questions dans l'onglet Questions pour pouvoir t'entraîner !",
-            type: "no_questions",
-          });
-          setChatState("completed");
-        }, 1500);
-      }, 500);
-      return;
-    }
-
-    const shuffled = shuffleArray(questions);
-    const processedQuestions = shuffled.map(q => {
-      if ((q.type === "qcm" || q.type === "multi") && q.propositions && q.propositions.length > 0) {
-        const indices: number[] = q.propositions.map((_: string, i: number) => i);
-        const shuffledIndices = shuffleArray<number>(indices);
-        const shuffledPropositions = shuffledIndices.map((i) => q.propositions![i]);
-        return {
-          ...q,
-          shuffledPropositions,
-          shuffleMap: shuffledIndices,
-        } as ShuffledQuestion;
-      }
-      return q as ShuffledQuestion;
-    });
-
-    setShuffledQuestions(processedQuestions);
-    setChatState("greeting");
-
-    setTimeout(() => {
-      addMessage({
-        sender: "bot",
-        text: `Bonjour ! Je suis Edesio, je vais t'aider à réviser ce cours.`,
-        type: "greeting",
-      });
-
-      setTimeout(() => {
-        addMessage({
-          sender: "bot",
-          text: `J'ai ${processedQuestions.length} questions pour toi. Prêt(e) à réviser ?`,
-          type: "greeting",
-        });
-        setTimeout(() => {
-          askQuestion(0, processedQuestions);
-        }, 1000);
-      }, 1500);
-    }, 500);
-  };
-
   const askQuestion = (index: number, questions: ShuffledQuestion[]) => {
     if (index >= questions.length) {
       setChatState("completed");
@@ -2216,12 +2134,6 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
 
     setChatState("completed");
   };
-
-  useEffect(() => {
-    if (chatState === "idle") {
-      loadAndStartQuiz();
-    }
-  }, [coursId]);
 
   useEffect(() => {
     if (scrollRef.current) {

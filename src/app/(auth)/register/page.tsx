@@ -20,7 +20,7 @@ import { Users, ArrowLeft, Loader2, Building2, Sparkles, GraduationCap, Eye, Eye
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
-import { UserRole } from "@/lib/supabaseClient";
+import { UserRole } from "@/types";
 
 function translateSupabaseError(message: string): string {
   const errorTranslations: Record<string, string> = {

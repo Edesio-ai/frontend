@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { supabase, UserRole } from "@/lib/supabaseClient";
+import { UserRole } from "@/types";
 import { authService } from "@/services/auth.service";
 import { User } from "@/types/user.type";
 
@@ -60,27 +60,12 @@ export function useAuth() {
         return user?.metadata?.role as UserRole | null;
     };
 
-    const resendVerificationEmail = async (email: string) => {
-        const { data, error } = await supabase.auth.resend({
-            type: 'signup',
-            email,
-        });
-        return { data, error };
-    };
-
     const isEmailVerified = (): boolean => {
         return user?.emailConfirmedAt !== null && user?.emailConfirmedAt !== undefined;
     };
 
     const resetPassword = async (email: string) => {
         await authService.resetPassword(email);
-    };
-
-    const updatePassword = async (newPassword: string) => {
-        const { data, error } = await supabase.auth.updateUser({
-            password: newPassword,
-        });
-        return { data, error };
     };
 
     return {
@@ -91,9 +76,7 @@ export function useAuth() {
         signIn,
         logout,
         getUserRole,
-        resendVerificationEmail,
         isEmailVerified,
         resetPassword,
-        updatePassword,
     };
 }

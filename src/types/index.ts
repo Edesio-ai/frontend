@@ -15,3 +15,4 @@ export * from './billing.type';
 export * from './llm.type';
 export * from './invitation-token.type';
 export * from './profile.type';
+export * from './auth.type';

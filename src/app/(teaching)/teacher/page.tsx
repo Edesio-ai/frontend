@@ -33,7 +33,6 @@ import {
   Lightbulb
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
-import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 import { ToolBar } from "@/components/teacher/ToolBar";
 import { CreateModal } from "@/components/teacher/CreateModal";
 import { useForm } from "react-hook-form";
@@ -317,7 +316,6 @@ export default function Teacher() {
           </div>
         </header>
 
-        <EmailVerificationBanner />
         <MobileInstallBanner onOpenModal={() => setShowInstallModal(true)} />
         <MobileInstallModal open={showInstallModal} onOpenChange={setShowInstallModal} />
         <SuggestionsModal open={showSuggestionsModal} onOpenChange={setShowSuggestionsModal} category="teacher" />
