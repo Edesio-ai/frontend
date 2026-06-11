@@ -525,12 +525,14 @@ export default function SelfLearner() {
         correctAnswers: [editingAnswerText],
       });
 
-      setCoursQuestions((prev) =>
-        prev.map((q) =>
+      setCoursQuestions((prev) => {
+
+        return prev.map((q) =>
           q.id === editingQuestionId
-            ? { ...q, question: editingQuestionText, bonne_reponse: editingAnswerText }
+            ? { ...q, questionText: editingQuestionText, correctAnswers: [editingAnswerText] }
             : q
         )
+      }
       );
       setQuestionsModified(true);
       setEditingQuestionId(null);
@@ -1418,7 +1420,7 @@ export default function SelfLearner() {
                           {isGenerating && (
                             <div className="flex flex-col items-center justify-center py-12">
                               <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
-                              <p className="text-sm text-muted-foreground">Génération des questions en cours...</p>
+                              <p className="text-sm text-muted-foreground">Génération en cours...</p>
                             </div>
                           )}
 
