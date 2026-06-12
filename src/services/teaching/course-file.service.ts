@@ -3,7 +3,7 @@ import { CourseFile } from "@/types";
 
 export const CoursefileService = {
   deleteFile: async (fileId: string): Promise<void> => {
-    const response = await apiFetch<void>(`/api/file/${fileId}`, {
+    const response = await apiFetch<void>(`/api/course-file/${fileId}`, {
       method: "DELETE",
     });
     return response;
