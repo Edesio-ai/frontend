@@ -143,7 +143,6 @@ export function useTeacher() {
 
       try {
         const code = await generateUniqueSessionCode();
-        console.log("🚀 ~ useTeacher ~ code:", code) //DELETE
 
         const sessionData: InsertSession = {
           teacherId: teacher.id,
@@ -152,7 +151,6 @@ export function useTeacher() {
           language,
         };
         const session: Session = await handleCreateSession(sessionData);
-        console.log("🚀 ~ useTeacher ~ session:", session) //DELETE
 
         setSessions((prev) => [session, ...prev]);
         setError(null);

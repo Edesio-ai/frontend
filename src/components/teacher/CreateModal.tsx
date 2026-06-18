@@ -74,7 +74,6 @@ export function CreateModal({
 
         try {
             const newSession = await createSession(sessionName, sessionLanguage);
-            console.log("🚀 ~ onCreateSubmit ~ newSession:", newSession) //DELETE
 
             if (!newSession) {
                 toast({
