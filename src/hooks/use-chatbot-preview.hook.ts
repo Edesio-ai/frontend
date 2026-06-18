@@ -20,7 +20,7 @@ export interface ChatMessage {
   scoreRatio?: number;
 }
 
-type ChatbotState = 
+type ChatbotState =
   | "idle"
   | "greeting"
   | "awaiting_course_selection"
@@ -92,7 +92,6 @@ const afterRetryMessages = [
   "Très bien ! Maintenant tu t'en souviendras. On continue !",
   "Parfait ! Cette fois c'est acquis. Passons à la suite !",
   "Super ! Tu vois, tu y arrives. Question suivante !",
-  "C'est noté ! Tu progresseras la prochaine fois.",
 ];
 
 const startQuizMessages = [
@@ -136,7 +135,7 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "RESET":
       return { ...initialState };
-    
+
     case "SET_COURS":
       return {
         ...state,
@@ -152,13 +151,13 @@ function reducer(state: State, action: Action): State {
           },
         ],
       };
-    
+
     case "ADD_MESSAGE":
       return {
         ...state,
         messages: [...state.messages, action.message],
       };
-    
+
     case "SELECT_COURS":
       return {
         ...state,
@@ -167,14 +166,14 @@ function reducer(state: State, action: Action): State {
         currentQuestionIndex: 0,
         chatbotState: action.questions.length > 0 ? "asking_questions" : "completed",
       };
-    
+
     case "ANSWER_QUESTION":
       return {
         ...state,
         score: state.score + (action.isCorrect ? 1 : 0),
         totalAnswered: state.totalAnswered + 1,
       };
-    
+
     case "NEXT_QUESTION": {
       const nextIndex = state.currentQuestionIndex + 1;
       if (nextIndex >= state.questions.length) {
@@ -191,25 +190,25 @@ function reducer(state: State, action: Action): State {
         retryMode: false,
       };
     }
-    
+
     case "ENTER_RETRY_MODE":
       return {
         ...state,
         retryMode: true,
       };
-    
+
     case "EXIT_RETRY_MODE":
       return {
         ...state,
         retryMode: false,
       };
-    
+
     case "COMPLETE":
       return {
         ...state,
         chatbotState: "completed",
       };
-    
+
     default:
       return state;
   }
@@ -291,10 +290,10 @@ export function useChatbotPreview() {
 
   const askCurrentQuestion = useCallback(() => {
     if (state.currentQuestionIndex >= state.questions.length) return null;
-    
+
     const question = state.questions[state.currentQuestionIndex];
     const questionText = `Question ${state.currentQuestionIndex + 1}/${state.questions.length}\n\n${question.questionText}`;
-    
+
     return {
       text: questionText,
       question,
@@ -309,36 +308,45 @@ export function useChatbotPreview() {
     const body: EvaluateAnswerRequest = {
       questionText: question.questionText,
       correctAnswer:
-      correctAnswerDisplay(question.proposals, question.correctAnswers || []) || "",
+        correctAnswerDisplay(question.proposals, question.correctAnswers || []) || "",
       answer: answer,
       explanation: question.explanation || "",
     }
     let isCheating = false;
-
+    let isCorrect = false;
+    let isReflectionValid = false;
 
     if (state.retryMode) {
       try {
-        const evaluation = await llmService.evaluateAnswer(body);
-        isCheating = evaluation.isCheating || false;
-
-        const isReflectionValid = evaluation.score >= 0.3;
-          
-          if (isReflectionValid) {
-            const feedback = pickRandom(afterRetryMessages);
-            const cheatMessage = pickRandom(cheatMessages);
-            addBotMessage(
-              isCheating ? cheatMessage : `${feedback}${question.explanation ? `\n\n${question.explanation}` : ""}`,
-              "feedback",
-              { isCorrect: false }
-            );
-          } else {
-            const cheatMessage = pickRandom(cheatMessages);
-            addBotMessage(
-              isCheating ? cheatMessage : `Hmm, ta réponse ne correspond pas vraiment à la notion.\n\nLa bonne réponse était : ${correctAnswerDisplay(question.proposals, question.correctAnswers || [])}${question.explanation ? `\n\n${question.explanation}` : ""}\n\nPas de souci, passons à la suite !`,
-              "feedback",
-              { isCorrect: false }
-            );
+        if (question.type === "single" || question.type === "multiple") {
+          const answerLetter = answer.toUpperCase().trim().charAt(0);
+          const answerIndex = answerLetter.charCodeAt(0) - 65;
+          const labels = propositionLabels(question.proposals);
+          if (labels.length > 0 && answerIndex >= 0 && answerIndex < labels.length) {
+            isCorrect = letterAnswerIsCorrect(question, answerIndex);
           }
+        } else {
+          const evaluation = await llmService.evaluateAnswer(body);
+          isCorrect = evaluation.score >= 0.7;
+          isCheating = evaluation.isCheating || false;
+          isReflectionValid = evaluation.score >= 0.3;
+        }
+        if (isReflectionValid || isCorrect) {
+          const feedback = pickRandom(afterRetryMessages);
+          const cheatMessage = pickRandom(cheatMessages);
+          addBotMessage(
+            isCheating ? cheatMessage : `${feedback}${question.explanation ? `\n\n${question.explanation}` : ""}`,
+            "feedback",
+            { isCorrect: false }
+          );
+        } else {
+          const cheatMessage = pickRandom(cheatMessages);
+          addBotMessage(
+            isCheating ? cheatMessage : `Hmm, ta réponse ne correspond pas vraiment à la notion.\n\nLa bonne réponse était : ${correctAnswerDisplay(question.proposals, question.correctAnswers || [])}${question.explanation ? `\n\n${question.explanation}` : ""}\n\nPas de souci, passons à la suite !`,
+            "feedback",
+            { isCorrect: false }
+          );
+        }
       } catch (error) {
         console.error("Error evaluating reflection:", error);
         addBotMessage(
@@ -351,8 +359,7 @@ export function useChatbotPreview() {
       return;
     }
 
-    let isCorrect = false;
-    
+
     if (question.type === "single" || question.type === "multiple") {
       const answerLetter = answer.toUpperCase().trim().charAt(0);
       const answerIndex = answerLetter.charCodeAt(0) - 65;
@@ -380,7 +387,7 @@ export function useChatbotPreview() {
         dispatch({ type: "NEXT_QUESTION" });
       } else {
         const encouragement = pickRandom(encouragementsAfterWrong);
-        
+
         if (question.type === "single" || question.type === "multiple") {
           // For QCM: show correct answer and give another try with buttons (no text explanation needed)
           addBotMessage(
