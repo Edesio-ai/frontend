@@ -37,6 +37,7 @@ import { fr } from "date-fns/locale";
 import { suggestionService } from "@/services/suggestion.service";
 import { Suggestion } from "@/types/suggestion.type";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 
 interface SuggestionsModalProps {
   open: boolean;
@@ -45,18 +46,11 @@ interface SuggestionsModalProps {
 }
 
 const formSchema = z.object({
-  title: z.string().min(3, "Le title doit faire au moins 3 caractères").max(200, "Le title est trop long"),
-  content: z.string().min(10, "La description doit faire au moins 10 caractères").max(2000, "La description est trop longue"),
+  title: z.string().min(3, "Title must be at least 3 characters").max(200, "Title is too long"),
+  content: z.string().min(10, "Description must be at least 10 characters").max(2000, "Description is too long"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
-const categoryLabels: Record<string, string> = {
-  professeur: "Professeurs",
-  eleve: "Élèves",
-  etablissement: "Établissements",
-  autonome: "Edesio Solo",
-};
 
 export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsModalProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -67,6 +61,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
   const [showForm, setShowForm] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const t = useTranslations();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -116,15 +111,13 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
         form.reset();
         setShowForm(false);
         toast({
-          title: "Suggestion publiée",
-          description: "Merci pour votre contribution !",
+          title: t.suggestions.successTitle,
         });
       }
     } catch (error) {
       console.error("Error creating suggestion:", error);
       toast({
-        title: "Erreur",
-        description: "Impossible de publier votre suggestion. Veuillez réessayer.",
+        title: t.suggestions.errorTitle,
         variant: "destructive",
       });
     } finally {
@@ -149,8 +142,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
     } catch (error) {
       console.error("Error liking suggestion:", error);
       toast({
-        title: "Erreur",
-        description: "Impossible d'enregistrer votre vote. Veuillez réessayer.",
+        title: t.suggestions.errorTitle,
         variant: "destructive",
       });
     } finally {
@@ -170,14 +162,12 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
       setSuggestions(prev => prev.filter(s => s.id !== suggestionId));
       toast({
-        title: "Suggestion supprimée",
-        description: "Votre suggestion a été supprimée avec succès.",
+        title: t.suggestions.successTitle,
       });
     } catch (error) {
       console.error("Error deleting suggestion:", error);
       toast({
-        title: "Erreur",
-        description: "Impossible de supprimer la suggestion. Veuillez réessayer.",
+        title: t.suggestions.errorTitle,
         variant: "destructive",
       });
     } finally {
@@ -198,7 +188,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
           <div className="flex items-center justify-between gap-2">
             <DialogTitle className="flex items-center gap-2 flex-1 min-w-0">
               <Lightbulb className="h-5 w-5 text-amber-500 shrink-0" />
-              <span className="truncate leading-normal pb-0.5">Suggestions d'amélioration</span>
+              <span className="truncate leading-normal pb-0.5">{t.suggestions.title}</span>
             </DialogTitle>
             <Button
               variant="ghost"
@@ -210,7 +200,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
             </Button>
           </div>
           <DialogDescription>
-            Partagez vos idées pour améliorer l'expérience {categoryLabels[category]}
+            {t.suggestions.title}
           </DialogDescription>
         </DialogHeader>
 
@@ -222,7 +212,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
               data-testid="button-new-suggestion"
             >
               <MessageSquarePlus className="h-5 w-5 mr-2" />
-              Proposer une amélioration
+              {t.suggestions.submit}
             </Button>
           ) : (
             <Card className="p-4 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10">
@@ -253,7 +243,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                         <FormLabel>Description</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Décrivez votre idée en détail..."
+                            placeholder={t.suggestions.placeholder}
                             className="min-h-[100px] resize-none"
                             {...field}
                             data-testid="input-suggestion-content"
@@ -274,7 +264,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                       className="flex-1"
                       data-testid="button-cancel-suggestion"
                     >
-                      Annuler
+                      {t.common.cancel}
                     </Button>
                     <Button
                       type="submit"
@@ -287,7 +277,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                       ) : (
                         <Send className="h-4 w-4 mr-2" />
                       )}
-                      Publier
+                      {t.suggestions.submit}
                     </Button>
                   </div>
                 </form>
@@ -313,7 +303,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                   Aucune suggestion pour le moment.
                 </p>
                 <p className="text-sm text-muted-foreground/70 mt-1">
-                  Soyez le premier à proposer une amélioration !
+                  Be the first to suggest an improvement!
                 </p>
               </div>
             ) : (
@@ -377,7 +367,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                             ) : (
                               <ThumbsUp className={`h-4 w-4 ${suggestion.userHasLiked ? "fill-current" : ""}`} />
                             )}
-                            <span>Voter</span>
+                            <span>{t.suggestions.vote}</span>
                             <span>{suggestion.likesCount}</span>
                           </Button>
                         </div>

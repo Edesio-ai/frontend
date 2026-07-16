@@ -1,7 +1,10 @@
+"use client";
+
 import { TabsContent } from "@/components/ui/tabs";
 import { Session, StudentSessionWithStudent } from "@/types";
 import { Loader2, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useTranslations } from "@/lib/i18n/client";
 
 interface StudentTabProps {
     loadingSessionStudents: boolean;
@@ -14,6 +17,7 @@ export function StudentTab({
     sessionStudents,
     selectedSession,
 }: StudentTabProps) {
+    const t = useTranslations();
     return (
         <TabsContent value="students" className="flex-1 overflow-y-auto m-0 mt-0">
             <div className="p-6">
@@ -26,9 +30,9 @@ export function StudentTab({
                         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center mx-auto mb-4">
                             <Users className="h-8 w-8 text-muted-foreground" />
                         </div>
-                        <h3 className="font-semibold text-lg mb-2">Aucun élève inscrit</h3>
+                        <h3 className="font-semibold text-lg mb-2">{t.teacher.tabs.noStudents}</h3>
                         <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                            Partagez le code <span className="font-mono font-semibold text-primary">{selectedSession.code}</span> avec vos élèves pour qu'ils rejoignent cette session.
+                            {t.teacher.tabs.shareCode.replace('{{code}}', selectedSession.code)}
                         </p>
                     </div>
                 ) : (

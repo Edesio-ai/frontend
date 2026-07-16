@@ -4,18 +4,21 @@ import { Mail, MapPin, Shield, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MobileInstallModal } from "@/components/ui/mobile-install-modal";
 import Link from "next/link";
-
-const footerLinks = [
-  { label: "Fonctionnement", href: "#fonctionnement" },
-  { label: "Bénéfices", href: "#benefices" },
-  { label: "Tarifs", href: "#tarifs" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Blog", href: "/blog", isPage: true },
-];
+import { useTranslations } from "@/lib/i18n/client";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [showInstallModal, setShowInstallModal] = useState(false);
+  const t = useTranslations();
+  const ft = t.footer;
+
+  const footerLinks = [
+    { label: ft.links.fonctionnement, href: "#fonctionnement" },
+    { label: ft.links.benefices, href: "#benefices" },
+    { label: ft.links.tarifs, href: "#tarifs" },
+    { label: ft.links.faq, href: "#faq" },
+    { label: ft.links.blog, href: "/blog", isPage: true },
+  ];
 
   return (
     <>
@@ -38,35 +41,34 @@ export function Footer() {
                 <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
               </a>
               <p className="text-slate-400 leading-relaxed max-w-md mb-6">
-                La solution IA qui transforme vos cours en expériences
-                d'apprentissage interactives pour vos élèves. Conçue pour les collèges, lycées et écoles supérieures.
+                {ft.tagline}
               </p>
               <div className="flex items-center gap-6 flex-wrap">
                 <div className="flex items-center gap-2 text-sm">
                   <Shield className="h-4 w-4 text-emerald-400" />
-                  <span className="text-emerald-400 font-medium">RGPD conforme</span>
+                  <span className="text-emerald-400 font-medium">{ft.gdpr}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <MapPin className="h-4 w-4 text-indigo-400" />
-                  <span className="text-indigo-400">Hébergé en Europe</span>
+                  <span className="text-indigo-400">{ft.hostedInEurope}</span>
                 </div>
               </div>
             </div>
 
             <div>
-              <h4 className="font-semibold text-white mb-4">Navigation</h4>
+              <h4 className="font-semibold text-white mb-4">{ft.navigation}</h4>
               <ul className="space-y-3">
                 {footerLinks.map((link) => (
                   <li key={link.href}>
                     {link.isPage ? (
-                      <Link  href={link.href}
+                      <Link href={link.href}
                         className="text-slate-400 hover:text-white transition-colors"
                         data-testid={`link-footer-${link.href.slice(1)}`}
                       >
                         {link.label}
                       </Link>
                     ) : (
-                      <Link 
+                      <Link
                         href={link.href}
                         className="text-slate-400 hover:text-white transition-colors"
                         data-testid={`link-footer-${link.href.slice(1)}`}>
@@ -79,9 +81,9 @@ export function Footer() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-white mb-4">Application mobile</h4>
+              <h4 className="font-semibold text-white mb-4">{ft.mobileApp}</h4>
               <p className="text-slate-400 text-sm mb-4">
-                Installez Edesio sur votre téléphone pour un accès rapide.
+                {ft.mobileAppDesc}
               </p>
               <Button
                 variant="outline"
@@ -90,11 +92,11 @@ export function Footer() {
                 data-testid="button-footer-install-app"
               >
                 <Smartphone className="h-4 w-4 mr-2" />
-                Comment installer
+                {ft.howToInstall}
               </Button>
-              
+
               <div className="mt-6">
-                <h4 className="font-semibold text-white mb-3">Contact</h4>
+                <h4 className="font-semibold text-white mb-3">{ft.contact}</h4>
                 <a
                   href="mailto:contact@edesio.ai"
                   className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm"
@@ -109,12 +111,12 @@ export function Footer() {
 
           <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-slate-500">
-              © {currentYear} Edesio – Tous droits réservés
+              © {currentYear} Edesio – {ft.allRightsReserved}
             </p>
             <div className="flex items-center gap-6 text-sm text-slate-500 flex-wrap">
-              <Link href="/mentions-legales" className="hover:text-slate-300 transition-colors" data-testid="link-footer-mentions-legales">Mentions légales</Link>
-              <Link href="/cgu" className="hover:text-slate-300 transition-colors" data-testid="link-footer-cgu">CGU</Link>
-              <Link href="/politique-confidentialite" className="hover:text-slate-300 transition-colors" data-testid="link-footer-politique-confidentialite">Politique de confidentialité</Link>
+              <Link href="/legal-notice" className="hover:text-slate-300 transition-colors" data-testid="link-footer-mentions-legales">{ft.legalNotice}</Link>
+              <Link href="/terms-of-service" className="hover:text-slate-300 transition-colors" data-testid="link-footer-cgu">{ft.terms}</Link>
+              <Link href="/privacy-policy" className="hover:text-slate-300 transition-colors" data-testid="link-footer-politique-confidentialite">{ft.privacyPolicy}</Link>
             </div>
           </div>
         </div>

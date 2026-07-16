@@ -4,17 +4,19 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-
-const navLinks = [
-  { label: "Fonctionnement", href: "#fonctionnement" },
-  { label: "Pour qui ?", href: "#pour-qui" },
-  { label: "Bénéfices", href: "#benefices" },
-  { label: "Tarifs", href: "#tarifs" },
-  { label: "FAQ", href: "#faq" },
-];
+import { useTranslations } from "@/lib/i18n/client";
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const t = useTranslations();
+
+  const navLinks = [
+    { label: t.navbar.links.fonctionnement, href: "#fonctionnement" },
+    { label: t.navbar.links.pourQui, href: "#pour-qui" },
+    { label: t.navbar.links.benefices, href: "#benefices" },
+    { label: t.navbar.links.tarifs, href: "#tarifs" },
+    { label: t.navbar.links.faq, href: "#faq" },
+  ];
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -56,17 +58,17 @@ export function Navbar() {
           <div className="hidden lg:flex items-center gap-2">
             <Button variant="ghost" size="sm" className="font-semibold" asChild>
               <Link href="/login" data-testid="button-connexion">
-                Connexion
+                {t.navbar.login}
               </Link>
             </Button>
             <Button size="sm" className="shadow-lg shadow-primary/25" asChild>
               <Link href="/register" data-testid="button-signup-nav">
-                Créer un compte
+                {t.navbar.signup}
               </Link>
             </Button>
             <Button size="sm" variant="outline" asChild>
               <a href="https://cal.com/alexandre-seuzaret-g9g9me/30min" target="_blank" rel="noopener noreferrer" data-testid="button-demo-nav">
-                Demander une démo
+                {t.navbar.demo}
               </a>
             </Button>
           </div>
@@ -76,7 +78,7 @@ export function Navbar() {
             size="icon"
             className="lg:hidden"
             onClick={toggleMobileMenu}
-            aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-label={isMobileMenuOpen ? t.common.closeMenu : t.common.openMenu}
             data-testid="button-mobile-menu"
           >
             {isMobileMenuOpen ? (
@@ -112,7 +114,7 @@ export function Navbar() {
                   onClick={closeMobileMenu}
                   data-testid="button-mobile-connexion"
                 >
-                  Connexion
+                  {t.navbar.login}
                 </Link>
               </Button>
               <Button className="w-full" asChild>
@@ -121,7 +123,7 @@ export function Navbar() {
                   onClick={closeMobileMenu}
                   data-testid="button-mobile-signup"
                 >
-                  Créer un compte
+                  {t.navbar.signup}
                 </Link>
               </Button>
               <Button variant="outline" className="w-full" asChild>
@@ -132,7 +134,7 @@ export function Navbar() {
                   onClick={closeMobileMenu}
                   data-testid="button-mobile-demo"
                 >
-                  Demander une démo
+                  {t.navbar.demo}
                 </a>
               </Button>
             </div>

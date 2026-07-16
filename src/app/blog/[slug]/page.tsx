@@ -6,8 +6,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Helmet } from "@/app/blog/_components/seo-helmet";
-import { getArticleBySlug, categoryColors, blogArticles, type ArticleSection } from "@/data/blog-articles";
-import { useEffect } from "react";
+import { getArticleBySlug, categoryColors, getBlogArticles, type ArticleSection } from "@/data/blog-articles";
+import { useEffect, useMemo } from "react";
+import { useTranslations, useLocale } from "@/lib/i18n/client";
 
 function ArticleContent({ section, index }: { section: ArticleSection; index: number }) {
   switch (section.type) {
@@ -57,7 +58,7 @@ function ArticleContent({ section, index }: { section: ArticleSection; index: nu
         <div className="my-8 p-6 bg-gradient-to-br from-primary/20 to-violet-500/20 rounded-xl border border-primary/30" data-testid={`stat-${index}`}>
           <p className="text-3xl md:text-4xl font-bold text-white mb-2">{section.content}</p>
           {section.source && (
-            <p className="text-sm text-slate-400">Source : {section.source}</p>
+            <p className="text-sm text-slate-400">Source: {section.source}</p>
           )}
         </div>
       );
@@ -74,7 +75,10 @@ function ArticleContent({ section, index }: { section: ArticleSection; index: nu
 
 export default function BlogArticle() {
   const params = useParams<{ slug: string }>();
-  const article = getArticleBySlug(params.slug || '');
+  const t = useTranslations();
+  const locale = useLocale();
+  const article = getArticleBySlug(params.slug || '', locale);
+  const blogArticles = useMemo(() => getBlogArticles(locale), [locale]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -84,8 +88,18 @@ export default function BlogArticle() {
     const months: Record<string, string> = {
       'janvier': '01', 'février': '02', 'mars': '03', 'avril': '04',
       'mai': '05', 'juin': '06', 'juillet': '07', 'août': '08',
-      'septembre': '09', 'octobre': '10', 'novembre': '11', 'décembre': '12'
+      'septembre': '09', 'octobre': '10', 'novembre': '11', 'décembre': '12',
+      january: '01', february: '02', march: '03', april: '04',
+      may: '05', june: '06', july: '07', august: '08',
+      september: '09', october: '10', november: '11', december: '12',
     };
+    // French: "5 janvier 2026" | English: "January 5, 2026"
+    const enMatch = dateStr.match(/^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
+    if (enMatch) {
+      const [, monthName, day, year] = enMatch;
+      const month = months[monthName.toLowerCase()] || '01';
+      return `${year}-${month}-${day.padStart(2, '0')}`;
+    }
     const parts = dateStr.split(' ');
     if (parts.length === 3) {
       const day = parts[0].padStart(2, '0');
@@ -100,12 +114,12 @@ export default function BlogArticle() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 flex items-center justify-center">
         <Card className="p-8 bg-slate-800/50 border-slate-700 text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Article non trouvé</h1>
-          <p className="text-slate-400 mb-6">L'article que vous recherchez n'existe pas.</p>
+          <h1 className="text-2xl font-bold text-white mb-4">{t.blog.articleNotFound}</h1>
+          <p className="text-slate-400 mb-6">{t.blog.articleNotFoundDesc}</p>
           <Link href="/blog">
             <Button data-testid="button-back-blog">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour au blog
+              {t.blog.backToBlog}
             </Button>
           </Link>
         </Card>
@@ -153,7 +167,7 @@ export default function BlogArticle() {
             <Link href="/blog">
               <Button variant="ghost" className="text-slate-300 hover:text-white" data-testid="button-back-blog">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Blog
+                {t.blog.badge}
               </Button>
             </Link>
           </div>
@@ -174,7 +188,7 @@ export default function BlogArticle() {
             <span className="text-slate-500">•</span>
             <div className="flex items-center gap-1.5 text-sm text-slate-400">
               <Clock className="h-4 w-4" />
-              {article.readTime} de lecture
+              {article.readTime} read
             </div>
           </div>
 
@@ -188,7 +202,7 @@ export default function BlogArticle() {
             </div>
             <div>
               <p className="text-white font-medium">{article.author}</p>
-              <p className="text-sm text-slate-400">Rédacteur</p>
+              <p className="text-sm text-slate-400">{t.blog.author}</p>
             </div>
           </div>
         </header>
@@ -206,7 +220,7 @@ export default function BlogArticle() {
         <section className="mb-12">
           <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
             <BookOpen className="h-5 w-5 text-primary" />
-            Sources et références
+            {t.blog.sources}
           </h2>
           <div className="space-y-4">
             {article.sources.map((source, index) => (
@@ -234,20 +248,20 @@ export default function BlogArticle() {
 
         <Card className="p-6 md:p-8 bg-slate-800 border-slate-700 mb-12">
           <h3 className="text-xl font-bold text-white mb-3">
-            Prêt à transformer vos cours avec l'IA ?
+            {t.blog.ctaTitle}
           </h3>
           <p className="text-slate-400 mb-4">
-            Découvrez comment Edesio peut vous aider à créer des expériences d'apprentissage engageantes pour vos élèves.
+            {t.blog.ctaDesc}
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/#demo">
               <Button className="bg-gradient-to-r from-primary to-violet-500 hover:from-primary/90 hover:to-violet-500/90" data-testid="button-article-demo">
-                Demander une démo
+                {t.common.demo}
               </Button>
             </Link>
             <Link href="/#tarifs">
               <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-800" data-testid="button-article-pricing">
-                Voir les tarifs
+                {t.blog.viewPricing}
               </Button>
             </Link>
           </div>
@@ -255,7 +269,7 @@ export default function BlogArticle() {
 
         {suggestedArticles.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold text-white mb-6">Articles suggérés</h2>
+            <h2 className="text-xl font-bold text-white mb-6">{t.blog.suggestedArticles}</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {suggestedArticles.map((relatedArticle) => (
                 <Link key={relatedArticle.id} href={`/blog/${relatedArticle.slug}`}>
@@ -281,7 +295,7 @@ export default function BlogArticle() {
 
       <footer className="bg-slate-900 border-t border-slate-800 py-8">
         <div className="max-w-4xl mx-auto px-4 md:px-8 text-center text-slate-500 text-sm">
-          © {new Date().getFullYear()} Edesio – Tous droits réservés
+          © {new Date().getFullYear()} Edesio – {t.blog.allRights}
         </div>
       </footer>
     </div>

@@ -1,7 +1,10 @@
+"use client";
+
 import { Loader2, Sparkles } from "lucide-react";
 import { Input } from "../ui/input";
 import { MAX_QUESTIONS } from "@/utils/constants/teacher";
 import { Button } from "../ui/button";
+import { useTranslations } from "@/lib/i18n/client";
 
 interface QuestionGeneratorProps {
     genSingleCount: number;
@@ -24,20 +27,21 @@ export function QuestionGenerator({
     generateError,
     generateSuccess,
 }: QuestionGeneratorProps) {
+    const t = useTranslations();
     return (
         <div className="space-y-4 p-4 border rounded-lg bg-muted/20">
             <h5 className="font-medium flex flex-wrap items-center gap-2">
                 <Sparkles className="h-4 w-4" />
-                Générer les questions
+                {t.teacher.questionGenerator.title}
             </h5>
 
             <p className="text-sm text-muted-foreground">
-                L'IA va analyser le contenu du cours et les PDFs pour créer des questions.
+                {t.teacher.questionGeneratorHint}
             </p>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm text-muted-foreground mb-1 block">Questions QCM</label>
+                    <label className="text-sm text-muted-foreground mb-1 block">{t.teacher.questionGenerator.mcqLabel}</label>
                     <Input
                         type="number"
                         min={0}
@@ -48,7 +52,7 @@ export function QuestionGenerator({
                     />
                 </div>
                 <div>
-                    <label className="text-sm text-muted-foreground mb-1 block">Questions ouvertes</label>
+                    <label className="text-sm text-muted-foreground mb-1 block">{t.teacher.questionGenerator.openLabel}</label>
                     <Input
                         type="number"
                         min={0}
@@ -72,9 +76,9 @@ export function QuestionGenerator({
                 data-testid="button-generate-questions"
             >
                 {isGenerating ? (
-                    <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Génération en cours...</>
+                    <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.teacher.questionGenerator.generating}</>
                 ) : (
-                    <><Sparkles className="h-4 w-4 mr-2" /> Générer {genTotalQuestions} questions</>
+                    <><Sparkles className="h-4 w-4 mr-2" /> {t.teacher.questionGenerator.generate} {genTotalQuestions} questions</>
                 )}
             </Button>
 

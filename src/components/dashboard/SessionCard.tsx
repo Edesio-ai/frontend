@@ -1,7 +1,10 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "@/lib/i18n/client";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +28,7 @@ interface SessionCardProps {
 }
 
 export function SessionCard({ session, isSelected, onSelect, onDelete, onRename, pendingQuestionsCount = 0 }: SessionCardProps) {
+  const t = useTranslations();
   const [copied, setCopied] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -142,7 +146,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
 
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground font-medium">
-                Code de session à communiquer à vos élèves
+                {t.dashboard.sessionCard.code}
               </p>
               <div className="flex items-center gap-2">
                 <Badge
@@ -186,7 +190,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
               data-testid={`button-manage-courses-${session.id}`}
             >
               <BookOpen className="h-4 w-4 mr-2" />
-              Gérer les cours
+              {t.dashboard.sessionCard.manage}
             </Button>
           </div>
         </div>

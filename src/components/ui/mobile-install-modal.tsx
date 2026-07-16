@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Smartphone, Download, CheckCircle2, Share, MoreVertical, Plus } from "lucide-react";
 import { SiAndroid, SiApple } from "react-icons/si";
+import { useTranslations } from "@/lib/i18n/client";
 
 interface MobileInstallModalProps {
     open: boolean;
@@ -20,6 +21,7 @@ interface MobileInstallModalProps {
 type Platform = "ios" | "android" | "desktop";
 
 function detectPlatform(): Platform {
+
     if (typeof window === "undefined" || typeof navigator === "undefined") {
         return "desktop";
     }
@@ -37,21 +39,22 @@ function detectPlatform(): Platform {
     return "desktop";
 }
 
-const iosSteps = [
-    { icon: Share, text: "Ouvrez le menu Partager (carré avec flèche vers le haut)" },
-    { icon: Plus, text: 'Sélectionnez "Sur l\'écran d\'accueil"' },
-    { icon: CheckCircle2, text: 'Appuyez sur "Ajouter" pour confirmer' },
-];
-
-const androidSteps = [
-    { icon: MoreVertical, text: "Ouvrez le menu (trois points en haut à droite)" },
-    { icon: Download, text: 'Sélectionnez "Ajouter à l\'écran d\'accueil"' },
-    { icon: CheckCircle2, text: 'Confirmez en appuyant sur "Ajouter"' },
-];
-
 export function MobileInstallModal({ open, onOpenChange }: MobileInstallModalProps) {
     const [platform, setPlatform] = useState<Platform>("desktop");
     const [activeTab, setActiveTab] = useState<"ios" | "android">("ios");
+    const t = useTranslations();
+
+    const iosSteps = [
+        { icon: Share, text: t.mobileInstall.ios.step1 },
+        { icon: Plus, text: t.mobileInstall.ios.step2 },
+        { icon: CheckCircle2, text: t.mobileInstall.ios.step3 },
+    ];
+
+    const androidSteps = [
+        { icon: MoreVertical, text: t.mobileInstall.android.step1 },
+        { icon: Download, text: t.mobileInstall.android.step2 },
+        { icon: CheckCircle2, text: t.mobileInstall.android.step3 },
+    ];
 
     useEffect(() => {
         const detected = detectPlatform();
@@ -69,10 +72,10 @@ export function MobileInstallModal({ open, onOpenChange }: MobileInstallModalPro
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <Smartphone className="h-5 w-5 text-primary" />
-                        Installer l'application
+                        {t.mobileInstall.title}
                     </DialogTitle>
                     <DialogDescription>
-                        Ajoutez Edesio à votre écran d'accueil pour un accès rapide
+                        {t.mobileInstall.title}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -136,7 +139,7 @@ export function MobileInstallModal({ open, onOpenChange }: MobileInstallModalPro
                         <p className="flex items-start gap-2">
                             <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0 mt-0.5" />
                             <span>
-                                L'application fonctionne comme une app native : accès rapide, plein écran, et bientôt des notifications !
+                                The app works like a native app: quick access, full screen, and soon push notifications!
                             </span>
                         </p>
                     </div>
@@ -147,7 +150,7 @@ export function MobileInstallModal({ open, onOpenChange }: MobileInstallModalPro
                         onClick={() => onOpenChange(false)}
                         data-testid="button-close-install-modal"
                     >
-                        Compris, merci !
+                        {t.mobileInstall.close}
                     </Button>
                 </div>
             </DialogContent>
@@ -157,6 +160,7 @@ export function MobileInstallModal({ open, onOpenChange }: MobileInstallModalPro
 
 export function MobileInstallBanner({ onOpenModal }: { onOpenModal: () => void }) {
     const [dismissed, setDismissed] = useState(false);
+    const t = useTranslations();
     const [isStandalone, setIsSelfLearner] = useState(false);
     const [platform, setPlatform] = useState<Platform>("desktop");
 
@@ -191,9 +195,7 @@ export function MobileInstallBanner({ onOpenModal }: { onOpenModal: () => void }
                 <div className="flex items-center gap-3 min-w-0">
                     <Smartphone className="h-5 w-5 text-primary flex-shrink-0" />
                     <p className="text-sm truncate">
-                        {platform === "desktop"
-                            ? "Installez Edesio sur votre téléphone !"
-                            : "Installez l'app sur votre écran d'accueil !"}
+                        {t.mobileInstall.title}
                     </p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -204,7 +206,7 @@ export function MobileInstallBanner({ onOpenModal }: { onOpenModal: () => void }
                         data-testid="button-show-install-instructions"
                     >
                         <Download className="h-4 w-4 mr-1" />
-                        Installer
+                        Install
                     </Button>
                     <Button
                         size="sm"
@@ -212,7 +214,7 @@ export function MobileInstallBanner({ onOpenModal }: { onOpenModal: () => void }
                         onClick={handleDismiss}
                         data-testid="button-dismiss-install-banner"
                     >
-                        Plus tard
+                        Later
                     </Button>
                 </div>
             </div>

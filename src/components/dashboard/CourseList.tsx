@@ -1,5 +1,8 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "@/lib/i18n/client";
 
 import { CourseTesterModal } from "./CourseTesterModal";
 import type {
@@ -84,9 +87,9 @@ interface CourseListProps {
   onInitialCoursOpened?: () => void;
 }
 
-export function CourseList({ 
-  session, 
-  fetchCourses, 
+export function CourseList({
+  session,
+  fetchCourses,
   createCourse, 
   updateCourse,
   deleteCourse,
@@ -106,6 +109,7 @@ export function CourseList({
   initialCoursToOpen,
   onInitialCoursOpened
 }: CourseListProps) {
+  const t = useTranslations();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -235,11 +239,11 @@ export function CourseList({
         <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
           <h4 className="font-medium flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
-            Course existants ({courses.length})
-          </h4>
+          {t.teacher.courseList.addCourse} ({courses.length})
+        </h4>
           <Button onClick={() => setAddModalOpen(true)} data-testid="button-open-add-course">
             <Plus className="h-4 w-4 mr-2" />
-            Ajouter un cours
+            {t.teacher.courseList.addCourse}
           </Button>
         </div>
 
@@ -250,8 +254,8 @@ export function CourseList({
         ) : courses.length === 0 ? (
           <div className="p-8 text-center text-muted-foreground bg-muted/20 rounded-lg border border-dashed">
             <FileText className="h-10 w-10 mx-auto mb-3 opacity-50" />
-            <p className="font-medium">Aucun cours pour cette session</p>
-            <p className="text-sm mt-1">Cliquez sur "Ajouter un cours" pour commencer.</p>
+            <p className="font-medium">{t.teacher.courseList.empty}</p>
+            <p className="text-sm mt-1">{t.teacher.courseList.emptyHint}</p>
           </div>
         ) : (
           <DndContext

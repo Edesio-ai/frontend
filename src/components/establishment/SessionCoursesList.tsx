@@ -1,6 +1,7 @@
 import { CourseBasic } from "@/types";
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "@/lib/i18n/client";
 import { BookOpen } from "lucide-react";
 import { Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -14,8 +15,9 @@ export function SessionCoursesList({
     getSessionCourse: (sessionId: string) => Promise<CourseBasic[]>;
     onViewCourse: (courseId: string) => void;
   }) {
-    const [courses, setCourses] = useState<CourseBasic[]>([]);
-    const [loading, setLoading] = useState(true);
+  const t = useTranslations();
+  const [courses, setCourses] = useState<CourseBasic[]>([]);
+  const [loading, setLoading] = useState(true);
   
     useEffect(() => {
       const fetchCourses = async () => {
@@ -30,14 +32,14 @@ export function SessionCoursesList({
     if (loading) {
       return (
         <div className="flex items-center gap-2 py-2 text-sm text-muted-foreground">
-          <Loader2 className="h-3 w-3 animate-spin" /> Chargement des cours...
+          <Loader2 className="h-3 w-3 animate-spin" /> {t.establishment.sessionCoursesList.loading}
         </div>
       );
     }
 
     if (courses.length === 0) {
       return (
-        <p className="text-xs text-muted-foreground py-1">Aucun cours dans cette classe</p>
+        <p className="text-xs text-muted-foreground py-1">{t.establishment.sessionCoursesList.empty}</p>
       );
     }
   
@@ -56,7 +58,7 @@ export function SessionCoursesList({
             </div>
             <div className="flex items-center gap-2">
               {cours.validatedQuestions ? (
-                <Badge variant="default" className="text-xs">Publié</Badge>
+                <Badge variant="default" className="text-xs">Published</Badge>
               ) : (
                 <Badge variant="outline" className="text-xs">Brouillon</Badge>
               )}

@@ -3,12 +3,14 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { InvitationToken } from "@/types";
 import { useState } from "react";
+import { useTranslations } from "@/lib/i18n/client";
 
 type TokenElementProps = {
     token: InvitationToken;
     handleDeleteToken: (id: string) => void;
 }
 export function TokenElement({ token, handleDeleteToken }: TokenElementProps) {
+    const t = useTranslations();
     const [copiedToken, setCopiedToken] = useState<string | null>(null);
     
     const isTokenExpired = (expiresAt: string) => {
@@ -37,17 +39,17 @@ export function TokenElement({ token, handleDeleteToken }: TokenElementProps) {
                     {used ? (
                         <Badge variant="secondary" className="flex items-center gap-1">
                             <CheckCircle2 className="h-3 w-3" />
-                            Utilisé
+                            {t.establishment.token.used}
                         </Badge>
                     ) : expired ? (
                         <Badge variant="destructive" className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
-                            Expiré
+                            {t.establishment.token.expired}
                         </Badge>
                     ) : (
                         <Badge variant="outline" className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
-                            Expire le {new Date(token.expiresAt).toLocaleDateString("fr-FR")}
+                            {t.establishment.token.expiresOn.replace('{date}', new Date(token.expiresAt).toLocaleDateString())}
                         </Badge>
                     )}
                 </div>

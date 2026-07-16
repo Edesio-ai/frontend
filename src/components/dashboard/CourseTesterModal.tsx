@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import {
   DndContext,
@@ -66,6 +68,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { exportClassementPdf } from "@/lib/pdf-export";
+import { useTranslations } from "@/lib/i18n/client";
 import { courseService } from "@/services/teaching/course.service";
 import { QuestionGenerator } from "../teacher/QuestionGenerator";
 import { MAX_QUESTIONS } from "@/utils/constants/teacher";
@@ -144,6 +147,7 @@ export function CourseTesterModal({
   fetchCourseRanking,
   onCourseUpdated,
 }: CourseTesterModalProps) {
+  const t = useTranslations();
   const [files, setFiles] = useState<CourseFile[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [rankings, setRankings] = useState<CourseRanking[]>([]);
@@ -337,7 +341,7 @@ export function CourseTesterModal({
  
 
       if (success) {
-        setGenerateSuccess(`${questionCount} questions générées avec succès !`);
+        setGenerateSuccess(t.dashboard.courseTester.successGenerated.replace('{count}', String(questionCount)));
         if (questions && questions.length > 0) {
           console.log("Using questions directly from generation response:", questionCount);
           setQuestions(questions);
@@ -350,7 +354,7 @@ export function CourseTesterModal({
       }
     } catch (error) {
       console.error("Error during generation:", error);
-      setGenerateError("Une erreur inattendue s'est produite");
+      setGenerateError(t.teacher.createModal.unexpectedError);
     } finally {
       setIsGenerating(false);
     }
@@ -446,7 +450,7 @@ export function CourseTesterModal({
 
   const handleValidateQuestions = async () => {
     if (questions.length === 0) {
-      setValidateError("Vous devez d'abord générer des questions");
+      setValidateError(t.dashboard.courseTester.mustGenerateFirst);
       return;
     }
 
@@ -459,7 +463,7 @@ export function CourseTesterModal({
       onCourseUpdated(result.course);
       setQuestionsValidated(true);
     } else {
-      setValidateError(result.error || "Erreur lors de la validation");
+      setValidateError(result.error || t.hooks.teacher.validateError);
     }
 
     setIsValidating(false);
@@ -480,33 +484,34 @@ export function CourseTesterModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Plus className="h-5 w-5" />
-            Ajouter une question
+            {t.selfLearner.createQuestion}
           </DialogTitle>
           <DialogDescription>
-            Créez une nouvelle question pour ce course ({questions.length}/{MAX_QUESTIONS})
+            {t.dashboard.courseTester.createNewQuestion
+              .replace('{count}', String(questions.length))
+              .replace('{max}', String(MAX_QUESTIONS))}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Type de question</label>
             <Select value={newQuestionType} onValueChange={(v) => setNewQuestionType(v as "single" | "open")}>
               <SelectTrigger data-testid="select-new-question-type">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="single">QCM (1 bonne réponse)</SelectItem>
-                <SelectItem value="open">Question ouverte</SelectItem>
+                <SelectItem value="single">{t.dashboard.courseTester.qcmOneAnswer}</SelectItem>
+                <SelectItem value="open">{t.selfLearner.createOpen}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Question</label>
+            <label className="text-sm font-medium">{t.teacher.editQuestion.question}</label>
             <Textarea
               value={newQuestionText}
               onChange={(e) => setNewQuestionText(e.target.value)}
-              placeholder="Entrez le texte de la question..."
+              placeholder={t.teacher.editQuestion.question}
               className="min-h-[80px]"
               data-testid="input-new-question-text"
             />
@@ -514,8 +519,7 @@ export function CourseTesterModal({
 
           {newQuestionType === "single" && (
             <div className="space-y-2">
-              <label className="text-sm font-medium">Propositions</label>
-              <p className="text-xs text-muted-foreground">Cliquez sur le bouton pour marquer la bonne réponse</p>
+              <p className="text-sm font-medium">{t.teacher.editPropositionsHint}</p>
               {newProposals.map((prop, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <span className="font-medium text-sm w-5">{String.fromCharCode(65 + i)}.</span>
@@ -547,12 +551,12 @@ export function CourseTesterModal({
 
           {newQuestionType === "open" && (
             <div className="space-y-2">
-              <label className="text-sm font-medium">Réponse attendue</label>
+              <label className="text-sm font-medium">{t.dashboard.courseTester.expectedAnswer}</label>
               <Textarea
                 value={newGoodAnswer}
                 required={newQuestionType === "open"}
                 onChange={(e) => setNewGoodAnswer(e.target.value)}
-                placeholder="La réponse attendue..."
+                placeholder={t.dashboard.courseTester.expectedAnswerPlaceholder}
                 className="min-h-[60px]"
                 data-testid="input-new-answer"
               />
@@ -560,11 +564,11 @@ export function CourseTesterModal({
           )}
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Explication (optionnelle)</label>
+            <label className="text-sm font-medium">{t.teacher.editQuestion.explanation}</label>
             <Textarea
               value={newExplication}
               onChange={(e) => setNewExplication(e.target.value)}
-              placeholder="Explication de la réponse..."
+              placeholder={t.dashboard.courseTester.explanationPlaceholder}
               className="min-h-[60px]"
               data-testid="input-new-explanation"
             />
@@ -573,7 +577,7 @@ export function CourseTesterModal({
 
         <div className="flex justify-end gap-2">
           <Button variant="ghost" onClick={() => setAddQuestionOpen(false)} disabled={isAddingQuestion}>
-            Annuler
+            {t.common.cancel}
           </Button>
           <Button
             onClick={handleAddQuestion}
@@ -585,9 +589,9 @@ export function CourseTesterModal({
             data-testid="button-confirm-add-question"
           >
             {isAddingQuestion ? (
-              <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Ajout...</>
+              <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.common.loading}</>
             ) : (
-              <><Plus className="h-4 w-4 mr-2" /> Ajouter</>
+              <><Plus className="h-4 w-4 mr-2" /> {t.selfLearner.createQuestion}</>
             )}
           </Button>
         </div>
@@ -618,7 +622,7 @@ export function CourseTesterModal({
                     {showQuestionGenerator ? (
                       <>
                         <Sparkles className="h-5 w-5" />
-                        Créer les questions - {course.title}
+                        {t.dashboard.courseTester.title.replace('{name}', course.title)}
                       </>
                     ) : (
                       <>
@@ -629,8 +633,8 @@ export function CourseTesterModal({
                   </DialogTitle>
                   <DialogDescription>
                     {showQuestionGenerator
-                      ? "Générez ou ajoutez manuellement les questions pour ce course"
-                      : "Modifiez le contenu du course avant de générer les questions"
+                      ? t.dashboard.courseTester.generateOrAdd
+                      : t.dashboard.courseTester.editBeforeGenerate
                     }
                   </DialogDescription>
                 </div>
@@ -666,10 +670,10 @@ export function CourseTesterModal({
                     <div>
                       <h5 className="font-medium flex flex-wrap items-center gap-2">
                         <Plus className="h-4 w-4" />
-                        Ajouter manuellement
+                        {t.teacher.questionGenerator.addManually}
                       </h5>
                       <p className="text-xs text-muted-foreground">
-                        Créez vos propres questions une par une
+                        {t.dashboard.courseTester.createOwn}
                       </p>
                     </div>
                     <Button
@@ -683,12 +687,12 @@ export function CourseTesterModal({
                       data-testid="button-add-manual-question-phase1"
                     >
                       <Plus className="h-4 w-4 mr-1" />
-                      Ajouter
+                      {t.selfLearner.createQuestion}
                     </Button>
                   </div>
                   {questions.length >= MAX_QUESTIONS && (
                     <p className="text-xs text-amber-600">
-                      Limite de {MAX_QUESTIONS} questions atteinte
+                      {t.dashboard.courseTester.questionLimit.replace('{max}', String(MAX_QUESTIONS))}
                     </p>
                   )}
                 </div>
@@ -699,7 +703,7 @@ export function CourseTesterModal({
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <h5 className="font-medium text-sm flex flex-wrap items-center gap-2">
                         <ListChecks className="h-4 w-4" />
-                        Questions générées ({questions.length})
+                        {t.dashboard.courseTester.generatedCount.replace('{count}', String(questions.length))}
                       </h5>
                       <Button
                         variant="outline"
@@ -758,13 +762,13 @@ export function CourseTesterModal({
                       data-testid="button-validate-questions"
                     >
                       {isValidating ? (
-                        <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Validation...</>
+                        <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.dashboard.courseTester.validating}</>
                       ) : (
-                        <><CheckCircle2 className="h-4 w-4 mr-2" /> Valider les questions</>
+                        <><CheckCircle2 className="h-4 w-4 mr-2" /> {t.dashboard.courseTester.validate}</>
                       )}
                     </Button>
                     <p className="text-xs text-muted-foreground text-center mt-2">
-                      Une fois validées, vous pourrez tester le chatbot élève
+                      {t.dashboard.courseTester.validateHint}
                     </p>
                   </div>
                 )}
@@ -774,30 +778,30 @@ export function CourseTesterModal({
                 {/* Course editing section */}
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Titre du course</label>
+                    <label className="text-sm font-medium mb-1 block">{t.teacher.addCourse.name}</label>
                     <Input
                       value={editedTitle}
                       onChange={(e) => setEditedTitle(e.target.value)}
-                      placeholder="Titre du cours"
+                      placeholder={t.teacher.addCourse.namePlaceholder}
                       data-testid="input-course-title"
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Description (optionnel)</label>
+                    <label className="text-sm font-medium mb-1 block">{t.teacher.addCourse.description}</label>
                     <Input
                       value={editedDescription}
                       onChange={(e) => setEditedDescription(e.target.value)}
-                      placeholder="Description du cours..."
+                      placeholder={t.teacher.addCourse.descriptionPlaceholder}
                       data-testid="input-course-description"
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Contenu texte (optionnel)</label>
+                    <label className="text-sm font-medium mb-1 block">{t.teacher.addCourse.content}</label>
                     <Textarea
                       value={editedContent}
                       onChange={(e) => setEditedContent(e.target.value)}
                       className="min-h-[100px]"
-                      placeholder="Ajoutez du contenu texte pour aider l'IA à générer des questions..."
+                      placeholder={t.dashboard.courseTester.contentPlaceholder}
                       data-testid="input-course-content"
                     />
                   </div>
@@ -808,7 +812,7 @@ export function CourseTesterModal({
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <h5 className="font-medium flex flex-wrap items-center gap-2">
                       <Files className="h-4 w-4" />
-                      Fichiers PDF ({files.length})
+                      {t.teacher.addCourse.pdfs} ({files.length})
                     </h5>
                     <div>
                       <input
@@ -828,16 +832,16 @@ export function CourseTesterModal({
                         data-testid="button-upload-pdf"
                       >
                         {isUploadingPdf ? (
-                          <><Loader2 className="h-4 w-4 animate-spin mr-1" /> Upload...</>
+                          <><Loader2 className="h-4 w-4 animate-spin mr-1" /> {t.common.loading}</>
                         ) : (
-                          <><Upload className="h-4 w-4 mr-1" /> Ajouter PDF</>
+                          <><Upload className="h-4 w-4 mr-1" /> {t.teacher.addCourse.selectPdfs}</>
                         )}
                       </Button>
                     </div>
                   </div>
                   {files.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
-                      Aucun fichier PDF. Ajoutez des PDFs pour améliorer la génération de questions.
+                      {t.dashboard.courseTester.noPdfs}
                     </p>
                   ) : (
                     <div className="space-y-1">
@@ -882,9 +886,9 @@ export function CourseTesterModal({
                     data-testid="button-continue-to-questions"
                   >
                     {isSaving ? (
-                      <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Enregistrement...</>
+                      <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.profile.saving}</>
                     ) : (
-                      <><Sparkles className="h-4 w-4 mr-2" /> Continuer vers les questions</>
+                      <><Sparkles className="h-4 w-4 mr-2" /> {t.common.next}</>
                     )}
                   </Button>
                 </div>
@@ -897,16 +901,16 @@ export function CourseTesterModal({
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Supprimer ce fichier ?</AlertDialogTitle>
+              <AlertDialogTitle>{t.dashboard.courseTester.deleteFile}</AlertDialogTitle>
               <AlertDialogDescription>
-                Cette action est irréversible. Le fichier sera définitivement supprimé.
+                {t.dashboard.courseTester.deleteFileIrreversible}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={isDeletingFichier}>Annuler</AlertDialogCancel>
+              <AlertDialogCancel disabled={isDeletingFichier}>{t.common.cancel}</AlertDialogCancel>
               <AlertDialogAction onClick={confirmDeleteFile} disabled={isDeletingFichier} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                 {isDeletingFichier ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Supprimer
+                {t.teacher.deleteCourseModal.confirm}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -928,7 +932,7 @@ export function CourseTesterModal({
               {course.title}
             </DialogTitle>
             <DialogDescription>
-              Gérez le contenu du course et utilisez le bouton "Tester le chatbot" pour simuler l'expérience élève
+              {t.dashboard.courseTester.manageContent}
             </DialogDescription>
           </DialogHeader>
 
@@ -984,7 +988,7 @@ export function CourseTesterModal({
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <h5 className="font-medium text-sm flex flex-wrap items-center gap-2">
                       <Trophy className="h-4 w-4" />
-                      Classement des élèves {rankings.length > 0 && `(${rankings.length})`}
+                      {t.dashboard.courseTester.ranking} {rankings.length > 0 && `(${rankings.length})`}
                     </h5>
                     <div className="flex flex-wrap items-center gap-1">
                       <Button
@@ -1003,7 +1007,7 @@ export function CourseTesterModal({
                           }
                         }}
                         disabled={loadingRankings}
-                        title="Rafraîchir le classement"
+                        title={t.dashboard.courseTester.refreshRanking}
                         data-testid="button-refresh-rankings"
                       >
                         <RefreshCw className={`h-4 w-4 ${loadingRankings ? 'animate-spin' : ''}`} />
@@ -1029,7 +1033,7 @@ export function CourseTesterModal({
                   ) : rankings.length === 0 ? (
                     <div className="text-sm text-muted-foreground text-center py-4 bg-muted/20 rounded-md">
                       <Trophy className="h-6 w-6 mx-auto opacity-50 mb-2" />
-                      <p>Aucun élève n'a encore participé.</p>
+                      <p>{t.dashboard.courseTester.noStudents}</p>
                     </div>
                   ) : (
                     <div className="space-y-2 max-h-[200px] overflow-y-auto">
@@ -1059,7 +1063,9 @@ export function CourseTesterModal({
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm truncate">{ranking.name}</p>
                             <p className="text-xs text-muted-foreground">
-                              {ranking.correctAnswers}/{ranking.attemptedQuestions} réponses correctes
+                              {t.dashboard.courseTester.correctAnswers
+                                .replace('{correct}', String(ranking.correctAnswers))
+                                .replace('{total}', String(ranking.attemptedQuestions))}
                             </p>
                           </div>
                           <div className="text-right">
@@ -1092,15 +1098,15 @@ export function CourseTesterModal({
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Supprimer ce document ?</AlertDialogTitle>
+            <AlertDialogTitle>{t.dashboard.courseTester.deleteFile}</AlertDialogTitle>
             <AlertDialogDescription>
-              Voulez-vous vraiment supprimer « {fileToDelete?.fileName} » ?
+              {t.dashboard.courseTester.deleteFileIrreversible}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeletingFichier}>Annuler</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeletingFichier}>{t.common.cancel}</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDeleteFile} disabled={isDeletingFichier} className="bg-destructive text-destructive-foreground">
-              {isDeletingFichier ? <Loader2 className="h-4 w-4 animate-spin" /> : "Supprimer"}
+              {isDeletingFichier ? <Loader2 className="h-4 w-4 animate-spin" /> : t.teacher.deleteCourseModal.confirm}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

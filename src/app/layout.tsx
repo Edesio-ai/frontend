@@ -1,27 +1,34 @@
 import type { Metadata } from "next";
 import { Providers } from "@/components/providers";
+import { getLocaleFromCookies, getDictionary } from "@/lib/i18n";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "Edesio - Le chatbot qui entraîne et évalue vos élèves | Solution éducative IA",
-  description: "Edesio : solution IA pour établissements scolaires. Les professeurs déposent leurs cours, l'IA génère des questions basées sur le contenu et entraîne les élèves. Découvrez notre plateforme éducative innovante.",
-  icons: {
-    icon: "/favicon.png",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  return {
+    title: dict.metadata.title,
+    description: dict.metadata.description,
+    icons: {
+      icon: "/favicon.png",
+    },
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocaleFromCookies();
+  const dictionary = await getDictionary(locale);
+
   return (
-    <html
-      lang="en"
-      className={`h-full antialiased`}
-    >
+    <html lang={locale} className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+        <Providers locale={locale} dictionary={dictionary}>
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 import { Student, SessionWithStudentCount } from "@/types";
 import { Button } from "../ui/button";
+import { useTranslations } from "@/lib/i18n/client";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Loader2, Users } from "lucide-react";
@@ -19,6 +20,7 @@ export function SessionStudentsModal({
     onClose: () => void;
     loading: boolean;
   }) {
+    const t = useTranslations();
     if (!session) return null;
   
     return (
@@ -27,10 +29,10 @@ export function SessionStudentsModal({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
-              Élèves de {session.name}
+              {t.establishment.sessionStudentModal.title.replace('{session}', session.name)}
             </DialogTitle>
             <DialogDescription>
-              {session.studentsCount} élève(s) inscrit(s) à cette session
+              {session.studentsCount} enrolled student(s)
             </DialogDescription>
           </DialogHeader>
   
@@ -40,13 +42,13 @@ export function SessionStudentsModal({
             </div>
           ) : students.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              Aucun élève inscrit à cette session
+              {t.establishment.sessionStudentModal.empty}
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Élève</TableHead>
+                  <TableHead>Student</TableHead>
                   <TableHead>Email</TableHead>
                 </TableRow>
               </TableHeader>
@@ -75,7 +77,7 @@ export function SessionStudentsModal({
   
           <DialogFooter>
             <Button variant="outline" onClick={onClose} data-testid="button-close-students-modal">
-              Fermer
+              {t.establishment.sessionStudentModal.close}
             </Button>
           </DialogFooter>
         </DialogContent>

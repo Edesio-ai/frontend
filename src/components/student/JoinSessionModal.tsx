@@ -1,7 +1,10 @@
+"use client";
+
 import { KeyRound, Loader2, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
+import { useTranslations } from "@/lib/i18n/client";
 
 type JoinSessionModalProps = {
     joinModalOpen: boolean;
@@ -24,6 +27,7 @@ export function JoinSessionModal({
     handleJoinSession,
     isJoining,
 }: JoinSessionModalProps) {
+    const t = useTranslations();
     return (
         <Dialog open={joinModalOpen} onOpenChange={setJoinModalOpen}>
         <DialogContent data-testid="modal-join-session">
@@ -32,10 +36,10 @@ export function JoinSessionModal({
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                 <KeyRound className="h-4 w-4 text-primary-foreground" />
               </div>
-              Rejoindre une session
+              {t.student.joinModal.title}
             </DialogTitle>
             <DialogDescription>
-              Entre le code donné par ton professeur pour accéder à la session de révision.
+              {t.student.joinModal.placeholder}
             </DialogDescription>
           </DialogHeader>
 
@@ -72,7 +76,7 @@ export function JoinSessionModal({
                 }}
                 data-testid="button-cancel-join"
               >
-                Annuler
+                {t.student.joinModal.cancel}
               </Button>
               <Button
                 className="flex-1 shadow-lg shadow-primary/25"
@@ -85,7 +89,7 @@ export function JoinSessionModal({
                 ) : (
                   <>
                     <Sparkles className="h-4 w-4 mr-2" />
-                    Rejoindre
+                    {t.student.joinModal.join}
                   </>
                 )}
               </Button>

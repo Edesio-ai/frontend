@@ -1,5 +1,7 @@
+"use client";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 import { Loader2, AlertTriangle, CreditCard, LogOut, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -18,21 +20,39 @@ interface SubscriptionBlockModalProps {
   children: React.ReactNode;
 }
 
-const planConfig: Record<string, { name: string; priceId: string; monthlyLink: string; yearlyLink: string }> = {
-  autonome: {
-    name: "Edesio Solo",
+const planConfig: Record<string, { planKey: "self-learner" | "teacher" | "establishment"; priceId: string; monthlyLink: string; yearlyLink: string }> = {
+  "self-learner": {
+    planKey: "self-learner",
     priceId: "solo",
     monthlyLink: "https://buy.stripe.com/28EbJ1gNYcKu6FZ7VG1B600",
     yearlyLink: "https://buy.stripe.com/fZu8wP1T4cKu3tN8ZK1B601",
   },
-  professeur: {
-    name: "Edesio Professeur",
+  autonome: {
+    planKey: "self-learner",
+    priceId: "solo",
+    monthlyLink: "https://buy.stripe.com/28EbJ1gNYcKu6FZ7VG1B600",
+    yearlyLink: "https://buy.stripe.com/fZu8wP1T4cKu3tN8ZK1B601",
+  },
+  teacher: {
+    planKey: "teacher",
     priceId: "professeur",
     monthlyLink: "https://buy.stripe.com/7sY5kDcxI5i21lF1xi1B606",
     yearlyLink: "https://buy.stripe.com/cNieVdcxIh0K2pJ5Ny1B607",
   },
+  professeur: {
+    planKey: "teacher",
+    priceId: "professeur",
+    monthlyLink: "https://buy.stripe.com/7sY5kDcxI5i21lF1xi1B606",
+    yearlyLink: "https://buy.stripe.com/cNieVdcxIh0K2pJ5Ny1B607",
+  },
+  establishment: {
+    planKey: "establishment",
+    priceId: "etablissement",
+    monthlyLink: "https://buy.stripe.com/28E6oHapA7qa9Sb6RC1B604",
+    yearlyLink: "https://buy.stripe.com/6oUeVdeFQfWG5BVcbW1B605",
+  },
   etablissement: {
-    name: "Edesio Établissement",
+    planKey: "establishment",
     priceId: "etablissement",
     monthlyLink: "https://buy.stripe.com/28E6oHapA7qa9Sb6RC1B604",
     yearlyLink: "https://buy.stripe.com/6oUeVdeFQfWG5BVcbW1B605",
@@ -69,6 +89,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
   };
 
   const role = getUserRole();
+  const t = useTranslations();
 
   useEffect(() => {
     const checkSubscription = async () => {
@@ -87,7 +108,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
         const data = await BillingService.getSubscriptionStatus();
         setSubscriptionStatus(data);
       } catch (err) {
-        setError("Impossible de vérifier le statut de l'abonnement");
+        setError(t.billing.subscriptionCheckError);
       } finally {
         setIsLoading(false);
 
@@ -135,17 +156,17 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
           <div className="text-center space-y-2">
             <h2 className="text-2xl font-bold" data-testid="text-subscription-blocked-title">
               {subscriptionStatus?.isPending
-                ? "Paiement en attente"
+                ? "Payment pending"
                 : subscriptionStatus?.status
-                  ? "Abonnement inactif"
-                  : "Abonnement requis"}
+                  ? "Inactive subscription"
+                  : "Subscription required"}
             </h2>
             <p className="text-muted-foreground" data-testid="text-subscription-blocked-description">
               {subscriptionStatus?.isPending
-                ? "Votre paiement est en cours de traitement ou nécessite une action de votre part. Si vous venez de vous abonner, veuillez patienter quelques instants puis rafraîchir la page."
+                ? "Your payment is being processed or requires action. If you just subscribed, please wait a moment and refresh the page."
                 : subscriptionStatus?.status
-                  ? "Votre abonnement n'est plus actif. Pour accéder à votre tableau de bord et à toutes les fonctionnalités d'Edesio, veuillez réactiver votre abonnement."
-                  : "Pour accéder à votre tableau de bord et à toutes les fonctionnalités d'Edesio, veuillez activer votre abonnement."}
+                  ? t.billing.subscriptionInactive
+                  : t.billing.activateDesc}
             </p>
           </div>
 
@@ -153,7 +174,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
             <div className="space-y-4">
               <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
                 <p className="text-sm text-amber-800 dark:text-amber-200">
-                  Si le problème persiste, vérifiez que votre banque n'a pas bloqué le paiement ou contactez-nous.
+                  If the issue persists, check that your bank hasn't blocked the payment, or contact us.
                 </p>
               </div>
               <Button
@@ -168,7 +189,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
                 ) : (
                   <ExternalLink className="h-4 w-4 mr-2" />
                 )}
-                Gérer mon paiement
+                Manage payment
               </Button>
               <Button
                 variant="outline"
@@ -177,7 +198,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
                 onClick={() => window.location.reload()}
                 data-testid="button-refresh-subscription"
               >
-                Rafraîchir la page
+                Refresh page
               </Button>
             </div>
           )}
@@ -187,12 +208,12 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
               <div className="p-4 rounded-lg bg-muted/50 border">
                 <div className="flex items-center gap-3 mb-2">
                   <CreditCard className="h-5 w-5 text-primary" />
-                  <span className="font-semibold">{currentPlan.name}</span>
+                  <span className="font-semibold">{t.billing.planDetails[currentPlan.planKey].name}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
                   {subscriptionStatus?.status
-                    ? "Réactivez votre abonnement pour reprendre l'activité sur votre compte."
-                    : "Activez votre abonnement pour commencer à utiliser Edesio."}
+                    ? t.billing.subscriptionInactive
+                    : t.billing.activateDesc}
                 </p>
               </div>
 
@@ -203,7 +224,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
                   data-testid="link-subscribe-monthly"
                 >
                   <Button className="w-full" size="lg" data-testid="button-subscribe-monthly">
-                    S'abonner mensuellement
+                    {t.billing.monthly} subscription
                   </Button>
                 </a>
                 <a
@@ -212,7 +233,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
                   data-testid="link-subscribe-yearly"
                 >
                   <Button variant="outline" className="w-full" size="lg" data-testid="button-subscribe-yearly">
-                    S'abonner annuellement (-15%)
+                    {t.billing.annual} subscription (-15%)
                   </Button>
                 </a>
               </div>
@@ -223,7 +244,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
             <div className="space-y-4">
               <Link href={`/billing/choose-plan?plan=${role}`}>
                 <Button className="w-full" size="lg" data-testid="button-choose-plan">
-                  Choisir un abonnement
+                  {t.billing.subscribe}
                 </Button>
               </Link>
             </div>
@@ -231,7 +252,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
 
           <div className="pt-4 border-t space-y-3">
             <p className="text-xs text-center text-muted-foreground">
-              Besoin d'aide ? Contactez-nous à{" "}
+              {t.billing.contactUs}{" "}
               <a href="mailto:contact@edesio.ai" className="text-primary hover:underline" data-testid="link-contact-support">
                 contact@edesio.ai
               </a>
@@ -246,7 +267,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
               data-testid="button-logout-from-modal"
             >
               <LogOut className="h-4 w-4 mr-2" />
-              Se déconnecter
+              {t.nav.logout}
             </Button>
           </div>
         </div>

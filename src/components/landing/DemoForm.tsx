@@ -26,29 +26,32 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-
-const formSchema = z
-  .object({
-    firstName: z.string().min(1, "Le prénom est requis"),
-    lastName: z.string().min(1, "Le nom est requis"),
-    establishment: z.string().min(1, "L'établissement est requis"),
-    email: z.string().email("Adresse email invalide"),
-    establishmentType: z.string().min(1, "Veuillez sélectionner un type"),
-    message: z.string().optional(),
-    wantsFreeAccount: z.boolean(),
-    wantsDemo: z.boolean(),
-  })
-  .refine((data) => data.wantsFreeAccount || data.wantsDemo, {
-    message: "Veuillez sélectionner au moins une option",
-    path: ["wantsDemo"],
-  });
-
-type FormValues = z.infer<typeof formSchema>;
+import { useTranslations } from "@/lib/i18n/client";
 
 export function DemoForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const t = useTranslations();
+  const dt = t.demoForm;
+
+  const formSchema = z
+    .object({
+      firstName: z.string().min(1, "Required"),
+      lastName: z.string().min(1, "Required"),
+      establishment: z.string().min(1, "Required"),
+      email: z.string().email("Invalid email"),
+      establishmentType: z.string().min(1, "Required"),
+      message: z.string().optional(),
+      wantsFreeAccount: z.boolean(),
+      wantsDemo: z.boolean(),
+    })
+    .refine((data) => data.wantsFreeAccount || data.wantsDemo, {
+      message: "Please select at least one option",
+      path: ["wantsDemo"],
+    });
+
+  type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -75,15 +78,15 @@ export function DemoForm() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Erreur lors de l'envoi");
+        throw new Error(errorData.error || dt.sendError);
       }
 
       setIsSubmitted(true);
     } catch (error) {
       console.error("Form submission error:", error);
       toast({
-        title: "Erreur",
-        description: error instanceof Error ? error.message : "Une erreur est survenue. Veuillez réessayer.",
+        title: dt.toastErrorTitle,
+        description: error instanceof Error ? error.message : dt.toastErrorDefault,
         variant: "destructive",
       });
     } finally {
@@ -108,13 +111,13 @@ export function DemoForm() {
               className="text-2xl font-bold mb-4"
               data-testid="text-success-title"
             >
-              Merci pour votre demande !
+              {dt.successTitle}
             </h3>
             <p
               className="text-muted-foreground"
               data-testid="text-success-message"
             >
-              Un email de confirmation vous a été envoyé. Notre équipe vous répondra dans un délai de 24 heures maximum, hors week-ends.
+              {dt.successMessage}
             </p>
           </Card>
         </div>
@@ -135,10 +138,10 @@ export function DemoForm() {
             className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
             data-testid="text-demo-title"
           >
-            Planifier une démo ou créer un compte gratuit
+            {dt.title}
           </h2>
           <p className="text-lg text-muted-foreground">
-            Remplissez ce formulaire et nous vous recontacterons rapidement.
+            {dt.subtitle}
           </p>
         </div>
 
@@ -155,10 +158,10 @@ export function DemoForm() {
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Prénom</FormLabel>
+                      <FormLabel>{dt.firstName}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Jean"
+                          placeholder={dt.firstNamePlaceholder}
                           {...field}
                           data-testid="input-firstname"
                         />
@@ -173,10 +176,10 @@ export function DemoForm() {
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nom</FormLabel>
+                      <FormLabel>{dt.lastName}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Dupont"
+                          placeholder={dt.lastNamePlaceholder}
                           {...field}
                           data-testid="input-lastname"
                         />
@@ -192,10 +195,10 @@ export function DemoForm() {
                 name="establishment"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Établissement</FormLabel>
+                    <FormLabel>{dt.establishment}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Lycée Victor Hugo"
+                        placeholder={dt.establishmentPlaceholder}
                         {...field}
                         data-testid="input-establishment"
                       />
@@ -210,11 +213,11 @@ export function DemoForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>E-mail professionnel</FormLabel>
+                    <FormLabel>{dt.email}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="jean.dupont@education.fr"
+                        placeholder={dt.emailPlaceholder}
                         {...field}
                         data-testid="input-email"
                       />
@@ -229,23 +232,21 @@ export function DemoForm() {
                 name="establishmentType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Type d'établissement</FormLabel>
+                    <FormLabel>{dt.establishmentType}</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger data-testid="select-establishment-type">
-                          <SelectValue placeholder="Sélectionnez un type" />
+                          <SelectValue placeholder={dt.selectType} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="college">Collège</SelectItem>
-                        <SelectItem value="lycee">Lycée</SelectItem>
-                        <SelectItem value="superieur">
-                          Enseignement supérieur
-                        </SelectItem>
-                        <SelectItem value="autre">Autre</SelectItem>
+                        <SelectItem value="college">{dt.typeCollege}</SelectItem>
+                        <SelectItem value="lycee">{dt.typeLycee}</SelectItem>
+                        <SelectItem value="superieur">{dt.typeSuperieur}</SelectItem>
+                        <SelectItem value="autre">{dt.typeAutre}</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -258,10 +259,10 @@ export function DemoForm() {
                 name="message"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Message (optionnel)</FormLabel>
+                    <FormLabel>{dt.message}</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Décrivez votre projet ou posez-nous vos questions..."
+                        placeholder={dt.messagePlaceholder}
                         className="min-h-[100px] resize-none"
                         {...field}
                         data-testid="textarea-message"
@@ -290,7 +291,7 @@ export function DemoForm() {
                         htmlFor="wantsFreeAccount"
                         className="text-sm font-normal leading-relaxed cursor-pointer"
                       >
-                        Je souhaite créer un compte de test gratuit
+                        {dt.wantsFreeAccount}
                       </label>
                     </FormItem>
                   )}
@@ -314,7 +315,7 @@ export function DemoForm() {
                           htmlFor="wantsDemo"
                           className="text-sm font-normal leading-relaxed cursor-pointer"
                         >
-                          Je souhaite d'abord une démonstration
+                          {dt.wantsDemo}
                         </label>
                         <FormMessage />
                       </div>
@@ -333,10 +334,10 @@ export function DemoForm() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Envoi en cours...
+                    {dt.submitting}
                   </>
                 ) : (
-                  "Envoyer ma demande"
+                  dt.submit
                 )}
               </Button>
             </form>

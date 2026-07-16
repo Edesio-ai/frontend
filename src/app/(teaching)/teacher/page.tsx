@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "@/lib/i18n/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -47,6 +48,7 @@ import { CourseQuestionTab } from "@/components/teacher/tabs/CourseQuestionTab";
 
 export default function Teacher() {
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
+  const t = useTranslations();
   const {
     teacher,
     sessions,
@@ -188,16 +190,16 @@ export default function Teacher() {
     const updatedSession = await updateSession(sessionId, newName);
     if (updatedSession) {
       toast({
-        title: "Session renommée",
-        description: `La session a été renommée en "${newName}".`,
+        title: t.hooks.teacher.sessionRenamed,
+        description: t.hooks.teacher.sessionRenamedDesc,
       });
       if (selectedSession?.id === sessionId) {
         setSelectedSession(updatedSession);
       }
     } else {
       toast({
-        title: "Erreur",
-        description: "Impossible de renommer la session.",
+        title: t.hooks.teacher.error,
+        description: t.hooks.teacher.sessionUpdateError,
         variant: "destructive",
       });
     }
@@ -208,16 +210,15 @@ export default function Teacher() {
     const success = await deleteSession(sessionId);
     if (success) {
       toast({
-        title: "Session supprimée",
-        description: "La session et tous ses cours ont été supprimés.",
+        title: t.hooks.teacher.sessionDeleted,
       });
       if (selectedSession?.id === sessionId) {
         setSelectedSession(null);
       }
     } else {
       toast({
-        title: "Erreur",
-        description: "Impossible de supprimer la session.",
+        title: t.hooks.teacher.error,
+        description: t.hooks.teacher.sessionDeleteError,
         variant: "destructive",
       });
     }
@@ -244,7 +245,7 @@ export default function Teacher() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-primary/10">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Chargement du tableau de bord...</p>
+          <p className="text-muted-foreground">{t.teacher.loading}</p>
         </div>
       </div>
     );
@@ -277,7 +278,7 @@ export default function Teacher() {
                   data-testid="button-suggestions"
                 >
                   <Lightbulb className="h-4 w-4 mr-1.5" />
-                  Suggestions
+                  {t.nav.suggestions}
                 </Button>
                 <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
                   <GraduationCap className="h-4 w-4 text-primary" />
@@ -292,7 +293,7 @@ export default function Teacher() {
                     data-testid="button-profile"
                   >
                     <UserCog className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">Profil</span>
+                    <span className="hidden sm:inline">{t.nav.profile}</span>
                   </Button>
                 </Link>
                 <Button
@@ -307,7 +308,7 @@ export default function Teacher() {
                   ) : (
                     <>
                       <LogOut className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline">Déconnexion</span>
+                      <span className="hidden sm:inline">{t.nav.logout}</span>
                     </>
                   )}
                 </Button>
@@ -334,7 +335,7 @@ export default function Teacher() {
                   Tableau de bord
                 </h1>
                 <p className="text-muted-foreground">
-                  Créez vos classes et gérez vos cours avec Edesio.
+                  {t.teacher.emptySubtitle}
                 </p>
               </div>
             </div>
@@ -392,7 +393,7 @@ export default function Teacher() {
                 {selectedSession?.name}
               </DialogTitle>
               <DialogDescription>
-                Gérez les cours de cette session et visualisez les élèves inscrits.
+                Manage the lessons for this session and view enrolled students.
               </DialogDescription>
             </DialogHeader>
 

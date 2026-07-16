@@ -47,6 +47,7 @@ import {
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 import { StudentChatbotModal } from "@/components/student/StudentChatboModal";
 import { StudentQAModal } from "@/components/student/StudantQAModal";
 import { Course, CourseRanking, Question, Session } from "@/types";
@@ -57,6 +58,7 @@ interface JoinedSession extends Session {
 }
 
 export default function Student() {
+  const t = useTranslations();
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
   const {
     student,
@@ -133,13 +135,12 @@ export default function Student() {
     
     if (result.success) {
       toast({
-        title: "Photo mise à jour",
-        description: "Ta photo de profil a été enregistrée.",
+        title: t.student.photoUpdated,
       });
     } else {
       toast({
-        title: "Erreur",
-        description: result.error || "Impossible de mettre à jour la photo.",
+        title: t.common.error,
+        description: result.error || t.student.photoError,
         variant: "destructive",
       });
     }
@@ -152,7 +153,7 @@ export default function Student() {
 
   const handleJoinSession = async () => {
     if (!joinCode.trim()) {
-      setJoinError("Veuillez entrer un code de session.");
+      setJoinError(t.student.joinModal.emptyCode);
       return;
     }
 
@@ -261,7 +262,7 @@ export default function Student() {
     );
   }
 
-  const firstname = user.metadata?.firstname || "Élève";
+  const firstname = user.metadata?.firstname || "Student";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-500/5 via-background to-indigo-500/10">
@@ -303,7 +304,7 @@ export default function Student() {
                   data-testid="button-profile"
                 >
                   <UserCog className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Profil</span>
+                  <span className="hidden sm:inline">{t.nav.profile}</span>
                 </Button>
               </Link>
               <Button
@@ -318,7 +319,7 @@ export default function Student() {
                 ) : (
                   <>
                     <LogOut className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">Déconnexion</span>
+                    <span className="hidden sm:inline">{t.nav.logout}</span>
                   </>
                 )}
               </Button>
@@ -386,7 +387,7 @@ export default function Student() {
                 Salut, {firstname} !
               </h1>
               <p className="text-muted-foreground">
-                Prêt à réviser avec Edesio ?
+                {t.student.emptySubtitle}
               </p>
             </div>
           </div>
@@ -435,7 +436,7 @@ export default function Student() {
                 <GraduationCap className="h-5 w-5 text-orange-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">Mes classes</h2>
+                <h2 className="text-xl font-semibold">{t.student.myClasses}</h2>
                 <p className="text-sm text-muted-foreground">Clique sur une classe pour voir les cours</p>
               </div>
             </div>
@@ -454,9 +455,9 @@ export default function Student() {
               <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4">
                 <GraduationCap className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="font-semibold text-lg mb-2">Aucune classe rejointe</h3>
+              <h3 className="font-semibold text-lg mb-2">{t.student.emptyTitle}</h3>
               <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-                Demande un code à ton professeur pour rejoindre une classe et commencer à apprendre avec l'IA.
+                Ask your teacher for a code to join a class and start learning with AI.
               </p>
               <Button
                 onClick={() => setJoinModalOpen(true)}
@@ -538,7 +539,7 @@ export default function Student() {
                             <div className="space-y-2">
                               <p className="text-xs text-muted-foreground flex items-center gap-2">
                                 <Sparkles className="h-3 w-3" />
-                                Sélectionne un cours pour réviser avec Edesio
+                                {t.student.chooseCourse}
                               </p>
                               <Select
                                 value={selectedCoursIdPerSession[session.id] || ""}
@@ -553,7 +554,7 @@ export default function Student() {
                                   className="w-full"
                                   data-testid={`select-cours-${session.id}`}
                                 >
-                                  <SelectValue placeholder="Choisis un cours..." />
+                                  <SelectValue placeholder={t.student.chooseCourse} />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {sessionCourses[session.id]?.map((cours) => (
@@ -602,7 +603,7 @@ export default function Student() {
                                       data-testid={`button-cours-${selectedCoursForActions.id}`}
                                     >
                                       <MessageSquare className="h-4 w-4 mr-2" />
-                                      Réviser
+                                      Revise
                                     </Button>
                                     <Button
                                       variant="outline"
@@ -613,7 +614,7 @@ export default function Student() {
                                         handleOpenQA(selectedCoursForActions);
                                       }}
                                       data-testid={`button-qa-${selectedCoursForActions.id}`}
-                                      title="Questions & Réponses"
+                                      title={t.student.qaModal.title}
                                     >
                                       <HelpCircle className="h-4 w-4 mr-1" />
                                       Q&R
@@ -684,10 +685,9 @@ export default function Student() {
       <Dialog open={leaveModalOpen} onOpenChange={setLeaveModalOpen}>
         <DialogContent data-testid="modal-leave-session">
           <DialogHeader>
-            <DialogTitle className="text-destructive">Quitter la session ?</DialogTitle>
+            <DialogTitle className="text-destructive">Leave session?</DialogTitle>
             <DialogDescription>
-              Tu ne pourras plus accéder aux cours de "{sessionToLeave?.name}". Tu pourras
-              rejoindre à nouveau la session avec le code.
+              You will no longer have access to the lessons in &quot;{sessionToLeave?.name}&quot;. You can rejoin using the code.
             </DialogDescription>
           </DialogHeader>
 
@@ -742,8 +742,8 @@ export default function Student() {
             ) : rankings.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Trophy className="h-10 w-10 mx-auto opacity-30 mb-3" />
-                <p className="text-sm">Personne n'a encore participé à ce cours.</p>
-                <p className="text-xs mt-1">Sois le premier à réviser !</p>
+                <p className="text-sm">Nobody has participated in this lesson yet.</p>
+                <p className="text-xs mt-1">Be the first to revise!</p>
               </div>
             ) : (
               <div className="space-y-2 max-h-[350px] overflow-y-auto">
@@ -778,7 +778,7 @@ export default function Student() {
                           {isCurrentUser && <span className="text-xs text-primary ml-1">(Toi)</span>}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {ranking.correctAnswers}/{ranking.attemptedQuestions} réponses correctes
+                          {ranking.correctAnswers}/{ranking.attemptedQuestions} correct answers
                         </p>
                       </div>
                       <div className="text-right shrink-0">
@@ -810,14 +810,14 @@ export default function Student() {
             console.log("updateCourseProgress result:", result);
             if (result.success) {
               toast({
-                title: "Progression enregistrée",
-                description: `Score : ${correctAnswers}/${totalAnswered}`,
+                title: t.student.progressSaved,
+                description: `Score: ${correctAnswers}/${totalAnswered}`,
               });
             } else {
               console.error("Failed to save progress:", result.error);
               toast({
-                title: "Erreur",
-                description: result.error || "Impossible d'enregistrer la progression",
+                title: t.common.error,
+                description: result.error || t.hooks.student.progressError,
                 variant: "destructive",
               });
             }
@@ -839,9 +839,9 @@ export default function Student() {
         <Dialog open={loadingQuestions} onOpenChange={() => {}}>
           <DialogContent className="max-w-xs [&>button]:hidden">
             <DialogHeader className="text-center pb-2">
-              <DialogTitle className="text-base">Préparation du chatbot</DialogTitle>
+              <DialogTitle className="text-base">Preparing chatbot</DialogTitle>
               <DialogDescription>
-                Chargement des questions pour la révision.
+                {t.chatbot.loadingQuestions}
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col items-center pb-4">

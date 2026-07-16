@@ -17,7 +17,7 @@ export const exportService = {
 
         if (!response.ok) {
             const error = await response.json().catch(() => ({}));
-            throw new Error(error?.message ?? "Export échoué");
+            throw new Error(error?.message ?? "Export failed");
         }
 
         const blob = await response.blob();
@@ -38,7 +38,7 @@ export const exportService = {
 
         if (!response.ok) {
             const error = await response.json().catch(() => ({}));
-            throw new Error(error?.message ?? "Export échoué");
+            throw new Error(error?.message ?? "Export failed");
         }
 
         const blob = await response.blob();

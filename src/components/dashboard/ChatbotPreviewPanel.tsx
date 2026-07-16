@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +14,7 @@ import {
 import { useChatbotPreview, type ChatMessage } from "@/hooks/use-chatbot-preview.hook";
 import type { Course, Question } from "@/types";
 import { propositionLabels } from "@/lib/proposition-labels";
+import { useTranslations } from "@/lib/i18n/client";
 import { 
   Send, 
   User, 
@@ -51,7 +54,7 @@ function TypingIndicator() {
   );
 }
 
-function MessageBubble({ message }: { message: ChatMessage }) {
+function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typeof useTranslations> }) {
   const isBot = message.sender === "bot";
 
   return (
@@ -133,7 +136,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
                 : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
                   ? "text-orange-700 dark:text-orange-300" 
                   : "text-red-700 dark:text-red-300"
-            }`}>Session terminée !</span>
+            }`}>{t.chatbot.sessionEnded}</span>
           </div>
         )}
         <p className="text-sm sm:text-base whitespace-pre-wrap leading-relaxed">{message.text}</p>
@@ -144,21 +147,21 @@ function MessageBubble({ message }: { message: ChatMessage }) {
                 <div className="p-1 rounded-full bg-emerald-500/20">
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">Bonne réponse ! +1 point</span>
+                <span className="text-sm font-semibold">{t.chatbot.goodAnswer}</span>
               </div>
             ) : message.isPartial ? (
               <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                 <div className="p-1 rounded-full bg-orange-500/20">
                   <Star className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">Réponse partielle +0.5 point</span>
+                <span className="text-sm font-semibold">{t.chatbot.partialAnswer}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
                 <div className="p-1 rounded-full bg-red-500/20">
                   <XCircle className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">À revoir</span>
+                <span className="text-sm font-semibold">{t.chatbot.wrongAnswer}</span>
               </div>
             )}
           </div>
@@ -171,9 +174,11 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 function CourseSelectionDropdown({
   course,
   onSelect,
+  t,
 }: {
   course: Course[];
   onSelect: (c: Course) => void;
+  t: ReturnType<typeof useTranslations>;
 }) {
   const handleValueChange = (courseId: string) => {
     const selected = course.find((c) => c.id === courseId);
@@ -186,11 +191,11 @@ function CourseSelectionDropdown({
     <div className="bg-gradient-to-br from-primary/20 to-violet-500/20 rounded-xl p-5 border-2 border-primary/30 shadow-md space-y-3 animate-in fade-in slide-in-from-bottom-3 duration-300">
       <div className="flex items-center justify-center gap-2 text-base font-semibold text-foreground">
         <BookOpen className="h-5 w-5 text-primary" />
-        <span>Choisis le course à réviser</span>
+        <span>{t.chatbot.selectCourseToRevise}</span>
       </div>
       <Select onValueChange={handleValueChange}>
         <SelectTrigger className="w-full h-12 text-base bg-background border-2 border-primary/40 focus:ring-primary/50 focus:border-primary font-medium" data-testid="select-course-dropdown">
-          <SelectValue placeholder="Sélectionne un cours..." />
+          <SelectValue placeholder={t.student.chooseCourse} />
         </SelectTrigger>
         <SelectContent>
           {course.map((c) => (
@@ -212,9 +217,11 @@ function CourseSelectionDropdown({
 function QCMOptions({
   question,
   onSelect,
+  t,
 }: {
   question: Question;
   onSelect: (answer: string) => void;
+  t: ReturnType<typeof useTranslations>;
 }) {
   const labels = propositionLabels(question.proposals);
   if (labels.length === 0) return null;
@@ -223,7 +230,7 @@ function QCMOptions({
     <div className="py-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="qcm-options-container">
       <div className="flex items-center justify-center gap-2 mb-4 text-xs text-muted-foreground">
         <Zap className="h-3.5 w-3.5 text-primary" />
-        <span>Clique sur ta réponse</span>
+        <span>{t.chatbot.clickAnswer}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {labels.map((prop, i) => (
@@ -250,6 +257,7 @@ export function ChatbotPreviewPanel({
   fetchQuestions,
   refreshKey,
 }: ChatbotPreviewPanelProps) {
+  const t = useTranslations();
   const chatbot = useChatbotPreview();
   const [inputValue, setInputValue] = useState("");
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
@@ -300,8 +308,12 @@ export function ChatbotPreviewPanel({
       const timer = setTimeout(() => {
         const totalQuestions = chatbot.questions.length;
         const scoreRatio = totalQuestions > 0 ? chatbot.score / totalQuestions : 0;
+        const scoreText = t.chatbot.completionScore
+          .replace('{score}', String(chatbot.score))
+          .replace('{total}', String(totalQuestions))
+          .replace('{percent}', String(Math.round(scoreRatio * 100)));
         chatbot.addBotMessage(
-          `Bravo ! Tu as terminé la révision de "${chatbot.selectedCourse?.title}" !\n\nTon score : ${chatbot.score}/${totalQuestions} bonnes réponses.\n\nContinue comme ça !`,
+          `${t.chatbot.completionTitle}\n\n${scoreText}`,
           "completion",
           { scoreRatio }
         );
@@ -377,7 +389,7 @@ export function ChatbotPreviewPanel({
             <h3 className="font-bold text-sm">Edesio</h3>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-xs text-muted-foreground">Prévisualisation</p>
+              <p className="text-xs text-muted-foreground">{t.chatbot.preview}</p>
             </div>
           </div>
         </div>
@@ -407,15 +419,15 @@ export function ChatbotPreviewPanel({
                 <Sparkles className="h-3 w-3 text-primary" />
               </div>
             </div>
-            <p className="text-sm text-muted-foreground mb-1">Le chatbot démarre...</p>
+            <p className="text-sm text-muted-foreground mb-1">{t.chatbot.chatbotStarting}</p>
             {course.length === 0 && (
-              <p className="text-xs text-muted-foreground/70">Ajoutez des course pour tester</p>
+              <p className="text-xs text-muted-foreground/70">{t.chatbot.addCoursesToTest}</p>
             )}
           </div>
         ) : (
           <>
             {chatbot.messages.map((message: ChatMessage) => (
-              <MessageBubble key={message.id} message={message} />
+              <MessageBubble key={message.id} message={message} t={t} />
             ))}
             
             {isLoadingQuestions && <TypingIndicator />}
@@ -425,7 +437,7 @@ export function ChatbotPreviewPanel({
 
       {showCourseSelection && !isLoadingQuestions && (
         <div className="px-4 pb-4">
-          <CourseSelectionDropdown course={course} onSelect={handleCourseSelect} />
+          <CourseSelectionDropdown course={course} onSelect={handleCourseSelect} t={t} />
         </div>
       )}
 
@@ -435,7 +447,8 @@ export function ChatbotPreviewPanel({
             question={currentQuestion} 
             onSelect={(answer) => {
               chatbot.submitAnswer(answer);
-            }} 
+            }}
+            t={t}
           />
         </div>
       )}
@@ -448,7 +461,7 @@ export function ChatbotPreviewPanel({
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Tape ta réponse ici..."
+                placeholder={t.chatbot.inputPlaceholder}
                 className="h-11 pr-12 rounded-xl bg-background/80 border-border/50 focus-visible:ring-primary/30"
                 data-testid="input-chatbot-answer"
               />
@@ -475,7 +488,7 @@ export function ChatbotPreviewPanel({
             data-testid="button-restart-chatbot"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
-            Recommencer
+            {t.chatbot.restart}
           </Button>
         </div>
       )}

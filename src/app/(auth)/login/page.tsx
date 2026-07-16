@@ -19,13 +19,8 @@ import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
-
-const formSchema = z.object({
-  email: z.string().email("Adresse email invalide"),
-  password: z.string().min(1, "Le mot de passe est requis"),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { useTranslations, useLocale } from "@/lib/i18n/client";
+import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 
 export default function Connexion() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,6 +28,16 @@ export default function Connexion() {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, user, loading, getUserRole } = useAuth();
   const router = useRouter();
+  const t = useTranslations();
+  const locale = useLocale();
+  const lt = t.login;
+
+  const formSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(1, "Password is required"),
+  });
+
+  type FormValues = z.infer<typeof formSchema>;
 
   useEffect(() => {
     if (!loading && user) {
@@ -40,7 +45,7 @@ export default function Connexion() {
       if (role === "teacher") {
         router.push("/teacher");
       } else if (role === "student") {
-        router.push("/studer");
+        router.push("/student");
       } else if (role === "establishment") {
         router.push("/establishment");
       } else if (role === "self-learner") {
@@ -62,12 +67,13 @@ export default function Connexion() {
       const response = await signIn(email, password);
       return response;
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Échec de la connexion. Vérifiez vos identifiants.r";
-      setErrorMessage(message);
+      const message = error instanceof Error ? error.message : lt.defaultError;
+      const translated = translateSupabaseError(message, t.supabaseErrors, locale);
+      setErrorMessage(translated);
       setIsSubmitting(false);
-      throw new Error(message);
+      throw new Error(translated);
     }
-  }
+  };
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
@@ -75,11 +81,11 @@ export default function Connexion() {
 
     try {
       const user = await handleLogin(data.email, data.password);
-  
+
       setIsSubmitting(false);
       if (user) {
         const role = user.metadata?.role;
-        switch(role){
+        switch (role) {
           case "teacher":
             router.push("/teacher");
             break;
@@ -98,7 +104,8 @@ export default function Connexion() {
         }
       }
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Échec de la connexion. Vérifiez vos identifiants.");
+      const message = error instanceof Error ? error.message : lt.defaultError;
+      setErrorMessage(translateSupabaseError(message, t.supabaseErrors, locale));
       setIsSubmitting(false);
     }
   };
@@ -111,10 +118,10 @@ export default function Connexion() {
             <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
           </Link>
           <h1 className="text-3xl font-bold mb-2" data-testid="text-login-title">
-            Connexion à Edesio
+            {lt.title}
           </h1>
           <p className="text-muted-foreground">
-            Accédez à votre espace personnel
+            {lt.subtitle}
           </p>
         </div>
 
@@ -135,11 +142,11 @@ export default function Connexion() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Adresse e-mail</FormLabel>
+                    <FormLabel>{lt.email}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="jean.dupont@education.fr"
+                        placeholder={lt.emailPlaceholder}
                         {...field}
                         data-testid="input-login-email"
                       />
@@ -155,13 +162,13 @@ export default function Connexion() {
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center justify-between">
-                      <FormLabel>Mot de passe</FormLabel>
+                      <FormLabel>{lt.password}</FormLabel>
                       <Link
                         href="/forgotten-password"
                         className="text-xs text-primary hover:underline"
                         data-testid="link-forgot-password"
                       >
-                        Mot de passe oublié ?
+                        {lt.forgotPassword}
                       </Link>
                     </div>
                     <FormControl>
@@ -203,10 +210,10 @@ export default function Connexion() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Connexion en cours...
+                    {lt.submitting}
                   </>
                 ) : (
-                  "Se connecter"
+                  lt.submit
                 )}
               </Button>
             </form>
@@ -214,13 +221,13 @@ export default function Connexion() {
 
           <div className="text-center pt-6">
             <p className="text-sm text-muted-foreground">
-              Vous n'avez pas de compte ?{" "}
+              {lt.noAccount}{" "}
               <Link
                 href="/register"
                 className="text-primary hover:underline"
                 data-testid="link-signup"
               >
-                Créer un compte
+                {lt.signup}
               </Link>
             </p>
           </div>

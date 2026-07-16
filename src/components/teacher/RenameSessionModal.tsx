@@ -1,3 +1,5 @@
+"use client";
+
 import { Check, Loader2 } from "lucide-react";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { DialogHeader } from "../ui/dialog";
@@ -5,6 +7,7 @@ import { DialogTitle } from "../ui/dialog";
 import { DialogDescription } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useTranslations } from "@/lib/i18n/client";
 
 type RenameSessionModalProps = {
     renameModalOpen: boolean;
@@ -15,13 +18,14 @@ type RenameSessionModalProps = {
     handleConfirmRename: () => void;
 }
 export function RenameSessionModal({ renameModalOpen, setRenameModalOpen, newName, setNewName, isRenaming, handleConfirmRename }: RenameSessionModalProps) {
+    const t = useTranslations();
     return (
         <Dialog open={renameModalOpen} onOpenChange={setRenameModalOpen}>
             <DialogContent data-testid="modal-rename-session">
                 <DialogHeader>
-                    <DialogTitle>Renommer la session</DialogTitle>
+                    <DialogTitle>{t.teacher.renameModal.title}</DialogTitle>
                     <DialogDescription>
-                        Modifiez le nom de votre session. Ce changement sera visible par vos élèves.
+                        {t.teacher.renameModalDesc}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -29,7 +33,7 @@ export function RenameSessionModal({ renameModalOpen, setRenameModalOpen, newNam
                     <Input
                         value={newName}
                         onChange={(e) => setNewName(e.target.value)}
-                        placeholder="Nom de la session"
+                        placeholder={t.teacher.renameModal.placeholder}
                         data-testid="input-rename-session"
                     />
                     <div className="flex gap-3">
@@ -40,7 +44,7 @@ export function RenameSessionModal({ renameModalOpen, setRenameModalOpen, newNam
                             disabled={isRenaming}
                             data-testid="button-cancel-rename"
                         >
-                            Annuler
+                            {t.teacher.renameModal.cancel}
                         </Button>
                         <Button
                             className="flex-1"
@@ -56,7 +60,7 @@ export function RenameSessionModal({ renameModalOpen, setRenameModalOpen, newNam
                             ) : (
                                 <>
                                     <Check className="h-4 w-4 mr-2" />
-                                    Enregistrer
+                                    {t.teacher.renameModal.confirm}
                                 </>
                             )}
                         </Button>

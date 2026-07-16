@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { annualDiscountPercent } from "@/utils/constants/billing";
 import { BillingService } from "@/services/billing.service";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "@/lib/i18n/client";
 
 type PlanCardProps = {
 
@@ -15,8 +16,10 @@ type PlanCardProps = {
 }
 
 export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
+    const t = useTranslations();
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const planDetails = (t.billing.planDetails as Record<string, { name?: string; description: string; features: string[] }>)[plan.id];
     const formatPrice = (price: number) => {
         return price.toFixed(2).replace(".", ",") + "€";
     };
@@ -53,14 +56,14 @@ export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
             {recommendedPlan === plan.id && (
                 <div className="absolute top-0 right-0">
                     <div className="bg-gradient-to-r from-primary to-primary/80 text-white text-xs font-bold px-3 py-1 rounded-bl-lg" data-testid={`badge-recommended-${plan.id}`}>
-                        Recommandé
+                        {t.billing.recommended}
                     </div>
                 </div>
             )}
             {plan.popular && recommendedPlan !== plan.id && (
                 <div className="absolute top-0 right-0">
                     <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                        Populaire
+                        {t.billing.popular}
                     </div>
                 </div>
             )}
@@ -71,21 +74,21 @@ export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
                         <plan.icon className="h-6 w-6 text-white" />
                     </div>
                     <h3 className="text-xl font-bold mb-1" data-testid={`text-plan-${plan.id}-name`}>
-                        {plan.name}
+                        {planDetails?.name ?? plan.name}
                     </h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                        {plan.description}
+                        {planDetails?.description ?? plan.description}
                     </p>
 
                     <div className="flex items-baseline gap-1">
                         <span className={`text-3xl font-bold ${plan.accentColor}`} data-testid={`text-plan-${plan.id}-price`}>
                             {formatPrice(getPrice(plan.monthlyPrice))}
                         </span>
-                        <span className="text-muted-foreground text-sm">/mois</span>
+                        <span className="text-muted-foreground text-sm">{t.billing.perMonth}</span>
                     </div>
                     {isAnnual && (
                         <p className="text-xs text-muted-foreground mt-1" data-testid={`text-plan-${plan.id}-annual`}>
-                            soit {formatPrice(getPrice(plan.monthlyPrice) * 12)}/an
+                            {t.billing.orPerYear.replace('{price}', formatPrice(getPrice(plan.monthlyPrice) * 12))}
                         </p>
                     )}
                 </div>
@@ -97,7 +100,7 @@ export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
                                 <Check className={`h-2.5 w-2.5 ${feature.highlight ? "text-white" : "text-emerald-600 dark:text-emerald-400"}`} />
                             </div>
                             <span className="text-sm">
-                                {feature.text}
+                                {planDetails?.features?.[featureIndex] ?? feature.text}
                             </span>
                         </li>
                     ))}
@@ -113,7 +116,7 @@ export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
                         data-testid={`button-plan-${plan.id}-subscribe`}
                         disabled={isLoading}
                     >
-                        {isLoading ? <Loader className="h-4 w-4 animate-spin" /> : "S'abonner"}
+                        {isLoading ? <Loader className="h-4 w-4 animate-spin" /> : t.billing.subscribe}
                     </button>
                 </Button>
             </div>

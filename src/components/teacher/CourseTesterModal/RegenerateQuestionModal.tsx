@@ -1,9 +1,12 @@
+"use client";
+
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CircleDot, PenLine, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { MAX_QUESTIONS } from "@/utils/constants/teacher";
 import { Button } from "@/components/ui/button";
 import { Question } from "@/types";
+import { useTranslations } from "@/lib/i18n/client";
 
 
 interface RegenerateQuestionModalProps {
@@ -18,17 +21,18 @@ interface RegenerateQuestionModalProps {
 }
 
 export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDialogOpen, handleConfigChange, executeGeneration, genTotalQuestions, questions, openGenerateCount, singleGenCount }: RegenerateQuestionModalProps) {
+    const t = useTranslations();
     return (
         <Dialog open={regenerateDialogOpen} onOpenChange={setRegenerateDialogOpen}>
             <DialogContent className="sm:max-w-[480px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <Sparkles className="h-5 w-5 text-primary" />
-                        Générer des questions
+                        {t.teacher.questionGenerator.title}
                     </DialogTitle>
                     <DialogDescription>
-                        Choisissez combien de questions de chaque type vous souhaitez créer.
-                        {questions.length > 0 && " Les questions existantes seront remplacées."}
+                        {t.teacher.questionGenerator.chooseCounts}
+                        {questions.length > 0 && t.teacher.questionGenerator.willReplace}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -38,8 +42,8 @@ export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDia
                             <CircleDot className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm">Choix unique</p>
-                            <p className="text-xs text-muted-foreground">L'élève choisit 1 seule réponse parmi 4</p>
+                            <p className="font-medium text-sm">{t.teacher.questionGenerator.singleChoice}</p>
+                            <p className="text-xs text-muted-foreground">{t.teacher.questionGenerator.singleChoiceHint}</p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                             <Input
@@ -59,8 +63,8 @@ export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDia
                             <PenLine className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm">Réponse rédigée</p>
-                            <p className="text-xs text-muted-foreground">L'élève écrit sa réponse avec ses mots</p>
+                            <p className="font-medium text-sm">{t.teacher.questionGenerator.writtenAnswer}</p>
+                            <p className="text-xs text-muted-foreground">{t.teacher.questionGenerator.writtenAnswerHint}</p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                             <Input
@@ -76,18 +80,18 @@ export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDia
                     </div>
 
                     <div className="flex items-center justify-between pt-3 mt-2 border-t">
-                        <span className="text-sm font-medium">Total de questions à générer <span className="text-muted-foreground font-normal">(max {MAX_QUESTIONS})</span></span>
+                        <span className="text-sm font-medium">{t.teacher.questionGenerator.totalToGenerate} <span className="text-muted-foreground font-normal">{t.teacher.questionGenerator.maxHint.replace('{max}', String(MAX_QUESTIONS))}</span></span>
                         <span className="text-xl font-bold text-primary">{genTotalQuestions}</span>
                     </div>
 
                     {genTotalQuestions === 0 && (
-                        <p className="text-sm text-destructive text-center">Indiquez au moins 1 question à générer</p>
+                        <p className="text-sm text-destructive text-center">{t.teacher.questionGenerator.atLeastOne}</p>
                     )}
                 </div>
 
                 <div className="flex justify-end gap-2">
                     <Button variant="outline" onClick={() => setRegenerateDialogOpen(false)}>
-                        Annuler
+                        {t.common.cancel}
                     </Button>
                     <Button
                         onClick={executeGeneration}
@@ -95,11 +99,10 @@ export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDia
                         data-testid="button-confirm-generate"
                     >
                         <Sparkles className="h-4 w-4 mr-2" />
-                        Générer {genTotalQuestions} question{genTotalQuestions > 1 ? 's' : ''}
+                        {t.teacher.questionGenerator.generate} {genTotalQuestions} question{genTotalQuestions > 1 ? 's' : ''}
                     </Button>
                 </div>
             </DialogContent>
         </Dialog>
     )
 }
-

@@ -4,14 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Helmet, BreadcrumbSchema } from "@/app/blog/_components/seo-helmet";
-import { blogArticles, categoryColors } from "@/data/blog-articles";
+import { getBlogArticles, categoryColors } from "@/data/blog-articles";
 import { NewsletterForm } from "@/app/blog/_components/newsletter-form";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useTranslations, useLocale } from "@/lib/i18n/client";
 
 export default function Blog() {
-  const featuredPost = blogArticles.find(post => post.featured);
-  const regularPosts = blogArticles.filter(post => !post.featured);
+  const t = useTranslations();
+  const locale = useLocale();
+  const articles = useMemo(() => getBlogArticles(locale), [locale]);
+  const featuredPost = articles.find(post => post.featured);
+  const regularPosts = articles.filter(post => !post.featured);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -20,9 +24,9 @@ export default function Blog() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800">
       <Helmet
-        title="Blog - Actualités IA et Éducation | Edesio"
-        description="Découvrez nos articles sur l'IA dans l'éducation, les bonnes pratiques pédagogiques, la gamification et la protection des données. Ressources pour enseignants."
-        keywords={["blog éducation IA", "articles pédagogie", "EdTech France", "gamification apprentissage", "RGPD éducation"]}
+        title={t.blog.title}
+        description={t.blog.description}
+        keywords={[t.blog.title, t.blog.description]}
         canonicalUrl="https://edesio.ai/blog"
       />
       <BreadcrumbSchema
@@ -44,7 +48,7 @@ export default function Blog() {
           <Link href="/">
             <Button variant="ghost" className="text-slate-300 hover:text-white" data-testid="button-back-home">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour à l'accueil
+              {t.blog.backToBlog}
             </Button>
           </Link>
         </div>
@@ -56,10 +60,10 @@ export default function Blog() {
             Blog
           </Badge>
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
-            Actualités & Ressources
+            {t.blog.heading}
           </h1>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            Découvrez nos articles sur l'IA dans l'éducation, les bonnes pratiques pédagogiques et les dernières nouveautés de Edesio.
+            {t.blog.subtitle}
           </p>
         </div>
 
@@ -69,7 +73,7 @@ export default function Blog() {
               <div className="p-6 md:p-8">
                 <div className="flex flex-wrap items-center gap-3 mb-4">
                   <Badge className="bg-primary text-white">
-                    Article à la une
+                    Featured
                   </Badge>
                   <Badge variant="outline" className={categoryColors[featuredPost.category]}>
                     {featuredPost.category}
@@ -92,11 +96,11 @@ export default function Blog() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Clock className="h-4 w-4" />
-                    {featuredPost.readTime} de lecture
+                    {featuredPost.readTime} read
                   </div>
                 </div>
                 <Button className="mt-6 group-hover:bg-primary group-hover:text-white transition-colors" variant="secondary" data-testid={`button-read-${featuredPost.id}`}>
-                  Lire l'article
+                  {t.blog.readMore}
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>
@@ -159,7 +163,7 @@ export default function Blog() {
 
       <footer className="bg-slate-900 border-t border-slate-800 py-8">
         <div className="max-w-7xl mx-auto px-4 md:px-8 text-center text-slate-500 text-sm">
-          © {new Date().getFullYear()} Edesio – Tous droits réservés
+          © {new Date().getFullYear()} Edesio – {t.blog.allRights}
         </div>
       </footer>
     </div>

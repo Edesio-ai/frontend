@@ -1,9 +1,12 @@
+"use client";
+
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { FileText, Loader2, Save, Pencil } from 'lucide-react'
 import { Course } from '@/types'
+import { useTranslations } from "@/lib/i18n/client";
 
 type EditQuestionTesterModalSectionProps = {
     isEditing: boolean;
@@ -21,6 +24,7 @@ type EditQuestionTesterModalSectionProps = {
 }
 
 export function EditQuestionTesterModalSection({ isEditing, setIsEditing, handleSave, isSaving, course, editedTitle, setEditedTitle, editedDescription, setEditedDescription, editedContent, setEditedContent }: EditQuestionTesterModalSectionProps) {
+    const t = useTranslations();
     return (
         <>
             <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -32,10 +36,10 @@ export function EditQuestionTesterModalSection({ isEditing, setIsEditing, handle
                     {isEditing ? (
                         <>
                             <Button variant="ghost" size="sm" onClick={() => setIsEditing(false)}>
-                                Annuler
+                                {t.teacher.editQuestion.cancel}
                             </Button>
                             <Button size="sm" onClick={handleSave} disabled={isSaving}>
-                                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="h-4 w-4 mr-1" /> Enregistrer</>}
+                                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="h-4 w-4 mr-1" /> {t.teacher.editQuestion.save}</>}
                             </Button>
                         </>
                     ) : (

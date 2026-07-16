@@ -28,12 +28,13 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { profileService } from "@/services/profile.service";
 import { SubscriptionSection } from "@/components/profile/SubscriptionSection";
+import { useTranslations } from "@/lib/i18n/client";
 
 
 const profileSchema = z.object({
-  firstname: z.string().min(1, "Le prénom est requis"),
-  lastname: z.string().min(1, "Le nom est requis"),
-  email: z.string().email("Adresse email invalide"),
+  firstname: z.string().min(1, "First name is required"),
+  lastname: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
@@ -41,6 +42,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 export default function Profile() {
   const { user, loading: authLoading, getUserRole } = useAuth();
   const { toast } = useToast();
+  const t = useTranslations();
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -92,14 +94,14 @@ export default function Profile() {
       await profileService.updateProfile(data);
 
       toast({
-        title: "Profil mis à jour",
-        description: "Vos informations ont été enregistrées avec succès.",
+        title: t.profile.successTitle,
+        description: t.profile.successDesc,
       });
     } catch (error) {
       console.error("Error updating profile:", error);
       toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour le profil.",
+        title: t.profile.errorTitle,
+        description: t.profile.errorDesc,
         variant: "destructive",
       });
     } finally {
@@ -123,7 +125,7 @@ export default function Profile() {
         <Link href={getDashboardLink()}>
           <Button variant="ghost" className="mb-8" data-testid="button-back-dashboard">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Retour au tableau de bord
+            {t.profile.backToDashboard}
           </Button>
         </Link>
 
@@ -132,10 +134,10 @@ export default function Profile() {
             <User className="h-10 w-10 text-primary" />
           </div>
           <h1 className="text-3xl font-bold mb-2" data-testid="text-profile-title">
-            Mon profil
+            {t.profile.title}
           </h1>
           <p className="text-muted-foreground">
-            Gérez vos informations personnelles et votre abonnement
+            {t.profile.personalInfo}
           </p>
         </div>
 
@@ -146,8 +148,8 @@ export default function Profile() {
                 <Mail className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold">Informations personnelles</h2>
-                <p className="text-sm text-muted-foreground">Modifiez vos coordonnées</p>
+                <h2 className="text-lg font-semibold">{t.profile.personalInfo}</h2>
+                <p className="text-sm text-muted-foreground">{t.profile.personalInfo}</p>
               </div>
             </div>
 
@@ -159,7 +161,7 @@ export default function Profile() {
                     name="firstname"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Prénom</FormLabel>
+                        <FormLabel>{t.profile.firstName}</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Jean"
@@ -177,7 +179,7 @@ export default function Profile() {
                     name="lastname"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nom</FormLabel>
+                        <FormLabel>{t.profile.lastName}</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Dupont"
@@ -196,7 +198,7 @@ export default function Profile() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Adresse e-mail</FormLabel>
+                      <FormLabel>{t.profile.email}</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
@@ -218,12 +220,12 @@ export default function Profile() {
                   {isSaving ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Enregistrement...
+                      {t.profile.saving}
                     </>
                   ) : (
                     <>
                       <Save className="mr-2 h-4 w-4" />
-                      Enregistrer les modifications
+                      {t.profile.save}
                     </>
                   )}
                 </Button>

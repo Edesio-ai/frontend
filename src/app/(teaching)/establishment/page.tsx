@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 
 import { useEstablishment } from "@/hooks/use-establishment";
+import { useTranslations } from "@/lib/i18n/client";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -41,6 +42,7 @@ import { SessionStudentsModal } from "@/components/establishment/SessionStudentM
 import { TeacherRow } from "@/components/establishment/TeacherRow";
 
 export default function Establishment() {
+  const t = useTranslations();
   const router = useRouter();
   const { logout, getUserRole, loading: authLoading, user } = useAuth();
   const {
@@ -73,7 +75,7 @@ export default function Establishment() {
   const statsDashboard = useMemo(() => {
     return [
       {
-        title: "Professeurs", 
+        title: t.establishment.teachers,
         value: stats.totalTeachers,
         icon: GraduationCap,
         loading: loading,
@@ -85,13 +87,13 @@ export default function Establishment() {
         loading: loading,
       },
       {
-        title: "Élèves",
+        title: t.establishment.students,
         value: stats.totalStudents,
         icon: Users,
         loading: loading,
       },
   ];
-  }, [teachers, stats]);
+  }, [teachers, stats, t]);
 
   const role = getUserRole();
 
@@ -175,7 +177,7 @@ export default function Establishment() {
       <div className="min-h-screen flex items-center justify-center bg-muted/30 p-6">
         <Card className="p-8 max-w-md text-center">
           <p className="text-destructive mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()}>Réessayer</Button>
+          <Button onClick={() => window.location.reload()}>{t.establishment.retry}</Button>
         </Card>
       </div>
     );
@@ -192,9 +194,9 @@ export default function Establishment() {
               </div>
               <div>
                 <h1 className="font-bold text-lg" data-testid="text-establishment-name">
-                  {establishment?.name || "Établissement"}
+                  {establishment?.name || t.establishment.title}
                 </h1>
-                <p className="text-sm text-muted-foreground">Tableau de bord administrateur</p>
+                <p className="text-sm text-muted-foreground">{t.establishment.title}</p>
               </div>
             </div>
 
@@ -217,7 +219,7 @@ export default function Establishment() {
               </Link>
               <Button variant="ghost" onClick={handleSignOut} data-testid="button-signout">
                 <LogOut className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Déconnexion</span>
+                <span className="hidden sm:inline">{t.nav.logout}</span>
               </Button>
             </div>
           </div>
@@ -248,9 +250,9 @@ export default function Establishment() {
 
             {invitationTokens.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                <p>Aucun code d'invitation créé</p>
+                <p>{t.establishment.noInvitations}</p>
                 <p className="text-sm mt-1">
-                  Créez un code pour permettre aux professeurs de rejoindre votre établissement
+                  Create a code to allow teachers to join your institution
                 </p>
               </div>
             ) : (
@@ -270,7 +272,7 @@ export default function Establishment() {
 
             {teachers.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                <p>Aucun teacher dans votre établissement</p>
+                <p>{t.establishment.noTeachers}</p>
                 <p className="text-sm mt-1">
                   Partagez un code d'invitation pour que les professeurs puissent rejoindre
                 </p>
@@ -282,7 +284,7 @@ export default function Establishment() {
                     <TableHead>Nom</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Classes</TableHead>
-                    <TableHead>Élèves</TableHead>
+                    <TableHead>{t.establishment.students}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

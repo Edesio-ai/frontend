@@ -1,6 +1,7 @@
 import { CourseBasic, SessionWithStudentCount, TeacherWithStats } from "@/types";
 import { useState } from "react";
 import { TableCell, TableRow } from "../ui/table";
+import { useTranslations } from "@/lib/i18n/client";
 import { BookOpen, ChevronDown, ChevronRight, Users } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -17,6 +18,7 @@ export function TeacherRow({
     onViewCourse: (courseId: string) => void;
     getSessionCourse: (sessionId: string) => Promise<CourseBasic[]>;
 }) {
+    const t = useTranslations();
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -37,7 +39,7 @@ export function TeacherRow({
                     <Badge variant="secondary">{teacher.sessionsCount} classe(s)</Badge>
                 </TableCell>
                 <TableCell>
-                    <Badge variant="outline">{teacher.studentsCount} élève(s)</Badge>
+                    <Badge variant="outline">{t.establishment.teacherRow.students.replace('{{count}}', String(teacher.studentsCount))}</Badge>
                 </TableCell>
             </TableRow>
 
@@ -46,7 +48,7 @@ export function TeacherRow({
                     <TableCell colSpan={4} className="p-0">
                         <div className="p-4 pl-10 space-y-3">
                             {teacher.sessions.length === 0 ? (
-                                <p className="text-sm text-muted-foreground">Aucune classe créée</p>
+                                <p className="text-sm text-muted-foreground">{t.establishment.teacherRow.noClasses}</p>
                             ) : (
                                 teacher.sessions.map((session) => (
                                     <div
@@ -69,7 +71,7 @@ export function TeacherRow({
                                                 data-testid={`button-view-students-${session.id}`}
                                             >
                                                 <Users className="h-4 w-4 mr-1" />
-                                                {session.studentsCount || 0} élève(s)
+                                                {t.establishment.teacherRow.students.replace('{{count}}', String(session.studentsCount || 0))}
                                             </Button>
                                         </div>
                                         <SessionCoursesList
