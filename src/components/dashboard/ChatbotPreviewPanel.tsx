@@ -161,7 +161,7 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
                 <div className="p-1 rounded-full bg-red-500/20">
                   <XCircle className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">À revoir</span>
+                <span className="text-sm font-semibold">{t.chatbot.wrongAnswer}</span>
               </div>
             )}
           </div>
@@ -191,7 +191,7 @@ function CourseSelectionDropdown({
     <div className="bg-gradient-to-br from-primary/20 to-violet-500/20 rounded-xl p-5 border-2 border-primary/30 shadow-md space-y-3 animate-in fade-in slide-in-from-bottom-3 duration-300">
       <div className="flex items-center justify-center gap-2 text-base font-semibold text-foreground">
         <BookOpen className="h-5 w-5 text-primary" />
-        <span>Choisis le course à réviser</span>
+        <span>{t.chatbot.selectCourseToRevise}</span>
       </div>
       <Select onValueChange={handleValueChange}>
         <SelectTrigger className="w-full h-12 text-base bg-background border-2 border-primary/40 focus:ring-primary/50 focus:border-primary font-medium" data-testid="select-course-dropdown">
@@ -217,9 +217,11 @@ function CourseSelectionDropdown({
 function QCMOptions({
   question,
   onSelect,
+  t,
 }: {
   question: Question;
   onSelect: (answer: string) => void;
+  t: ReturnType<typeof useTranslations>;
 }) {
   const labels = propositionLabels(question.proposals);
   if (labels.length === 0) return null;
@@ -228,7 +230,7 @@ function QCMOptions({
     <div className="py-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="qcm-options-container">
       <div className="flex items-center justify-center gap-2 mb-4 text-xs text-muted-foreground">
         <Zap className="h-3.5 w-3.5 text-primary" />
-        <span>Clique sur ta réponse</span>
+        <span>{t.chatbot.clickAnswer}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {labels.map((prop, i) => (
@@ -387,7 +389,7 @@ export function ChatbotPreviewPanel({
             <h3 className="font-bold text-sm">Edesio</h3>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-xs text-muted-foreground">Prévisualisation</p>
+              <p className="text-xs text-muted-foreground">{t.chatbot.preview}</p>
             </div>
           </div>
         </div>
@@ -417,9 +419,9 @@ export function ChatbotPreviewPanel({
                 <Sparkles className="h-3 w-3 text-primary" />
               </div>
             </div>
-            <p className="text-sm text-muted-foreground mb-1">Le chatbot démarre...</p>
+            <p className="text-sm text-muted-foreground mb-1">{t.chatbot.chatbotStarting}</p>
             {course.length === 0 && (
-              <p className="text-xs text-muted-foreground/70">Ajoutez des course pour tester</p>
+              <p className="text-xs text-muted-foreground/70">{t.chatbot.addCoursesToTest}</p>
             )}
           </div>
         ) : (
@@ -445,7 +447,8 @@ export function ChatbotPreviewPanel({
             question={currentQuestion} 
             onSelect={(answer) => {
               chatbot.submitAnswer(answer);
-            }} 
+            }}
+            t={t}
           />
         </div>
       )}
@@ -485,7 +488,7 @@ export function ChatbotPreviewPanel({
             data-testid="button-restart-chatbot"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
-            Recommencer
+            {t.chatbot.restart}
           </Button>
         </div>
       )}

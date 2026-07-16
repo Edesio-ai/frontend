@@ -150,11 +150,11 @@ export function useStudent() {
         const allowedTypes = ["jpg", "jpeg", "png", "gif", "webp"];
 
         if (!fileExt || !allowedTypes.includes(fileExt)) {
-          return { success: false, error: "Format d'image non supporté. Utilisez JPG, PNG, GIF ou WebP." };
+          return { success: false, error: "Unsupported image format. Use JPG, PNG, GIF or WebP." };
         }
 
         if (file.size > 5 * 1024 * 1024) {
-          return { success: false, error: "L'image est trop volumineuse (max 5 Mo)." };
+          return { success: false, error: t.hooks.student.imageTooLarge };
         }
 
         const uploadedPhoto = await studentService.uploadPhoto(file);

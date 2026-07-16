@@ -252,7 +252,7 @@ export default function Establishment() {
               <div className="text-center py-8 text-muted-foreground">
                 <p>{t.establishment.noInvitations}</p>
                 <p className="text-sm mt-1">
-                  Créez un code pour permettre aux professeurs de rejoindre votre établissement
+                  Create a code to allow teachers to join your institution
                 </p>
               </div>
             ) : (
@@ -284,7 +284,7 @@ export default function Establishment() {
                     <TableHead>Nom</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Classes</TableHead>
-                    <TableHead>Élèves</TableHead>
+                    <TableHead>{t.establishment.students}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

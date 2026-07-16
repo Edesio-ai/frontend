@@ -114,9 +114,9 @@ export function Footer() {
               © {currentYear} Edesio – {ft.allRightsReserved}
             </p>
             <div className="flex items-center gap-6 text-sm text-slate-500 flex-wrap">
-              <Link href="/mentions-legales" className="hover:text-slate-300 transition-colors" data-testid="link-footer-mentions-legales">{ft.legalNotice}</Link>
-              <Link href="/cgu" className="hover:text-slate-300 transition-colors" data-testid="link-footer-cgu">{ft.terms}</Link>
-              <Link href="/politique-confidentialite" className="hover:text-slate-300 transition-colors" data-testid="link-footer-politique-confidentialite">{ft.privacyPolicy}</Link>
+              <Link href="/legal-notice" className="hover:text-slate-300 transition-colors" data-testid="link-footer-mentions-legales">{ft.legalNotice}</Link>
+              <Link href="/terms-of-service" className="hover:text-slate-300 transition-colors" data-testid="link-footer-cgu">{ft.terms}</Link>
+              <Link href="/privacy-policy" className="hover:text-slate-300 transition-colors" data-testid="link-footer-politique-confidentialite">{ft.privacyPolicy}</Link>
             </div>
           </div>
         </div>

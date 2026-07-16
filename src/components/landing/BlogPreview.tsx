@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, Clock, Newspaper } from "lucide-react";
 import Link from "next/link";
-import { blogArticles } from "@/data/blog-articles";
+import { getBlogArticles } from "@/data/blog-articles";
 import { getLocaleFromCookies, getDictionary } from "@/lib/i18n";
 
 const articleImages: Record<string, string> = {
@@ -18,6 +18,11 @@ const categoryColorsLight: Record<string, string> = {
   "Pédagogie": "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
   "Sécurité": "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
   "Témoignages": "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400",
+  Education: "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-400",
+  Technology: "bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-400",
+  Pedagogy: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
+  Security: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
+  Testimonials: "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400",
 };
 
 export async function BlogPreview() {
@@ -25,7 +30,7 @@ export async function BlogPreview() {
   const dict = await getDictionary(locale);
   const bt = dict.blogPreview;
 
-  const latestArticles = blogArticles.slice(0, 3);
+  const latestArticles = getBlogArticles(locale).slice(0, 3);
 
   return (
     <section

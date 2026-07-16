@@ -21,7 +21,7 @@ export function FileSectionTesterModal({ files, handleFileUpload, fileInputRef, 
             <div className="flex items-center justify-between gap-2">
                 <h5 className="font-medium text-sm flex items-center gap-2">
                     <Files className="h-4 w-4" />
-                    Documents PDF ({files.length})
+                    {t.teacher.questionGenerator.pdfDocuments.replace('{count}', String(files.length))}
                 </h5>
                 <div>
                     <input type="file" accept="application/pdf" onChange={handleFileUpload} className="hidden" ref={fileInputRef} />
@@ -31,7 +31,7 @@ export function FileSectionTesterModal({ files, handleFileUpload, fileInputRef, 
                 </div>
             </div>
             {files.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Aucun document attaché</p>
+                <p className="text-sm text-muted-foreground">{t.teacher.questionGenerator.noDocuments}</p>
             ) : (
                 <div className="space-y-1">
                     {files.map((f) => (

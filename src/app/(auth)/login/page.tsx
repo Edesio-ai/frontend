@@ -19,7 +19,8 @@ import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
-import { useTranslations } from "@/lib/i18n/client";
+import { useTranslations, useLocale } from "@/lib/i18n/client";
+import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 
 export default function Connexion() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +29,7 @@ export default function Connexion() {
   const { signIn, user, loading, getUserRole } = useAuth();
   const router = useRouter();
   const t = useTranslations();
+  const locale = useLocale();
   const lt = t.login;
 
   const formSchema = z.object({
@@ -43,7 +45,7 @@ export default function Connexion() {
       if (role === "teacher") {
         router.push("/teacher");
       } else if (role === "student") {
-        router.push("/studer");
+        router.push("/student");
       } else if (role === "establishment") {
         router.push("/establishment");
       } else if (role === "self-learner") {
@@ -66,9 +68,10 @@ export default function Connexion() {
       return response;
     } catch (error) {
       const message = error instanceof Error ? error.message : lt.defaultError;
-      setErrorMessage(message);
+      const translated = translateSupabaseError(message, t.supabaseErrors, locale);
+      setErrorMessage(translated);
       setIsSubmitting(false);
-      throw new Error(message);
+      throw new Error(translated);
     }
   };
 
@@ -101,7 +104,8 @@ export default function Connexion() {
         }
       }
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : lt.defaultError);
+      const message = error instanceof Error ? error.message : lt.defaultError;
+      setErrorMessage(translateSupabaseError(message, t.supabaseErrors, locale));
       setIsSubmitting(false);
     }
   };

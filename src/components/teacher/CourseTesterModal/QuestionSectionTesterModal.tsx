@@ -65,7 +65,7 @@ export function QuestionSectionTesterModal({
             {isGenerating ? (
               <><Loader2 className="h-4 w-4 animate-spin mr-1" /> {t.teacher.questionGenerator.generating}</>
             ) : (
-              <><Sparkles className="h-4 w-4 mr-1" /> {questions.length > 0 ? "Re-générer" : t.teacher.questionGenerator.generate}</>
+              <><Sparkles className="h-4 w-4 mr-1" /> {questions.length > 0 ? t.teacher.questionGenerator.regenerate : t.teacher.questionGenerator.generate}</>
             )}
           </Button>
         </div>

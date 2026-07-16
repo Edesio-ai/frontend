@@ -36,7 +36,7 @@ export function QuestionGenerator({
             </h5>
 
             <p className="text-sm text-muted-foreground">
-                L&apos;IA va analyser le contenu du cours et les PDFs pour créer des questions.
+                {t.teacher.questionGeneratorHint}
             </p>
 
             <div className="grid grid-cols-2 gap-4">

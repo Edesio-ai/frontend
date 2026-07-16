@@ -136,12 +136,11 @@ export default function Student() {
     if (result.success) {
       toast({
         title: t.student.photoUpdated,
-        description: "Ta photo de profil a été enregistrée.",
       });
     } else {
       toast({
-        title: "Erreur",
-        description: result.error || "Impossible de mettre à jour la photo.",
+        title: t.common.error,
+        description: result.error || t.student.photoError,
         variant: "destructive",
       });
     }
@@ -263,7 +262,7 @@ export default function Student() {
     );
   }
 
-  const firstname = user.metadata?.firstname || "Élève";
+  const firstname = user.metadata?.firstname || "Student";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-500/5 via-background to-indigo-500/10">
@@ -458,7 +457,7 @@ export default function Student() {
               </div>
               <h3 className="font-semibold text-lg mb-2">{t.student.emptyTitle}</h3>
               <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-                Demande un code à ton professeur pour rejoindre une classe et commencer à apprendre avec l'IA.
+                Ask your teacher for a code to join a class and start learning with AI.
               </p>
               <Button
                 onClick={() => setJoinModalOpen(true)}
@@ -540,7 +539,7 @@ export default function Student() {
                             <div className="space-y-2">
                               <p className="text-xs text-muted-foreground flex items-center gap-2">
                                 <Sparkles className="h-3 w-3" />
-                                Sélectionne un cours pour réviser avec Edesio
+                                {t.student.chooseCourse}
                               </p>
                               <Select
                                 value={selectedCoursIdPerSession[session.id] || ""}
@@ -604,7 +603,7 @@ export default function Student() {
                                       data-testid={`button-cours-${selectedCoursForActions.id}`}
                                     >
                                       <MessageSquare className="h-4 w-4 mr-2" />
-                                      Réviser
+                                      Revise
                                     </Button>
                                     <Button
                                       variant="outline"
@@ -615,7 +614,7 @@ export default function Student() {
                                         handleOpenQA(selectedCoursForActions);
                                       }}
                                       data-testid={`button-qa-${selectedCoursForActions.id}`}
-                                      title="Questions & Réponses"
+                                      title={t.student.qaModal.title}
                                     >
                                       <HelpCircle className="h-4 w-4 mr-1" />
                                       Q&R
@@ -686,10 +685,9 @@ export default function Student() {
       <Dialog open={leaveModalOpen} onOpenChange={setLeaveModalOpen}>
         <DialogContent data-testid="modal-leave-session">
           <DialogHeader>
-            <DialogTitle className="text-destructive">Quitter la session ?</DialogTitle>
+            <DialogTitle className="text-destructive">Leave session?</DialogTitle>
             <DialogDescription>
-              Tu ne pourras plus accéder aux cours de "{sessionToLeave?.name}". Tu pourras
-              rejoindre à nouveau la session avec le code.
+              You will no longer have access to the lessons in &quot;{sessionToLeave?.name}&quot;. You can rejoin using the code.
             </DialogDescription>
           </DialogHeader>
 
@@ -744,8 +742,8 @@ export default function Student() {
             ) : rankings.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Trophy className="h-10 w-10 mx-auto opacity-30 mb-3" />
-                <p className="text-sm">Personne n'a encore participé à ce cours.</p>
-                <p className="text-xs mt-1">Sois le premier à réviser !</p>
+                <p className="text-sm">Nobody has participated in this lesson yet.</p>
+                <p className="text-xs mt-1">Be the first to revise!</p>
               </div>
             ) : (
               <div className="space-y-2 max-h-[350px] overflow-y-auto">
@@ -780,7 +778,7 @@ export default function Student() {
                           {isCurrentUser && <span className="text-xs text-primary ml-1">(Toi)</span>}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {ranking.correctAnswers}/{ranking.attemptedQuestions} réponses correctes
+                          {ranking.correctAnswers}/{ranking.attemptedQuestions} correct answers
                         </p>
                       </div>
                       <div className="text-right shrink-0">
@@ -813,13 +811,13 @@ export default function Student() {
             if (result.success) {
               toast({
                 title: t.student.progressSaved,
-                description: `Score : ${correctAnswers}/${totalAnswered}`,
+                description: `Score: ${correctAnswers}/${totalAnswered}`,
               });
             } else {
               console.error("Failed to save progress:", result.error);
               toast({
-                title: "Erreur",
-                description: result.error || "Impossible d'enregistrer la progression",
+                title: t.common.error,
+                description: result.error || t.hooks.student.progressError,
                 variant: "destructive",
               });
             }
@@ -841,9 +839,9 @@ export default function Student() {
         <Dialog open={loadingQuestions} onOpenChange={() => {}}>
           <DialogContent className="max-w-xs [&>button]:hidden">
             <DialogHeader className="text-center pb-2">
-              <DialogTitle className="text-base">Préparation du chatbot</DialogTitle>
+              <DialogTitle className="text-base">Preparing chatbot</DialogTitle>
               <DialogDescription>
-                Chargement des questions pour la révision.
+                {t.chatbot.loadingQuestions}
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col items-center pb-4">

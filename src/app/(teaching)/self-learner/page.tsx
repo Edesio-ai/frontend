@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useTranslations } from "@/lib/i18n/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -84,17 +84,24 @@ import { useAuth } from "@/hooks/use-auth";
 import { Language, QuestionType, SelfLearnerCourse, SelfLearnerCourseFile, SelfLearnerQuestion } from "@/types";
 
 
-const createCoursFormSchema = z.object({
-  titre: z.string().min(1, "Le titre du cours est requis").max(200, "Le titre est trop long"),
-  contenu: z.string().optional().or(z.literal("")),
-  langue: z.enum(["francais", "anglais", "espagnol", "allemand"]),
-});
-
-type CreateCoursFormValues = z.infer<typeof createCoursFormSchema>;
+type CreateCoursFormValues = {
+  titre: string;
+  contenu?: string;
+  langue: "francais" | "anglais" | "espagnol" | "allemand";
+};
 
 export default function SelfLearner() {
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
   const t = useTranslations();
+  const createCoursFormSchema = useMemo(
+    () =>
+      z.object({
+        titre: z.string().min(1, t.zod.courseTitleRequired).max(200, t.zod.courseTitleRequired),
+        contenu: z.string().optional().or(z.literal("")),
+        langue: z.enum(["francais", "anglais", "espagnol", "allemand"]),
+      }),
+    [t]
+  );
   const langueLabels: Record<Language, string> = {
     francais: t.selfLearner.langueLabels.francais,
     anglais: t.selfLearner.langueLabels.anglais,
@@ -676,7 +683,7 @@ export default function SelfLearner() {
     );
   }
 
-  const firstName = user.metadata?.firstname || selfLearner?.name || "Apprenant";
+  const firstName = user.metadata?.firstname || selfLearner?.name || t.dashboard.questionsPanel.studentFallback;
 
   return (
     <SubscriptionBlockModal>
@@ -754,10 +761,10 @@ export default function SelfLearner() {
                   className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text"
                   data-testid="text-self-learner-welcome"
                 >
-                  Edesio Solo
+                  {t.billing.planDetails["self-learner"].name}
                 </h1>
                 <p className="text-muted-foreground">
-                  Créez vos cours, générez des questions et entraînez-vous avec l'IA.
+                  {t.selfLearner.heroSubtitle}
                 </p>
               </div>
             </div>
@@ -781,7 +788,7 @@ export default function SelfLearner() {
                   <div className="flex-1 relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Rechercher un cours..."
+                      placeholder={t.teacher.searchPlaceholder}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-10 bg-background/50"
@@ -796,7 +803,7 @@ export default function SelfLearner() {
                           </div>
                         ) : searchResults.length === 0 ? (
                           <div className="p-4 text-center text-muted-foreground">
-                            Aucun cours trouvé pour "{searchQuery}"
+                            {t.selfLearner.noCourseFound.replace('{query}', searchQuery)}
                           </div>
                         ) : (
                           <div className="py-2">
@@ -829,7 +836,7 @@ export default function SelfLearner() {
                     data-testid="button-open-create-modal"
                   >
                     <Plus className="h-4 w-4 mr-2" />
-                    Nouveau cours
+                    {t.selfLearner.newCourse}
                   </Button>
                 </div>
               </Card>
@@ -841,8 +848,8 @@ export default function SelfLearner() {
                   <BookOpen className="h-5 w-5 text-amber-600" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold">Mes cours</h2>
-                  <p className="text-sm text-muted-foreground">{cours.length} cours créé{cours.length > 1 ? 's' : ''}</p>
+                  <h2 className="text-xl font-semibold">{t.selfLearner.myCourses}</h2>
+                  <p className="text-sm text-muted-foreground">{t.selfLearner.courseCount.replace('{count}', String(cours.length))}</p>
                 </div>
               </div>
 
@@ -851,13 +858,13 @@ export default function SelfLearner() {
                   <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-500/10 flex items-center justify-center mx-auto mb-4">
                     <BookOpen className="h-8 w-8 text-amber-500" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Aucun cours créé</h3>
+                  <h3 className="font-semibold text-lg mb-2">{t.selfLearner.emptyTitle}</h3>
                   <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                    Créez votre premier cours pour commencer à générer des questions et vous entraîner avec l'IA.
+                    {t.selfLearner.emptyHint}
                   </p>
                   <Button onClick={handleOpenCreateModal} className="shadow-lg shadow-amber-500/25 bg-amber-500 hover:bg-amber-600 focus-visible:ring-amber-500" data-testid="button-create-first-cours">
                     <Plus className="h-4 w-4 mr-2" />
-                    Créer mon premier cours
+                    {t.selfLearner.createFirst}
                   </Button>
                 </Card>
               ) : (
@@ -910,7 +917,7 @@ export default function SelfLearner() {
                           data-testid={`button-details-cours-${c.id}`}
                         >
                           <Eye className="h-4 w-4 mr-1" />
-                          Détails
+                          {t.selfLearner.details}
                         </Button>
                         <Button
                           size="sm"
@@ -919,7 +926,7 @@ export default function SelfLearner() {
                           data-testid={`button-reviser-cours-${c.id}`}
                         >
                           <MessageCircle className="h-4 w-4 mr-1" />
-                          Réviser
+                          {t.selfLearner.revise}
                         </Button>
                       </div>
                     </Card>
@@ -937,10 +944,10 @@ export default function SelfLearner() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
                   <Plus className="h-4 w-4 text-white" />
                 </div>
-                Créer un nouveau cours
+                {t.selfLearner.createModalTitle}
               </DialogTitle>
               <DialogDescription>
-                Ajoutez du contenu texte et/ou des fichiers PDF pour générer des questions.
+                {t.selfLearner.createModalDesc}
               </DialogDescription>
             </DialogHeader>
 
@@ -954,10 +961,10 @@ export default function SelfLearner() {
                         name="titre"
                         render={({ field }) => (
                           <FormItem className="flex-1">
-                            <FormLabel>Titre du cours</FormLabel>
+                            <FormLabel>{t.teacher.createModal.courseName}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Ex: Introduction à la philosophie"
+                                placeholder={t.selfLearner.titlePlaceholder}
                                 {...field}
                                 data-testid="input-new-cours-titre"
                               />
@@ -971,7 +978,7 @@ export default function SelfLearner() {
                         name="langue"
                         render={({ field }) => (
                           <FormItem className="w-full sm:w-44">
-                            <FormLabel>Langue</FormLabel>
+                            <FormLabel>{t.teacher.createModal.language}</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               value={field.value}
@@ -979,7 +986,7 @@ export default function SelfLearner() {
                               <FormControl>
                                 <SelectTrigger data-testid="select-new-cours-langue">
                                   <Globe className="h-4 w-4 mr-2 text-muted-foreground" />
-                                  <SelectValue placeholder="Langue" />
+                                  <SelectValue placeholder={t.teacher.createModal.language} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
@@ -1001,10 +1008,10 @@ export default function SelfLearner() {
                       name="contenu"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Contenu du cours (optionnel)</FormLabel>
+                          <FormLabel>{t.teacher.createModal.courseContent}</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Collez ici le contenu de votre cours..."
+                              placeholder={t.teacher.createModal.courseContentPlaceholder}
                               className="resize-none min-h-[150px]"
                               {...field}
                               data-testid="textarea-new-cours-contenu"
@@ -1016,7 +1023,7 @@ export default function SelfLearner() {
                     />
 
                     <div className="space-y-2">
-                      <FormLabel>Fichiers PDF (optionnels)</FormLabel>
+                      <FormLabel>{t.teacher.createModal.pdfs}</FormLabel>
                       <div className="border-2 border-dashed rounded-lg p-4 text-center">
                         <input
                           type="file"
@@ -1034,10 +1041,10 @@ export default function SelfLearner() {
                           data-testid="button-upload-pdf"
                         >
                           <Upload className="h-4 w-4 mr-2" />
-                          Ajouter des PDF
+                          {t.teacher.createModal.selectPdfs}
                         </Button>
                         <p className="text-sm text-muted-foreground mt-2">
-                          PDF uniquement
+                          {t.teacher.addCourse.pdfs}
                         </p>
                       </div>
 
@@ -1075,7 +1082,7 @@ export default function SelfLearner() {
                       onClick={handleCloseCreateModal}
                       disabled={isCreating}
                     >
-                      Annuler
+                      {t.common.cancel}
                     </Button>
                     <Button
                       type="submit"
@@ -1086,12 +1093,12 @@ export default function SelfLearner() {
                       {isCreating ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Création...
+                          {t.selfLearner.creating}
                         </>
                       ) : (
                         <>
                           <Plus className="h-4 w-4 mr-2" />
-                          Créer le cours
+                          {t.selfLearner.createCourse}
                         </>
                       )}
                     </Button>
@@ -1176,7 +1183,7 @@ export default function SelfLearner() {
                     </Button>
                   </div>
                   <DialogDescription>
-                    Gérez votre cours et générez des questions
+                    {t.selfLearner.manageCourse}
                   </DialogDescription>
                 </DialogHeader>
 
@@ -1185,7 +1192,7 @@ export default function SelfLearner() {
                     <TabsList className="w-full justify-start px-6 pt-2 bg-transparent border-b rounded-none">
                       <TabsTrigger value="content" className="gap-2">
                         <FileText className="h-4 w-4" />
-                        Contenu
+                        {t.teacher.addCourse.content}
                       </TabsTrigger>
                       <TabsTrigger value="questions" className="gap-2">
                         <Sparkles className="h-4 w-4" />
@@ -1196,7 +1203,7 @@ export default function SelfLearner() {
                     <TabsContent value="content" className="flex-1 overflow-y-auto p-6 m-0">
                       <div className="space-y-6">
                         <div>
-                          <h4 className="font-medium mb-2">Langue du cours</h4>
+                          <h4 className="font-medium mb-2">{t.teacher.createModal.language}</h4>
                           <Badge variant="outline">
                             {langueLabels[selectedCours.language as Language]}
                           </Badge>
@@ -1204,7 +1211,7 @@ export default function SelfLearner() {
 
                         {selectedCours.contentText && (
                           <div>
-                            <h4 className="font-medium mb-2">Contenu texte</h4>
+                            <h4 className="font-medium mb-2">{t.teacher.addCourse.content}</h4>
                             <div className="p-4 bg-muted/50 rounded-lg text-sm whitespace-pre-wrap max-h-60 overflow-y-auto">
                               {selectedCours.contentText}
                             </div>
@@ -1213,7 +1220,7 @@ export default function SelfLearner() {
 
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium">Fichiers PDF</h4>
+                            <h4 className="font-medium">{t.teacher.addCourse.pdfs}</h4>
                             <div>
                               <input
                                 type="file"
@@ -1236,7 +1243,7 @@ export default function SelfLearner() {
                                 ) : (
                                   <Plus className="h-4 w-4 mr-1" />
                                 )}
-                                Ajouter
+                                {t.teacher.createModal.selectPdfs}
                               </Button>
                             </div>
                           </div>
@@ -1247,7 +1254,7 @@ export default function SelfLearner() {
                           ) : coursFichiers.length === 0 ? (
                             <div className="border-2 border-dashed rounded-lg p-6 text-center">
                               <FileText className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                              <p className="text-sm text-muted-foreground mb-3">Aucun fichier PDF</p>
+                              <p className="text-sm text-muted-foreground mb-3">{t.dashboard.courseTester.noPdfs}</p>
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -1260,7 +1267,7 @@ export default function SelfLearner() {
                                 ) : (
                                   <Upload className="h-4 w-4 mr-1" />
                                 )}
-                                Ajouter un PDF
+                                {t.teacher.createModal.selectPdfs}
                               </Button>
                             </div>
                           ) : (
@@ -1292,7 +1299,7 @@ export default function SelfLearner() {
                                         const success = await deleteSelfLearnerCourseFile(fichier);
                                         if (success) {
                                           setCourseFiles((prev) => prev.filter((f) => f.id !== fichier.id));
-                                          toast({ title: "Fichier supprimé" });
+                                          toast({ title: t.selfLearner.fileDeleted });
                                         }
                                       }}
                                     >
@@ -1318,11 +1325,11 @@ export default function SelfLearner() {
                             data-testid="button-back-to-content"
                           >
                             <ChevronRight className="h-4 w-4 mr-1 rotate-180" />
-                            Retour au cours
+                            {t.common.back}
                           </Button>
                           <div className="flex-1" />
                           <Badge variant="outline" className="text-sm">
-                            {coursQuestions.length} question{coursQuestions.length !== 1 ? 's' : ''}
+                            {t.dashboard.courseTester.generatedCount.replace('{count}', String(coursQuestions.length))}
                           </Badge>
                         </div>
 
@@ -1333,7 +1340,7 @@ export default function SelfLearner() {
                             <Card className="p-5 bg-amber-500/5 border-amber-500/20 mb-6">
                               <h4 className="font-medium mb-4 flex items-center gap-2">
                                 <Sparkles className="h-4 w-4 text-amber-500" />
-                                Générer des questions avec l'IA
+                                {t.selfLearner.generateQuestionsAI}
                               </h4>
 
                               <div className="flex items-center gap-4 p-3 rounded-lg border bg-muted/30 mb-3">
@@ -1341,8 +1348,8 @@ export default function SelfLearner() {
                                   <CheckCircle2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="font-medium text-sm">QCM</p>
-                                  <p className="text-xs text-muted-foreground">Choix parmi plusieurs réponses</p>
+                                  <p className="font-medium text-sm">{t.teacher.questionGenerator.mcqLabel}</p>
+                                  <p className="text-xs text-muted-foreground">{t.selfLearner.mcqHint}</p>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
                                   <Input
@@ -1362,8 +1369,8 @@ export default function SelfLearner() {
                                   <PenLine className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="font-medium text-sm">Questions ouvertes</p>
-                                  <p className="text-xs text-muted-foreground">Réponse libre à rédiger</p>
+                                  <p className="font-medium text-sm">{t.teacher.questionGenerator.openLabel}</p>
+                                  <p className="text-xs text-muted-foreground">{t.selfLearner.openHint}</p>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
                                   <Input
@@ -1387,12 +1394,12 @@ export default function SelfLearner() {
                                 {isGenerating ? (
                                   <>
                                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    Génération en cours...
+                                    {t.selfLearner.generating}
                                   </>
                                 ) : (
                                   <>
                                     <Sparkles className="h-4 w-4 mr-2" />
-                                    Générer {qcmCount + ouverteCount} questions
+                                    {t.selfLearner.generateCount.replace('{count}', String(qcmCount + ouverteCount))}
                                   </>
                                 )}
                               </Button>
@@ -1410,7 +1417,7 @@ export default function SelfLearner() {
                           {isGenerating && (
                             <div className="flex flex-col items-center justify-center py-12">
                               <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
-                              <p className="text-sm text-muted-foreground">Génération en cours...</p>
+                              <p className="text-sm text-muted-foreground">{t.selfLearner.generating}</p>
                             </div>
                           )}
 
@@ -1423,12 +1430,12 @@ export default function SelfLearner() {
                                     <div className="space-y-3">
                                       <div className="flex items-center gap-2 mb-2">
                                         <Badge variant="outline" className="text-xs">
-                                          Question ouverte
+                                          {t.selfLearner.createOpen}
                                         </Badge>
                                         <span className="text-xs text-muted-foreground">#{index + 1}</span>
                                       </div>
                                       <div>
-                                        <label className="text-xs font-medium text-muted-foreground mb-1 block">Question</label>
+                                        <label className="text-xs font-medium text-muted-foreground mb-1 block">{t.teacher.editQuestion.question}</label>
                                         <Textarea
                                           value={editingQuestionText}
                                           onChange={(e) => setEditingQuestionText(e.target.value)}
@@ -1437,7 +1444,7 @@ export default function SelfLearner() {
                                         />
                                       </div>
                                       <div>
-                                        <label className="text-xs font-medium text-muted-foreground mb-1 block">Réponse attendue</label>
+                                        <label className="text-xs font-medium text-muted-foreground mb-1 block">{t.selfLearner.expectedAnswer}</label>
                                         <Textarea
                                           value={editingAnswerText}
                                           onChange={(e) => setEditingAnswerText(e.target.value)}
@@ -1452,7 +1459,7 @@ export default function SelfLearner() {
                                           onClick={handleCancelEditQuestion}
                                           data-testid={`button-cancel-edit-${index}`}
                                         >
-                                          Annuler
+                                          {t.common.cancel}
                                         </Button>
                                         <Button
                                           size="sm"
@@ -1461,7 +1468,7 @@ export default function SelfLearner() {
                                           data-testid={`button-save-question-${index}`}
                                         >
                                           <Check className="h-4 w-4 mr-1" />
-                                          Enregistrer
+                                          {t.common.save}
                                         </Button>
                                       </div>
                                     </div>
@@ -1473,7 +1480,7 @@ export default function SelfLearner() {
                                             variant="outline"
                                             className={`text-xs ${q.type === 'single' ? 'border-indigo-500/50 text-indigo-600 dark:text-indigo-400' : ''}`}
                                           >
-                                            {q.type === 'single' ? 'QCM' : 'Question ouverte'}
+                                            {q.type === 'single' ? t.teacher.questionGenerator.mcqLabel : t.selfLearner.createOpen}
                                           </Badge>
                                           <span className="text-xs text-muted-foreground">#{index + 1}</span>
                                         </div>
@@ -1502,7 +1509,7 @@ export default function SelfLearner() {
                                         {/* Open question answer */}
                                         {q.type === 'open' && q.correctAnswers?.[0] && (
                                           <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
-                                            <span className="font-medium">Réponse attendue : </span>
+                                            <span className="font-medium">{t.selfLearner.expectedAnswerLabel}</span>
                                             {q.correctAnswers?.[0]}
                                           </div>
                                         )}
@@ -1536,7 +1543,7 @@ export default function SelfLearner() {
 
                               {/* Add question buttons - AI generated */}
                               <div className="space-y-3">
-                                <div className="text-xs text-muted-foreground font-medium">Générer avec l'IA</div>
+                                <div className="text-xs text-muted-foreground font-medium">{t.selfLearner.generateWithAI}</div>
                                 <div className="flex gap-2">
                                   <Button
                                     variant="outline"
@@ -1546,7 +1553,7 @@ export default function SelfLearner() {
                                     data-testid="button-add-one-qcm"
                                   >
                                     {isGenerating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
-                                    Ajouter un QCM
+                                    {t.selfLearner.createQcm}
                                   </Button>
                                   <Button
                                     variant="outline"
@@ -1556,12 +1563,12 @@ export default function SelfLearner() {
                                     data-testid="button-add-one-ouverte"
                                   >
                                     {isGenerating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
-                                    Ajouter une question ouverte
+                                    {t.selfLearner.createOpen}
                                   </Button>
                                 </div>
 
                                 {/* Add question buttons - Manual */}
-                                <div className="text-xs text-muted-foreground font-medium mt-4">Créer manuellement</div>
+                                <div className="text-xs text-muted-foreground font-medium mt-4">{t.selfLearner.createManually}</div>
                                 <div className="flex gap-2">
                                   <Button
                                     variant="outline"
@@ -1571,7 +1578,7 @@ export default function SelfLearner() {
                                     data-testid="button-manual-qcm"
                                   >
                                     <Plus className="h-4 w-4 mr-2" />
-                                    QCM manuel
+                                    {t.selfLearner.createQcm}
                                   </Button>
                                   <Button
                                     variant="outline"
@@ -1581,7 +1588,7 @@ export default function SelfLearner() {
                                     data-testid="button-manual-ouverte"
                                   >
                                     <Plus className="h-4 w-4 mr-2" />
-                                    Question ouverte manuelle
+                                    {t.selfLearner.createOpen}
                                   </Button>
                                 </div>
                               </div>
@@ -1599,7 +1606,7 @@ export default function SelfLearner() {
                               data-testid="button-validate-questions"
                             >
                               <Check className="h-5 w-5 mr-2" />
-                              Valider les questions et accéder au chatbot
+                              {t.selfLearner.validateAndChat}
                             </Button>
                           </div>
                         )}
@@ -1636,8 +1643,8 @@ export default function SelfLearner() {
         }}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Renommer le cours</DialogTitle>
-              <DialogDescription>Modifiez le nom de votre cours</DialogDescription>
+              <DialogTitle>{t.teacher.renameModal.title}</DialogTitle>
+              <DialogDescription>{t.teacher.renameModalDesc}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 pt-2">
               <Input
@@ -1657,7 +1664,7 @@ export default function SelfLearner() {
                   disabled={isSavingCardRename}
                   data-testid="button-cancel-card-rename"
                 >
-                  Annuler
+                  {t.common.cancel}
                 </Button>
                 <Button
                   onClick={handleConfirmCardRename}
@@ -1666,7 +1673,7 @@ export default function SelfLearner() {
                   data-testid="button-confirm-card-rename"
                 >
                   {isSavingCardRename ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                  Renommer
+                  {t.teacher.renameSession}
                 </Button>
               </div>
             </div>
@@ -1683,7 +1690,7 @@ export default function SelfLearner() {
               <div className="flex items-center justify-between gap-2">
                 <DialogTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-amber-500" />
-                  Document PDF
+                  {t.teacher.addCourse.pdfs}
                 </DialogTitle>
               </div>
             </DialogHeader>
@@ -1704,16 +1711,16 @@ export default function SelfLearner() {
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>
-                {manualQuestionType === 'single' ? 'Créer un QCM' : 'Créer une question ouverte'}
+                {manualQuestionType === 'single' ? t.selfLearner.createQcm : t.selfLearner.createOpen}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 max-h-[60vh] overflow-y-auto">
               <div className="space-y-2">
-                <Label>Question</Label>
+                <Label>{t.teacher.editQuestion.question}</Label>
                 <Textarea
                   value={manualQuestionText}
                   onChange={(e) => setManualQuestionText(e.target.value)}
-                  placeholder="Entrez votre question..."
+                  placeholder={t.teacher.editQuestion.question}
                   className="min-h-[80px]"
                   data-testid="input-manual-question"
                 />
@@ -1721,7 +1728,7 @@ export default function SelfLearner() {
 
               {manualQuestionType === 'single' && (
                 <div className="space-y-2">
-                  <Label>Propositions (4 max)</Label>
+                  <Label>{t.dashboard.courseTester.qcmOneAnswer}</Label>
                   {manualQcmPropositions.map((prop: string, index: number) => (
                     <div key={index} className="flex gap-2 items-center">
                       <span className="text-sm font-medium w-6">{String.fromCharCode(65 + index)}.</span>
@@ -1732,7 +1739,7 @@ export default function SelfLearner() {
                           newProps[index] = e.target.value;
                           setManualQcmPropositions(newProps);
                         }}
-                        placeholder={`Proposition ${String.fromCharCode(65 + index)}`}
+                        placeholder={`${t.teacher.editQuestion.question} ${String.fromCharCode(65 + index)}`}
                         data-testid={`input-proposition-${index}`}
                       />
                     </div>
@@ -1741,11 +1748,11 @@ export default function SelfLearner() {
               )}
 
               <div className="space-y-2">
-                <Label>{manualQuestionType === 'single' ? 'Bonne réponse (texte exact d\'une proposition)' : 'Réponse attendue'}</Label>
+                <Label>{manualQuestionType === 'single' ? t.selfLearner.goodAnswerSelect : t.selfLearner.expectedAnswer}</Label>
                 {manualQuestionType === 'single' ? (
                   <Select value={manualQuestionAnswer} onValueChange={setManualQuestionAnswer}>
                     <SelectTrigger data-testid="select-correct-answer">
-                      <SelectValue placeholder="Sélectionner la bonne réponse" />
+                      <SelectValue placeholder={t.selfLearner.selectGoodAnswer} />
                     </SelectTrigger>
                     <SelectContent>
                       {manualQcmPropositions.filter((p: string) => p.trim()).map((prop: string, index: number) => (
@@ -1759,7 +1766,7 @@ export default function SelfLearner() {
                   <Textarea
                     value={manualQuestionAnswer}
                     onChange={(e) => setManualQuestionAnswer(e.target.value)}
-                    placeholder="Entrez la réponse attendue..."
+                    placeholder={t.selfLearner.enterExpectedAnswer}
                     className="min-h-[60px]"
                     data-testid="input-manual-answer"
                   />
@@ -1767,11 +1774,11 @@ export default function SelfLearner() {
               </div>
 
               <div className="space-y-2">
-                <Label>Explication (optionnel)</Label>
+                <Label>{t.teacher.editQuestion.explanation}</Label>
                 <Textarea
                   value={manualQuestionExplication}
                   onChange={(e) => setManualQuestionExplication(e.target.value)}
-                  placeholder="Explication qui sera affichée après la réponse..."
+                  placeholder={t.selfLearner.explanationPlaceholder}
                   className="min-h-[60px]"
                   data-testid="input-manual-explication"
                 />
@@ -1779,11 +1786,11 @@ export default function SelfLearner() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setManualQuestionModalOpen(false)} disabled={isCreatingManualQuestion}>
-                Annuler
+                {t.common.cancel}
               </Button>
               <Button onClick={handleCreateManualQuestion} disabled={isCreatingManualQuestion} data-testid="button-create-manual-question">
                 {isCreatingManualQuestion ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                Créer la question
+                {t.selfLearner.createQuestion}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -1821,23 +1828,6 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-const correctFeedbackMessages = [
-  "Bravo ! C'est la bonne réponse !",
-  "Excellent ! Tu as tout compris !",
-  "Super ! Continue comme ça !",
-  "Parfait ! Tu es sur la bonne voie !",
-  "Génial ! Tu maîtrises bien le sujet !",
-  "Bien joué ! C'est exact !",
-  "Formidable ! Tu progresses !",
-];
-
-const incorrectFeedbackMessages = [
-  "Pas tout à fait...",
-  "Ce n'est pas ça...",
-  "Hmm, pas exactement...",
-  "Presque ! Mais ce n'est pas la bonne réponse.",
-  "Pas cette fois...",
-];
 
 function getRandomMessage(messages: string[]): string {
   return messages[Math.floor(Math.random() * messages.length)];
@@ -1861,7 +1851,7 @@ function TypingIndicatorAutonome() {
   );
 }
 
-function MessageBubbleAutonome({ message }: { message: ChatMessage }) {
+function MessageBubbleAutonome({ message, t }: { message: ChatMessage; t: ReturnType<typeof useTranslations> }) {
   const isBot = message.sender === "bot";
 
   return (
@@ -1931,7 +1921,7 @@ function MessageBubbleAutonome({ message }: { message: ChatMessage }) {
               : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
                 ? "text-orange-700 dark:text-orange-300"
                 : "text-red-700 dark:text-red-300"
-              }`}>Session terminée !</span>
+              }`}>{t.chatbot.sessionEnded}</span>
           </div>
         )}
         <p className="text-sm sm:text-base whitespace-pre-wrap leading-relaxed">{message.text}</p>
@@ -1942,21 +1932,21 @@ function MessageBubbleAutonome({ message }: { message: ChatMessage }) {
                 <div className="p-1 rounded-full bg-emerald-500/20">
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">Bonne réponse ! +1 point</span>
+                <span className="text-sm font-semibold">{t.chatbot.goodAnswer}</span>
               </div>
             ) : message.isPartial ? (
               <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                 <div className="p-1 rounded-full bg-orange-500/20">
                   <Star className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">Réponse partielle +0.5 point</span>
+                <span className="text-sm font-semibold">{t.chatbot.partialAnswer}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
                 <div className="p-1 rounded-full bg-red-500/20">
                   <XCircle className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">À revoir</span>
+                <span className="text-sm font-semibold">{t.chatbot.wrongAnswer}</span>
               </div>
             )}
           </div>
@@ -1970,16 +1960,18 @@ function QCMOptionsAutonome({
   propositions,
   onSelect,
   disabled,
+  t,
 }: {
   propositions: string[];
   onSelect: (index: number) => void;
   disabled?: boolean;
+  t: ReturnType<typeof useTranslations>;
 }) {
   return (
     <div className="py-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="qcm-options-container">
       <div className="flex items-center justify-center gap-2 mb-4 text-xs text-muted-foreground">
         <Zap className="h-3.5 w-3.5 text-amber-500" />
-        <span>Clique sur ta réponse</span>
+        <span>{t.chatbot.clickAnswer}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {propositions.map((prop, i) => (
@@ -2007,18 +1999,20 @@ function MultiOptionsAutonome({
   onToggle,
   onValidate,
   disabled,
+  t,
 }: {
   propositions: string[];
   selectedIndices: number[];
   onToggle: (index: number) => void;
   onValidate: () => void;
   disabled?: boolean;
+  t: ReturnType<typeof useTranslations>;
 }) {
   return (
     <div className="py-4 space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="multi-options-container">
       <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
         <Star className="h-3.5 w-3.5 text-amber-500" />
-        <span>Sélectionne toutes les bonnes réponses</span>
+        <span>{t.chatbot.selectAllCorrect}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {propositions.map((prop, i) => {
@@ -2052,7 +2046,9 @@ function MultiOptionsAutonome({
           data-testid="button-validate-multi"
         >
           <Check className="h-4 w-4 mr-2" />
-          Valider ({selectedIndices.length} sélectionnée{selectedIndices.length > 1 ? 's' : ''})
+          {t.chatbot.validateSelection
+            .replace('{count}', String(selectedIndices.length))
+            .replace('{plural}', selectedIndices.length > 1 ? 's' : '')}
         </Button>
       </div>
     </div>
@@ -2060,6 +2056,9 @@ function MultiOptionsAutonome({
 }
 
 function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: string }) {
+  const t = useTranslations();
+  const correctFeedbackMessages: string[] = t.chatbot.correctAnswers;
+  const incorrectFeedbackMessages: string[] = t.chatbot.encouragementsAfterWrong;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -2087,10 +2086,13 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     }
 
     const question = questions[index];
-    let questionText = `Question ${index + 1}/${questions.length}\n\n${question.questionText}`;
+    let questionText = t.chatbot.questionLabel
+      .replace('{current}', String(index + 1))
+      .replace('{total}', String(questions.length))
+      + `\n\n${question.questionText}`;
 
     if (question.type === "multiple") {
-      questionText += "\n\n(Plusieurs réponses possibles)";
+      questionText += `\n\n${t.chatbot.multipleAnswersHint}`;
     }
 
     addMessage({
@@ -2106,20 +2108,25 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     const ratio = finalTotal > 0 ? finalScore / finalTotal : 0;
     const scoreDisplay = finalScore % 1 === 0 ? finalScore : finalScore.toFixed(1);
 
-    let feedbackText = "Bravo pour avoir terminé cette révision !";
+    let feedbackText = t.chatbot.completionDefault;
     if (ratio >= 0.8) {
-      feedbackText = "Excellent travail ! Tu maîtrises très bien ce sujet.";
+      feedbackText = t.chatbot.completionGood;
     } else if (ratio >= 0.6) {
-      feedbackText = "Bon travail ! Continue à réviser pour progresser encore.";
+      feedbackText = t.chatbot.completionMedium;
     } else if (ratio >= 0.4) {
-      feedbackText = "Tu as fait des efforts ! N'hésite pas à revoir les notions difficiles.";
+      feedbackText = t.chatbot.completionMedium;
     } else {
-      feedbackText = "Continue à t'entraîner, tu vas progresser !";
+      feedbackText = t.chatbot.completionLow;
     }
+
+    const scoreText = t.chatbot.completionScore
+      .replace('{score}', String(scoreDisplay))
+      .replace('{total}', String(finalTotal))
+      .replace('{percent}', String(Math.round(ratio * 100)));
 
     addMessage({
       sender: "bot",
-      text: `Tu as terminé la révision !\n\nTon score : ${scoreDisplay}/${finalTotal} points.\n\n${feedbackText}`,
+      text: `${t.chatbot.completionTitle}\n\n${scoreText}\n\n${feedbackText}`,
       type: "completion",
       scoreRatio: ratio,
     });
@@ -2220,7 +2227,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors de l'évaluation");
+        throw new Error(t.chatbot.evaluationError);
       }
 
       const evaluation = await response.json();
@@ -2254,7 +2261,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
     setTimeout(() => {
       if (isFullyCorrect) {
         const successMessage = isRetryAttempt
-          ? "Bravo ! C'est la bonne réponse ! Continue comme ça."
+          ? t.chatbot.goodContinue
           : feedback;
 
         addMessage({
@@ -2270,11 +2277,11 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
         setIsProcessing(false);
       } else if (isPartiallyCorrect) {
         const missingInfo = missingElements && missingElements.length > 0
-          ? `\n\nÉléments manquants : ${missingElements.join(", ")}`
+          ? `\n\n${t.chatbot.missingElements.replace('{elements}', missingElements.join(", "))}`
           : "";
         addMessage({
           sender: "bot",
-          text: `${feedback}${missingInfo}\n\nRéponse complète : ${correctAnswer}`,
+          text: `${feedback}${missingInfo}\n\n${t.chatbot.completeAnswer.replace('{answer}', correctAnswer)}`,
           type: "feedback",
           isCorrect: false,
           isPartial: true,
@@ -2288,7 +2295,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
         if (!isRetryAttempt) {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\nRéponse attendue : ${correctAnswer}\n\nQu'est-ce qui te semble être l'élément clé de cette réponse ?`,
+            text: `${feedback}\n\n${t.chatbot.expectedAnswer.replace('{answer}', correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -2298,7 +2305,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
         } else {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\nPas de souci, tu pourras revoir cette notion plus tard. Passons à la suite !`,
+            text: `${feedback}\n\n${t.chatbot.reviewLater}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -2327,7 +2334,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
       } else {
         addMessage({
           sender: "bot",
-          text: `${getRandomMessage(incorrectFeedbackMessages)} La bonne réponse était : ${correctAnswer}${explication ? `\n\n${explication}` : ""}`,
+          text: `${getRandomMessage(incorrectFeedbackMessages)} ${t.chatbot.correctWas.replace('{answer}', correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -2431,7 +2438,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
             <span className="font-bold text-sm">Edesio</span>
             <div className="text-xs text-muted-foreground flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Quiz en cours
+              {t.chatbot.chatbotStarting}
             </div>
           </div>
         </div>
@@ -2456,7 +2463,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
       {shuffledQuestions.length > 0 && totalAnswered > 0 && (
         <div className="px-4 py-2.5 border-b bg-muted/30">
           <div className="flex items-center justify-between text-xs mb-1.5">
-            <span className="text-muted-foreground font-medium">Progression</span>
+            <span className="text-muted-foreground font-medium">{t.pricing.plans[0].features[4]}</span>
             <span className="text-muted-foreground">{Math.round(progressPercent)}%</span>
           </div>
           <Progress value={progressPercent} className="h-2" />
@@ -2471,11 +2478,11 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
         {chatState === "loading" ? (
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
             <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
-            <p className="text-sm">Chargement des questions...</p>
+            <p className="text-sm">{t.selfLearner.chatbot.loadingQuestions}</p>
           </div>
         ) : (
           messages.map((message) => (
-            <MessageBubbleAutonome key={message.id} message={message} />
+            <MessageBubbleAutonome key={message.id} message={message} t={t} />
           ))
         )}
         {(isProcessing || showTyping) && <TypingIndicatorAutonome />}
@@ -2487,6 +2494,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
             propositions={currentPropositions}
             onSelect={handleQCMAnswer}
             disabled={isProcessing}
+            t={t}
           />
         </div>
       )}
@@ -2499,6 +2507,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
             onToggle={toggleMultiOption}
             onValidate={handleMultiAnswer}
             disabled={isProcessing}
+            t={t}
           />
         </div>
       )}
@@ -2525,7 +2534,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
               data-testid="button-acknowledge"
             >
               <ArrowRight className="h-5 w-5 mr-2" />
-              Question suivante
+              {t.chatbot.nextQuestion}
             </Button>
           </div>
         </div>
@@ -2539,7 +2548,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Tape ta réponse ici..."
+                placeholder={t.chatbot.inputPlaceholder}
                 className="min-h-[48px] max-h-[120px] py-3 px-4 rounded-xl bg-background/80 border-border/50 focus-visible:ring-amber-500/30 text-base resize-none overflow-y-auto"
                 data-testid="input-open-answer"
                 disabled={isProcessing}
@@ -2562,7 +2571,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
               <Send className="h-5 w-5" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">Appuie sur Entrée pour envoyer</p>
+          <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">{t.chatbot.pressEnter}</p>
         </div>
       )}
 
@@ -2575,7 +2584,7 @@ function ChatbotPanel({ coursId, coursLangue }: { coursId: string; coursLangue: 
               data-testid="button-restart-quiz"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
-              Recommencer le quiz
+              {t.chatbot.restart}
             </Button>
           </div>
         </div>

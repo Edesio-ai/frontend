@@ -108,7 +108,7 @@ export function EditQuestionModal({
 
                     {editedType === "single" && (
                         <div className="space-y-1">
-                            <label className="text-xs text-muted-foreground">Propositions (cliquez sur le bouton pour marquer la bonne réponse)</label>
+                            <label className="text-xs text-muted-foreground">{t.teacher.editPropositionsHint}</label>
                             {editedProposals.map((prop, i) => (
                                 <div key={i} className="flex items-center gap-2">
                                     <span className="font-medium text-xs w-4">{String.fromCharCode(65 + i)}.</span>
@@ -139,7 +139,7 @@ export function EditQuestionModal({
 
                     {editedType === "open" && (
                         <div className="space-y-1">
-                            <label className="text-xs text-muted-foreground">Réponse attendue</label>
+                            <label className="text-xs text-muted-foreground">{t.teacher.editQuestion.answer}</label>
                             <Textarea
                                 value={editedGoodAnswer}
                                 onChange={(e) => setEditedGoodAnswer(e.target.value)}

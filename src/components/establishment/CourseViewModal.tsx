@@ -122,7 +122,7 @@ export function CourseViewModal({
                               </div>
                             )}
                             <p className="text-sm">
-                              <strong>Réponse correcte :</strong>{" "}
+                              <strong>Correct answer:</strong>{" "}
                               <span className="text-green-600">
                                 {q.correctAnswers?.length
                                   ? q.correctAnswers
@@ -147,7 +147,7 @@ export function CourseViewModal({
               <div className="space-y-2">
                 <h3 className="font-medium text-sm flex flex-wrap items-center gap-2">
                   <Users className="h-4 w-4" />
-                  Élèves ayant travaillé sur ce cours ({sessionDetails.students.length})
+                  Students who worked on this lesson ({sessionDetails.students.length})
                 </h3>
                 {sessionDetails.students.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t.establishment.courseViewModal.noStudents}</p>
@@ -165,7 +165,7 @@ export function CourseViewModal({
                           <span className="font-medium">{student.name}</span>
                         </div>
                         <Badge variant="outline">
-                          {student.correctAnswers}/{student.totalAnswers} réponses correctes
+                          {student.correctAnswers}/{student.totalAnswers} correct answers
                         </Badge>
                       </div>
                     ))}
@@ -175,7 +175,7 @@ export function CourseViewModal({
             </div>
           ) : (
             <div className="text-center py-8 text-muted-foreground">
-              Impossible de charger les détails du cours.
+              Could not load lesson details.
             </div>
           )}
   

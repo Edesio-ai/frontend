@@ -31,8 +31,8 @@ export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDia
                         {t.teacher.questionGenerator.title}
                     </DialogTitle>
                     <DialogDescription>
-                        Choisissez combien de questions de chaque type vous souhaitez créer.
-                        {questions.length > 0 && " Les questions existantes seront remplacées."}
+                        {t.teacher.questionGenerator.chooseCounts}
+                        {questions.length > 0 && t.teacher.questionGenerator.willReplace}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -42,8 +42,8 @@ export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDia
                             <CircleDot className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm">Choix unique</p>
-                            <p className="text-xs text-muted-foreground">L&apos;élève choisit 1 seule réponse parmi 4</p>
+                            <p className="font-medium text-sm">{t.teacher.questionGenerator.singleChoice}</p>
+                            <p className="text-xs text-muted-foreground">{t.teacher.questionGenerator.singleChoiceHint}</p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                             <Input
@@ -63,8 +63,8 @@ export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDia
                             <PenLine className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm">Réponse rédigée</p>
-                            <p className="text-xs text-muted-foreground">L&apos;élève écrit sa réponse avec ses mots</p>
+                            <p className="font-medium text-sm">{t.teacher.questionGenerator.writtenAnswer}</p>
+                            <p className="text-xs text-muted-foreground">{t.teacher.questionGenerator.writtenAnswerHint}</p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                             <Input
@@ -80,12 +80,12 @@ export function RegenerateQuestionModal({ regenerateDialogOpen, setRegenerateDia
                     </div>
 
                     <div className="flex items-center justify-between pt-3 mt-2 border-t">
-                        <span className="text-sm font-medium">Total de questions à générer <span className="text-muted-foreground font-normal">(max {MAX_QUESTIONS})</span></span>
+                        <span className="text-sm font-medium">{t.teacher.questionGenerator.totalToGenerate} <span className="text-muted-foreground font-normal">{t.teacher.questionGenerator.maxHint.replace('{max}', String(MAX_QUESTIONS))}</span></span>
                         <span className="text-xl font-bold text-primary">{genTotalQuestions}</span>
                     </div>
 
                     {genTotalQuestions === 0 && (
-                        <p className="text-sm text-destructive text-center">Indiquez au moins 1 question à générer</p>
+                        <p className="text-sm text-destructive text-center">{t.teacher.questionGenerator.atLeastOne}</p>
                     )}
                 </div>
 

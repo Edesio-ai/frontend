@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import Negotiator from "negotiator";
 import { match } from "@formatjs/intl-localematcher";
-import { locales, defaultLocale, LOCALE_COOKIE, type Locale } from "@/lib/i18n/config";
+import { locales, defaultLocale, LOCALE_COOKIE, type Locale } from "./lib/i18n/config";
 
 function getLocale(request: NextRequest): Locale {
   const acceptLanguage = request.headers.get("accept-language") ?? "";

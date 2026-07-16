@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageCircle, Send, Check, Clock, HelpCircle } from "lucide-react";
 import { Course, CourseQuestion } from "@/types";
-import { useTranslations } from "@/lib/i18n/client";
+import { useTranslations, useLocale } from "@/lib/i18n/client";
 
 interface StudentQAModalProps {
   open: boolean;
@@ -32,6 +32,8 @@ export function StudentQAModal({
   sendCourseQuestion,
 }: StudentQAModalProps) {
   const t = useTranslations();
+  const locale = useLocale();
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<CourseQuestion[]>([]);
   const [newQuestion, setNewQuestion] = useState("");
@@ -73,7 +75,7 @@ export function StudentQAModal({
       setQuestions(prev => [result.question!, ...prev]);
       setNewQuestion("");
     } else {
-      setSubmitError(result.error || "Une erreur est survenue.");
+      setSubmitError(result.error || t.common.error);
     }
     
     setSubmitting(false);
@@ -93,7 +95,7 @@ export function StudentQAModal({
             {t.student.qaModal.title}
           </DialogTitle>
           <DialogDescription>
-            Posez une question au professeur ou consultez les réponses pour le cours "{cours.title}".
+            {t.student.qaModal.description.replace('{course}', cours.title)}
           </DialogDescription>
         </DialogHeader>
 
@@ -101,7 +103,7 @@ export function StudentQAModal({
           <Card className="p-4 bg-primary/5 border-primary/20">
             <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
               <MessageCircle className="h-4 w-4 text-primary" />
-              Poser une question
+              {t.student.qaModal.askQuestion}
             </h4>
             <Textarea
               placeholder={t.student.qaModal.inputPlaceholder}
@@ -146,7 +148,7 @@ export function StudentQAModal({
                 {t.student.qaModal.empty}
               </p>
               <p className="text-sm text-muted-foreground">
-                Sois la première personne à poser une question !
+                {t.student.qaModal.beFirst}
               </p>
             </div>
           ) : (
@@ -155,7 +157,7 @@ export function StudentQAModal({
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                     <Clock className="h-4 w-4" />
-                    En attente de réponse ({pendingQuestions.length})
+                    {t.student.qaModal.pending.replace('{count}', String(pendingQuestions.length))}
                   </h4>
                   {pendingQuestions.map((question) => (
                     <Card 
@@ -165,12 +167,12 @@ export function StudentQAModal({
                     >
                       <div className="flex items-start gap-2 mb-2">
                         <Badge className="bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30 text-xs shrink-0">
-                          En attente
+                          {t.student.qaModal.pending.replace(' ({count})', '').replace('({count})', '')}
                         </Badge>
                       </div>
                       <p className="text-sm">{question.questionText}</p>
                       <p className="text-xs text-muted-foreground mt-2">
-                        Posée le {new Date(question.createdAt).toLocaleDateString("fr-FR")}
+                        {t.student.qaModal.askedOn.replace('{date}', new Date(question.createdAt).toLocaleDateString(dateLocale))}
                       </p>
                     </Card>
                   ))}
@@ -181,7 +183,7 @@ export function StudentQAModal({
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                     <Check className="h-4 w-4" />
-                    Questions répondues ({answeredQuestions.length})
+                    {t.student.qaModal.answered.replace('{count}', String(answeredQuestions.length))}
                   </h4>
                   {answeredQuestions.map((question) => (
                     <Card 
@@ -194,7 +196,7 @@ export function StudentQAModal({
                         <p className="text-xs text-muted-foreground mb-1">{t.student.qaModal.teacherAnswer}</p>
                         <p className="text-sm">{question.answer}</p>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Répondu le {new Date(question.answeredAt!).toLocaleDateString("fr-FR")}
+                          {t.student.qaModal.answeredOn.replace('{date}', new Date(question.answeredAt!).toLocaleDateString(dateLocale))}
                         </p>
                       </div>
                     </Card>
@@ -207,7 +209,7 @@ export function StudentQAModal({
 
         <div className="border-t px-6 py-4 flex justify-end">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Fermer
+            {t.common.close}
           </Button>
         </div>
       </DialogContent>

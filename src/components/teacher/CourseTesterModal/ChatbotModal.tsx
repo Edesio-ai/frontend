@@ -40,7 +40,7 @@ export function ChatbotModal({ course, allCourses, sessionName, fetchQuestions, 
                                 data-testid="button-refresh-chatbot"
                             >
                                 <RefreshCw className="h-4 w-4 mr-1" />
-                                Rafraîchir
+                                {t.teacher.questionGenerator.refresh}
                             </Button>
                             <Button
                                 variant="ghost"

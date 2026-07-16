@@ -47,7 +47,7 @@ export function useEstablishment() {
       setTeachers([]);
       return establishment;
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Une erreur est survenue. Merci de réessayer.";
+      const message = err instanceof Error ? err.message : t.hooks.establishment.error;
       console.error("Error creating establishment:", message);
       setError(t.hooks.establishment.profileError);
     }
@@ -61,7 +61,7 @@ export function useEstablishment() {
       setStats(response.stats);
       return response;
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Une erreur est survenue. Merci de réessayer.";
+      const message = err instanceof Error ? err.message : t.hooks.establishment.error;
       if (message.includes("Establishment not found")) {
         if (user) {
           const name = user.metadata?.establishment ||

@@ -335,7 +335,7 @@ export default function Teacher() {
                   Tableau de bord
                 </h1>
                 <p className="text-muted-foreground">
-                  Créez vos classes et gérez vos cours avec Edesio.
+                  {t.teacher.emptySubtitle}
                 </p>
               </div>
             </div>
@@ -393,7 +393,7 @@ export default function Teacher() {
                 {selectedSession?.name}
               </DialogTitle>
               <DialogDescription>
-                Gérez les cours de cette session et visualisez les élèves inscrits.
+                Manage the lessons for this session and view enrolled students.
               </DialogDescription>
             </DialogHeader>
 

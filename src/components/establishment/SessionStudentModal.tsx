@@ -32,7 +32,7 @@ export function SessionStudentsModal({
               {t.establishment.sessionStudentModal.title.replace('{session}', session.name)}
             </DialogTitle>
             <DialogDescription>
-              {session.studentsCount} élève(s) inscrit(s) à cette session
+              {session.studentsCount} enrolled student(s)
             </DialogDescription>
           </DialogHeader>
   
@@ -48,7 +48,7 @@ export function SessionStudentsModal({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Élève</TableHead>
+                  <TableHead>Student</TableHead>
                   <TableHead>Email</TableHead>
                 </TableRow>
               </TableHeader>

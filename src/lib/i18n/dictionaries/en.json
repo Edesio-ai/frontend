@@ -42,6 +42,15 @@
     "institutions": "+20 institutions",
     "gdpr": "compliant"
   },
+  "chatSimulation": {
+    "title": "Edesio - Revision",
+    "messages": [
+      "Hi! I'm Edesio. I'll help you revise your lesson on the solar system. Let's go!",
+      "Question 1: What is the largest planet in the solar system?\n\nA. Saturn\nB. Jupiter\nC. Neptune",
+      "I think it's Jupiter, so answer B!",
+      "Well done! That's the right answer! Jupiter is the largest planet in the solar system, with a diameter 11 times that of Earth."
+    ]
+  },
   "functioning": {
     "badge": "How it works",
     "title": "A simple process in",
@@ -331,6 +340,20 @@
     "readArticle": "Read the article",
     "viewAll": "View all articles"
   },
+  "supabaseErrors": {
+    "invalidCredentials": "Invalid login credentials",
+    "genericError": "An error occurred. Please try again.",
+    "emailNotConfirmed": "Email address not confirmed",
+    "userAlreadyRegistered": "An account already exists with this email address",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "invalidEmailFormat": "Invalid email address format",
+    "validPasswordRequired": "A valid password is required",
+    "emailRequired": "Please provide an email address",
+    "rateLimitExceeded": "Too many attempts. Please try again later",
+    "securityWait": "For security reasons, please wait 60 seconds before trying again",
+    "invalidEmail": "The email address provided is not valid",
+    "invalidPassword": "The password provided is not valid"
+  },
   "login": {
     "title": "Log in to Edesio",
     "subtitle": "Access your personal space",
@@ -363,6 +386,9 @@
     "roleTeacher": "Teacher Account",
     "roleEstablishment": "Institution Account",
     "roleSolo": "Edesio Solo",
+    "productSolo": "Edesio Solo",
+    "productTeacher": "Edesio Teacher",
+    "productInstitution": "Edesio Institution",
     "firstName": "First name",
     "firstNamePlaceholder": "John",
     "lastName": "Last name",
@@ -384,6 +410,44 @@
     "defaultError": "Registration failed.",
     "errorPrefix": "Error creating account: ",
     "signInErrorPrefix": "Account created but login failed: "
+  },
+  "teacherInvitation": {
+    "createAccount": "Create your teacher account",
+    "invited": "You have been invited to join Edesio",
+    "invitedBy": "Invited by",
+    "teacherAccount": "Teacher Account",
+    "forEmail": "For:",
+    "validInvitation": "Valid invitation",
+    "chatbotSingular": "chatbot",
+    "chatbotPlural": "chatbots",
+    "chatbotsAllocated": " will be allocated by your institution",
+    "firstname": "First name",
+    "lastname": "Last name",
+    "email": "Email",
+    "emailHint": "Must match the address used for the invitation",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "acceptTerms": "I accept the terms of use",
+    "creating": "Creating...",
+    "create": "Create my account",
+    "hasAccount": "Already have an account?",
+    "login": "Log in",
+    "backHome": "Back to home",
+    "validating": "Validating your invitation...",
+    "invalidInvitation": "Invalid invitation",
+    "invalidLink": "Invalid invitation link",
+    "validationError": "Error validating the invitation",
+    "unknownError": "Unknown error",
+    "firstnameRequired": "First name is required",
+    "lastnameRequired": "Last name is required",
+    "emailInvalid": "Invalid email address",
+    "passwordMin": "Password must be at least 6 characters",
+    "confirmRequired": "Please confirm your password",
+    "acceptRequired": "You must accept the terms",
+    "passwordMismatch": "Passwords do not match",
+    "firstnamePlaceholder": "John",
+    "lastnamePlaceholder": "Doe",
+    "emailPlaceholder": "john.doe@school.com"
   },
   "forgotPassword": {
     "title": "Forgot your password?",
@@ -409,7 +473,11 @@
     "loading": "Loading your dashboard...",
     "emptyTitle": "No classes yet",
     "emptySubtitle": "Create your classes and manage your lessons with Edesio.",
+    "emptyCardHint": "Create your first class to start adding lessons and generating AI questions.",
     "createFirst": "Create my first class",
+    "renameModalDesc": "Edit the session name. This change will be visible to your students.",
+    "editPropositionsHint": "Propositions (click the button to mark the correct answer)",
+    "questionGeneratorHint": "AI will analyze the lesson content and PDFs to create questions.",
     "newClass": "New class",
     "searchPlaceholder": "Search a class...",
     "noClassFound": "No class found",
@@ -495,6 +563,7 @@
       "mcqLabel": "Multiple-choice questions",
       "openLabel": "Open questions",
       "generate": "Generate",
+      "regenerate": "Regenerate",
       "generating": "Generating...",
       "noQuestions": "No questions generated yet.",
       "addManually": "Add manually",
@@ -504,7 +573,19 @@
       "successDesc": "{{count}} question(s) generated successfully!",
       "validateSuccess": "Questions validated!",
       "errorTitle": "Error",
-      "errorDesc": "Could not generate questions. Please try again."
+      "errorDesc": "Could not generate questions. Please try again.",
+      "chooseCounts": "Choose how many questions of each type you want to create.",
+      "willReplace": " Existing questions will be replaced.",
+      "singleChoice": "Single choice",
+      "singleChoiceHint": "The student picks 1 answer out of 4",
+      "writtenAnswer": "Written answer",
+      "writtenAnswerHint": "The student writes the answer in their own words",
+      "totalToGenerate": "Total questions to generate",
+      "maxHint": "(max {max})",
+      "atLeastOne": "Indicate at least 1 question to generate",
+      "noDocuments": "No documents attached",
+      "pdfDocuments": "PDF documents ({count})",
+      "refresh": "Refresh"
     },
     "editQuestion": {
       "title": "Edit question",
@@ -595,7 +676,29 @@
     "completionMedium": "Good effort! A little more practice and you'll have it.",
     "completionLow": "Keep it up! Revision takes time — you'll get there.",
     "testChatbot": "Test chatbot - {name}",
-    "simulateExperience": "Simulate the student experience for this lesson"
+    "simulateExperience": "Simulate the student experience for this lesson",
+    "clickAnswer": "Click your answer",
+    "selectAllCorrect": "Select all correct answers",
+    "validateSelection": "Validate ({count} selected)",
+    "multipleAnswersHint": "(Multiple answers possible)",
+    "completionDefault": "Well done for finishing this revision!",
+    "goodContinue": "Great! That's the right answer! Keep it up.",
+    "expectedAnswer": "Expected answer: {answer}",
+    "keyElementPrompt": "What do you think is the key element of this answer?",
+    "reviewLater": "No worries, you can review this concept later. Let's move on!",
+    "correctWas": "The correct answer was: {answer}. No worries, let's move on!",
+    "correctIs": "The correct answer is: {answer}",
+    "bravoExact": "Great! That's it!",
+    "missingElements": "Missing elements: {elements}",
+    "completeAnswer": "Complete answer: {answer}",
+    "preparingQuestions": "AI is preparing unique questions for you",
+    "generating": "Generating...",
+    "preview": "Preview",
+    "chatbotStarting": "The chatbot is starting...",
+    "selectCourseToRevise": "Choose the lesson to revise",
+    "evaluationError": "Error during evaluation",
+    "addCoursesToTest": "Add lessons to test",
+    "answerPrefix": "Answer: {answer}"
   },
   "student": {
     "loading": "Loading...",
@@ -621,7 +724,14 @@
       "empty": "No questions have been asked yet...",
       "teacherAnswer": "Teacher's answer:",
       "emptyInput": "Please enter your question.",
-      "send": "Send"
+      "send": "Send",
+      "description": "Ask your teacher a question or check the answers for \"{course}\".",
+      "beFirst": "Be the first to ask a question!",
+      "pending": "Awaiting answer ({count})",
+      "askedOn": "Asked on {date}",
+      "answered": "Answered questions ({count})",
+      "answeredOn": "Answered on {date}",
+      "askQuestion": "Ask a question"
     }
   },
   "selfLearner": {
@@ -630,10 +740,38 @@
     "createFirst": "Create my first lesson",
     "newCourse": "New lesson",
     "generateWithAI": "Generate with AI",
+    "createManually": "Create manually",
     "validateAndChat": "Validate questions and access chatbot",
     "noQuestions": "No questions yet. Generate some to start!",
     "emptyTitle": "No lessons yet",
     "emptySubtitle": "Create your first lesson to get started.",
+    "heroSubtitle": "Create your lessons, generate questions and practice with AI.",
+    "noCourseFound": "No lesson found for \"{query}\"",
+    "courseCount": "{count} lesson(s) created",
+    "emptyHint": "Create your first lesson to start generating questions and practicing with AI.",
+    "details": "Details",
+    "revise": "Revise",
+    "createModalTitle": "Create a new lesson",
+    "createModalDesc": "Add text content and/or PDF files to generate questions.",
+    "titlePlaceholder": "e.g. Introduction to philosophy",
+    "creating": "Creating...",
+    "createCourse": "Create lesson",
+    "manageCourse": "Manage your lesson and generate questions",
+    "fileDeleted": "File deleted",
+    "generateQuestionsAI": "Generate questions with AI",
+    "mcqHint": "Choose among several answers",
+    "openHint": "Free-form written answer",
+    "generating": "Generating...",
+    "generateCount": "Generate {count} questions",
+    "expectedAnswer": "Expected answer",
+    "expectedAnswerLabel": "Expected answer: ",
+    "createQcm": "Create a multiple-choice question",
+    "createOpen": "Create an open question",
+    "goodAnswerSelect": "Correct answer (exact text of a proposition)",
+    "selectGoodAnswer": "Select the correct answer",
+    "enterExpectedAnswer": "Enter the expected answer...",
+    "explanationPlaceholder": "Explanation shown after the answer...",
+    "createQuestion": "Create question",
     "toasts": {
       "courseCreated": "Lesson created successfully!",
       "courseUpdated": "Lesson updated!",
@@ -717,14 +855,39 @@
       "noStudents": "No students have participated yet.",
       "deleteFile": "Delete this file?",
       "successGenerated": "{count} question(s) generated successfully!",
-      "errorGenerated": "Could not generate questions."
+      "errorGenerated": "Could not generate questions.",
+      "mustGenerateFirst": "You must generate questions first",
+      "createNewQuestion": "Create a new question for this lesson ({count}/{max})",
+      "qcmOneAnswer": "Multiple choice (1 correct answer)",
+      "clickToMarkCorrect": "Click the button to mark the correct answer",
+      "expectedAnswer": "Expected answer",
+      "expectedAnswerPlaceholder": "The expected answer...",
+      "explanationPlaceholder": "Answer explanation...",
+      "generateOrAdd": "Generate or manually add questions for this lesson",
+      "editBeforeGenerate": "Edit the lesson content before generating questions",
+      "createOwn": "Create your own questions one by one",
+      "generatedCount": "Generated questions ({count})",
+      "validateHint": "Once validated, you can test the student chatbot",
+      "contentPlaceholder": "Add text content to help the AI generate questions...",
+      "noPdfs": "No PDF files. Add PDFs to improve question generation.",
+      "deleteFileIrreversible": "This action is irreversible. The file will be permanently deleted.",
+      "manageContent": "Manage the lesson content and use \"Test chatbot\" to simulate the student experience",
+      "refreshRanking": "Refresh ranking",
+      "correctAnswers": "{correct}/{total} correct answers",
+      "questionLimit": "Limit of {max} questions reached"
     },
     "questionsPanel": {
       "noQuestions": "No questions",
       "noQuestionsHint": "Students haven't asked any questions yet...",
       "answerPlaceholder": "Write your answer...",
       "answer": "Reply",
-      "deleteQuestion": "Delete this question?"
+      "deleteQuestion": "Delete this question?",
+      "answeredCount": "{count} answered",
+      "askedBy": "By {name} on {date} at {time}",
+      "yourAnswer": "Your answer:",
+      "answeredOn": "Answered on {date}",
+      "deleteIrreversible": "This action is irreversible. The question and any answer will be permanently deleted.",
+      "studentFallback": "Student"
     }
   },
   "billing": {
@@ -735,6 +898,7 @@
     "popular": "Popular",
     "perMonth": "/mo",
     "perYear": "/yr",
+    "orPerYear": "or {price}/yr",
     "noCommitment": "No commitment",
     "easyCancel": "Easy cancellation",
     "classInfo": "1 class = 1 complete educational module with AI",
@@ -747,6 +911,44 @@
     "subscriptionInactive": "Your subscription is no longer active. Renew it to regain access.",
     "subscriptionCheckError": "Unable to verify subscription status",
     "contactUs": "Need help? Contact us at",
+    "planDetails": {
+      "self-learner": {
+        "name": "Edesio Solo",
+        "description": "For individual learners and self-taught students.",
+        "features": [
+          "1 class included",
+          "Up to 50 lessons",
+          "AI question generation",
+          "Personal AI chatbot",
+          "Progress tracking",
+          "Mobile app"
+        ]
+      },
+      "teacher": {
+        "name": "Edesio Teacher",
+        "description": "For a teacher with multiple classes.",
+        "features": [
+          "10 classes included",
+          "Up to 50 lessons per class",
+          "Unlimited students",
+          "Detailed statistics",
+          "Mobile app"
+        ]
+      },
+      "establishment": {
+        "name": "Edesio Institution",
+        "description": "Cover your entire institution.",
+        "features": [
+          "150 classes included",
+          "Up to 50 lessons per class",
+          "Unlimited teachers",
+          "Unlimited students",
+          "Priority support",
+          "Institution statistics",
+          "Mobile app"
+        ]
+      }
+    },
     "cancelModal": {
       "title": "Cancel your subscription?",
       "description": "You will lose access to all Edesio features at the end of your current billing period.",
@@ -823,8 +1025,15 @@
     "newsletterSuccessDesc": "You'll receive our next articles by email.",
     "newsletterError": "An error occurred. Please try again.",
     "articleNotFound": "Article not found",
+    "articleNotFoundDesc": "The article you are looking for does not exist.",
     "suggestedArticles": "Suggested articles",
-    "backToBlog": "Back to blog"
+    "backToBlog": "Back to blog",
+    "author": "Author",
+    "sources": "Sources and references",
+    "ctaTitle": "Ready to transform your lessons with AI?",
+    "ctaDesc": "Discover how Edesio can help you create engaging learning experiences for your students.",
+    "viewPricing": "View pricing",
+    "allRights": "All rights reserved"
   },
   "hooks": {
     "teacher": {
@@ -857,7 +1066,8 @@
       "questionEmpty": "The question cannot be empty.",
       "questionError": "Could not send the question.",
       "questionSent": "Question sent!",
-      "progressError": "Error saving progress."
+      "progressError": "Error saving progress.",
+      "imageTooLarge": "Image is too large (max 5 MB)."
     },
     "selfLearner": {
       "error": "An error occurred. Please try again.",

@@ -25,7 +25,7 @@ export function RenameSessionModal({ renameModalOpen, setRenameModalOpen, newNam
                 <DialogHeader>
                     <DialogTitle>{t.teacher.renameModal.title}</DialogTitle>
                     <DialogDescription>
-                        Modifiez le nom de votre session. Ce changement sera visible par vos élèves.
+                        {t.teacher.renameModalDesc}
                     </DialogDescription>
                 </DialogHeader>
 

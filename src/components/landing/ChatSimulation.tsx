@@ -1,35 +1,23 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-
+import { useTranslations } from "@/lib/i18n/client";
 
 interface Message {
     role: "student" | "ai";
     content: string;
 }
 
-const messages: Message[] = [
-    {
-        role: "ai",
-        content:
-            "Bonjour ! Je suis Edesio. Je vais t'aider à réviser ton cours sur le système solaire. C'est parti !",
-    },
-    {
-        role: "ai",
-        content:
-            "Question 1 : Quelle est la plus grande planète du système solaire ?\n\nA. Saturne\nB. Jupiter\nC. Neptune",
-    },
-    {
-        role: "student",
-        content: "Je pense que c'est Jupiter, donc la réponse B !",
-    },
-    {
-        role: "ai",
-        content:
-            "Bravo ! C'est la bonne réponse ! Jupiter est la plus grande planète du système solaire, avec un diamètre 11 fois supérieur à celui de la Terre.",
-    },
-];
+const messageRoles: Message["role"][] = ["ai", "ai", "student", "ai"];
 
 export function ChatSimulation() {
+    const t = useTranslations();
+    const messages: Message[] = t.chatSimulation.messages.map((content: string, index: number) => ({
+        role: messageRoles[index],
+        content,
+    }));
+
     return (
         <Card className="p-4 md:p-6 shadow-2xl bg-card border-card-border relative overflow-hidden">
             {/* Decorative gradient */}
@@ -45,7 +33,7 @@ export function ChatSimulation() {
                     <div className="flex items-center gap-2 ml-2">
                         <img src="/edesio-logo-square.png" alt="Edesio" className="w-6 h-6 rounded-md object-cover" />
                         <span className="text-sm text-muted-foreground font-medium">
-                            Edesio - Révision
+                            {t.chatSimulation.title}
                         </span>
                     </div>
                 </div>

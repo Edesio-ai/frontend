@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageCircle, Send, Check, Clock, Trash2 } from "lucide-react";
 import type { Course, CourseQuestion } from "@/types";
-import { useTranslations } from "@/lib/i18n/client";
+import { useTranslations, useLocale } from "@/lib/i18n/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,6 +41,8 @@ export function QuestionsCoursePanel({
   onPendingCountChange,
 }: QuestionsCoursPanelProps) {
   const t = useTranslations();
+  const locale = useLocale();
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<QuestionsCoursWithCourse[]>([]);
   const [answeringId, setAnsweringId] = useState<string | null>(null);
@@ -168,13 +170,13 @@ export function QuestionsCoursePanel({
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="gap-1.5">
             <Clock className="h-3 w-3" />
-            {pendingCount} en attente
+            {t.student.qaModal.pending.replace('{count}', String(pendingCount))}
           </Badge>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="gap-1.5">
             <Check className="h-3 w-3" />
-            {answeredCount} répondues
+            {t.dashboard.questionsPanel.answeredCount.replace('{count}', String(answeredCount))}
           </Badge>
         </div>
       </div>
@@ -195,7 +197,7 @@ export function QuestionsCoursePanel({
                     </Badge>
                     {!question.answer && (
                       <Badge className="bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30 text-xs">
-                        En attente
+                        {t.student.qaModal.pending.replace(' ({count})', '').replace('({count})', '')}
                       </Badge>
                     )}
                   </div>
@@ -203,7 +205,10 @@ export function QuestionsCoursePanel({
                     {question.questionText}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Par <span className="font-medium">{question.studentName || "Élève"}</span> le {new Date(question.createdAt).toLocaleDateString("fr-FR")} à {new Date(question.createdAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                    {t.dashboard.questionsPanel.askedBy
+                      .replace('{name}', question.studentName || t.dashboard.questionsPanel.studentFallback)
+                      .replace('{date}', new Date(question.createdAt).toLocaleDateString(dateLocale))
+                      .replace('{time}', new Date(question.createdAt).toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit" }))}
                   </p>
                 </div>
                 <Button
@@ -219,10 +224,10 @@ export function QuestionsCoursePanel({
 
               {question.answer ? (
                 <div className="pl-4 border-l-2 border-primary/30">
-                  <p className="text-sm text-muted-foreground mb-1">Votre réponse :</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t.dashboard.questionsPanel.yourAnswer}</p>
                   <p className="text-sm">{question.answer}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Répondu le {new Date(question.answeredAt!).toLocaleDateString("fr-FR")}
+                    {t.dashboard.questionsPanel.answeredOn.replace('{date}', new Date(question.answeredAt!).toLocaleDateString(dateLocale))}
                   </p>
                 </div>
               ) : answeringId === question.id ? (
@@ -241,7 +246,7 @@ export function QuestionsCoursePanel({
                       onClick={handleCancelAnswer}
                       disabled={submitting}
                     >
-                      Annuler
+                      {t.common.cancel}
                     </Button>
                     <Button
                       size="sm"
@@ -266,7 +271,7 @@ export function QuestionsCoursePanel({
                   data-testid={`button-answer-${question.id}`}
                 >
                   <MessageCircle className="h-4 w-4 mr-2" />
-                  Répondre
+                  {t.dashboard.questionsPanel.answer}
                 </Button>
               )}
             </div>
@@ -279,11 +284,11 @@ export function QuestionsCoursePanel({
           <AlertDialogHeader>
             <AlertDialogTitle>{t.dashboard.questionsPanel.deleteQuestion}</AlertDialogTitle>
             <AlertDialogDescription>
-              Cette action est irréversible. La question et sa réponse éventuelle seront définitivement supprimées.
+              {t.dashboard.questionsPanel.deleteIrreversible}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>Annuler</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{t.common.cancel}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={deleting}
@@ -292,7 +297,7 @@ export function QuestionsCoursePanel({
               {deleting ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : null}
-              Supprimer
+              {t.teacher.deleteQuestionModal.confirm}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

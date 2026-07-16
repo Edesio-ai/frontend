@@ -47,8 +47,7 @@ export default function InvitationModal({
                 <DialogHeader>
                     <DialogTitle>{t.establishment.invitationModal.title}</DialogTitle>
                     <DialogDescription>
-                        Entrez l'adresse email du professeur que vous souhaitez inviter.
-                        Un code d'invitation sera généré et ne pourra être utilisé que par cette adresse email.
+                        Enter the teacher's email address. An invitation code will be generated for that address only.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -68,12 +67,12 @@ export default function InvitationModal({
                             />
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Le code sera valide pendant 7 jours et ne pourra être utilisé que par cette adresse email.
+                            The code is valid for 7 days and can only be used by this email address.
                         </p>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="chatbots-count">Nombre de chatbots alloués</Label>
+                        <Label htmlFor="chatbots-count">Allocated chatbots</Label>
                         <Input
                             id="chatbots-count"
                             type="number"
@@ -85,7 +84,7 @@ export default function InvitationModal({
                             data-testid="input-chatbots-count"
                         />
                         <p className="text-xs text-muted-foreground">
-                            Nombre de sessions/chatbots que ce professeur pourra créer.
+                            Number of sessions/chatbots this teacher can create.
                         </p>
                     </div>
                 </div>

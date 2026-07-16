@@ -42,6 +42,15 @@
     "institutions": "+20 établissements",
     "gdpr": "conforme"
   },
+  "chatSimulation": {
+    "title": "Edesio - Révision",
+    "messages": [
+      "Bonjour ! Je suis Edesio. Je vais t'aider à réviser ton cours sur le système solaire. C'est parti !",
+      "Question 1 : Quelle est la plus grande planète du système solaire ?\n\nA. Saturne\nB. Jupiter\nC. Neptune",
+      "Je pense que c'est Jupiter, donc la réponse B !",
+      "Bravo ! C'est la bonne réponse ! Jupiter est la plus grande planète du système solaire, avec un diamètre 11 fois supérieur à celui de la Terre."
+    ]
+  },
   "functioning": {
     "badge": "Comment ça marche",
     "title": "Un processus simple en",
@@ -331,6 +340,20 @@
     "readArticle": "Lire l'article",
     "viewAll": "Voir tous les articles"
   },
+  "supabaseErrors": {
+    "invalidCredentials": "Identifiants de connexion invalides",
+    "genericError": "Une erreur est survenue. Veuillez réessayer.",
+    "emailNotConfirmed": "Adresse e-mail non confirmée",
+    "userAlreadyRegistered": "Un compte existe déjà avec cette adresse e-mail",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+    "invalidEmailFormat": "Format d'adresse e-mail invalide",
+    "validPasswordRequired": "Un mot de passe valide est requis",
+    "emailRequired": "Veuillez fournir une adresse e-mail",
+    "rateLimitExceeded": "Trop de tentatives. Veuillez réessayer plus tard",
+    "securityWait": "Pour des raisons de sécurité, veuillez attendre 60 secondes avant de réessayer",
+    "invalidEmail": "L'adresse e-mail fournie n'est pas valide",
+    "invalidPassword": "Le mot de passe fourni n'est pas valide"
+  },
   "login": {
     "title": "Connexion à Edesio",
     "subtitle": "Accédez à votre espace personnel",
@@ -363,6 +386,9 @@
     "roleTeacher": "Compte Professeur",
     "roleEstablishment": "Compte Établissement",
     "roleSolo": "Edesio Solo",
+    "productSolo": "Edesio Solo",
+    "productTeacher": "Edesio Professeur",
+    "productInstitution": "Edesio Établissement",
     "firstName": "Prénom",
     "firstNamePlaceholder": "Jean",
     "lastName": "Nom",
@@ -384,6 +410,44 @@
     "defaultError": "Échec de l'inscription.",
     "errorPrefix": "Erreur lors de la création du compte : ",
     "signInErrorPrefix": "Compte créé mais erreur de connexion : "
+  },
+  "teacherInvitation": {
+    "createAccount": "Créer votre compte professeur",
+    "invited": "Vous avez été invité(e) à rejoindre Edesio",
+    "invitedBy": "Invité par",
+    "teacherAccount": "Compte Professeur",
+    "forEmail": "Pour :",
+    "validInvitation": "Invitation valide",
+    "chatbotSingular": "chatbot",
+    "chatbotPlural": "chatbots",
+    "chatbotsAllocated": " vous seront alloués par votre établissement",
+    "firstname": "Prénom",
+    "lastname": "Nom",
+    "email": "Adresse e-mail",
+    "emailHint": "Doit correspondre à l'adresse utilisée pour l'invitation",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "acceptTerms": "J'accepte les conditions générales d'utilisation",
+    "creating": "Création en cours...",
+    "create": "Créer mon compte",
+    "hasAccount": "Vous avez déjà un compte ?",
+    "login": "Se connecter",
+    "backHome": "Retour à l'accueil",
+    "validating": "Validation de votre invitation...",
+    "invalidInvitation": "Invitation invalide",
+    "invalidLink": "Lien d'invitation invalide",
+    "validationError": "Erreur lors de la validation de l'invitation",
+    "unknownError": "Erreur inconnue",
+    "firstnameRequired": "Le prénom est requis",
+    "lastnameRequired": "Le nom est requis",
+    "emailInvalid": "Adresse email invalide",
+    "passwordMin": "Le mot de passe doit contenir au moins 6 caractères",
+    "confirmRequired": "Veuillez confirmer votre mot de passe",
+    "acceptRequired": "Vous devez accepter les conditions générales",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "firstnamePlaceholder": "Jean",
+    "lastnamePlaceholder": "Dupont",
+    "emailPlaceholder": "jean.dupont@ecole.fr"
   },
   "forgotPassword": {
     "title": "Mot de passe oublié",
@@ -409,7 +473,11 @@
     "loading": "Chargement du tableau de bord...",
     "emptyTitle": "Aucune classe créée",
     "emptySubtitle": "Créez vos classes et gérez vos cours avec Edesio.",
+    "emptyCardHint": "Créez votre première classe pour commencer à ajouter des cours et générer des questions IA.",
     "createFirst": "Créer ma première classe",
+    "renameModalDesc": "Modifiez le nom de votre session. Ce changement sera visible par vos élèves.",
+    "editPropositionsHint": "Propositions (cliquez sur le bouton pour marquer la bonne réponse)",
+    "questionGeneratorHint": "L'IA va analyser le contenu du cours et les PDFs pour créer des questions.",
     "newClass": "Nouvelle classe",
     "searchPlaceholder": "Rechercher une classe...",
     "noClassFound": "Aucune classe trouvée",
@@ -495,6 +563,7 @@
       "mcqLabel": "Questions QCM",
       "openLabel": "Questions ouvertes",
       "generate": "Générer",
+      "regenerate": "Re-générer",
       "generating": "Génération en cours...",
       "noQuestions": "Aucune question générée.",
       "addManually": "Ajouter manuellement",
@@ -504,7 +573,19 @@
       "successDesc": "{{count}} question(s) générée(s) avec succès !",
       "validateSuccess": "Questions validées !",
       "errorTitle": "Erreur",
-      "errorDesc": "Impossible de générer les questions. Veuillez réessayer."
+      "errorDesc": "Impossible de générer les questions. Veuillez réessayer.",
+      "chooseCounts": "Choisissez combien de questions de chaque type vous souhaitez créer.",
+      "willReplace": " Les questions existantes seront remplacées.",
+      "singleChoice": "Choix unique",
+      "singleChoiceHint": "L'élève choisit 1 seule réponse parmi 4",
+      "writtenAnswer": "Réponse rédigée",
+      "writtenAnswerHint": "L'élève écrit sa réponse avec ses mots",
+      "totalToGenerate": "Total de questions à générer",
+      "maxHint": "(max {max})",
+      "atLeastOne": "Indiquez au moins 1 question à générer",
+      "noDocuments": "Aucun document attaché",
+      "pdfDocuments": "Documents PDF ({count})",
+      "refresh": "Rafraîchir"
     },
     "editQuestion": {
       "title": "Modifier la question",
@@ -595,7 +676,29 @@
     "completionMedium": "Bon effort ! Un peu plus de pratique et tu seras au top.",
     "completionLow": "Continue comme ça ! La révision prend du temps — tu y arriveras.",
     "testChatbot": "Test du chatbot - {name}",
-    "simulateExperience": "Simulez l'expérience élève pour ce cours"
+    "simulateExperience": "Simulez l'expérience élève pour ce cours",
+    "clickAnswer": "Clique sur ta réponse",
+    "selectAllCorrect": "Sélectionne toutes les bonnes réponses",
+    "validateSelection": "Valider ({count} sélectionnée{plural})",
+    "multipleAnswersHint": "(Plusieurs réponses possibles)",
+    "completionDefault": "Bravo pour avoir terminé cette révision !",
+    "goodContinue": "Bravo ! C'est la bonne réponse ! Continue comme ça.",
+    "expectedAnswer": "Réponse attendue : {answer}",
+    "keyElementPrompt": "Qu'est-ce qui te semble être l'élément clé de cette réponse ?",
+    "reviewLater": "Pas de souci, tu pourras revoir cette notion plus tard. Passons à la suite !",
+    "correctWas": "La bonne réponse était : {answer}. Pas de souci, passons à la suite !",
+    "correctIs": "La bonne réponse est : {answer}",
+    "bravoExact": "Bravo ! C'est bien ça !",
+    "missingElements": "Éléments manquants : {elements}",
+    "completeAnswer": "Réponse complète : {answer}",
+    "preparingQuestions": "L'IA prépare des questions inédites pour toi",
+    "generating": "Génération en cours...",
+    "preview": "Prévisualisation",
+    "chatbotStarting": "Le chatbot démarre...",
+    "selectCourseToRevise": "Choisis le cours à réviser",
+    "evaluationError": "Erreur lors de l'évaluation",
+    "addCoursesToTest": "Ajoutez des cours pour tester",
+    "answerPrefix": "Réponse : {answer}"
   },
   "student": {
     "loading": "Chargement...",
@@ -621,7 +724,14 @@
       "empty": "Aucune question n'a encore été posée...",
       "teacherAnswer": "Réponse du professeur :",
       "emptyInput": "Veuillez saisir votre question.",
-      "send": "Envoyer"
+      "send": "Envoyer",
+      "description": "Posez une question au professeur ou consultez les réponses pour le cours \"{course}\".",
+      "beFirst": "Sois la première personne à poser une question !",
+      "pending": "En attente de réponse ({count})",
+      "askedOn": "Posée le {date}",
+      "answered": "Questions répondues ({count})",
+      "answeredOn": "Répondu le {date}",
+      "askQuestion": "Poser une question"
     }
   },
   "selfLearner": {
@@ -630,10 +740,38 @@
     "createFirst": "Créer mon premier cours",
     "newCourse": "Nouveau cours",
     "generateWithAI": "Générer avec l'IA",
+    "createManually": "Créer manuellement",
     "validateAndChat": "Valider les questions et accéder au chatbot",
     "noQuestions": "Aucune question. Générez-en pour commencer !",
     "emptyTitle": "Aucun cours pour l'instant",
     "emptySubtitle": "Créez votre premier cours pour commencer.",
+    "heroSubtitle": "Créez vos cours, générez des questions et entraînez-vous avec l'IA.",
+    "noCourseFound": "Aucun cours trouvé pour \"{query}\"",
+    "courseCount": "{count} cours créé(s)",
+    "emptyHint": "Créez votre premier cours pour commencer à générer des questions et vous entraîner avec l'IA.",
+    "details": "Détails",
+    "revise": "Réviser",
+    "createModalTitle": "Créer un nouveau cours",
+    "createModalDesc": "Ajoutez du contenu texte et/ou des fichiers PDF pour générer des questions.",
+    "titlePlaceholder": "Ex: Introduction à la philosophie",
+    "creating": "Création...",
+    "createCourse": "Créer le cours",
+    "manageCourse": "Gérez votre cours et générez des questions",
+    "fileDeleted": "Fichier supprimé",
+    "generateQuestionsAI": "Générer des questions avec l'IA",
+    "mcqHint": "Choix parmi plusieurs réponses",
+    "openHint": "Réponse libre à rédiger",
+    "generating": "Génération en cours...",
+    "generateCount": "Générer {count} questions",
+    "expectedAnswer": "Réponse attendue",
+    "expectedAnswerLabel": "Réponse attendue : ",
+    "createQcm": "Créer un QCM",
+    "createOpen": "Créer une question ouverte",
+    "goodAnswerSelect": "Bonne réponse (texte exact d'une proposition)",
+    "selectGoodAnswer": "Sélectionner la bonne réponse",
+    "enterExpectedAnswer": "Entrez la réponse attendue...",
+    "explanationPlaceholder": "Explication qui sera affichée après la réponse...",
+    "createQuestion": "Créer la question",
     "toasts": {
       "courseCreated": "Cours créé avec succès !",
       "courseUpdated": "Cours mis à jour !",
@@ -717,14 +855,39 @@
       "noStudents": "Aucun élève n'a encore participé.",
       "deleteFile": "Supprimer ce fichier ?",
       "successGenerated": "{count} question(s) générée(s) avec succès !",
-      "errorGenerated": "Impossible de générer les questions."
+      "errorGenerated": "Impossible de générer les questions.",
+      "mustGenerateFirst": "Vous devez d'abord générer des questions",
+      "createNewQuestion": "Créez une nouvelle question pour ce cours ({count}/{max})",
+      "qcmOneAnswer": "QCM (1 bonne réponse)",
+      "clickToMarkCorrect": "Cliquez sur le bouton pour marquer la bonne réponse",
+      "expectedAnswer": "Réponse attendue",
+      "expectedAnswerPlaceholder": "La réponse attendue...",
+      "explanationPlaceholder": "Explication de la réponse...",
+      "generateOrAdd": "Générez ou ajoutez manuellement les questions pour ce cours",
+      "editBeforeGenerate": "Modifiez le contenu du cours avant de générer les questions",
+      "createOwn": "Créez vos propres questions une par une",
+      "generatedCount": "Questions générées ({count})",
+      "validateHint": "Une fois validées, vous pourrez tester le chatbot élève",
+      "contentPlaceholder": "Ajoutez du contenu texte pour aider l'IA à générer des questions...",
+      "noPdfs": "Aucun fichier PDF. Ajoutez des PDFs pour améliorer la génération de questions.",
+      "deleteFileIrreversible": "Cette action est irréversible. Le fichier sera définitivement supprimé.",
+      "manageContent": "Gérez le contenu du cours et utilisez le bouton \"Tester le chatbot\" pour simuler l'expérience élève",
+      "refreshRanking": "Rafraîchir le classement",
+      "correctAnswers": "{correct}/{total} réponses correctes",
+      "questionLimit": "Limite de {max} questions atteinte"
     },
     "questionsPanel": {
       "noQuestions": "Aucune question",
       "noQuestionsHint": "Les élèves n'ont pas encore posé de questions...",
       "answerPlaceholder": "Écrivez votre réponse...",
       "answer": "Répondre",
-      "deleteQuestion": "Supprimer cette question ?"
+      "deleteQuestion": "Supprimer cette question ?",
+      "answeredCount": "{count} répondues",
+      "askedBy": "Par {name} le {date} à {time}",
+      "yourAnswer": "Votre réponse :",
+      "answeredOn": "Répondu le {date}",
+      "deleteIrreversible": "Cette action est irréversible. La question et sa réponse éventuelle seront définitivement supprimées.",
+      "studentFallback": "Élève"
     }
   },
   "billing": {
@@ -735,6 +898,7 @@
     "popular": "Populaire",
     "perMonth": "/mois",
     "perYear": "/an",
+    "orPerYear": "soit {price}/an",
     "noCommitment": "Sans engagement",
     "easyCancel": "Résiliation facile",
     "classInfo": "1 classe = 1 module pédagogique complet avec IA",
@@ -747,6 +911,44 @@
     "subscriptionInactive": "Votre abonnement n'est plus actif. Renouvelez-le pour retrouver l'accès.",
     "subscriptionCheckError": "Impossible de vérifier le statut de l'abonnement",
     "contactUs": "Besoin d'aide ? Contactez-nous à",
+    "planDetails": {
+      "self-learner": {
+        "name": "Edesio Solo",
+        "description": "Pour les apprenants individuels et autodidactes.",
+        "features": [
+          "1 classe incluse",
+          "Jusqu'à 50 cours",
+          "Génération de questions IA",
+          "Chatbot IA personnel",
+          "Suivi de progression",
+          "Application mobile"
+        ]
+      },
+      "teacher": {
+        "name": "Edesio Professeur",
+        "description": "Pour un professeur avec plusieurs classes.",
+        "features": [
+          "10 classes incluses",
+          "Jusqu'à 50 cours par classe",
+          "Élèves illimités",
+          "Statistiques détaillées",
+          "Application mobile"
+        ]
+      },
+      "establishment": {
+        "name": "Edesio Établissement",
+        "description": "Couvrez l'ensemble de votre établissement.",
+        "features": [
+          "150 classes incluses",
+          "Jusqu'à 50 cours par classe",
+          "Professeurs illimités",
+          "Élèves illimités",
+          "Support prioritaire",
+          "Statistiques établissement",
+          "Application mobile"
+        ]
+      }
+    },
     "cancelModal": {
       "title": "Annuler votre abonnement ?",
       "description": "Vous perdrez l'accès à toutes les fonctionnalités Edesio à la fin de votre période de facturation actuelle.",
@@ -823,8 +1025,15 @@
     "newsletterSuccessDesc": "Vous recevrez nos prochains articles par email.",
     "newsletterError": "Une erreur est survenue. Veuillez réessayer.",
     "articleNotFound": "Article non trouvé",
+    "articleNotFoundDesc": "L'article que vous recherchez n'existe pas.",
     "suggestedArticles": "Articles suggérés",
-    "backToBlog": "Retour au blog"
+    "backToBlog": "Retour au blog",
+    "author": "Rédacteur",
+    "sources": "Sources et références",
+    "ctaTitle": "Prêt à transformer vos cours avec l'IA ?",
+    "ctaDesc": "Découvrez comment Edesio peut vous aider à créer des expériences d'apprentissage engageantes pour vos élèves.",
+    "viewPricing": "Voir les tarifs",
+    "allRights": "Tous droits réservés"
   },
   "hooks": {
     "teacher": {
@@ -857,7 +1066,8 @@
       "questionEmpty": "La question ne peut pas être vide.",
       "questionError": "Impossible d'envoyer la question.",
       "questionSent": "Question envoyée !",
-      "progressError": "Erreur lors de l'enregistrement de la progression."
+      "progressError": "Erreur lors de l'enregistrement de la progression.",
+      "imageTooLarge": "L'image est trop volumineuse (max 5 Mo)."
     },
     "selfLearner": {
       "error": "Une erreur est survenue. Merci de réessayer.",

@@ -1,6 +1,8 @@
+"use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslations } from "@/lib/i18n/client";
 import { Subscription } from "@/types";
 import { BillingService } from "@/services/billing.service";
 import { Badge } from "../ui/badge";
@@ -14,6 +16,7 @@ import { CancelSubscriptionModal } from "./CancelSubscriptionModal";
 
 export function SubscriptionSection() {
     const { toast } = useToast();
+    const t = useTranslations();
     const [subscription, setSubscription] = useState<Subscription | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [showCancelDialog, setShowCancelDialog] = useState(false);
@@ -46,15 +49,15 @@ export function SubscriptionSection() {
         await BillingService.cancelSubscription();
   
         toast({
-          title: "Abonnement annulé",
-          description: "Votre abonnement sera résilié à la fin de la période en cours.",
+          title: t.billing.subscriptionSection.cancelled,
+          description: t.billing.cancelModal.description,
         });
         fetchSubscription();
       } catch (error) {
         console.error("Error canceling subscription:", error);
         toast({
-          title: "Erreur",
-          description: "Impossible d'annuler l'abonnement.",
+          title: t.common.error,
+          description: t.billing.subscriptionSection.cancel,
           variant: "destructive",
         });
       } finally {
@@ -69,15 +72,14 @@ export function SubscriptionSection() {
         await BillingService.reactivateSubscription();
   
         toast({
-          title: "Abonnement réactivé",
-          description: "Votre abonnement a été réactivé avec succès.",
+          title: t.billing.subscriptionSection.reactivate,
         });
         fetchSubscription();
       } catch (error) {
         console.error("Error reactivating subscription:", error);
         toast({
-          title: "Erreur",
-          description: "Impossible de réactiver l'abonnement.",
+          title: t.common.error,
+          description: t.billing.subscriptionSection.reactivate,
           variant: "destructive",
         });
       } finally {
@@ -93,11 +95,11 @@ export function SubscriptionSection() {
     };
   
     const getStatusBadge = (status: string, cancelAtPeriodEnd: boolean) => {
-      if (cancelAtPeriodEnd) {
+          if (cancelAtPeriodEnd) {
         return (
           <Badge variant="secondary" className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
             <AlertTriangle className="h-3 w-3 mr-1" />
-            Annulation programmée
+            {t.billing.subscriptionSection.cancelled}
           </Badge>
         );
       }
@@ -106,21 +108,21 @@ export function SubscriptionSection() {
           return (
             <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
               <CheckCircle2 className="h-3 w-3 mr-1" />
-              Actif
+              Active
             </Badge>
           );
         case "past_due":
           return (
             <Badge variant="destructive">
               <XCircle className="h-3 w-3 mr-1" />
-              Paiement en retard
+              Past due
             </Badge>
           );
         case "canceled":
           return (
             <Badge variant="secondary" className="bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
               <XCircle className="h-3 w-3 mr-1" />
-              Annulé
+              {t.billing.subscriptionSection.cancelled}
             </Badge>
           );
         default:
@@ -168,13 +170,13 @@ export function SubscriptionSection() {
             </div>
             <div>
               <h2 className="text-lg font-semibold">Abonnement</h2>
-              <p className="text-sm text-muted-foreground">Gérez votre abonnement</p>
+              <p className="text-sm text-muted-foreground">Manage your subscription</p>
             </div>
           </div>
           <div className="text-center py-8">
             <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground mb-4">
-              {subscription?.isEstablishmentSubscription ? "Vous êtes sous l'abonnement de votre établissement." : "Vous n'avez pas d'abonnement actif."}
+              {subscription?.isEstablishmentSubscription ? "You are on your institution's subscription." : t.billing.subscriptionSection.noActive}
             </p>
             {(!subscription?.isEstablishmentSubscription )&& (
               <Link href="/billing/choose-plan">
@@ -196,10 +198,10 @@ export function SubscriptionSection() {
               </div>
               <div>
                 <h2 className="text-lg font-semibold">Abonnement</h2>
-                <p className="text-sm text-muted-foreground">Gérez votre abonnement</p>
-              </div>
+              <p className="text-sm text-muted-foreground">Manage your subscription</p>
             </div>
-            <span data-testid="badge-subscription-status">{getStatusBadge(subscription.status, subscription.cancelAtPeriodEnd)}</span>
+          </div>
+          <span data-testid="badge-subscription-status">{getStatusBadge(subscription.status, subscription.cancelAtPeriodEnd)}</span>
           </div>
   
           <div className="space-y-6">
@@ -223,7 +225,7 @@ export function SubscriptionSection() {
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
-                  {subscription.cancelAtPeriodEnd ? "Fin d'accès le" : "Prochaine facturation"}
+                  {subscription.cancelAtPeriodEnd ? "Access ends on" : t.billing.subscriptionSection.nextBilling}
                 </p>
               </div>
               <p className="font-semibold" data-testid="text-subscription-date">{formatDate(subscription.currentPeriodEnd)}</p>
@@ -253,7 +255,7 @@ export function SubscriptionSection() {
   
             {!subscription.last4 && (
               <div className="p-4 rounded-lg border">
-                <p className="text-sm text-muted-foreground mb-3">Aucun moyen de paiement enregistré</p>
+                <p className="text-sm text-muted-foreground mb-3">No payment method on file</p>
                 <Button
                   variant="outline"
                   size="sm"
@@ -270,10 +272,10 @@ export function SubscriptionSection() {
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <div>
                     <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                      Votre abonnement sera résilié le {formatDate(subscription.currentPeriodEnd)}
+                      Access ends on {formatDate(subscription.currentPeriodEnd)}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Vous conservez l'accès jusqu'à cette date.
+                      You retain access until that date.
                     </p>
                   </div>
                   <Button
@@ -285,12 +287,12 @@ export function SubscriptionSection() {
                     {isReactivating ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Réactivation...
+                        {t.billing.subscriptionSection.reactivating}
                       </>
                     ) : (
                       <>
                         <RefreshCw className="mr-2 h-4 w-4" />
-                        Réactiver l'abonnement
+                        {t.billing.subscriptionSection.reactivate}
                       </>
                     )}
                   </Button>
@@ -302,7 +304,7 @@ export function SubscriptionSection() {
                   onClick={() => setShowCancelDialog(true)}
                   data-testid="button-cancel-subscription"
                 >
-                  Annuler l'abonnement
+                  {t.billing.subscriptionSection.cancel}
                 </Button>
               ) : null}
             </div>

@@ -9,11 +9,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useAuth } from "@/hooks/use-auth";
 import { annualDiscountPercent, plans } from "@/utils/constants/billing";
 import { PlanCard } from "@/components/billing/PlanCard";
+import { useTranslations } from "@/lib/i18n/client";
 
 export default function ChoisirPlan() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [recommendedPlan, setRecommendedPlan] = useState<string | null>(null);
   const { user, getUserRole } = useAuth();
+  const t = useTranslations();
   const userRole = getUserRole();
 
   // Map user role to plan id
@@ -43,18 +45,18 @@ export default function ChoisirPlan() {
             <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
           </Link>
           <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white" data-testid="text-choose-plan-title">
-            Choisissez votre plan
+            {t.billing.title}
           </h1>
           <p className="text-lg text-slate-300 max-w-xl mx-auto mb-6">
             {filteredPlans.length === 1 
-              ? `Activez votre abonnement ${filteredPlans[0].name} pour accéder à toutes les fonctionnalités.`
-              : "Votre compte a été créé avec succès. Choisissez le plan qui correspond à vos besoins."
+              ? t.billing.activateDesc
+              : "Your account has been created. Choose the plan that fits your needs."
             }
           </p>
 
           <div className="flex items-center justify-center gap-4 mb-6">
             <span className={`text-sm font-medium transition-colors ${!isAnnual ? "text-white" : "text-slate-400"}`}>
-              Mensuel
+              {t.billing.monthly}
             </span>
             <Switch
               checked={isAnnual}
@@ -63,7 +65,7 @@ export default function ChoisirPlan() {
               className="data-[state=checked]:bg-amber-500"
             />
             <span className={`text-sm font-medium transition-colors ${isAnnual ? "text-white" : "text-slate-400"}`}>
-              Annuel
+              {t.billing.annual}
             </span>
             {isAnnual && (
               <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 border-none text-white text-xs">
@@ -75,7 +77,7 @@ export default function ChoisirPlan() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
             <Bot className="h-4 w-4 text-amber-400" />
             <span className="text-sm text-slate-200">
-              1 classe = 1 module pédagogique complet avec IA
+              {t.billing.classInfo}
             </span>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -84,9 +86,9 @@ export default function ChoisirPlan() {
                 </button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-xs text-left">
-                <p className="font-medium mb-1">Qu'est-ce qu'une classe ?</p>
+                <p className="font-medium mb-1">{t.billing.classTooltipTitle}</p>
                 <p className="text-xs text-muted-foreground">
-                  Une classe correspond à un module pédagogique complet : multi-cours autorisés, test complet intégré, et nombre d'élèves illimité.
+                  {t.billing.classTooltipDesc}
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -111,13 +113,13 @@ export default function ChoisirPlan() {
               <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
                 <Check className="h-4 w-4 text-emerald-400" />
               </div>
-              <span className="text-sm text-slate-300">Paiement sécurisé</span>
+              <span className="text-sm text-slate-300">Secure payment</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
                 <Check className="h-4 w-4 text-emerald-400" />
               </div>
-              <span className="text-sm text-slate-300">Résiliation facile</span>
+              <span className="text-sm text-slate-300">{t.billing.easyCancel}</span>
             </div>
           </div>
         </div>

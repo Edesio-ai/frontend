@@ -146,7 +146,7 @@ function MessageBubble({
         {isBot ? (
           <AvatarImage src="/edesio-logo-square.png" alt="Edesio" className="object-cover" />
         ) : studentPhotoUrl ? (
-          <AvatarImage src={studentPhotoUrl} alt={studentName || "Élève"} className="object-cover" />
+          <AvatarImage src={studentPhotoUrl} alt={studentName || t.dashboard.questionsPanel.studentFallback} className="object-cover" />
         ) : null}
         <AvatarFallback className={isBot ? "bg-primary/10 text-primary text-sm font-semibold" : "bg-gradient-to-br from-emerald-500 to-green-600 text-white font-bold text-sm"}>
           {isBot ? "IA" : studentName ? studentName.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
@@ -237,7 +237,7 @@ function MessageBubble({
                 <div className="p-1 rounded-full bg-red-500/20">
                   <XCircle className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">À revoir</span>
+                <span className="text-sm font-semibold">{t.chatbot.wrongAnswer}</span>
               </div>
             )}
           </div>
@@ -251,16 +251,18 @@ function QCMOptions({
   propositions,
   onSelect,
   disabled,
+  t,
 }: {
   propositions: string[];
   onSelect: (index: number) => void;
   disabled?: boolean;
+  t: Dictionary;
 }) {
   return (
     <div className="py-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="qcm-options-container">
       <div className="flex items-center justify-center gap-2 mb-4 text-xs text-muted-foreground">
         <Zap className="h-3.5 w-3.5 text-primary" />
-        <span>Clique sur ta réponse</span>
+        <span>{t.chatbot.clickAnswer}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {propositions.map((prop, i) => (
@@ -288,18 +290,20 @@ function MultiOptions({
   onToggle,
   onValidate,
   disabled,
+  t,
 }: {
   propositions: string[];
   selectedIndices: number[];
   onToggle: (index: number) => void;
   onValidate: () => void;
   disabled?: boolean;
+  t: Dictionary;
 }) {
   return (
     <div className="py-4 space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="multi-options-container">
       <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
         <Star className="h-3.5 w-3.5 text-primary" />
-        <span>Sélectionne toutes les bonnes réponses</span>
+        <span>{t.chatbot.selectAllCorrect}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {propositions.map((prop, i) => {
@@ -335,7 +339,9 @@ function MultiOptions({
           data-testid="button-validate-multi"
         >
           <Check className="h-4 w-4 mr-2" />
-          Valider ({selectedIndices.length} sélectionnée{selectedIndices.length > 1 ? 's' : ''})
+          {t.chatbot.validateSelection
+            .replace('{count}', String(selectedIndices.length))
+            .replace('{plural}', selectedIndices.length > 1 ? 's' : '')}
         </Button>
       </div>
     </div>
@@ -414,7 +420,7 @@ export function StudentChatbotModal({
         studentName: studentName || undefined,
       }
       const data = await llmService.generateCompletionFeedback(body);
-      const aiFeedback = data.feedback || "Bravo pour avoir terminé cette révision !";
+      const aiFeedback = data.feedback || t.chatbot.completionDefault;
       
       const scoreText = t.chatbot.completionScore
         .replace('{score}', String(scoreDisplay))
@@ -466,7 +472,7 @@ export function StudentChatbotModal({
     let questionText = `Question ${index + 1}/${shuffledQuestions.length}\n\n${question.questionText}`;
 
     if (question.type === "multiple") {
-      questionText += "\n\n(Plusieurs réponses possibles)";
+      questionText += `\n\n${t.chatbot.multipleAnswersHint}`;
     }
 
     addMessage({
@@ -672,7 +678,7 @@ export function StudentChatbotModal({
     setTimeout(() => {
       if (isFullyCorrect) {
         const successMessage = isRetryAttempt 
-          ? "Bravo ! C'est la bonne réponse ! Continue comme ça."
+          ? t.chatbot.goodContinue
           : feedback;
         
         addMessage({
@@ -690,7 +696,7 @@ export function StudentChatbotModal({
         if (!isRetryAttempt) {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\nRéponse attendue : ${correctAnswer}\n\nQu'est-ce qui te semble être l'élément clé de cette réponse ?`,
+            text: `${feedback}\n\n${t.chatbot.expectedAnswer.replace('{answer}', correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -700,7 +706,7 @@ export function StudentChatbotModal({
         } else {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\nPas de souci, tu pourras revoir cette notion plus tard. Passons à la suite !`,
+            text: `${feedback}\n\n${t.chatbot.reviewLater}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -725,7 +731,7 @@ export function StudentChatbotModal({
     setTimeout(() => {
       if (isCorrect) {
         const successMessage = isRetryAttempt 
-          ? `Bravo ! C'est bien ça !${explication ? `\n\n${explication}` : ""}`
+          ? `${t.chatbot.bravoExact}${explication ? `\n\n${explication}` : ""}`
           : `${getRandomMessage(correctFeedbackMessages)}${explication ? `\n\n${explication}` : ""}`;
         
         addMessage({
@@ -742,7 +748,7 @@ export function StudentChatbotModal({
         // First attempt failed - give them a chance to retry
         addMessage({
           sender: "bot",
-          text: `${getRandomMessage(incorrectFeedbackMessages)} La bonne réponse est : ${correctAnswer}\n\nQu'est-ce qui te semble être l'élément clé de cette réponse ?`,
+          text: `${getRandomMessage(incorrectFeedbackMessages)} ${t.chatbot.correctIs.replace('{answer}', correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -753,7 +759,7 @@ export function StudentChatbotModal({
         // Second attempt also failed - move on
         addMessage({
           sender: "bot",
-          text: `La bonne réponse était : ${correctAnswer}. Pas de souci, passons à la suite !${explication ? `\n\n${explication}` : ""}`,
+          text: `${t.chatbot.correctWas.replace('{answer}', correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -940,6 +946,7 @@ export function StudentChatbotModal({
               propositions={currentPropositions}
               onSelect={handleQCMAnswer}
               disabled={isProcessing}
+              t={t}
             />
           </div>
         )}
@@ -952,6 +959,7 @@ export function StudentChatbotModal({
               onToggle={toggleMultiOption}
               onValidate={handleMultiAnswer}
               disabled={isProcessing}
+              t={t}
             />
           </div>
         )}

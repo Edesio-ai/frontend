@@ -21,39 +21,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { UserRole } from "@/types";
-import { useTranslations } from "@/lib/i18n/client";
-
-function translateSupabaseError(message: string): string {
-  const errorTranslations: Record<string, string> = {
-    "Invalid login credentials": "Identifiants de connexion invalides",
-    "An error occures. Try again later": "Une erreur est survenue. Veuillez réessayer.",
-    "Email not confirmed": "Adresse e-mail non confirmée",
-    "A user with this email address has already been registered": "Un compte existe déjà avec cette adresse e-mail",
-    "Password should be at least 6 characters": "Le mot de passe doit contenir au moins 6 caractères",
-    "Unable to validate email address: invalid format": "Format d'adresse e-mail invalide",
-    "Signup requires a valid password": "Un mot de passe valide est requis",
-    "To signup, please provide your email": "Veuillez fournir une adresse e-mail",
-    "Email rate limit exceeded": "Trop de tentatives. Veuillez réessayer plus tard",
-    "For security purposes, you can only request this once every 60 seconds": "Pour des raisons de sécurité, veuillez attendre 60 secondes avant de réessayer",
-  };
-
-  for (const [englishError, frenchError] of Object.entries(errorTranslations)) {
-    if (message.toLowerCase().includes(englishError.toLowerCase())) {
-      return frenchError;
-    }
-  }
-
-  if (message.toLowerCase().includes("email") && message.toLowerCase().includes("invalid")) {
-    return "L'adresse e-mail fournie n'est pas valide";
-  }
-  if (message.toLowerCase().includes("password")) {
-    return "Le mot de passe fourni n'est pas valide";
-  }
-  if (message.toLowerCase().includes("rate limit") || message.toLowerCase().includes("too many")) {
-    return "Trop de tentatives. Veuillez réessayer plus tard";
-  }
-  return message;
-}
+import { useTranslations, useLocale } from "@/lib/i18n/client";
+import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 
 const formSchema = z
   .object({
@@ -85,6 +54,7 @@ export default function Register() {
   const router = useRouter();
   const t = useTranslations();
   const rt = t.register;
+  const locale = useLocale();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -106,8 +76,8 @@ export default function Register() {
       return response;
     } catch (error) {
       setIsSubmitting(false);
-      const message = error instanceof Error ? error.message : "An error occures. Try again later";
-      const translatedError = translateSupabaseError(message);
+      const message = error instanceof Error ? error.message : t.supabaseErrors.genericError;
+      const translatedError = translateSupabaseError(message, t.supabaseErrors, locale);
       setErrorMessage(`${rt.errorPrefix}${translatedError}`);
       throw new Error(translatedError);
     }
@@ -118,8 +88,8 @@ export default function Register() {
       await signIn(email, password);
     } catch (error) {
       setIsSubmitting(false);
-      const message = error instanceof Error ? error.message : "An error occures. Try again later";
-      const translatedError = translateSupabaseError(message);
+      const message = error instanceof Error ? error.message : t.supabaseErrors.genericError;
+      const translatedError = translateSupabaseError(message, t.supabaseErrors, locale);
       setErrorMessage(`${rt.signInErrorPrefix}${translatedError}`);
       throw new Error(translatedError);
     }
@@ -192,7 +162,7 @@ export default function Register() {
                     <Sparkles className="h-7 w-7 text-amber-600" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold">Edesio Solo</h3>
+                    <h3 className="text-xl font-semibold">{t.billing.planDetails["self-learner"].name}</h3>
                     <p className="text-sm text-muted-foreground">
                       {rt.soloDesc}
                     </p>
@@ -492,7 +462,7 @@ export default function Register() {
                         >
                           {rt.acceptTerms}{" "}
                           <Link
-                            href="/cgu"
+                            href="/terms-of-service"
                             className="text-primary underline hover:no-underline"
                             target="_blank"
                             onClick={(e) => e.stopPropagation()}
@@ -501,7 +471,7 @@ export default function Register() {
                           </Link>
                           {" "}{rt.and}{" "}
                           <Link
-                            href="/politique-confidentialite"
+                            href="/privacy-policy"
                             className="text-primary underline hover:no-underline"
                             target="_blank"
                             onClick={(e) => e.stopPropagation()}
