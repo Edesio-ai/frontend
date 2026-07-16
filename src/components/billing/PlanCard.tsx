@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { annualDiscountPercent } from "@/utils/constants/billing";
 import { BillingService } from "@/services/billing.service";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "@/lib/i18n/client";
 
 type PlanCardProps = {
 
@@ -15,6 +16,7 @@ type PlanCardProps = {
 }
 
 export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
+    const t = useTranslations();
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const formatPrice = (price: number) => {
@@ -53,14 +55,14 @@ export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
             {recommendedPlan === plan.id && (
                 <div className="absolute top-0 right-0">
                     <div className="bg-gradient-to-r from-primary to-primary/80 text-white text-xs font-bold px-3 py-1 rounded-bl-lg" data-testid={`badge-recommended-${plan.id}`}>
-                        Recommandé
+                        {t.billing.recommended}
                     </div>
                 </div>
             )}
             {plan.popular && recommendedPlan !== plan.id && (
                 <div className="absolute top-0 right-0">
                     <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                        Populaire
+                        {t.billing.popular}
                     </div>
                 </div>
             )}

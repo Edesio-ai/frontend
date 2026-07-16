@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 
 import type {
   Establishment,
@@ -25,6 +26,7 @@ interface EtablissementStats {
 
 export function useEstablishment() {
   const { user, loading: authLoading } = useAuth();
+  const t = useTranslations();
   const [establishment, setEstablishment] = useState<Establishment | null>(null);
   const [teachers, setTeachers] = useState<TeacherWithStats[]>([]);
   const [invitationTokens, setInvitationTokens] = useState<InvitationToken[]>([]);
@@ -47,7 +49,7 @@ export function useEstablishment() {
     } catch (err) {
       const message = err instanceof Error ? err.message : "Une erreur est survenue. Merci de réessayer.";
       console.error("Error creating establishment:", message);
-      setError("Erreur lors de la création du profil établissement");
+      setError(t.hooks.establishment.profileError);
     }
   }
 
@@ -71,7 +73,7 @@ export function useEstablishment() {
           return
         }
       }
-      setError(message || "Erreur lors du chargement des données");
+      setError(message || t.hooks.establishment.error);
     } finally {
       setLoading(false);
     }
@@ -99,7 +101,7 @@ export function useEstablishment() {
       setInvitationTokens(tokens);
     } catch (err) {
       console.error("Unexpected error:", err);
-      setError("Erreur lors du chargement des codes d'invitation.");
+      setError(t.hooks.establishment.error);
     }
   }, [establishment]);
 
@@ -125,7 +127,7 @@ export function useEstablishment() {
           const { success } = await invitationTokenService.createInvitationToken(body);
 
           if(!success) {
-            const message = "Une erreur est survenue. Merci de réessayer.";
+            const message = t.hooks.establishment.invitationError;
             setError(message);
             throw new Error("Error while creating invitation token");
           }
@@ -141,7 +143,7 @@ export function useEstablishment() {
             const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
 
             if(!response.success) {
-              const message = "Une erreur est survenue. Merci de réessayer.";
+              const message = t.hooks.establishment.invitationError;
               setError(message);
               throw new Error("Error while sending invitation email");
             }
@@ -152,7 +154,7 @@ export function useEstablishment() {
           return null;
         } catch (err) {
           console.error("Unexpected error:", err);
-          setError("Une erreur est survenue. Merci de réessayer.");
+          setError(t.hooks.establishment.error);
           return null;
         }
     },
@@ -164,7 +166,7 @@ export function useEstablishment() {
         const { success } = await invitationTokenService.deleteInvitationToken(tokenId);
 
         if(!success) {
-          const message = "Une erreur est survenue. Merci de réessayer.";
+          const message = t.hooks.establishment.invitationError;
           setError(message);
           throw new Error("Error while deleting invitation token");
         }

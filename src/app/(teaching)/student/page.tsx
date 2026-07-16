@@ -47,6 +47,7 @@ import {
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 import { StudentChatbotModal } from "@/components/student/StudentChatboModal";
 import { StudentQAModal } from "@/components/student/StudantQAModal";
 import { Course, CourseRanking, Question, Session } from "@/types";
@@ -57,6 +58,7 @@ interface JoinedSession extends Session {
 }
 
 export default function Student() {
+  const t = useTranslations();
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
   const {
     student,
@@ -133,7 +135,7 @@ export default function Student() {
     
     if (result.success) {
       toast({
-        title: "Photo mise à jour",
+        title: t.student.photoUpdated,
         description: "Ta photo de profil a été enregistrée.",
       });
     } else {
@@ -152,7 +154,7 @@ export default function Student() {
 
   const handleJoinSession = async () => {
     if (!joinCode.trim()) {
-      setJoinError("Veuillez entrer un code de session.");
+      setJoinError(t.student.joinModal.emptyCode);
       return;
     }
 
@@ -303,7 +305,7 @@ export default function Student() {
                   data-testid="button-profile"
                 >
                   <UserCog className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Profil</span>
+                  <span className="hidden sm:inline">{t.nav.profile}</span>
                 </Button>
               </Link>
               <Button
@@ -318,7 +320,7 @@ export default function Student() {
                 ) : (
                   <>
                     <LogOut className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">Déconnexion</span>
+                    <span className="hidden sm:inline">{t.nav.logout}</span>
                   </>
                 )}
               </Button>
@@ -386,7 +388,7 @@ export default function Student() {
                 Salut, {firstname} !
               </h1>
               <p className="text-muted-foreground">
-                Prêt à réviser avec Edesio ?
+                {t.student.emptySubtitle}
               </p>
             </div>
           </div>
@@ -435,7 +437,7 @@ export default function Student() {
                 <GraduationCap className="h-5 w-5 text-orange-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">Mes classes</h2>
+                <h2 className="text-xl font-semibold">{t.student.myClasses}</h2>
                 <p className="text-sm text-muted-foreground">Clique sur une classe pour voir les cours</p>
               </div>
             </div>
@@ -454,7 +456,7 @@ export default function Student() {
               <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4">
                 <GraduationCap className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="font-semibold text-lg mb-2">Aucune classe rejointe</h3>
+              <h3 className="font-semibold text-lg mb-2">{t.student.emptyTitle}</h3>
               <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
                 Demande un code à ton professeur pour rejoindre une classe et commencer à apprendre avec l'IA.
               </p>
@@ -553,7 +555,7 @@ export default function Student() {
                                   className="w-full"
                                   data-testid={`select-cours-${session.id}`}
                                 >
-                                  <SelectValue placeholder="Choisis un cours..." />
+                                  <SelectValue placeholder={t.student.chooseCourse} />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {sessionCourses[session.id]?.map((cours) => (
@@ -810,7 +812,7 @@ export default function Student() {
             console.log("updateCourseProgress result:", result);
             if (result.success) {
               toast({
-                title: "Progression enregistrée",
+                title: t.student.progressSaved,
                 description: `Score : ${correctAnswers}/${totalAnswered}`,
               });
             } else {

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import {
   DndContext,
@@ -66,6 +68,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { exportClassementPdf } from "@/lib/pdf-export";
+import { useTranslations } from "@/lib/i18n/client";
 import { courseService } from "@/services/teaching/course.service";
 import { QuestionGenerator } from "../teacher/QuestionGenerator";
 import { MAX_QUESTIONS } from "@/utils/constants/teacher";
@@ -144,6 +147,7 @@ export function CourseTesterModal({
   fetchCourseRanking,
   onCourseUpdated,
 }: CourseTesterModalProps) {
+  const t = useTranslations();
   const [files, setFiles] = useState<CourseFile[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [rankings, setRankings] = useState<CourseRanking[]>([]);
@@ -337,7 +341,7 @@ export function CourseTesterModal({
  
 
       if (success) {
-        setGenerateSuccess(`${questionCount} questions générées avec succès !`);
+        setGenerateSuccess(t.dashboard.courseTester.successGenerated.replace('{count}', String(questionCount)));
         if (questions && questions.length > 0) {
           console.log("Using questions directly from generation response:", questionCount);
           setQuestions(questions);
@@ -618,7 +622,7 @@ export function CourseTesterModal({
                     {showQuestionGenerator ? (
                       <>
                         <Sparkles className="h-5 w-5" />
-                        Créer les questions - {course.title}
+                        {t.dashboard.courseTester.title.replace('{name}', course.title)}
                       </>
                     ) : (
                       <>
@@ -760,7 +764,7 @@ export function CourseTesterModal({
                       {isValidating ? (
                         <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Validation...</>
                       ) : (
-                        <><CheckCircle2 className="h-4 w-4 mr-2" /> Valider les questions</>
+                        <><CheckCircle2 className="h-4 w-4 mr-2" /> {t.dashboard.courseTester.validate}</>
                       )}
                     </Button>
                     <p className="text-xs text-muted-foreground text-center mt-2">
@@ -897,7 +901,7 @@ export function CourseTesterModal({
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Supprimer ce fichier ?</AlertDialogTitle>
+              <AlertDialogTitle>{t.dashboard.courseTester.deleteFile}</AlertDialogTitle>
               <AlertDialogDescription>
                 Cette action est irréversible. Le fichier sera définitivement supprimé.
               </AlertDialogDescription>
@@ -984,7 +988,7 @@ export function CourseTesterModal({
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <h5 className="font-medium text-sm flex flex-wrap items-center gap-2">
                       <Trophy className="h-4 w-4" />
-                      Classement des élèves {rankings.length > 0 && `(${rankings.length})`}
+                      {t.dashboard.courseTester.ranking} {rankings.length > 0 && `(${rankings.length})`}
                     </h5>
                     <div className="flex flex-wrap items-center gap-1">
                       <Button
@@ -1029,7 +1033,7 @@ export function CourseTesterModal({
                   ) : rankings.length === 0 ? (
                     <div className="text-sm text-muted-foreground text-center py-4 bg-muted/20 rounded-md">
                       <Trophy className="h-6 w-6 mx-auto opacity-50 mb-2" />
-                      <p>Aucun élève n'a encore participé.</p>
+                      <p>{t.dashboard.courseTester.noStudents}</p>
                     </div>
                   ) : (
                     <div className="space-y-2 max-h-[200px] overflow-y-auto">

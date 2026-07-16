@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Loader2, Mail, Plus } from "lucide-react";
 import { useState } from "react";
+import { useTranslations } from "@/lib/i18n/client";
 
 type InvitationModalProps = {
     isOpen: boolean;
@@ -16,6 +17,7 @@ export default function InvitationModal({
     setShowInvitationModal,
     createInvitationToken,
 }: InvitationModalProps) {
+    const t = useTranslations();
     const [inviteEmail, setInviteEmail] = useState("");
     const [availableChatbots, setAvailableChatobots] = useState(0);
     const [isCreatingInvitation, setIsCreatingInvitation] = useState(false);
@@ -43,7 +45,7 @@ export default function InvitationModal({
         <Dialog open={isOpen} onOpenChange={handleClose}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Inviter un professeur</DialogTitle>
+                    <DialogTitle>{t.establishment.invitationModal.title}</DialogTitle>
                     <DialogDescription>
                         Entrez l'adresse email du professeur que vous souhaitez inviter.
                         Un code d'invitation sera généré et ne pourra être utilisé que par cette adresse email.
@@ -52,13 +54,13 @@ export default function InvitationModal({
 
                 <div className="space-y-4 py-4">
                     <div className="space-y-2">
-                        <Label htmlFor="invite-email">Adresse email du professeur</Label>
+                        <Label htmlFor="invite-email">{t.establishment.invitationModal.email}</Label>
                         <div className="relative">
                             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
                                 id="invite-email"
                                 type="email"
-                                placeholder="professeur@example.com"
+                                placeholder={t.establishment.invitationModal.emailPlaceholder}
                                 value={inviteEmail}
                                 onChange={(e) => setInviteEmail(e.target.value)}
                                 className="pl-10"
@@ -90,7 +92,7 @@ export default function InvitationModal({
 
                 <DialogFooter>
                     <Button variant="outline" onClick={handleClose}>
-                        Annuler
+                        {t.establishment.invitationModal.cancel}
                     </Button>
                     <Button
                         onClick={handleCreateInvitation}
@@ -100,12 +102,12 @@ export default function InvitationModal({
                         {isCreatingInvitation ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Création...
+                                {t.establishment.invitationModal.creating}
                             </>
                         ) : (
                             <>
                                 <Plus className="mr-2 h-4 w-4" />
-                                Créer l'invitation
+                                {t.establishment.invitationModal.create}
                             </>
                         )}
                     </Button>

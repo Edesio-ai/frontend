@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 import { Course, CourseRanking, JoinedSession, Question, CourseQuestion, Student } from "@/types";
 import { studentService } from "@/services/teaching/student.service";
 import { questionService } from "@/services/teaching/question.service";
@@ -11,6 +12,7 @@ import { courseStudentStatsService } from "@/services/teaching/student-course-st
 
 export function useStudent() {
   const { user, loading: authLoading } = useAuth();
+  const t = useTranslations();
   const [student, setStudent] = useState<Student | null>(null);
   const [joinedSessions, setJoinedSessions] = useState<JoinedSession[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +38,7 @@ export function useStudent() {
       setError(null);
     } catch (err) {
       console.error("Unexpected error:", err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.student.joinError);
     } finally {
       setLoading(false);
     }
@@ -55,7 +57,7 @@ export function useStudent() {
       setError(null);
     } catch (err) {
       console.error("Unexpected error:", err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.student.joinError);
     }
   }, [student]);
 
@@ -74,7 +76,7 @@ export function useStudent() {
   const joinSessionByCode = useCallback(
     async (code: string): Promise<{ success: boolean; error?: string }> => {
       if (!student) {
-        return { success: false, error: "Vous devez être connecté pour rejoindre une session." };
+        return { success: false, error: t.hooks.student.notLoggedIn };
       }
 
       const normalizedCode = code.toUpperCase().trim();
@@ -86,7 +88,7 @@ export function useStudent() {
         return { success: true };
       } catch (err) {
         console.error("Unexpected error:", err);
-        return { success: false, error: "Une erreur inattendue s'est produite." };
+        return { success: false, error: t.hooks.student.joinError };
       }
     },
     [student, joinedSessions, fetchJoinedSessions]
@@ -140,7 +142,7 @@ export function useStudent() {
   const uploadProfilePhoto = useCallback(
     async (file: File): Promise<{ success: boolean; error?: string; url?: string }> => {
       if (!student || !user) {
-        return { success: false, error: "Vous devez être connecté." };
+        return { success: false, error: t.hooks.student.notLoggedIn };
       }
 
       try {
@@ -162,7 +164,7 @@ export function useStudent() {
         return { success: true, url: uploadedPhoto.photoUrl };
       } catch (err) {
         console.error("Unexpected error:", err);
-        return { success: false, error: "Une erreur inattendue s'est produite." };
+        return { success: false, error: t.hooks.student.joinError };
       }
     },
     [student, user]
@@ -175,7 +177,7 @@ export function useStudent() {
       correctAnswers: number
     ): Promise<{ success: boolean; error?: string }> => {
       if (!student) {
-        return { success: false, error: "Vous devez être connecté." };
+        return { success: false, error: t.hooks.student.notLoggedIn };
       }
 
       try {
@@ -188,7 +190,7 @@ export function useStudent() {
         return { success: true };
       } catch (err) {
         console.error("Unexpected error:", err);
-        return { success: false, error: "Une erreur inattendue s'est produite." };
+        return { success: false, error: t.hooks.student.progressError };
       }
     },
     [student]
@@ -213,11 +215,11 @@ export function useStudent() {
   const sendCourseQuestion = useCallback(
     async (courseId: string, questionText: string): Promise<{ success: boolean; error?: string; question?: CourseQuestion }> => {
       if (!student) {
-        return { success: false, error: "Vous devez être connecté." };
+        return { success: false, error: t.hooks.student.notLoggedIn };
       }
 
       if (!questionText.trim()) {
-        return { success: false, error: "La question ne peut pas être vide." };
+        return { success: false, error: t.hooks.student.questionEmpty };
       }
 
       try {
@@ -230,7 +232,7 @@ export function useStudent() {
         return { success: true, question: data };
       } catch (err) {
         console.error("Unexpected error:", err);
-        return { success: false, error: "Une erreur inattendue s'est produite." };
+        return { success: false, error: t.hooks.student.questionError };
       }
     },
     [student]

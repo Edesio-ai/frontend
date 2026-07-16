@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 
 import type {
   Teacher,
@@ -36,6 +37,7 @@ import { invitationTokenService } from "@/services/invitation-token.service";
 
 export function useTeacher() {
   const { user, loading: authLoading } = useAuth();
+  const t = useTranslations();
   const [teacher, setTeacher] = useState<Teacher | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +49,7 @@ export function useTeacher() {
       return teacher;
     } catch (error) {
       console.error("Error fetching teacher:", error);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.teacher.error);
       setLoading(false);
       throw error;
     }
@@ -70,7 +72,7 @@ export function useTeacher() {
       return response;
     } catch (err) {
       console.error("Error creating teacher:", err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.teacher.error);
       setLoading(false);
       return;
     }
@@ -121,7 +123,7 @@ export function useTeacher() {
       setError(null);
     } catch (err) {
       console.error("Unexpected error:", err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.teacher.error);
     }
   }, [teacher]);
 
@@ -131,7 +133,7 @@ export function useTeacher() {
 
     } catch (err) {
       console.error("Error creating session:", err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.teacher.error);
       throw err;
     }
   }
@@ -157,7 +159,7 @@ export function useTeacher() {
         return session;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.error);
         return null;
       }
     },
@@ -174,7 +176,7 @@ export function useTeacher() {
 
     } catch (err) {
       console.error("Error updating session:", err);
-      setError("Erreur lors de la mise à jour de la session.");
+      setError(t.hooks.teacher.sessionUpdateError);
       throw err;
 
     }
@@ -194,7 +196,7 @@ export function useTeacher() {
         return data;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.error);
         return null;
       }
     },
@@ -206,7 +208,7 @@ export function useTeacher() {
       return await sessionService.deleteSession(sessionId);
     } catch (err) {
       console.error("Error deleting session courses:", err);
-      setError("Erreur lors de la suppression des cours de la session.");
+      setError(t.hooks.teacher.sessionDeleteError);
       throw err;
     }
   }
@@ -222,7 +224,7 @@ export function useTeacher() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.error);
         return false;
       }
     },
@@ -238,7 +240,7 @@ export function useTeacher() {
         return courses || [];
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.error);
         return [];
       }
     },
@@ -264,7 +266,7 @@ export function useTeacher() {
         return data;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.error);
         return null;
       }
     },
@@ -287,7 +289,7 @@ export function useTeacher() {
       return data;
     } catch (err) {
       console.error("Error creating course:", err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.teacher.courseCreateError);
       throw err;
     }
   }
@@ -299,7 +301,7 @@ export function useTeacher() {
       return data;
     } catch (err) {
       console.error("Error uploading PDF:", err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.teacher.uploadError);
       throw err;
     }
   }
@@ -311,7 +313,7 @@ export function useTeacher() {
         return fileData;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue lors de l'upload.");
+        setError(t.hooks.teacher.uploadError);
         throw err;
       }
     },
@@ -371,7 +373,7 @@ export function useTeacher() {
         return course;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.error);
         return null;
       }
     },
@@ -386,7 +388,7 @@ export function useTeacher() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue lors de la suppression.");
+        setError(t.hooks.teacher.error);
         return false;
       }
     },
@@ -399,7 +401,7 @@ export function useTeacher() {
         await exportService.exportCourseFilePdf(fileId, fileName);
       } catch (err) {
         console.error("Error getting PDF URL:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.error);
       }
     },
     []
@@ -431,7 +433,7 @@ export function useTeacher() {
         return question
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.questionUpdateError);
         return null;
       }
     },
@@ -447,7 +449,7 @@ export function useTeacher() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.questionDeleteError);
         return false;
       }
     },
@@ -470,7 +472,7 @@ export function useTeacher() {
         return question;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.questionCreateError);
         return null;
       }
     },
@@ -492,7 +494,7 @@ export function useTeacher() {
         };
       } catch (err) {
         console.error("Error generating questions:", err);
-        return { success: false, error: "Erreur de connexion au serveur" };
+        return { success: false, error: t.hooks.teacher.generateError };
       }
     },
     []
@@ -509,7 +511,7 @@ export function useTeacher() {
         };
       } catch (err) {
         console.error("Error validating questions:", err);
-        return { success: false, error: "Erreur de connexion au serveur" };
+        return { success: false, error: t.hooks.teacher.validateError };
       }
     },
     []
@@ -583,7 +585,7 @@ export function useTeacher() {
         return data;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue.");
+        setError(t.hooks.teacher.answerError);
         return null;
       }
     },
@@ -598,7 +600,7 @@ export function useTeacher() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue.");
+        setError(t.hooks.teacher.error);
         return false;
       }
     },
@@ -627,7 +629,7 @@ export function useTeacher() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.error);
         return false;
       }
     },
@@ -643,7 +645,7 @@ export function useTeacher() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.courseDeleteError);
         return false;
       }
     },
@@ -666,7 +668,7 @@ export function useTeacher() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.teacher.error);
         return false;
       }
     },

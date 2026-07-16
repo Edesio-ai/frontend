@@ -1,5 +1,6 @@
 import { BookOpen, FileText, HelpCircle, Loader2, Users } from "lucide-react";
 import { Button } from "../ui/button";
+import { useTranslations } from "@/lib/i18n/client";
 import { DialogFooter, DialogContent, DialogHeader, DialogTitle, DialogDescription, Dialog } from "../ui/dialog";
 import { SessionDetails } from "@/types";
 import {
@@ -21,6 +22,7 @@ export function CourseViewModal({
     sessionDetails: SessionDetails | null;
     loading: boolean;
   }) {
+    const t = useTranslations();
     if (!isOpen) return null;
   
     return (
@@ -79,7 +81,7 @@ export function CourseViewModal({
                   Questions ({sessionDetails.questions.length})
                 </h3>
                 {sessionDetails.questions.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">Aucune question créée.</p>
+                  <p className="text-sm text-muted-foreground">{t.establishment.courseViewModal.noQuestions}</p>
                 ) : (
                   <Accordion type="single" collapsible className="w-full">
                     {sessionDetails.questions.map((q, index: number) => (
@@ -148,7 +150,7 @@ export function CourseViewModal({
                   Élèves ayant travaillé sur ce cours ({sessionDetails.students.length})
                 </h3>
                 {sessionDetails.students.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">Aucun élève n'a encore travaillé sur ce cours.</p>
+                  <p className="text-sm text-muted-foreground">{t.establishment.courseViewModal.noStudents}</p>
                 ) : (
                   <div className="space-y-2 max-h-[200px] overflow-y-auto">
                     {sessionDetails.students.map((student) => (
@@ -179,7 +181,7 @@ export function CourseViewModal({
   
           <DialogFooter>
             <Button variant="outline" onClick={onClose} data-testid="button-close-course-modal">
-              Fermer
+              {t.establishment.courseViewModal.close}
             </Button>
           </DialogFooter>
         </DialogContent>

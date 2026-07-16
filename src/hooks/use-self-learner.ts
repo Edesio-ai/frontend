@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 import type { 
   SelfLearner, 
   SelfLearnerCourse, 
@@ -22,6 +23,7 @@ import { llmService } from "@/services/llm.service";
 
 export function useSelfLearner() {
   const { user, loading: authLoading } = useAuth();
+  const t = useTranslations();
   const [selfLearner, setSelfLearner] = useState<SelfLearner | null>(null);
   const [cours, setCourse] = useState<SelfLearnerCourse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ export function useSelfLearner() {
       setError(null);
     } catch (err) {
       console.error("Unexpected error:", err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.selfLearner.error);
     } finally {
       setLoading(false);
     }
@@ -67,7 +69,7 @@ export function useSelfLearner() {
       setError(null);
     } catch (err) {
       console.error("Unexpected error:", err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(t.hooks.selfLearner.error);
     }
   }, [selfLearner]);
 
@@ -110,7 +112,7 @@ export function useSelfLearner() {
         return data;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.selfLearner.error);
         return null;
       }
     },
@@ -139,7 +141,7 @@ export function useSelfLearner() {
         return data;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.selfLearner.error);
         return null;
       }
     },
@@ -156,7 +158,7 @@ export function useSelfLearner() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.selfLearner.error);
         return false;
       }
     },
@@ -172,7 +174,7 @@ export function useSelfLearner() {
         return data;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue lors de l'upload.");
+        setError(t.hooks.selfLearner.uploadError);
         return null;
       }
     },
@@ -202,7 +204,7 @@ export function useSelfLearner() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue lors de la suppression.");
+        setError(t.hooks.selfLearner.error);
         return false;
       }
     },
@@ -248,7 +250,7 @@ export function useSelfLearner() {
         return { success: true, questionsCreated: result.questionCount };
       } catch (err) {
         console.error("Unexpected error:", err);
-        return { success: false, error: "Une erreur est survenue. Merci de réessayer." };
+        return { success: false, error: t.hooks.selfLearner.generateError };
       }
     },
     []
@@ -263,7 +265,7 @@ export function useSelfLearner() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.selfLearner.error);
         return false;
       }
     },
@@ -279,7 +281,7 @@ export function useSelfLearner() {
         return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError("Une erreur est survenue. Merci de réessayer.");
+        setError(t.hooks.selfLearner.error);
         return false;
       }
     },
@@ -301,7 +303,7 @@ export function useSelfLearner() {
         return { success: true, question: question };
       } catch (err) {
         console.error("Unexpected error:", err);
-        return { success: false, error: "Une erreur est survenue. Merci de réessayer." };
+        return { success: false, error: t.hooks.selfLearner.generateError };
       }
     },
     []
@@ -318,7 +320,7 @@ export function useSelfLearner() {
         return { success: true, question: question };
       } catch (err) {
         console.error("Unexpected error:", err);
-        return { success: false, error: "Une erreur est survenue. Merci de réessayer." };
+        return { success: false, error: t.hooks.selfLearner.error };
       }
     },
     []

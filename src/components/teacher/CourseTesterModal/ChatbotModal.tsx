@@ -1,9 +1,12 @@
+"use client";
+
 import { ChatbotPreviewPanel } from "@/components/dashboard/ChatbotPreviewPanel";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { MessageSquare, RefreshCw, X } from "lucide-react";
 import { Course } from "@/types";
 import { Question } from "@/types";
+import { useTranslations } from "@/lib/i18n/client";
 
 interface ChatbotModalProps {
     course: Course;
@@ -17,6 +20,7 @@ interface ChatbotModalProps {
 }
 
 export function ChatbotModal({ course, allCourses, sessionName, fetchQuestions, chatbotRefreshKey, setChatbotRefreshKey, chatbotModalOpen, setChatbotModalOpen }: ChatbotModalProps) {
+    const t = useTranslations();
     return (
         <Dialog open={chatbotModalOpen} onOpenChange={setChatbotModalOpen}>
             <DialogContent
@@ -26,7 +30,7 @@ export function ChatbotModal({ course, allCourses, sessionName, fetchQuestions, 
                     <div className="flex items-center justify-between gap-2">
                         <DialogTitle className="flex items-center gap-2 flex-1 min-w-0">
                             <MessageSquare className="h-5 w-5 text-primary shrink-0" />
-                            <span className="truncate">Test du chatbot - {course.title}</span>
+                            <span className="truncate">{t.chatbot.testChatbot.replace('{name}', course.title)}</span>
                         </DialogTitle>
                         <div className="flex items-center gap-2 shrink-0">
                             <Button
@@ -49,7 +53,7 @@ export function ChatbotModal({ course, allCourses, sessionName, fetchQuestions, 
                         </div>
                     </div>
                     <DialogDescription>
-                        Simulez l'expérience élève en testant le chatbot avec les questions du course
+                        {t.chatbot.simulateExperience}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex-1 min-h-0 overflow-hidden">

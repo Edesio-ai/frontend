@@ -18,14 +18,15 @@ import { Loader2, Lock, CheckCircle2, XCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Form } from "@/components/ui/form";
 import { authService } from "@/services/auth.service";
+import { useTranslations } from "@/lib/i18n/client";
 
 const formSchema = z
   .object({
-    password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
-    confirmPassword: z.string().min(1, "Veuillez confirmer votre mot de passe"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Les mots de passe ne correspondent pas",
+    message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 
@@ -38,6 +39,8 @@ export default function ResetPassword() {
   const [isLoading, setIsLoading] = useState(true);
   const [isValidSession, setIsValidSession] = useState(false);
   const router = useRouter();
+  const t = useTranslations();
+  const rpt = t.resetPassword;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -62,7 +65,7 @@ export default function ResetPassword() {
       } else {
         setIsValidSession(false);
       }
-      
+
       setIsLoading(false);
     } catch (err) {
       console.error("Error handling recovery session:", err);
@@ -85,18 +88,18 @@ export default function ResetPassword() {
     } catch (err) {
       if (err instanceof Error) {
         if (err.message.includes("same as") || err.message.includes("same_password")) {
-          setErrorMessage("Le nouveau mot de passe doit être différent de l'ancien.");
+          setErrorMessage(rpt.samePasswordError);
         } else if (err.message.includes("weak")) {
-          setErrorMessage("Le mot de passe est trop faible. Utilisez au moins 6 caractères.");
+          setErrorMessage(rpt.weakPasswordError);
         } else if (err.message.includes("session")) {
-          setErrorMessage("Votre session a expiré. Veuillez demander un nouveau lien de réinitialisation.");
+          setErrorMessage(rpt.sessionExpiredError);
         } else {
-          setErrorMessage("Une erreur s'est produite. Veuillez réessayer.");
+          setErrorMessage(rpt.defaultError);
         }
       }
       setIsSubmitting(false);
       console.error("Unexpected error:", err);
-      setErrorMessage("Une erreur inattendue s'est produite. Veuillez réessayer.");
+      setErrorMessage(rpt.unexpectedError);
     }
   };
 
@@ -105,7 +108,7 @@ export default function ResetPassword() {
       <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-muted/30">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Vérification du lien...</p>
+          <p className="text-muted-foreground">{rpt.verifying}</p>
         </div>
       </div>
     );
@@ -120,14 +123,14 @@ export default function ResetPassword() {
               <XCircle className="h-8 w-8 text-destructive" />
             </div>
             <h1 className="text-2xl font-bold mb-2" data-testid="text-invalid-link-title">
-              Lien invalide ou expiré
+              {rpt.invalidLinkTitle}
             </h1>
             <p className="text-muted-foreground mb-6">
-              Ce lien de réinitialisation n'est plus valide. Il a peut-être expiré ou a déjà été utilisé.
+              {rpt.invalidLinkDesc}
             </p>
             <Link href="/forgotten-password">
               <Button className="w-full" data-testid="button-request-new-link">
-                Demander un nouveau lien
+                {rpt.requestNewLink}
               </Button>
             </Link>
           </Card>
@@ -151,17 +154,17 @@ export default function ResetPassword() {
               <CheckCircle2 className="h-8 w-8 text-green-600" />
             </div>
             <h1 className="text-2xl font-bold mb-2" data-testid="text-success-title">
-              Mot de passe modifié
+              {rpt.successTitle}
             </h1>
             <p className="text-muted-foreground mb-6">
-              Votre mot de passe a été modifié avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.
+              {rpt.successMessage}
             </p>
-            <Button 
-              className="w-full" 
+            <Button
+              className="w-full"
               onClick={() => router.push("/login")}
               data-testid="button-go-login"
             >
-              Se connecter
+              {rpt.goToLogin}
             </Button>
           </Card>
         </div>
@@ -179,10 +182,10 @@ export default function ResetPassword() {
             </span>
           </Link>
           <h1 className="text-3xl font-bold mb-2" data-testid="text-reset-password-title">
-            Nouveau mot de passe
+            {rpt.title}
           </h1>
           <p className="text-muted-foreground">
-            Choisissez un nouveau mot de passe sécurisé
+            {rpt.subtitle}
           </p>
         </div>
 
@@ -207,7 +210,7 @@ export default function ResetPassword() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nouveau mot de passe</FormLabel>
+                    <FormLabel>{rpt.password}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -226,7 +229,7 @@ export default function ResetPassword() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirmer le mot de passe</FormLabel>
+                    <FormLabel>{rpt.confirmPassword}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -250,10 +253,10 @@ export default function ResetPassword() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Modification en cours...
+                    {rpt.submitting}
                   </>
                 ) : (
-                  "Modifier le mot de passe"
+                  rpt.submit
                 )}
               </Button>
             </form>

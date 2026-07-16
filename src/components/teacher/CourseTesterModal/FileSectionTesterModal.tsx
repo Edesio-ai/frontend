@@ -1,6 +1,9 @@
+"use client";
+
 import { FileDown, Files, FileText, Loader2, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CourseFile } from "@/types";
+import { useTranslations } from "@/lib/i18n/client";
 
 type FileSectionTesterModalProps = {
     files: CourseFile[];
@@ -12,6 +15,7 @@ type FileSectionTesterModalProps = {
 }
 
 export function FileSectionTesterModal({ files, handleFileUpload, fileInputRef, isUploadingPdf, handleDownloadPdf, handleDeleteFile }: FileSectionTesterModalProps) {
+    const t = useTranslations();
     return (
         <div className="space-y-3">
             <div className="flex items-center justify-between gap-2">
@@ -22,7 +26,7 @@ export function FileSectionTesterModal({ files, handleFileUpload, fileInputRef, 
                 <div>
                     <input type="file" accept="application/pdf" onChange={handleFileUpload} className="hidden" ref={fileInputRef} />
                     <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={isUploadingPdf}>
-                        {isUploadingPdf ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Upload className="h-4 w-4 mr-1" /> Ajouter</>}
+                        {isUploadingPdf ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Upload className="h-4 w-4 mr-1" /> {t.teacher.addCourse.selectPdfs}</>}
                     </Button>
                 </div>
             </div>

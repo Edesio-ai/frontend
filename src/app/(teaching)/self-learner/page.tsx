@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useRef } from "react";
+import { useTranslations } from "@/lib/i18n/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -82,12 +83,6 @@ import { SelfLearnerChatbotModal } from "@/components/self-learner/self-learner-
 import { useAuth } from "@/hooks/use-auth";
 import { Language, QuestionType, SelfLearnerCourse, SelfLearnerCourseFile, SelfLearnerQuestion } from "@/types";
 
-const langueLabels: Record<Language, string> = {
-  francais: "Français",
-  anglais: "Anglais",
-  espagnol: "Espagnol",
-  allemand: "Allemand",
-};
 
 const createCoursFormSchema = z.object({
   titre: z.string().min(1, "Le titre du cours est requis").max(200, "Le titre est trop long"),
@@ -99,6 +94,13 @@ type CreateCoursFormValues = z.infer<typeof createCoursFormSchema>;
 
 export default function SelfLearner() {
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
+  const t = useTranslations();
+  const langueLabels: Record<Language, string> = {
+    francais: t.selfLearner.langueLabels.francais,
+    anglais: t.selfLearner.langueLabels.anglais,
+    espagnol: t.selfLearner.langueLabels.espagnol,
+    allemand: t.selfLearner.langueLabels.allemand,
+  };
   const {
     selfLearner,
     cours,
@@ -310,16 +312,13 @@ export default function SelfLearner() {
         }
       }
       toast({
-        title: "Succès",
-        description: pdfFiles.length > 1
-          ? `${pdfFiles.length} fichiers ajoutés avec succès`
-          : "Fichier ajouté avec succès",
+        title: t.selfLearner.toasts.uploadSuccess,
       });
     } catch (err) {
       console.error("Error uploading PDF:", err);
       toast({
-        title: "Erreur",
-        description: "Impossible d'ajouter le fichier. Veuillez réessayer.",
+        title: t.selfLearner.toasts.error,
+        description: t.selfLearner.toasts.uploadError,
         variant: "destructive",
       });
     } finally {
@@ -358,14 +357,13 @@ export default function SelfLearner() {
 
       if (!newCours) {
         toast({
-          title: "Erreur",
-          description: "Impossible de créer le cours. Veuillez réessayer.",
+          title: t.selfLearner.toasts.error,
+          description: t.selfLearner.toasts.error,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Succès",
-          description: "Cours créé avec succès !",
+          title: t.selfLearner.toasts.courseCreated,
         });
         // Open course and go directly to questions tab for generation
         await handleSelectCoursForQuestions(newCours);
@@ -373,8 +371,7 @@ export default function SelfLearner() {
     } catch (err) {
       console.error("Error in creation flow:", err);
       toast({
-        title: "Erreur",
-        description: "Une erreur inattendue s'est produite. Veuillez réessayer.",
+        title: t.selfLearner.toasts.error,
         variant: "destructive",
       });
     } finally {
@@ -415,9 +412,9 @@ export default function SelfLearner() {
     setIsSavingRename(false);
     if (updated) {
       setSelectedCours(updated);
-      toast({ title: "Cours renommé", description: "Le nom du cours a été mis à jour." });
+      toast({ title: t.selfLearner.toasts.courseUpdated });
     } else {
-      toast({ title: "Erreur", description: "Impossible de renommer le cours.", variant: "destructive" });
+      toast({ title: t.selfLearner.toasts.error, variant: "destructive" });
     }
     setIsRenamingCours(false);
     setRenamingCoursValue("");
@@ -450,10 +447,10 @@ export default function SelfLearner() {
       if (selectedCours?.id === renameCardCourseId) {
         setSelectedCours(updated);
       }
-      toast({ title: "Cours renommé", description: "Le nom du cours a été mis à jour." });
+      toast({ title: t.selfLearner.toasts.courseUpdated });
       setRenameCardModalOpen(false);
     } else {
-      toast({ title: "Erreur", description: "Impossible de renommer le cours.", variant: "destructive" });
+      toast({ title: t.selfLearner.toasts.error, variant: "destructive" });
     }
   };
 
@@ -461,16 +458,14 @@ export default function SelfLearner() {
     const success = await deleteSelfLearnerCourse(courseId);
     if (success) {
       toast({
-        title: "Cours supprimé",
-        description: "Le cours et toutes ses questions ont été supprimés.",
+        title: t.selfLearner.toasts.courseDeleted,
       });
       if (selectedCours?.id === courseId) {
         setSelectedCours(null);
       }
     } else {
       toast({
-        title: "Erreur",
-        description: "Impossible de supprimer le cours.",
+        title: t.selfLearner.toasts.error,
         variant: "destructive",
       });
     }
@@ -488,16 +483,15 @@ export default function SelfLearner() {
 
     if (result.success) {
       toast({
-        title: "Questions générées",
-        description: `${result.questionsCreated} questions ont été créées.`,
+        title: t.selfLearner.toasts.questionsGenerated,
       });
       const questions = await fetchSelfLearnerQuestions(selectedCours.id);
       setCoursQuestions(questions);
       setQuestionsModified(true);
     } else {
       toast({
-        title: "Erreur",
-        description: result.error || "Impossible de générer les questions.",
+        title: t.selfLearner.toasts.error,
+        description: result.error || t.selfLearner.toasts.questionGenError,
         variant: "destructive",
       });
     }
@@ -538,11 +532,10 @@ export default function SelfLearner() {
       setEditingQuestionId(null);
       setEditingQuestionText("");
       setEditingAnswerText("");
-      toast({ title: "Question mise à jour" });
+      toast({ title: t.selfLearner.toasts.courseUpdated });
     } catch (err) {
       toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour la question.",
+        title: t.selfLearner.toasts.error,
         variant: "destructive",
       });
     }
@@ -556,8 +549,7 @@ export default function SelfLearner() {
       setPdfViewerOpen(true);
     } else {
       toast({
-        title: "Erreur",
-        description: "Impossible d'ouvrir le PDF.",
+        title: t.selfLearner.toasts.error,
         variant: "destructive",
       });
     }
@@ -570,13 +562,13 @@ export default function SelfLearner() {
     const result = await generateSelfLearnerQuestion(selectedCours.id, type);
 
     if (result.success && result.question) {
-      toast({ title: "Question ajoutée" });
+      toast({ title: t.selfLearner.toasts.questionsGenerated });
       setCoursQuestions(prev => [...prev, result.question!]);
       setQuestionsModified(true);
     } else {
       toast({
-        title: "Erreur",
-        description: result.error || "Impossible de générer la question.",
+        title: t.selfLearner.toasts.error,
+        description: result.error || t.selfLearner.toasts.questionGenError,
         variant: "destructive",
       });
     }
@@ -596,23 +588,23 @@ export default function SelfLearner() {
     if (!selectedCours) return;
 
     if (!manualQuestionText.trim()) {
-      toast({ title: "Erreur", description: "La question est requise.", variant: "destructive" });
+      toast({ title: t.selfLearner.toasts.error, variant: "destructive" });
       return;
     }
 
     if (!manualQuestionAnswer.trim()) {
-      toast({ title: "Erreur", description: "La réponse est requise.", variant: "destructive" });
+      toast({ title: t.selfLearner.toasts.error, variant: "destructive" });
       return;
     }
 
     if (manualQuestionType === 'single') {
       const validPropositions = manualQcmPropositions.filter(p => p.trim());
       if (validPropositions.length < 2) {
-        toast({ title: "Erreur", description: "Un QCM doit avoir au moins 2 propositions.", variant: "destructive" });
+        toast({ title: t.selfLearner.toasts.error, variant: "destructive" });
         return;
       }
       if (!validPropositions.includes(manualQuestionAnswer.trim())) {
-        toast({ title: "Erreur", description: "La bonne réponse doit être une des propositions.", variant: "destructive" });
+        toast({ title: t.selfLearner.toasts.error, variant: "destructive" });
         return;
       }
     }
@@ -628,14 +620,14 @@ export default function SelfLearner() {
     });
 
     if (result.success && result.question) {
-      toast({ title: "Question créée" });
+      toast({ title: t.selfLearner.toasts.questionsGenerated });
       setCoursQuestions(prev => [...prev, result.question!]);
       setQuestionsModified(true);
       setManualQuestionModalOpen(false);
     } else {
       toast({
-        title: "Erreur",
-        description: result.error || "Impossible de créer la question.",
+        title: t.selfLearner.toasts.error,
+        description: result.error || t.selfLearner.toasts.questionGenError,
         variant: "destructive",
       });
     }
@@ -648,12 +640,11 @@ export default function SelfLearner() {
       setCoursQuestions((prev) => prev.filter((q) => q.id !== questionId));
       setQuestionsModified(true);
       toast({
-        title: "Question supprimée",
+        title: t.selfLearner.toasts.courseDeleted,
       });
     } else {
       toast({
-        title: "Erreur",
-        description: "Impossible de supprimer la question.",
+        title: t.selfLearner.toasts.error,
         variant: "destructive",
       });
     }
@@ -664,8 +655,7 @@ export default function SelfLearner() {
 
     // Mark questions as validated
     toast({
-      title: "Questions validées",
-      description: `${coursQuestions.length} questions sont prêtes pour le chatbot.`,
+      title: t.selfLearner.toasts.questionsValidated,
     });
 
     // Close the details modal and open the chatbot modal
@@ -680,7 +670,7 @@ export default function SelfLearner() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-500/5 via-background to-amber-500/10">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-amber-500 mx-auto mb-4" />
-          <p className="text-muted-foreground">Chargement de votre espace...</p>
+          <p className="text-muted-foreground">{t.selfLearner.loading}</p>
         </div>
       </div>
     );
@@ -713,7 +703,7 @@ export default function SelfLearner() {
                   data-testid="button-suggestions"
                 >
                   <Lightbulb className="h-4 w-4 mr-1.5" />
-                  Suggestions
+                  {t.nav.suggestions}
                 </Button>
                 <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20">
                   <Sparkles className="h-4 w-4 text-amber-500" />
@@ -728,7 +718,7 @@ export default function SelfLearner() {
                     data-testid="button-profile"
                   >
                     <UserCog className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">Profil</span>
+                    <span className="hidden sm:inline">{t.nav.profile}</span>
                   </Button>
                 </Link>
                 <Button
@@ -743,7 +733,7 @@ export default function SelfLearner() {
                   ) : (
                     <>
                       <LogOut className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline">Déconnexion</span>
+                      <span className="hidden sm:inline">{t.nav.logout}</span>
                     </>
                   )}
                 </Button>

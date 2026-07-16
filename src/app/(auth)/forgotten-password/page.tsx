@@ -17,9 +17,10 @@ import {
 } from "@/components/ui/form";
 import { Loader2, Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 
 const formSchema = z.object({
-  email: z.string().email("Adresse email invalide"),
+  email: z.string().email("Invalid email address"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -29,6 +30,8 @@ export default function MotDePasseOublie() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const { resetPassword } = useAuth();
+  const t = useTranslations();
+  const ft = t.forgotPassword;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -46,9 +49,9 @@ export default function MotDePasseOublie() {
       setIsSuccess(true);
     } catch (error) {
       if (error instanceof Error && error.message.includes("rate limit")) {
-        setErrorMessage("Trop de tentatives. Veuillez attendre quelques minutes avant de réessayer.");
+        setErrorMessage(ft.rateLimitError);
       } else {
-        setErrorMessage("Une erreur s'est produite. Veuillez réessayer.");
+        setErrorMessage(ft.defaultError);
       }
       return;
     } finally {
@@ -71,19 +74,18 @@ export default function MotDePasseOublie() {
               <CheckCircle2 className="h-8 w-8 text-green-600" />
             </div>
             <h1 className="text-2xl font-bold mb-2" data-testid="text-success-title">
-              Email envoyé
+              {ft.successTitle}
             </h1>
             <p className="text-muted-foreground mb-6">
-              Si un compte existe avec l'adresse <strong>{form.getValues("email")}</strong>,
-              vous recevrez un email avec un lien pour réinitialiser votre mot de passe.
+              {ft.successMessage.replace("{email}", form.getValues("email"))}
             </p>
             <p className="text-sm text-muted-foreground mb-6">
-              N'oubliez pas de vérifier vos spams si vous ne voyez pas l'email dans votre boîte de réception.
+              {ft.successSpamNote}
             </p>
             <Link href="/login">
               <Button className="w-full" data-testid="button-back-login">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Retour à la connexion
+                {ft.backToLogin}
               </Button>
             </Link>
           </Card>
@@ -102,10 +104,10 @@ export default function MotDePasseOublie() {
             </span>
           </Link>
           <h1 className="text-3xl font-bold mb-2" data-testid="text-forgot-password-title">
-            Mot de passe oublié
+            {ft.title}
           </h1>
           <p className="text-muted-foreground">
-            Entrez votre adresse email pour recevoir un lien de réinitialisation
+            {ft.subtitle}
           </p>
         </div>
 
@@ -130,11 +132,11 @@ export default function MotDePasseOublie() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Adresse e-mail</FormLabel>
+                    <FormLabel>{ft.email}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="jean.dupont@education.fr"
+                        placeholder={ft.emailPlaceholder}
                         {...field}
                         data-testid="input-forgot-email"
                       />
@@ -154,10 +156,10 @@ export default function MotDePasseOublie() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Envoi en cours...
+                    {ft.submitting}
                   </>
                 ) : (
-                  "Envoyer le lien de réinitialisation"
+                  ft.submit
                 )}
               </Button>
             </form>
@@ -170,7 +172,7 @@ export default function MotDePasseOublie() {
               data-testid="link-back-login"
             >
               <ArrowLeft className="h-4 w-4" />
-              Retour à la connexion
+              {ft.backToLogin}
             </Link>
           </div>
         </Card>

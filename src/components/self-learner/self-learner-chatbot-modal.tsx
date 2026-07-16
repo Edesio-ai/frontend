@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
@@ -29,6 +31,7 @@ import {
 import { selfLearnerQuestionService } from "@/services/teaching/self-learner-question.service";
 import { llmService } from "@/services/llm.service";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslations } from "@/lib/i18n/client";
 
 interface SelfLearnerChatbotModalProps {
   open: boolean;
@@ -65,23 +68,6 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-const correctFeedbackMessages = [
-  "Bravo ! C'est la bonne réponse !",
-  "Excellent ! Tu as tout compris !",
-  "Super ! Continue comme ça !",
-  "Parfait ! Tu es sur la bonne voie !",
-  "Génial ! Tu maîtrises bien le sujet !",
-  "Bien joué ! C'est exact !",
-  "Formidable ! Tu progresses !",
-];
-
-const incorrectFeedbackMessages = [
-  "Pas tout à fait...",
-  "Ce n'est pas ça...",
-  "Hmm, pas exactement...",
-  "Presque ! Mais ce n'est pas la bonne réponse.",
-  "Pas cette fois...",
-];
 
 function getRandomMessage(messages: string[]): string {
   return messages[Math.floor(Math.random() * messages.length)];
@@ -130,7 +116,7 @@ function TypingIndicator() {
   );
 }
 
-function MessageBubble({ message }: { message: ChatMessage }) {
+function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typeof useTranslations> }) {
   const isBot = message.sender === "bot";
 
   return (
@@ -212,7 +198,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
                 : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
                   ? "text-orange-700 dark:text-orange-300" 
                   : "text-red-700 dark:text-red-300"
-            }`}>Session terminée !</span>
+            }`}>{t.chatbot.sessionEnded}</span>
           </div>
         )}
         <p className="text-sm sm:text-base whitespace-pre-wrap leading-relaxed">{message.text}</p>
@@ -223,14 +209,14 @@ function MessageBubble({ message }: { message: ChatMessage }) {
                 <div className="p-1 rounded-full bg-emerald-500/20">
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">Bonne réponse ! +1 point</span>
+                <span className="text-sm font-semibold">{t.chatbot.goodAnswer}</span>
               </div>
             ) : message.isPartial ? (
               <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                 <div className="p-1 rounded-full bg-orange-500/20">
                   <Star className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">Réponse partielle +0.5 point</span>
+                <span className="text-sm font-semibold">{t.chatbot.partialAnswer}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
@@ -343,6 +329,9 @@ function MultiOptions({
 }
 
 export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQuestions }: SelfLearnerChatbotModalProps) {
+  const t = useTranslations();
+  const correctFeedbackMessages: string[] = t.chatbot.correctAnswers;
+  const incorrectFeedbackMessages: string[] = t.chatbot.encouragementsAfterWrong;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -385,13 +374,13 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
       setTimeout(() => {
         addMessage({
           sender: "bot",
-          text: "Bonjour ! Je suis Edesio. Malheureusement, il n'y a pas encore de questions pour ce cours.",
+          text: getRandomMessage(t.chatbot.greetings),
           type: "greeting",
         });
         setTimeout(() => {
           addMessage({
             sender: "bot",
-            text: "Génère d'abord des questions pour pouvoir t'entraîner !",
+            text: t.selfLearner.chatbot.noQuestionsYet,
             type: "no_questions",
           });
           setChatState("completed");
@@ -421,14 +410,14 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     setTimeout(() => {
       addMessage({
         sender: "bot",
-        text: `Bonjour ! Je suis Edesio, je vais t'aider à réviser ce cours.`,
+        text: getRandomMessage(t.chatbot.greetings),
         type: "greeting",
       });
 
       setTimeout(() => {
         addMessage({
           sender: "bot",
-          text: `J'ai ${processedQuestions.length} questions pour toi. Prêt(e) à réviser ?`,
+          text: getRandomMessage(t.chatbot.startQuiz).replace('{count}', String(processedQuestions.length)),
           type: "greeting",
         });
         setTimeout(() => {
@@ -474,17 +463,25 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
       const feedback = await llmService.generateCompletionFeedback(body);
       const aiFeedback = feedback.feedback || "Bravo pour avoir terminé cette révision !";
       
+      const scoreText = t.chatbot.completionScore
+        .replace('{score}', String(scoreDisplay))
+        .replace('{total}', String(finalTotal))
+        .replace('{percent}', String(Math.round(ratio * 100)));
       addMessage({
         sender: "bot",
-        text: `Tu as terminé la révision de "${cours.title}" !\n\nTon score : ${scoreDisplay}/${finalTotal} points.\n\n${aiFeedback}`,
+        text: `${t.chatbot.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
         type: "completion",
         scoreRatio: ratio,
       });
     } catch (error) {
       console.error("Error fetching completion feedback:", error);
+      const scoreText = t.chatbot.completionScore
+        .replace('{score}', String(scoreDisplay))
+        .replace('{total}', String(finalTotal))
+        .replace('{percent}', String(Math.round(ratio * 100)));
       addMessage({
         sender: "bot",
-        text: `Tu as terminé la révision de "${cours.title}" !\n\nTon score : ${scoreDisplay}/${finalTotal} points.\n\nBravo pour avoir terminé cette session de révision !`,
+        text: `${t.chatbot.completionTitle}\n\n${scoreText}`,
         type: "completion",
         scoreRatio: ratio,
       });
@@ -929,7 +926,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
               <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
               <p className="text-sm font-medium">
-                {isGeneratingNew ? "Génération de nouvelles questions..." : "Chargement des questions..."}
+                {isGeneratingNew ? t.selfLearner.chatbot.generatingQuestions : t.selfLearner.chatbot.loadingQuestions}
               </p>
               {isGeneratingNew && (
                 <p className="text-xs text-muted-foreground/70 mt-1">L'IA prépare des questions inédites pour toi</p>
@@ -937,7 +934,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
             </div>
           ) : (
             messages.map((message) => (
-              <MessageBubble key={message.id} message={message} />
+              <MessageBubble key={message.id} message={message} t={t} />
             ))
           )}
           {(isProcessing || showTyping) && <TypingIndicator />}
@@ -993,12 +990,12 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
                 {currentQuestionIndex + 1 >= shuffledQuestions.length ? (
                   <>
                     <Sparkles className="h-5 w-5 mr-2" />
-                    Voir mes résultats
+                    {t.chatbot.viewResults}
                   </>
                 ) : (
                   <>
                     <ArrowRight className="h-5 w-5 mr-2" />
-                    Question suivante
+                    {t.chatbot.nextQuestion}
                   </>
                 )}
               </Button>
@@ -1014,7 +1011,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder="Tape ta réponse ici..."
+                  placeholder={t.chatbot.inputPlaceholder}
                   className="min-h-[48px] max-h-[120px] py-3 px-4 rounded-xl bg-background/80 border-border/50 focus-visible:ring-amber-500/30 text-base resize-none overflow-y-auto"
                   data-testid="input-open-answer"
                   disabled={isProcessing}
@@ -1037,7 +1034,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
                 <Send className="h-5 w-5" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">Appuie sur Entrée pour envoyer</p>
+            <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">{t.chatbot.pressEnter}</p>
           </div>
         )}
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { BookOpen, FileText, Globe, Loader2, Plus, Sparkles, Upload, Users, X } from "lucide-react";
 import { Form, FormMessage } from "../ui/form";
@@ -15,14 +17,8 @@ import { Button } from "../ui/button";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { CreateSessionFormValues } from "@/types/zod.type";
 import { Textarea } from "../ui/textarea";
+import { useTranslations } from "@/lib/i18n/client";
 
-
-const langueLabels: Record<Language, string> = {
-    francais: "Français",
-    anglais: "Anglais",
-    espagnol: "Espagnol",
-    allemand: "Allemand",
-};
 
 type CreateModalProps = {
     createModalOpen: boolean;
@@ -51,8 +47,16 @@ export function CreateModal({
     setSelectedSession,
     setNewlyCreatedCourse,
 }: CreateModalProps) {
+    const t = useTranslations();
     const [isCreating, setIsCreating] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const langueLabels: Record<Language, string> = {
+        francais: t.selfLearner.langueLabels.francais,
+        anglais: t.selfLearner.langueLabels.anglais,
+        espagnol: t.selfLearner.langueLabels.espagnol,
+        allemand: t.selfLearner.langueLabels.allemand,
+    };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -77,8 +81,8 @@ export function CreateModal({
 
             if (!newSession) {
                 toast({
-                    title: "Erreur",
-                    description: "Impossible de créer la session. Veuillez réessayer.",
+                    title: t.teacher.createModal.errorTitle,
+                    description: t.teacher.createModal.errorDesc,
                     variant: "destructive",
                 });
                 setIsCreating(false);
@@ -98,15 +102,15 @@ export function CreateModal({
 
             if (!newCourse) {
                 toast({
-                    title: "Attention",
-                    description: "La session a été créée mais le cours n'a pas pu être ajouté. Vous pouvez l'ajouter manuellement.",
+                    title: t.teacher.createModal.warningTitle,
+                    description: t.teacher.createModal.warningDesc,
                     variant: "destructive",
                 });
                 setSelectedSession(newSession);
             } else {
                 toast({
-                    title: "Succès",
-                    description: "Session et cours créés avec succès !",
+                    title: t.teacher.createModal.successTitle,
+                    description: t.teacher.createModal.successDesc,
                 });
                 setNewlyCreatedCourse(newCourse);
                 setSelectedSession(newSession);
@@ -114,8 +118,8 @@ export function CreateModal({
         } catch (err) {
             console.error("Error in creation flow:", err);
             toast({
-                title: "Erreur",
-                description: "Une erreur inattendue s'est produite. Veuillez réessayer.",
+                title: t.teacher.createModal.errorTitle,
+                description: t.teacher.createModal.unexpectedError,
                 variant: "destructive",
             });
         } finally {
@@ -131,10 +135,10 @@ export function CreateModal({
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                             <Plus className="h-4 w-4 text-primary-foreground" />
                         </div>
-                        Créer une nouvelle classe
+                        {t.teacher.createModal.title}
                     </DialogTitle>
                     <DialogDescription>
-                        Créez une classe et ajoutez votre premier cours en même temps.
+                        {t.teacher.createModal.subtitle}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -152,10 +156,10 @@ export function CreateModal({
                                         name="sessionName"
                                         render={({ field }) => (
                                             <FormItem className="flex-1">
-                                                <FormLabel>Nom de la classe</FormLabel>
+                                                <FormLabel>{t.teacher.createModal.sessionName}</FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        placeholder="Ex: 3ème B – Histoire"
+                                                        placeholder={t.teacher.createModal.sessionNamePlaceholder}
                                                         {...field}
                                                         data-testid="input-new-session-name"
                                                     />
@@ -169,7 +173,7 @@ export function CreateModal({
                                         name="sessionLanguage"
                                         render={({ field }) => (
                                             <FormItem className="w-full sm:w-44">
-                                                <FormLabel>Langue du cours</FormLabel>
+                                                <FormLabel>{t.teacher.createModal.language}</FormLabel>
                                                 <Select
                                                     onValueChange={field.onChange}
                                                     value={field.value}
@@ -177,7 +181,7 @@ export function CreateModal({
                                                     <FormControl>
                                                         <SelectTrigger data-testid="select-new-session-language">
                                                             <Globe className="h-4 w-4 mr-2 text-muted-foreground" />
-                                                            <SelectValue placeholder="Langue" />
+                                                            <SelectValue placeholder={t.teacher.createModal.language} />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
@@ -206,10 +210,10 @@ export function CreateModal({
                                     name="courseTitle"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Titre du cours</FormLabel>
+                                            <FormLabel>{t.teacher.createModal.courseName}</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    placeholder="Ex: La Révolution française"
+                                                    placeholder={t.teacher.createModal.courseNamePlaceholder}
                                                     {...field}
                                                     data-testid="input-new-course-title"
                                                 />
@@ -224,10 +228,10 @@ export function CreateModal({
                                     name="courseDescription"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Description courte <span className="text-muted-foreground font-normal">(optionnel)</span></FormLabel>
+                                            <FormLabel>{t.teacher.createModal.courseDescription}</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    placeholder="Ex: Introduction aux causes et conséquences"
+                                                    placeholder={t.teacher.createModal.courseDescriptionPlaceholder}
                                                     {...field}
                                                     data-testid="input-new-course-description"
                                                 />
@@ -238,7 +242,7 @@ export function CreateModal({
                                 />
 
                                 <div className="space-y-2">
-                                    <FormLabel>Fichiers PDF</FormLabel>
+                                    <FormLabel>{t.teacher.createModal.pdfs}</FormLabel>
                                     <p className="text-xs text-muted-foreground">
                                         Ajoutez un ou plusieurs fichiers PDF contenant le contenu du cours
                                     </p>
@@ -259,7 +263,7 @@ export function CreateModal({
                                             data-testid="button-select-pdf-new"
                                         >
                                             <Upload className="h-4 w-4 mr-2" />
-                                            {selectedPdfFiles.length > 0 ? "Ajouter d'autres PDFs" : "Sélectionner des PDFs"}
+                                            {selectedPdfFiles.length > 0 ? "Ajouter d'autres PDFs" : t.teacher.createModal.selectPdfs}
                                         </Button>
                                         {selectedPdfFiles.length > 0 && (
                                             <div className="flex flex-wrap gap-2 mt-2">
@@ -293,12 +297,11 @@ export function CreateModal({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>
-                                                Contenu texte additionnel
-                                                <span className="text-muted-foreground font-normal ml-2">(optionnel)</span>
+                                                {t.teacher.createModal.courseContent}
                                             </FormLabel>
                                             <FormControl>
                                                 <Textarea
-                                                    placeholder="Vous pouvez ajouter du texte supplémentaire ici, ou laisser vide si vous utilisez uniquement des PDFs..."
+                                                    placeholder={t.teacher.createModal.courseContentPlaceholder}
                                                     className="min-h-[100px] resize-y"
                                                     {...field}
                                                     data-testid="textarea-new-course-content"
@@ -312,18 +315,18 @@ export function CreateModal({
 
                             <div className="flex justify-end gap-2 pt-4 border-t">
                                 <Button type="button" variant="outline" onClick={handleCloseCreateModal}>
-                                    Annuler
+                                    {t.common.cancel}
                                 </Button>
                                 <Button type="submit" disabled={isCreating} className="shadow-lg shadow-primary/25" data-testid="button-create-session-and-course">
                                     {isCreating ? (
                                         <>
                                             <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                            Création...
+                                            {t.teacher.createModal.creating}
                                         </>
                                     ) : (
                                         <>
                                             <Sparkles className="h-4 w-4 mr-2" />
-                                            Créer la session et le cours
+                                            {t.teacher.createModal.create}
                                         </>
                                     )}
                                 </Button>

@@ -1,9 +1,12 @@
+"use client";
+
 import { ChevronRight, Loader2, Plus, Search, Users } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Session } from "@/types";
+import { useTranslations } from "@/lib/i18n/client";
 
 type ToolBarProps = {
     setSelectedSession: (session: Session) => void;
@@ -11,6 +14,7 @@ type ToolBarProps = {
     sessions: Session[];
 }
 export function ToolBar({ setSelectedSession, handleOpenCreateModal, sessions }: ToolBarProps) {
+    const t = useTranslations();
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearching, setIsSearching] = useState(false);
 
@@ -58,7 +62,7 @@ export function ToolBar({ setSelectedSession, handleOpenCreateModal, sessions }:
                     <div className="flex-1 relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
-                            placeholder="Rechercher une classe..."
+                            placeholder={t.teacher.searchPlaceholder}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="pl-10 bg-background/50"
@@ -73,7 +77,7 @@ export function ToolBar({ setSelectedSession, handleOpenCreateModal, sessions }:
                                     </div>
                                 ) : searchResults.length === 0 ? (
                                     <div className="p-4 text-center text-muted-foreground">
-                                        Aucune classe trouvée pour "{searchQuery}"
+                                        {t.teacher.noClassFound}
                                     </div>
                                 ) : (
                                     <div className="py-2">
@@ -106,7 +110,7 @@ export function ToolBar({ setSelectedSession, handleOpenCreateModal, sessions }:
                         data-testid="button-open-create-modal"
                     >
                         <Plus className="h-4 w-4 mr-2" />
-                        Nouvelle classe
+                        {t.teacher.newClass}
                     </Button>
                 </div>
             </Card>

@@ -21,6 +21,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { UserRole } from "@/types";
+import { useTranslations } from "@/lib/i18n/client";
 
 function translateSupabaseError(message: string): string {
   const errorTranslations: Record<string, string> = {
@@ -45,33 +46,30 @@ function translateSupabaseError(message: string): string {
   if (message.toLowerCase().includes("email") && message.toLowerCase().includes("invalid")) {
     return "L'adresse e-mail fournie n'est pas valide";
   }
-
   if (message.toLowerCase().includes("password")) {
     return "Le mot de passe fourni n'est pas valide";
   }
-
   if (message.toLowerCase().includes("rate limit") || message.toLowerCase().includes("too many")) {
     return "Trop de tentatives. Veuillez réessayer plus tard";
   }
-
   return message;
 }
 
 const formSchema = z
   .object({
-    firstName: z.string().min(1, "Le prénom est requis"),
-    lastName: z.string().min(1, "Le nom est requis"),
-    email: z.string().email("Adresse email invalide"),
-    password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
-    confirmPassword: z.string().min(1, "Veuillez confirmer votre mot de passe"),
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
     establishment: z.string().optional(),
     invitationToken: z.string().optional(),
     acceptTerms: z.boolean().refine((val) => val === true, {
-      message: "Vous devez accepter les conditions générales",
+      message: "You must accept the terms and conditions",
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Les mots de passe ne correspondent pas",
+    message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 
@@ -85,6 +83,8 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { signUp, signIn } = useAuth();
   const router = useRouter();
+  const t = useTranslations();
+  const rt = t.register;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -103,27 +103,27 @@ export default function Register() {
   const handleSignUp = async (data: FormValues) => {
     try {
       const response = await signUp(data.email, data.password, selectedRole as UserRole, data.acceptTerms, data.firstName, data.lastName, data.establishment, data.invitationToken);
-      return response
+      return response;
     } catch (error) {
       setIsSubmitting(false);
       const message = error instanceof Error ? error.message : "An error occures. Try again later";
       const translatedError = translateSupabaseError(message);
-      setErrorMessage(`Erreur lors de la création du compte : ${translatedError}`);
+      setErrorMessage(`${rt.errorPrefix}${translatedError}`);
       throw new Error(translatedError);
     }
-  }
+  };
 
-  const hangleSignIn = async (email: string, password: string): Promise<void> => {
+  const handleSignIn = async (email: string, password: string): Promise<void> => {
     try {
       await signIn(email, password);
     } catch (error) {
       setIsSubmitting(false);
       const message = error instanceof Error ? error.message : "An error occures. Try again later";
       const translatedError = translateSupabaseError(message);
-      setErrorMessage(`Compte créé mais erreur de connexion : ${translatedError}`);
+      setErrorMessage(`${rt.signInErrorPrefix}${translatedError}`);
       throw new Error(translatedError);
     }
-  }
+  };
 
   const onSubmit = async (data: FormValues) => {
     const { email, password } = data;
@@ -133,7 +133,7 @@ export default function Register() {
     setErrorMessage(null);
 
     await handleSignUp(data);
-    await hangleSignIn(email, password);
+    await handleSignIn(email, password);
 
     if (selectedRole === "student") {
       router.push("/student");
@@ -154,6 +154,15 @@ export default function Register() {
     setErrorMessage(null);
   };
 
+  const getRoleLabel = (role: UserRole) => {
+    switch (role) {
+      case "student": return rt.roleStudent;
+      case "self-learner": return rt.roleSolo;
+      case "teacher": return rt.roleTeacher;
+      case "establishment": return rt.roleEstablishment;
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-muted/30">
       <div className={`w-full ${!selectedRole ? "max-w-4xl" : "max-w-lg"}`}>
@@ -162,20 +171,19 @@ export default function Register() {
             <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
           </Link>
           <h1 className="text-3xl font-bold mb-2" data-testid="text-signup-title">
-            Créer un compte
+            {rt.title}
           </h1>
           <p className="text-muted-foreground">
-            Choisissez votre profil pour adapter votre espace Edesio.
+            {rt.subtitle}
           </p>
         </div>
 
         {!selectedRole ? (
           <div className="space-y-6">
             <div>
-              <p className="text-sm font-medium text-muted-foreground mb-3">Pour les particuliers</p>
+              <p className="text-sm font-medium text-muted-foreground mb-3">{rt.forIndividuals}</p>
               <Card
-                className={`p-6 cursor-pointer hover-elevate transition-all border-2 ${selectedRole === "self-learner" ? "border-primary" : "border-transparent"
-                  }`}
+                className={`p-6 cursor-pointer hover-elevate transition-all border-2 ${selectedRole === "self-learner" ? "border-primary" : "border-transparent"}`}
                 onClick={() => handleRoleSelect("self-learner")}
                 data-testid="card-role-self-learner"
               >
@@ -186,7 +194,7 @@ export default function Register() {
                   <div>
                     <h3 className="text-xl font-semibold">Edesio Solo</h3>
                     <p className="text-sm text-muted-foreground">
-                      Créez vos propres révisions et entraînez-vous avec l'IA
+                      {rt.soloDesc}
                     </p>
                   </div>
                 </div>
@@ -194,11 +202,10 @@ export default function Register() {
             </div>
 
             <div className="border rounded-lg p-4 bg-muted/30">
-              <p className="text-sm font-medium text-muted-foreground mb-3">Pour les établissements scolaires</p>
+              <p className="text-sm font-medium text-muted-foreground mb-3">{rt.forSchools}</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <Card
-                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${selectedRole === "student" ? "border-primary" : "border-transparent"
-                    }`}
+                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${selectedRole === "student" ? "border-primary" : "border-transparent"}`}
                   onClick={() => handleRoleSelect("student")}
                   data-testid="card-role-student"
                 >
@@ -207,17 +214,16 @@ export default function Register() {
                       <Users className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-base font-semibold">Je suis élève</h3>
+                      <h3 className="text-base font-semibold">{rt.studentTitle}</h3>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Rejoignez une session de votre professeur
+                        {rt.studentDesc}
                       </p>
                     </div>
                   </div>
                 </Card>
 
                 <Card
-                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${selectedRole === "teacher" ? "border-primary" : "border-transparent"
-                    }`}
+                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${selectedRole === "teacher" ? "border-primary" : "border-transparent"}`}
                   onClick={() => handleRoleSelect("teacher")}
                   data-testid="card-role-teacher"
                 >
@@ -226,17 +232,16 @@ export default function Register() {
                       <GraduationCap className="h-6 w-6 text-emerald-600" />
                     </div>
                     <div>
-                      <h3 className="text-base font-semibold">Je suis professeur</h3>
+                      <h3 className="text-base font-semibold">{rt.teacherTitle}</h3>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Créez une classe et faites réviser vos élèves
+                        {rt.teacherDesc}
                       </p>
                     </div>
                   </div>
                 </Card>
 
                 <Card
-                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${selectedRole === "establishment" ? "border-primary" : "border-transparent"
-                    }`}
+                  className={`p-4 cursor-pointer hover-elevate transition-all border-2 h-full ${selectedRole === "establishment" ? "border-primary" : "border-transparent"}`}
                   onClick={() => handleRoleSelect("establishment")}
                   data-testid="card-role-establishment"
                 >
@@ -245,9 +250,9 @@ export default function Register() {
                       <Building2 className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-base font-semibold">Je suis un établissement</h3>
+                      <h3 className="text-base font-semibold">{rt.establishmentTitle}</h3>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Gérez vos professeurs et suivez l'activité
+                        {rt.establishmentDesc}
                       </p>
                     </div>
                   </div>
@@ -257,13 +262,13 @@ export default function Register() {
 
             <div className="text-center pt-2">
               <p className="text-sm text-muted-foreground">
-                Vous avez déjà un compte ?{" "}
+                {rt.alreadyHaveAccount}{" "}
                 <Link
                   href="/login"
                   className="text-primary hover:underline"
                   data-testid="link-login"
                 >
-                  Se connecter
+                  {rt.login}
                 </Link>
               </p>
             </div>
@@ -277,7 +282,7 @@ export default function Register() {
               data-testid="button-back-role"
             >
               <ArrowLeft className="h-4 w-4" />
-              Changer de profil
+              {rt.changeProfile}
             </button>
 
             <div className={`flex items-center gap-3 mb-6 p-3 rounded-lg ${selectedRole === "self-learner"
@@ -295,15 +300,7 @@ export default function Register() {
               ) : (
                 <Building2 className="h-5 w-5 text-primary" />
               )}
-              <span className="font-medium">
-                {selectedRole === "student"
-                  ? "Compte Élève"
-                  : selectedRole === "self-learner"
-                    ? "Edesio Solo"
-                    : selectedRole === "teacher"
-                      ? "Compte Professeur"
-                      : "Compte Établissement"}
-              </span>
+              <span className="font-medium">{getRoleLabel(selectedRole)}</span>
             </div>
 
             {errorMessage && (
@@ -323,10 +320,10 @@ export default function Register() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Prénom</FormLabel>
+                        <FormLabel>{rt.firstName}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Jean"
+                            placeholder={rt.firstNamePlaceholder}
                             {...field}
                             data-testid="input-signup-firstname"
                           />
@@ -341,10 +338,10 @@ export default function Register() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nom</FormLabel>
+                        <FormLabel>{rt.lastName}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Dupont"
+                            placeholder={rt.lastNamePlaceholder}
                             {...field}
                             data-testid="input-signup-lastname"
                           />
@@ -360,11 +357,11 @@ export default function Register() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Adresse e-mail</FormLabel>
+                      <FormLabel>{rt.email}</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="jean.dupont@education.fr"
+                          placeholder={rt.emailPlaceholder}
                           {...field}
                           data-testid="input-signup-email"
                         />
@@ -379,7 +376,7 @@ export default function Register() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Mot de passe</FormLabel>
+                      <FormLabel>{rt.password}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
@@ -408,7 +405,7 @@ export default function Register() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirmer le mot de passe</FormLabel>
+                      <FormLabel>{rt.confirmPassword}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
@@ -439,12 +436,12 @@ export default function Register() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Établissement{" "}
-                          <span className="text-muted-foreground font-normal">(optionnel)</span>
+                          {rt.establishment}{" "}
+                          <span className="text-muted-foreground font-normal">{rt.establishmentOptional}</span>
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Lycée Victor Hugo"
+                            placeholder={rt.establishmentPlaceholder}
                             {...field}
                             data-testid="input-signup-establishment"
                           />
@@ -461,10 +458,10 @@ export default function Register() {
                     name="establishment"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nom de l'établissement</FormLabel>
+                        <FormLabel>{rt.establishmentNameLabel}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Lycée Victor Hugo"
+                            placeholder={rt.establishmentPlaceholder}
                             {...field}
                             data-testid="input-signup-establishment-name"
                           />
@@ -493,23 +490,23 @@ export default function Register() {
                           htmlFor="acceptTerms"
                           className="text-sm font-normal cursor-pointer"
                         >
-                          J'accepte les{" "}
+                          {rt.acceptTerms}{" "}
                           <Link
                             href="/cgu"
                             className="text-primary underline hover:no-underline"
                             target="_blank"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            conditions générales d'utilisation
+                            {rt.termsLink}
                           </Link>
-                          {" "}et la{" "}
+                          {" "}{rt.and}{" "}
                           <Link
                             href="/politique-confidentialite"
                             className="text-primary underline hover:no-underline"
                             target="_blank"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            politique de confidentialité
+                            {rt.privacyLink}
                           </Link>
                         </label>
                         <FormMessage />
@@ -528,10 +525,10 @@ export default function Register() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Création en cours...
+                      {rt.submitting}
                     </>
                   ) : (
-                    "Créer mon compte"
+                    rt.submit
                   )}
                 </Button>
               </form>
@@ -539,13 +536,13 @@ export default function Register() {
 
             <div className="text-center pt-6">
               <p className="text-sm text-muted-foreground">
-                Vous avez déjà un compte ?{" "}
+                {rt.alreadyHaveAccount}{" "}
                 <Link
                   href="/login"
                   className="text-primary hover:underline"
                   data-testid="link-login-bottom"
                 >
-                  Se connecter
+                  {rt.login}
                 </Link>
               </p>
             </div>

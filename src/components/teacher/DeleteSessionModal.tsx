@@ -1,7 +1,10 @@
+"use client";
+
 import { Loader2, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Session } from "@/types";
+import { useTranslations } from "@/lib/i18n/client";
 
 interface DeleteSessionModalProps {
     deleteModalOpen: boolean;
@@ -18,13 +21,14 @@ export function DeleteSessionModal({
     isDeleting,
     handleConfirmDelete,
 }: DeleteSessionModalProps) {
+    const t = useTranslations();
     return (
         <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
             <DialogContent data-testid="modal-delete-session">
                 <DialogHeader>
-                    <DialogTitle className="text-destructive">Supprimer la session ?</DialogTitle>
+                    <DialogTitle className="text-destructive">{t.teacher.deleteSessionModal.title}</DialogTitle>
                     <DialogDescription>
-                        Cette action est irréversible. Tous les cours, fichiers PDF et questions associés à la session "{session.name}" seront définitivement supprimés.
+                        {t.teacher.deleteSessionModal.description}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -36,7 +40,7 @@ export function DeleteSessionModal({
                         disabled={isDeleting}
                         data-testid="button-cancel-delete"
                     >
-                        Annuler
+                        {t.teacher.deleteSessionModal.cancel}
                     </Button>
                     <Button
                         variant="destructive"
@@ -53,7 +57,7 @@ export function DeleteSessionModal({
                         ) : (
                             <>
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                Supprimer
+                                {t.teacher.deleteSessionModal.confirm}
                             </>
                         )}
                     </Button>

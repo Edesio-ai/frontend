@@ -1,7 +1,10 @@
+"use client";
+
 import { SessionCard } from "@/components/dashboard";
 import { Session } from "@/types";
 import { Users } from "lucide-react";
 import { EmptySessionCard } from "../EmptySessionCard";
+import { useTranslations } from "@/lib/i18n/client";
 
 type ClassListSectionProps = {
     sessions: Session[];
@@ -20,6 +23,12 @@ export function ClassListSection({
     handleDeleteSession,
     sessionPendingCounts,
 }: ClassListSectionProps) {
+    const t = useTranslations();
+    const count = sessions.length;
+    const classCountLabel = count === 1
+        ? t.teacher.classCount_one.replace('{{count}}', String(count))
+        : t.teacher.classCount_other.replace('{{count}}', String(count));
+
     return (
         <section>
             <div className="flex items-center gap-3 mb-6">
@@ -28,7 +37,7 @@ export function ClassListSection({
                 </div>
                 <div>
                     <h2 className="text-xl font-semibold">Mes classes</h2>
-                    <p className="text-sm text-muted-foreground">{sessions.length} classe{sessions.length > 1 ? 's' : ''} créée{sessions.length > 1 ? 's' : ''}</p>
+                    <p className="text-sm text-muted-foreground">{classCountLabel}</p>
                 </div>
             </div>
 

@@ -19,12 +19,12 @@ export function exportClassementPdf(
   
   doc.setFontSize(16);
   doc.setTextColor(0);
-  doc.text(`Résultats - ${courseTitle}`, 14, 40);
+  doc.text(`Results — ${courseTitle}`, 14, 40);
   
   doc.setFontSize(10);
   doc.setTextColor(100);
-  doc.text(`Exporté le ${new Date().toLocaleDateString("fr-FR")}`, 14, 48);
-  doc.text(`${rankings.length} élève(s)`, 14, 54);
+  doc.text(`Exported on ${new Date().toLocaleDateString("en-US")}`, 14, 48);
+  doc.text(`${rankings.length} student(s)`, 14, 54);
 
   const tableData = rankings.map((r) => [
     r.rank.toString(),
@@ -35,7 +35,7 @@ export function exportClassementPdf(
 
   autoTable(doc, {
     startY: 62,
-    head: [["Rang", "Élève", "Score", "Taux de réussite"]],
+    head: [["Rank", "Student", "Score", "Success rate"]],
     body: tableData,
     theme: "striped",
     headStyles: {

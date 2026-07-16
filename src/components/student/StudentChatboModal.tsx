@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Dialog,
@@ -27,6 +29,8 @@ import {
 import { Course, EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, Question } from "@/types";
 import { questionService } from "@/services/teaching/question.service";
 import { llmService } from "@/services/llm.service";
+import { useTranslations } from "@/lib/i18n/client";
+import type { Dictionary } from "@/lib/i18n/client";
 
 interface StudentChatbotModalProps {
   open: boolean;
@@ -66,23 +70,6 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-const correctFeedbackMessages = [
-  "Bravo ! C'est la bonne réponse !",
-  "Excellent ! Tu as tout compris !",
-  "Super ! Continue comme ça !",
-  "Parfait ! Tu es sur la bonne voie !",
-  "Génial ! Tu maîtrises bien le sujet !",
-  "Bien joué ! C'est exact !",
-  "Formidable ! Tu progresses !",
-];
-
-const incorrectFeedbackMessages = [
-  "Pas tout à fait...",
-  "Ce n'est pas ça...",
-  "Hmm, pas exactement...",
-  "Presque ! Mais ce n'est pas la bonne réponse.",
-  "Pas cette fois...",
-];
 
 function getRandomMessage(messages: string[]): string {
   return messages[Math.floor(Math.random() * messages.length)];
@@ -134,11 +121,13 @@ function TypingIndicator() {
 function MessageBubble({ 
   message, 
   studentName,
-  studentPhotoUrl 
+  studentPhotoUrl,
+  t,
 }: { 
   message: ChatMessage;
   studentName?: string;
   studentPhotoUrl?: string | null;
+  t: Dictionary;
 }) {
   const isBot = message.sender === "bot";
 
@@ -223,7 +212,7 @@ function MessageBubble({
                 : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
                   ? "text-orange-700 dark:text-orange-300" 
                   : "text-red-700 dark:text-red-300"
-            }`}>Session terminée !</span>
+            }`}>{t.chatbot.sessionEnded}</span>
           </div>
         )}
         <p className="text-sm sm:text-base whitespace-pre-wrap leading-relaxed">{message.text}</p>
@@ -234,14 +223,14 @@ function MessageBubble({
                 <div className="p-1 rounded-full bg-emerald-500/20">
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">Bonne réponse ! +1 point</span>
+                <span className="text-sm font-semibold">{t.chatbot.goodAnswer}</span>
               </div>
             ) : message.isPartial ? (
               <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                 <div className="p-1 rounded-full bg-orange-500/20">
                   <Star className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">Réponse partielle +0.5 point</span>
+                <span className="text-sm font-semibold">{t.chatbot.partialAnswer}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
@@ -362,6 +351,9 @@ export function StudentChatbotModal({
   studentPhotoUrl,
   onComplete,
 }: StudentChatbotModalProps) {
+  const t = useTranslations();
+  const correctFeedbackMessages: string[] = t.chatbot.correctAnswers;
+  const incorrectFeedbackMessages: string[] = t.chatbot.encouragementsAfterWrong;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -424,17 +416,25 @@ export function StudentChatbotModal({
       const data = await llmService.generateCompletionFeedback(body);
       const aiFeedback = data.feedback || "Bravo pour avoir terminé cette révision !";
       
+      const scoreText = t.chatbot.completionScore
+        .replace('{score}', String(scoreDisplay))
+        .replace('{total}', String(finalTotal))
+        .replace('{percent}', String(Math.round(ratio * 100)));
       addMessage({
         sender: "bot",
-        text: `Tu as terminé la révision de "${cours.title}" !\n\nTon score : ${scoreDisplay}/${finalTotal} points.\n\n${aiFeedback}`,
+        text: `${t.chatbot.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
         type: "completion",
         scoreRatio: ratio,
       });
     } catch (error) {
       console.error("Error fetching completion feedback:", error);
+      const scoreText = t.chatbot.completionScore
+        .replace('{score}', String(scoreDisplay))
+        .replace('{total}', String(finalTotal))
+        .replace('{percent}', String(Math.round(ratio * 100)));
       addMessage({
         sender: "bot",
-        text: `Tu as terminé la révision de "${cours.title}" !\n\nTon score : ${scoreDisplay}/${finalTotal} points.\n\nBravo pour avoir terminé cette session de révision !`,
+        text: `${t.chatbot.completionTitle}\n\n${scoreText}`,
         type: "completion",
         scoreRatio: ratio,
       });
@@ -506,7 +506,7 @@ export function StudentChatbotModal({
         setChatState("greeting");
         addMessage({
           sender: "bot",
-          text: `Bonjour${name ? ` ${name}` : ""} ! Je suis Edesio, je vais t'aider à réviser "${title}".`,
+          text: getRandomMessage(t.chatbot.greetings),
           type: "greeting",
         });
 
@@ -516,7 +516,7 @@ export function StudentChatbotModal({
           if (cancelled) return;
           addMessage({
             sender: "bot",
-            text: `J'ai ${shuffledQuestions.length} questions pour toi. Prêt(e) à réviser ?`,
+            text: getRandomMessage(t.chatbot.startQuiz).replace('{count}', String(shuffledQuestions.length)),
             type: "greeting",
           });
           if (cancelled) return;
@@ -533,7 +533,7 @@ export function StudentChatbotModal({
         setChatState("greeting");
         addMessage({
           sender: "bot",
-          text: `Bonjour${name ? ` ${name}` : ""} ! Je suis Edesio. Malheureusement, il n'y a pas encore de questions pour "${title}".`,
+          text: t.chatbot.noQuestions.replace('{course}', title),
           type: "greeting",
         });
         if (cancelled) return;
@@ -541,7 +541,7 @@ export function StudentChatbotModal({
           if (cancelled) return;
           addMessage({
             sender: "bot",
-            text: "Demande à ton professeur de générer des questions pour ce cours !",
+            text: t.chatbot.noQuestionsYet,
             type: "no_questions",
           });
           setChatState("completed");
@@ -928,6 +928,7 @@ export function StudentChatbotModal({
               message={message} 
               studentName={studentName}
               studentPhotoUrl={studentPhotoUrl}
+              t={t}
             />
           ))}
           {(isProcessing || showTyping) && <TypingIndicator />}
@@ -983,12 +984,12 @@ export function StudentChatbotModal({
                 {currentQuestionIndex + 1 >= shuffledQuestions.length ? (
                   <>
                     <Sparkles className="h-5 w-5 mr-2" />
-                    Voir mes résultats
+                    {t.chatbot.viewResults}
                   </>
                 ) : (
                   <>
                     <ArrowRight className="h-5 w-5 mr-2" />
-                    Question suivante
+                    {t.chatbot.nextQuestion}
                   </>
                 )}
               </Button>
@@ -1004,7 +1005,7 @@ export function StudentChatbotModal({
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder="Tape ta réponse ici..."
+                  placeholder={t.chatbot.inputPlaceholder}
                   className="min-h-[48px] max-h-[120px] py-3 px-4 rounded-xl bg-background/80 border-border/50 focus-visible:ring-primary/30 text-base resize-none overflow-y-auto"
                   data-testid="input-student-answer"
                   disabled={isProcessing}
@@ -1027,7 +1028,7 @@ export function StudentChatbotModal({
                 <Send className="h-5 w-5" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">Appuie sur Entrée pour envoyer</p>
+            <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">{t.chatbot.pressEnter}</p>
           </div>
         )}
 
@@ -1041,7 +1042,7 @@ export function StudentChatbotModal({
                 data-testid="button-restart-session"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Recommencer
+                {t.chatbot.restart}
               </Button>
               <Button
                 className="flex-1 h-12 rounded-xl bg-gradient-to-r from-primary to-violet-600 hover:opacity-90 shadow-lg shadow-primary/25 !ring-0 !ring-offset-0 focus:outline-none border border-violet-700"
@@ -1049,7 +1050,7 @@ export function StudentChatbotModal({
                 data-testid="button-finish-session"
               >
                 <Check className="h-4 w-4 mr-2" />
-                Terminer
+                {t.chatbot.finish}
               </Button>
             </div>
           </div>

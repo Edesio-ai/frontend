@@ -1,8 +1,11 @@
+"use client";
+
 import { Loader2, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "../ui/dialog";
 import { DialogHeader } from "../ui/dialog";
 import { Course } from "@/types";
+import { useTranslations } from "@/lib/i18n/client";
 
 interface DeleteCourseModalProps {
     deleteModalOpen: boolean;
@@ -21,13 +24,14 @@ export function DeleteCourseModal({
     isDeleting,
     handleConfirmDelete,
 }: DeleteCourseModalProps) {
+    const t = useTranslations();
     return (
         <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <DialogContent data-testid="modal-delete-course">
             <DialogHeader>
-                <DialogTitle className="text-destructive">Supprimer le cours ?</DialogTitle>
+                <DialogTitle className="text-destructive">{t.teacher.deleteCourseModal.title}</DialogTitle>
                 <DialogDescription>
-                    Cette action est irréversible. Toutes les questions, fichiers PDF et statistiques associés au cours "{courseToDelete?.title}" seront définitivement supprimés.
+                    {t.teacher.deleteCourseModal.description}
                 </DialogDescription>
             </DialogHeader>
 
@@ -42,7 +46,7 @@ export function DeleteCourseModal({
                     disabled={isDeleting}
                     data-testid="button-cancel-delete-course"
                 >
-                    Annuler
+                    {t.teacher.deleteCourseModal.cancel}
                 </Button>
                 <Button
                     variant="destructive"
@@ -59,7 +63,7 @@ export function DeleteCourseModal({
                     ) : (
                         <>
                             <Trash2 className="h-4 w-4 mr-2" />
-                            Supprimer
+                            {t.teacher.deleteCourseModal.confirm}
                         </>
                     )}
                 </Button>

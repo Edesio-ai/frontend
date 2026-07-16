@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -12,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageCircle, Send, Check, Clock, HelpCircle } from "lucide-react";
 import { Course, CourseQuestion } from "@/types";
+import { useTranslations } from "@/lib/i18n/client";
 
 interface StudentQAModalProps {
   open: boolean;
@@ -28,6 +31,7 @@ export function StudentQAModal({
   fetchQuestionsCoursForCours,
   sendCourseQuestion,
 }: StudentQAModalProps) {
+  const t = useTranslations();
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<CourseQuestion[]>([]);
   const [newQuestion, setNewQuestion] = useState("");
@@ -56,7 +60,7 @@ export function StudentQAModal({
 
   const handleSubmitQuestion = async () => {
     if (!newQuestion.trim()) {
-      setSubmitError("Veuillez saisir votre question.");
+      setSubmitError(t.student.qaModal.emptyInput);
       return;
     }
 
@@ -86,7 +90,7 @@ export function StudentQAModal({
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
               <HelpCircle className="h-4 w-4 text-white" />
             </div>
-            Questions & Réponses
+            {t.student.qaModal.title}
           </DialogTitle>
           <DialogDescription>
             Posez une question au professeur ou consultez les réponses pour le cours "{cours.title}".
@@ -100,7 +104,7 @@ export function StudentQAModal({
               Poser une question
             </h4>
             <Textarea
-              placeholder="Écrivez votre question ici..."
+              placeholder={t.student.qaModal.inputPlaceholder}
               value={newQuestion}
               onChange={(e) => {
                 setNewQuestion(e.target.value);
@@ -124,7 +128,7 @@ export function StudentQAModal({
                 ) : (
                   <Send className="h-4 w-4 mr-2" />
                 )}
-                Envoyer ma question
+                {t.student.qaModal.send}
               </Button>
             </div>
           </Card>
@@ -139,7 +143,7 @@ export function StudentQAModal({
                 <MessageCircle className="h-6 w-6 text-muted-foreground" />
               </div>
               <p className="text-sm text-muted-foreground">
-                Aucune question n'a encore été posée pour ce cours.
+                {t.student.qaModal.empty}
               </p>
               <p className="text-sm text-muted-foreground">
                 Sois la première personne à poser une question !
@@ -187,7 +191,7 @@ export function StudentQAModal({
                     >
                       <p className="text-sm font-medium mb-3">{question.questionText}</p>
                       <div className="pl-4 border-l-2 border-primary/30">
-                        <p className="text-xs text-muted-foreground mb-1">Réponse du professeur :</p>
+                        <p className="text-xs text-muted-foreground mb-1">{t.student.qaModal.teacherAnswer}</p>
                         <p className="text-sm">{question.answer}</p>
                         <p className="text-xs text-muted-foreground mt-2">
                           Répondu le {new Date(question.answeredAt!).toLocaleDateString("fr-FR")}

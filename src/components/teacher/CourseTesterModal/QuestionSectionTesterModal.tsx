@@ -1,3 +1,5 @@
+"use client";
+
 import { DndContext, closestCenter, DragEndEvent, SensorDescriptor, SensorOptions } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy  } from "@dnd-kit/sortable";
 import { ListChecks, MessageSquare, Plus, Sparkles, Loader2, HelpCircle, Download } from "lucide-react";
@@ -7,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SortableQuestionItem } from "@/components/teacher/SotableQuestionItem";
+import { useTranslations } from "@/lib/i18n/client";
 
 type QuestionSectionTesterModalProps = {
   questions: Question[];
@@ -45,6 +48,7 @@ export function QuestionSectionTesterModal({
   handleDownloadQuestionsPdf,
   questionSensors,
 }: QuestionSectionTesterModalProps) {
+  const t = useTranslations();
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -59,9 +63,9 @@ export function QuestionSectionTesterModal({
           </Button>
           <Button size="sm" onClick={handleGenerateQuestions} disabled={isGenerating}>
             {isGenerating ? (
-              <><Loader2 className="h-4 w-4 animate-spin mr-1" /> Génération...</>
+              <><Loader2 className="h-4 w-4 animate-spin mr-1" /> {t.teacher.questionGenerator.generating}</>
             ) : (
-              <><Sparkles className="h-4 w-4 mr-1" /> {questions.length > 0 ? "Re-générer" : "Générer des questions"}</>
+              <><Sparkles className="h-4 w-4 mr-1" /> {questions.length > 0 ? "Re-générer" : t.teacher.questionGenerator.generate}</>
             )}
           </Button>
         </div>
@@ -131,7 +135,7 @@ export function QuestionSectionTesterModal({
                       data-testid="button-add-question"
                     >
                       <Plus className="h-4 w-4 mr-1" />
-                      Ajouter une question
+                      {t.teacher.questionGenerator.addManually}
                     </Button>
                   </div>
                 </SortableContext>
@@ -142,7 +146,7 @@ export function QuestionSectionTesterModal({
       ) : (
         <div className="text-sm text-muted-foreground text-center py-4 bg-muted/20 rounded-md space-y-3">
           <Sparkles className="h-6 w-6 mx-auto opacity-50" />
-          <p>Aucune question générée.</p>
+          <p>{t.teacher.questionGenerator.noQuestions}</p>
           <div className="flex gap-2 justify-center">
             <Button
               variant="outline"
@@ -151,7 +155,7 @@ export function QuestionSectionTesterModal({
               data-testid="button-add-question-empty"
             >
               <Plus className="h-4 w-4 mr-1" />
-              Ajouter manuellement
+              {t.teacher.questionGenerator.addManually}
             </Button>
           </div>
         </div>

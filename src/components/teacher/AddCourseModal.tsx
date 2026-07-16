@@ -1,3 +1,5 @@
+"use client";
+
 import { Course } from "@/types";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -11,6 +13,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { ScrollArea } from "../ui/scroll-area";
+import { useTranslations } from "@/lib/i18n/client";
 
 
 const formSchema = z.object({
@@ -40,6 +43,7 @@ export function AddCourseModal({
       ) => Promise<Course | null>;
     onCourseCreated: (cours: Course) => void;
   }) {
+    const t = useTranslations();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedPdfFiles, setSelectedPdfFiles] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -99,10 +103,10 @@ export function AddCourseModal({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Plus className="h-5 w-5" />
-              Ajouter un nouveau cours
+              {t.teacher.addCourse.title}
             </DialogTitle>
             <DialogDescription>
-              Créez un cours en ajoutant un title, des fichiers PDF et optionnellement du contenu texte.
+              {t.teacher.addCourse.descriptionPlaceholder}
             </DialogDescription>
           </DialogHeader>
           
@@ -115,10 +119,10 @@ export function AddCourseModal({
                     name="title"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Titre du cours</FormLabel>
+                        <FormLabel>{t.teacher.addCourse.name}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Ex: La Révolution française"
+                            placeholder={t.teacher.addCourse.namePlaceholder}
                             {...field}
                             data-testid="input-course-title"
                           />
@@ -133,10 +137,10 @@ export function AddCourseModal({
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description courte</FormLabel>
+                        <FormLabel>{t.teacher.addCourse.description}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Ex: Introduction aux causes et conséquences"
+                            placeholder={t.teacher.addCourse.descriptionPlaceholder}
                             {...field}
                             data-testid="input-course-description"
                           />
@@ -147,7 +151,7 @@ export function AddCourseModal({
                   />
   
                   <div className="space-y-2">
-                    <FormLabel>Fichiers PDF</FormLabel>
+                    <FormLabel>{t.teacher.addCourse.pdfs}</FormLabel>
                     <p className="text-xs text-muted-foreground">
                       Ajoutez un ou plusieurs fichiers PDF contenant le contenu du cours
                     </p>
@@ -168,7 +172,7 @@ export function AddCourseModal({
                         data-testid="button-select-pdf"
                       >
                         <Upload className="h-4 w-4 mr-2" />
-                        {selectedPdfFiles.length > 0 ? "Ajouter d'autres PDFs" : "Sélectionner des PDFs"}
+                        {selectedPdfFiles.length > 0 ? "Ajouter d'autres PDFs" : t.teacher.addCourse.selectPdfs}
                       </Button>
                       {selectedPdfFiles.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">
@@ -202,12 +206,12 @@ export function AddCourseModal({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Contenu texte additionnel
+                          {t.teacher.addCourse.content}
                           <span className="text-muted-foreground font-normal ml-2">(optionnel)</span>
                         </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Vous pouvez ajouter du texte supplémentaire ici, ou laisser vide si vous utilisez uniquement des PDFs..."
+                            placeholder={t.teacher.addCourse.contentPlaceholder}
                             className="min-h-[100px] resize-y"
                             {...field}
                             data-testid="textarea-course-content"
@@ -222,7 +226,7 @@ export function AddCourseModal({
   
               <div className="flex justify-end gap-2 pt-4 border-t mt-4 flex-shrink-0">
                 <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
-                  Annuler
+                  {t.common.cancel}
                 </Button>
                 <Button type="submit" disabled={isSubmitting} data-testid="button-add-course">
                   {isSubmitting ? (
@@ -230,7 +234,7 @@ export function AddCourseModal({
                   ) : (
                     <>
                       <Plus className="h-4 w-4 mr-2" />
-                      Créer le cours
+                      {t.teacher.addCourse.create}
                     </>
                   )}
                 </Button>

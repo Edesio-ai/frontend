@@ -1,6 +1,9 @@
+"use client";
+
 import { correctAnswerDisplay, indexMatchesCorrectAnswer, multipleChoiceIndicesCorrect, propositionLabels } from "@/lib/proposition-labels";
 import { Question, UpdateQuestionRequest } from "@/types";
 import { useState } from "react";
+import { useTranslations } from "@/lib/i18n/client";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { CheckCircle2, Pencil } from "lucide-react";
@@ -24,6 +27,7 @@ export function QuestionCard({
     onQuestionUpdated: (updatedQuestion: Question) => void;
     onQuestionDeleted: (questionId: string) => void;
 }) {
+    const t = useTranslations();
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -195,7 +199,7 @@ export function QuestionCard({
                     )}
                     {question.type === 'open' && question.correctAnswers?.[0] && (
                         <p className="text-xs text-muted-foreground">
-                            <span className="font-medium">Réponse:</span>{" "}
+                            <span className="font-medium">{t.teacher.questionCard.answer}</span>{" "}
                             {correctAnswerDisplay(question.proposals, question.correctAnswers)}
                         </p>
                     )}

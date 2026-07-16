@@ -1,3 +1,5 @@
+"use client";
+
 import { Question } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -6,6 +8,7 @@ import { CheckCircle2, Loader2, Save, Trash2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { DeleteQuestionModal } from "./DeleteQuestionModal";
+import { useTranslations } from "@/lib/i18n/client";
 
 type EditQuestionModalProps = {
     question: Question;
@@ -54,7 +57,7 @@ export function EditQuestionModal({
     isDeleting,
     handleDelete,
 }: EditQuestionModalProps) {
-
+    const t = useTranslations();
 
     return (
         <>
@@ -87,7 +90,7 @@ export function EditQuestionModal({
                                 <Trash2 className="h-3 w-3" />
                             </Button>
                             <Button size="sm" variant="ghost" onClick={handleCancel} disabled={isSaving}>
-                                Annuler
+                                {t.teacher.editQuestion.cancel}
                             </Button>
                             <Button size="sm" onClick={handleSave} disabled={isSaving}>
                                 {isSaving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
@@ -140,7 +143,7 @@ export function EditQuestionModal({
                             <Textarea
                                 value={editedGoodAnswer}
                                 onChange={(e) => setEditedGoodAnswer(e.target.value)}
-                                placeholder="Réponse attendue..."
+                                placeholder={t.teacher.editQuestion.answer}
                                 className="min-h-[40px] text-sm"
                                 data-testid={`input-answer-${question.id}`}
                             />
@@ -152,7 +155,7 @@ export function EditQuestionModal({
                         <Textarea
                             value={editedExplanation}
                             onChange={(e) => setEditedExplication(e.target.value)}
-                            placeholder="Explication de la réponse..."
+                            placeholder={t.teacher.editQuestion.explanation}
                             className="min-h-[40px] text-sm"
                             data-testid={`input-explanation-${question.id}`}
                         />

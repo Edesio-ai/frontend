@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -5,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageCircle, Send, Check, Clock, Trash2 } from "lucide-react";
 import type { Course, CourseQuestion } from "@/types";
+import { useTranslations } from "@/lib/i18n/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,6 +40,7 @@ export function QuestionsCoursePanel({
   deleteCourseQuestion,
   onPendingCountChange,
 }: QuestionsCoursPanelProps) {
+  const t = useTranslations();
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<QuestionsCoursWithCourse[]>([]);
   const [answeringId, setAnsweringId] = useState<string | null>(null);
@@ -150,9 +154,9 @@ export function QuestionsCoursePanel({
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center mx-auto mb-4">
           <MessageCircle className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="font-semibold text-lg mb-2">Aucune question</h3>
+        <h3 className="font-semibold text-lg mb-2">{t.dashboard.questionsPanel.noQuestions}</h3>
         <p className="text-sm text-muted-foreground max-w-md mx-auto">
-          Les élèves n'ont pas encore posé de questions sur les cours de cette session.
+          {t.dashboard.questionsPanel.noQuestionsHint}
         </p>
       </div>
     );
@@ -224,7 +228,7 @@ export function QuestionsCoursePanel({
               ) : answeringId === question.id ? (
                 <div className="space-y-2">
                   <Textarea
-                    placeholder="Écrivez votre réponse..."
+                    placeholder={t.dashboard.questionsPanel.answerPlaceholder}
                     value={answerText}
                     onChange={(e) => setAnswerText(e.target.value)}
                     className="min-h-[80px]"
@@ -250,7 +254,7 @@ export function QuestionsCoursePanel({
                       ) : (
                         <Send className="h-4 w-4 mr-2" />
                       )}
-                      Envoyer
+                      {t.dashboard.questionsPanel.answer}
                     </Button>
                   </div>
                 </div>
@@ -273,7 +277,7 @@ export function QuestionsCoursePanel({
       <AlertDialog open={!!deleteConfirmId} onOpenChange={() => setDeleteConfirmId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Supprimer cette question ?</AlertDialogTitle>
+            <AlertDialogTitle>{t.dashboard.questionsPanel.deleteQuestion}</AlertDialogTitle>
             <AlertDialogDescription>
               Cette action est irréversible. La question et sa réponse éventuelle seront définitivement supprimées.
             </AlertDialogDescription>
