@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
     const body = await request.json();
 
-    const response = await fetch(`${process.env.BACKEND_URL}/auth/send-invitation`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/email/send-invitation`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
