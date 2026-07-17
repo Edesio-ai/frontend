@@ -9,7 +9,12 @@ type RouteContext = {
 export async function GET(request: Request,  { params }: RouteContext) {
     const { token } = await params;
 
-    const response = await fetch(`${process.env.BACKEND_URL}/invitation-token/preview/${token}`);
+    const response = await fetch(`${process.env.BACKEND_URL}/invitation-token/preview/${token}`, {
+        headers:{
+            "Content-Type": "application/json",
+            "cookie": request.headers.get("cookie") ?? "",
+        }
+    });
 
     if (!response.ok) {
         const error = await response.json();

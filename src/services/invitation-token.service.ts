@@ -18,7 +18,7 @@ export const invitationTokenService = {
         return reponse as any;
       },
       async getInvitationTokenPreview(token: string): Promise<any> {
-        return await apiFetch<any>(`/invitation-token/preview/${token}`, {
+        return await apiFetch<any>(`/api/invitation-token/preview/${token}`, {
             method: "GET",
         });
     },
