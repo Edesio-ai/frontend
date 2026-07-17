@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/form";
 import { GraduationCap, Loader2, CheckCircle2, XCircle, Building2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { authService } from "@/services/auth.service";
 import { invitationTokenService } from "@/services/invitation-token.service";
 import { useTranslations, useLocale } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
@@ -106,33 +105,35 @@ export default function TeacherInvitation() {
     validateToken();
   }, [token]);
 
-  const handleSignupTeacherByInvitation = async (data: FormValues) => {
-    try {
-      return await signUp(data.email, data.password, "teacher", data.acceptTerms, data.firstname, data.lastname, invitationData?.establishmentName, token);
-    } catch (err) {
-      setIsSubmitting(false);
-      const translatedError = translateSupabaseError(
-        err instanceof Error ? err.message : ti.unknownError,
-        t.supabaseErrors,
-        locale,
-      );
-      setErrorMessage(translatedError);
-      return;
-    }
-  }
-
   const onSubmit = async (data: FormValues) => {
     if (!invitationData || !token) return;
 
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    await handleSignupTeacherByInvitation(data);
-    await signIn(data.email, data.password);
-
-    router.push("/teacher");
-    setErrorMessage(null);
-
+    try {
+      await signUp(
+        data.email,
+        data.password,
+        "teacher",
+        data.acceptTerms,
+        data.firstname,
+        data.lastname,
+        invitationData.establishmentName,
+        token,
+      );
+      const user = await signIn(data.email, data.password);
+      router.push("/teacher");
+    } catch (err) {
+      const translatedError = translateSupabaseError(
+        err instanceof Error ? err.message : ti.unknownError,
+        t.supabaseErrors,
+        locale,
+      );
+      setErrorMessage(translatedError);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isValidating) {
@@ -201,7 +202,7 @@ export default function TeacherInvitation() {
             </div>
           </div>
 
-          {invitationData?.assignedChatbots && invitationData.assignedChatbots > 0 && (
+          {invitationData && invitationData.assignedChatbots > 0 && (
             <div className="mb-6 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
               <p className="text-sm">
                 <span className="font-medium text-amber-700">
