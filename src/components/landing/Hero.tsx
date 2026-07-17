@@ -83,7 +83,7 @@ export async function Hero() {
                 data-testid="badge-mistral"
               >
                 <span className="text-[10px] text-slate-400">{t.poweredBy}</span>
-                <img src='/teenage-girl-student.png' alt="Mistral AI" className="h-8 w-auto" />
+                <img src='/mistral.png' alt="Mistral AI" className="h-8 w-auto" />
                 <Badge variant="secondary" className="ml-1 bg-indigo-500/20 text-indigo-300 border-indigo-400/30 text-[10px] px-1.5 py-0.5">
                   {t.frenchAI}
                 </Badge>
