@@ -46,12 +46,12 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
-import { useAuth } from "@/hooks/use-auth";
 import { useTranslations } from "@/lib/i18n/client";
 import { StudentChatbotModal } from "@/components/student/StudentChatboModal";
 import { StudentQAModal } from "@/components/student/StudantQAModal";
 import { Course, CourseRanking, Question, Session } from "@/types";
 import { JoinSessionModal } from "@/components/student/JoinSessionModal";
+import { useAuth } from "@/contexts/auth-context";
 
 interface JoinedSession extends Session {
   joinedAt: string;

@@ -18,9 +18,9 @@ import {
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/use-auth";
 import { useTranslations, useLocale } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function Connexion() {
   const [isSubmitting, setIsSubmitting] = useState(false);

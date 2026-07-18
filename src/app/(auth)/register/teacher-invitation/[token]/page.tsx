@@ -19,10 +19,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { GraduationCap, Loader2, CheckCircle2, XCircle, Building2 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
 import { invitationTokenService } from "@/services/invitation-token.service";
 import { useTranslations, useLocale } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
+import { useAuth } from "@/contexts/auth-context";
 
 interface InvitationData {
   maskedEmail: string;

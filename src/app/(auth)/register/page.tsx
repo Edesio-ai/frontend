@@ -19,10 +19,10 @@ import {
 import { Users, ArrowLeft, Loader2, Building2, Sparkles, GraduationCap, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/use-auth";
 import { UserRole } from "@/types";
 import { useTranslations, useLocale } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
+import { useAuth } from "@/contexts/auth-context";
 
 const formSchema = z
   .object({

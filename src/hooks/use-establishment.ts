@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "@/hooks/use-auth";
 import { useTranslations } from "@/lib/i18n/client";
 
 import type {
@@ -17,6 +16,7 @@ import { studentService } from "@/services/teaching/student.service";
 import { courseService } from "@/services/teaching/course.service";
 import { studentSessionService } from "@/services/teaching/student-session.service";
 import { emailService } from "@/services/email.service";
+import { useAuth } from "@/contexts/auth-context";
 
 interface EtablissementStats {
   totalTeachers: number;

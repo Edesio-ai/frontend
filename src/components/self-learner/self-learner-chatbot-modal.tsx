@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { selfLearnerQuestionService } from "@/services/teaching/self-learner-question.service";
 import { llmService } from "@/services/llm.service";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "@/lib/i18n/client";
 
 interface SelfLearnerChatbotModalProps {

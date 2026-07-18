@@ -33,13 +33,13 @@ import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-
 import type { TeacherWithStats, SessionWithStudentCount, Student, InvitationToken, SessionDetails } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/use-auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TokenElement } from "@/components/establishment/TokenElement";
 import { CourseViewModal } from "@/components/establishment/CourseViewModal";
 import { StatsCard } from "@/components/establishment/StatsCard";
 import { SessionStudentsModal } from "@/components/establishment/SessionStudentModal";
 import { TeacherRow } from "@/components/establishment/TeacherRow";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function Establishment() {
   const t = useTranslations();
