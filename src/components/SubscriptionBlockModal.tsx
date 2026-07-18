@@ -217,25 +217,12 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
                 </p>
               </div>
 
-              <div className="space-y-3">
-                <a
-                  href={`${currentPlan.monthlyLink}?prefilled_email=${encodeURIComponent(user?.email || "")}&client_reference_id=${encodeURIComponent(user?.id || "")}`}
-                  className="block"
-                  data-testid="link-subscribe-monthly"
-                >
-                  <Button className="w-full" size="lg" data-testid="button-subscribe-monthly">
-                    {t.billing.monthly} subscription
+              <div className="space-y-4">
+                <Link href={`/billing/choose-plan?plan=${role}`}>
+                  <Button className="w-full" size="lg" data-testid="button-choose-plan">
+                    {t.billing.subscribe}
                   </Button>
-                </a>
-                <a
-                  href={`${currentPlan.yearlyLink}?prefilled_email=${encodeURIComponent(user?.email || "")}&client_reference_id=${encodeURIComponent(user?.id || "")}`}
-                  className="block"
-                  data-testid="link-subscribe-yearly"
-                >
-                  <Button variant="outline" className="w-full" size="lg" data-testid="button-subscribe-yearly">
-                    {t.billing.annual} subscription (-15%)
-                  </Button>
-                </a>
+                </Link>
               </div>
             </div>
           )}

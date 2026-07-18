@@ -3,15 +3,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { useTranslations } from "@/lib/i18n/client";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import type { Session } from "@/types";
 import { Calendar, Copy, BookOpen, Check, Trash2, Users, Loader2, MessageCircle, Pencil } from "lucide-react";
 import { useState } from "react";

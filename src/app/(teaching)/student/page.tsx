@@ -94,7 +94,7 @@ export default function Student() {
   const [loadingCourses, setLoadingCourses] = useState<Record<string, boolean>>({});
   const [selectedCoursIdPerSession, setSelectedCoursIdPerSession] = useState<Record<string, string>>({});
 
-  const [selectedCours, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [coursQuestions, setCourseQuestions] = useState<Question[]>([]);
   const [chatbotOpen, setChatbotOpen] = useState(false);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
@@ -795,19 +795,17 @@ export default function Student() {
         </DialogContent>
       </Dialog>
 
-      {selectedCours && chatbotOpen && (
+      {selectedCourse && chatbotOpen && (
         <StudentChatbotModal
-          key={selectedCours.id}
+          key={selectedCourse.id}
           open={chatbotOpen}
           onOpenChange={setChatbotOpen}
-          cours={selectedCours}
+          course={selectedCourse}
           questions={coursQuestions}
           studentName={firstname}
           studentPhotoUrl={student?.photoUrl}
           onComplete={async (totalAnswered, correctAnswers) => {
-            console.log("onComplete called:", { totalAnswered, correctAnswers, coursId: selectedCours.id });
-            const result = await updateCourseProgress(selectedCours.id, totalAnswered, correctAnswers);
-            console.log("updateCourseProgress result:", result);
+            const result = await updateCourseProgress(selectedCourse.id, totalAnswered, correctAnswers);
             if (result.success) {
               toast({
                 title: t.student.progressSaved,

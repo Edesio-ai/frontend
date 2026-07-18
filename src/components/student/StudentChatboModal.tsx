@@ -27,7 +27,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Course, EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, Question } from "@/types";
-import { questionService } from "@/services/teaching/question.service";
 import { llmService } from "@/services/llm.service";
 import { useTranslations } from "@/lib/i18n/client";
 import type { Dictionary } from "@/lib/i18n/client";
@@ -35,7 +34,7 @@ import type { Dictionary } from "@/lib/i18n/client";
 interface StudentChatbotModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  cours: Course;
+  course: Course;
   questions: Question[];
   studentName?: string;
   studentPhotoUrl?: string | null;
@@ -351,7 +350,7 @@ function MultiOptions({
 export function StudentChatbotModal({
   open,
   onOpenChange,
-  cours,
+  course,
   questions,
   studentName,
   studentPhotoUrl,
@@ -378,8 +377,8 @@ export function StudentChatbotModal({
   chatStateRef.current = chatState;
   const studentNameRef = useRef(studentName);
   studentNameRef.current = studentName;
-  const coursTitleRef = useRef(cours.title);
-  coursTitleRef.current = cours.title;
+  const coursTitleRef = useRef(course.title);
+  coursTitleRef.current = course.title;
   const [conversationNonce, setConversationNonce] = useState(0);
   const askQuestionRef = useRef<(index: number) => void>(() => {});
 
@@ -414,7 +413,7 @@ export function StudentChatbotModal({
     
     try {
       const body: GenerateCompletionFeedbackRequest = {
-        courseTitle: cours.title,
+        courseTitle: course.title,
         score: finalScore,
         total: finalTotal,
         studentName: studentName || undefined,
@@ -561,7 +560,7 @@ export function StudentChatbotModal({
       clearTimeout(t2);
       clearTimeout(t3);
     };
-  }, [open, cours.id, shuffledQuestions.length, conversationNonce]);
+  }, [open, course.id, shuffledQuestions.length, conversationNonce]);
 
   const handleQCMAnswer = (selectedIndex: number) => {
     if (isProcessing || waitingForAcknowledge) return;
@@ -891,7 +890,7 @@ export function StudentChatbotModal({
               <DialogTitle className="text-base font-bold leading-tight">Edesio</DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground truncate flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                {cours.title}
+                {course.title}
               </DialogDescription>
             </div>
             <div className="flex items-center gap-1 shrink-0">
