@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "./use-auth";
+import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "@/lib/i18n/client";
 import { Course, CourseRanking, JoinedSession, Question, CourseQuestion, Student } from "@/types";
 import { studentService } from "@/services/teaching/student.service";

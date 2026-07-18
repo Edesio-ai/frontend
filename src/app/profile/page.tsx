@@ -24,12 +24,11 @@ import {
   Mail,
   Save,
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { profileService } from "@/services/profile.service";
 import { SubscriptionSection } from "@/components/profile/SubscriptionSection";
 import { useTranslations } from "@/lib/i18n/client";
-
+import { useAuth } from "@/contexts/auth-context";
 
 const profileSchema = z.object({
   firstname: z.string().min(1, "First name is required"),

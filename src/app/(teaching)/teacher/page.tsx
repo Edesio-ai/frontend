@@ -18,7 +18,6 @@ import {
   Tabs,
 } from "@/components/ui/tabs";
 
-import { useAuth } from "@/hooks/use-auth";
 import { useTeacher } from "@/hooks/use-teacher";
 import { SuggestionsModal } from "@/components/SuggestionsModal";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
@@ -45,6 +44,7 @@ import { TabsListHeader } from "@/components/teacher/tabs/TabsList";
 import { CourseTab } from "@/components/teacher/tabs/CourseTab";
 import { StudentTab } from "@/components/teacher/tabs/StudentTab";
 import { CourseQuestionTab } from "@/components/teacher/tabs/CourseQuestionTab";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function Teacher() {
   const { user, loading: authLoading, logout, getUserRole } = useAuth();

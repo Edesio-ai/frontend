@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "@/hooks/use-auth";
 import { useTranslations } from "@/lib/i18n/client";
 
 import type {
@@ -33,6 +32,7 @@ import { llmService } from "@/services/llm.service";
 import { courseStudentStatsService } from "@/services/teaching/student-course-stats.service";
 import { studentSessionService } from "@/services/teaching/student-session.service";
 import { invitationTokenService } from "@/services/invitation-token.service";
+import { useAuth } from "@/contexts/auth-context";
 
 
 export function useTeacher() {

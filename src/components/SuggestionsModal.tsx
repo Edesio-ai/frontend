@@ -36,7 +36,7 @@ import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { suggestionService } from "@/services/suggestion.service";
 import { Suggestion } from "@/types/suggestion.type";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "@/lib/i18n/client";
 
 interface SuggestionsModalProps {

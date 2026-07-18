@@ -80,8 +80,8 @@ import {
 } from "lucide-react";
 
 import { SelfLearnerChatbotModal } from "@/components/self-learner/self-learner-chatbot-modal";
-import { useAuth } from "@/hooks/use-auth";
 import { Language, QuestionType, SelfLearnerCourse, SelfLearnerCourseFile, SelfLearnerQuestion } from "@/types";
+import { useAuth } from "@/contexts/auth-context";
 
 
 type CreateCoursFormValues = {

@@ -6,15 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Check, Info, Bot } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useAuth } from "@/hooks/use-auth";
 import { annualDiscountPercent, plans } from "@/utils/constants/billing";
 import { PlanCard } from "@/components/billing/PlanCard";
 import { useTranslations } from "@/lib/i18n/client";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function ChoisirPlan() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [recommendedPlan, setRecommendedPlan] = useState<string | null>(null);
-  const { user, getUserRole } = useAuth();
+  const { getUserRole } = useAuth();
   const t = useTranslations();
   const userRole = getUserRole();
 

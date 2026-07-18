@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/use-auth";
 import { useTranslations } from "@/lib/i18n/client";
 import { Loader2, AlertTriangle, CreditCard, LogOut, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BillingService } from "@/services/billing.service";
+import { useAuth } from "@/contexts/auth-context";
 
 interface SubscriptionStatus {
   hasActiveSubscription: boolean;

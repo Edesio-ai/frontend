@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "@/hooks/use-auth";
 import { useTranslations } from "@/lib/i18n/client";
 import type { 
   SelfLearner, 
@@ -19,7 +18,7 @@ import { MAX_COURSES } from "@/utils/constants/self-learner";
 import { selfLearnerCourseFileService } from "@/services/teaching/self-learner-course-file.service";
 import { selfLearnerQuestionService } from "@/services/teaching/self-learner-question.service";
 import { llmService } from "@/services/llm.service";
-
+import { useAuth } from "@/contexts/auth-context";
 
 export function useSelfLearner() {
   const { user, loading: authLoading } = useAuth();

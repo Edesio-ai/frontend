@@ -16,9 +16,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader2, Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
 import { useTranslations } from "@/lib/i18n/client";
-
+import { useAuth } from "@/contexts/auth-context";
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
