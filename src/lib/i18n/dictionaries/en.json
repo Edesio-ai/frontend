@@ -840,7 +840,15 @@
       "noQuestions": "No questions created.",
       "noStudents": "No students have worked on this lesson yet.",
       "close": "Close"
-    }
+    },
+    "invitationCodes": "Invitation codes",
+    "newCode": "New code",
+    "classes": "Classes",
+    "name": "Name",
+    "email": "Email",
+    "classesCount": "{count} class(es)",
+    "inviteTeachersHint": "Share an invitation code so teachers can join",
+    "createCodeHint": "Create a code to allow teachers to join your institution"
   },
   "dashboard": {
     "sessionCard": {

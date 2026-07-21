@@ -81,7 +81,7 @@ export default function Establishment() {
         loading: loading,
       },
       {
-        title: "Classes",
+        title: t.establishment.classes,
         value: stats.totalSessions,
         icon: BookOpen,
         loading: loading,
@@ -240,11 +240,11 @@ export default function Establishment() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold flex items-center gap-2">
                 <Plus className="h-5 w-5" />
-                Codes d'invitation
+                {t.establishment.invitationCodes}
               </h2>
               <Button onClick={() => setShowInvitationModal(true)} data-testid="button-create-invitation">
                 <Plus className="h-4 w-4 mr-2" />
-                Nouveau code
+                {t.establishment.newCode}
               </Button>
             </div>
 
@@ -252,7 +252,7 @@ export default function Establishment() {
               <div className="text-center py-8 text-muted-foreground">
                 <p>{t.establishment.noInvitations}</p>
                 <p className="text-sm mt-1">
-                  Create a code to allow teachers to join your institution
+                  {t.establishment.createCodeHint}
                 </p>
               </div>
             ) : (
@@ -267,23 +267,23 @@ export default function Establishment() {
           <Card className="p-6">
             <h2 className="text-xl font-semibold flex items-center gap-2 mb-6">
               <GraduationCap className="h-5 w-5" />
-              Professeurs ({stats.totalTeachers})
+              {t.establishment.teachers} ({stats.totalTeachers})
             </h2>
 
             {teachers.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <p>{t.establishment.noTeachers}</p>
                 <p className="text-sm mt-1">
-                  Partagez un code d'invitation pour que les professeurs puissent rejoindre
+                  {t.establishment.inviteTeachersHint}
                 </p>
               </div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Nom</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Classes</TableHead>
+                    <TableHead>{t.establishment.name}</TableHead>
+                    <TableHead>{t.establishment.email}</TableHead>
+                    <TableHead>{t.establishment.classes}</TableHead>
                     <TableHead>{t.establishment.students}</TableHead>
                   </TableRow>
                 </TableHeader>

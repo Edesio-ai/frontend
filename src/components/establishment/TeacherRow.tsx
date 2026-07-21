@@ -36,7 +36,7 @@ export function TeacherRow({
                 </TableCell>
                 <TableCell className="text-muted-foreground">{teacher.email}</TableCell>
                 <TableCell>
-                    <Badge variant="secondary">{teacher.sessionsCount} classe(s)</Badge>
+                    <Badge variant="secondary">{t.establishment.classesCount.replace("{count}", String(teacher.sessionsCount))}</Badge>
                 </TableCell>
                 <TableCell>
                     <Badge variant="outline">{t.establishment.teacherRow.students.replace('{{count}}', String(teacher.studentsCount))}</Badge>

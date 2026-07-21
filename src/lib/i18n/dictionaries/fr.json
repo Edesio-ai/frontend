@@ -840,7 +840,15 @@
       "noQuestions": "Aucune question créée.",
       "noStudents": "Aucun élève n'a encore travaillé sur ce cours.",
       "close": "Fermer"
-    }
+    },
+    "invitationCodes": "Codes d'invitation",
+    "newCode": "Nouveau code",
+    "classes": "Classes",
+    "name": "Nom",
+    "email": "Email",
+    "classesCount": "{count} classe(s)",
+    "inviteTeachersHint": "Partagez un code d'invitation pour que les professeurs puissent rejoindre",
+    "createCodeHint": "Créez un code pour permettre aux professeurs de rejoindre votre établissement"
   },
   "dashboard": {
     "sessionCard": {
