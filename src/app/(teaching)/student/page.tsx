@@ -46,7 +46,7 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
-import { useTranslations } from "@/lib/i18n/client";
+import { useLocale, useTranslations } from "@/lib/i18n/client";
 import { StudentChatbotModal } from "@/components/student/StudentChatboModal";
 import { StudentQAModal } from "@/components/student/StudantQAModal";
 import { Course, CourseRanking, Question, Session } from "@/types";
@@ -59,6 +59,8 @@ interface JoinedSession extends Session {
 
 export default function Student() {
   const t = useTranslations();
+  const locale = useLocale();
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
   const {
     student,
@@ -384,7 +386,7 @@ export default function Student() {
                 className="text-3xl md:text-4xl font-bold"
                 data-testid="text-student-welcome"
               >
-                Salut, {firstname} !
+                {t.student.greeting.replace("{name}", firstname)}
               </h1>
               <p className="text-muted-foreground">
                 {t.student.emptySubtitle}
@@ -400,7 +402,9 @@ export default function Student() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-indigo-600">{joinedSessions.length}</p>
-                  <p className="text-xs text-muted-foreground">Classe{joinedSessions.length > 1 ? 's' : ''}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {joinedSessions.length > 1 ? t.student.classLabel_other : t.student.classLabel_one}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -413,7 +417,7 @@ export default function Student() {
                   <p className="text-2xl font-bold text-green-600">
                     {Object.values(sessionCourses).flat().length || 0}
                   </p>
-                  <p className="text-xs text-muted-foreground">Cours</p>
+                  <p className="text-xs text-muted-foreground">{t.student.courseLabel}</p>
                 </div>
               </div>
             </Card>
@@ -437,7 +441,7 @@ export default function Student() {
               </div>
               <div>
                 <h2 className="text-xl font-semibold">{t.student.myClasses}</h2>
-                <p className="text-sm text-muted-foreground">Clique sur une classe pour voir les cours</p>
+                <p className="text-sm text-muted-foreground">{t.student.clickClassHint}</p>
               </div>
             </div>
             <Button
@@ -446,7 +450,7 @@ export default function Student() {
               data-testid="button-join-session"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Rejoindre
+              {t.student.joinModal.join}
             </Button>
           </div>
 
@@ -500,8 +504,8 @@ export default function Student() {
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <Calendar className="h-3 w-3" />
                             <span>
-                              Rejoint le{" "}
-                              {new Date(session.joinedAt).toLocaleDateString("fr-FR")}
+                              {t.student.joinedOn}{" "}
+                              {new Date(session.joinedAt).toLocaleDateString(dateLocale)}
                             </span>
                           </div>
                         </div>
