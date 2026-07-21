@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useTranslations } from "@/lib/i18n/client";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -32,17 +33,17 @@ export function Navbar() {
       data-testid="navbar"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-16 md:h-20 gap-3 sm:gap-6">
           <a
             href="#"
-            className="flex items-center gap-2 text-xl md:text-2xl font-bold text-foreground"
+            className="flex items-center gap-2 text-xl md:text-2xl font-bold text-foreground shrink-0"
             data-testid="link-logo"
           >
             <img src="/edesio-logo-square.png" alt="Edesio" className="w-10 h-10 rounded-lg object-cover" />
             <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
           </a>
 
-          <div className="hidden lg:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-6 min-w-0">
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -55,7 +56,7 @@ export function Navbar() {
             ))}
           </div>
 
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2 min-w-0">
             <Button variant="ghost" size="sm" className="font-semibold" asChild>
               <Link href="/login" data-testid="button-connexion">
                 {t.navbar.login}
@@ -73,20 +74,23 @@ export function Navbar() {
             </Button>
           </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={toggleMobileMenu}
-            aria-label={isMobileMenuOpen ? t.common.closeMenu : t.common.openMenu}
-            data-testid="button-mobile-menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-          </Button>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={toggleMobileMenu}
+              aria-label={isMobileMenuOpen ? t.common.closeMenu : t.common.openMenu}
+              data-testid="button-mobile-menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </Button>
+            <LanguageSwitcher refreshServer />
+          </div>
         </div>
       </div>
 

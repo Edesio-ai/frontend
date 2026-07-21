@@ -29,6 +29,7 @@ import { profileService } from "@/services/profile.service";
 import { SubscriptionSection } from "@/components/profile/SubscriptionSection";
 import { useTranslations } from "@/lib/i18n/client";
 import { useAuth } from "@/contexts/auth-context";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const profileSchema = z.object({
   firstname: z.string().min(1, "First name is required"),
@@ -121,12 +122,15 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-muted/30 py-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <Link href={getDashboardLink()}>
-          <Button variant="ghost" className="mb-8" data-testid="button-back-dashboard">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            {t.profile.backToDashboard}
-          </Button>
-        </Link>
+        <div className="flex items-center justify-between mb-8">
+          <Link href={getDashboardLink()}>
+            <Button variant="ghost" data-testid="button-back-dashboard">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {t.profile.backToDashboard}
+            </Button>
+          </Link>
+          <LanguageSwitcher />
+        </div>
 
         <div className="text-center mb-8">
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">

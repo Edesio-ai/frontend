@@ -29,6 +29,7 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 import type { TeacherWithStats, SessionWithStudentCount, Student, InvitationToken, SessionDetails } from "@/types";
 import Link from "next/link";
@@ -187,8 +188,8 @@ export default function Establishment() {
     <SubscriptionBlockModal>
       <div className="min-h-screen bg-muted/30">
         <header className="bg-background border-b sticky top-0 z-50">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-3 sm:gap-6">
+            <div className="flex items-center gap-3 shrink-0">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Building2 className="h-5 w-5 text-primary" />
               </div>
@@ -200,7 +201,7 @@ export default function Establishment() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <Button
                 variant="outline"
                 size="sm"
@@ -222,6 +223,8 @@ export default function Establishment() {
                 <span className="hidden sm:inline">{t.nav.logout}</span>
               </Button>
             </div>
+
+            <LanguageSwitcher className="shrink-0" />
           </div>
         </header>
 

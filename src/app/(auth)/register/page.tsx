@@ -23,6 +23,7 @@ import { UserRole } from "@/types";
 import { useTranslations, useLocale } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 import { useAuth } from "@/contexts/auth-context";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const formSchema = z
   .object({
@@ -134,7 +135,10 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-muted/30">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-muted/30 relative">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+        <LanguageSwitcher />
+      </div>
       <div className={`w-full ${!selectedRole ? "max-w-4xl" : "max-w-lg"}`}>
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">

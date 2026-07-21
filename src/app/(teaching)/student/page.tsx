@@ -46,6 +46,7 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLocale, useTranslations } from "@/lib/i18n/client";
 import { StudentChatbotModal } from "@/components/student/StudentChatboModal";
 import { StudentQAModal } from "@/components/student/StudantQAModal";
@@ -276,13 +277,13 @@ export default function Student() {
 
       <header className="sticky top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-border">
         <div className="max-w-4xl mx-auto px-4 md:px-8">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            <Link href="/" className="flex items-center gap-2 text-xl font-bold">
+          <div className="flex items-center justify-between h-16 md:h-20 gap-3 sm:gap-6">
+            <Link href="/" className="flex items-center gap-2 text-xl font-bold shrink-0">
               <img src="/edesio-logo-square.png" alt="Edesio" className="w-10 h-10 rounded-lg object-cover" />
               <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
             </Link>
 
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
               <Button
                 variant="outline"
                 size="sm"
@@ -326,6 +327,8 @@ export default function Student() {
                 )}
               </Button>
             </div>
+
+            <LanguageSwitcher className="shrink-0" />
           </div>
         </div>
       </header>
