@@ -587,7 +587,8 @@
       "atLeastOne": "Indiquez au moins 1 question à générer",
       "noDocuments": "Aucun document attaché",
       "pdfDocuments": "Documents PDF ({count})",
-      "refresh": "Rafraîchir"
+      "refresh": "Rafraîchir",
+      "countsSummary": "({mcq} QCM, {open} ouvertes)"
     },
     "editQuestion": {
       "title": "Modifier la question",
@@ -598,7 +599,9 @@
       "cancel": "Annuler"
     },
     "questionCard": {
-      "answer": "Réponse :"
+      "answer": "Réponse :",
+      "mcq": "QCM",
+      "open": "Ouverte"
     },
     "courseList": {
       "addCourse": "Ajouter un cours",

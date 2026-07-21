@@ -91,7 +91,9 @@ export function QuestionSectionTesterModal({
                   <HelpCircle className="h-4 w-4" />
                   <span>Voir les {questions.length} questions</span>
                   <span className="text-muted-foreground text-xs">
-                    ({currentSingleCount} QCM, {currentOpenCount} ouvertes)
+                    {t.teacher.questionGenerator.countsSummary
+                      .replace("{mcq}", String(currentSingleCount))
+                      .replace("{open}", String(currentOpenCount))}
                   </span>
                 </div>
               </AccordionTrigger>

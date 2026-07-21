@@ -172,7 +172,7 @@ export function QuestionCard({
                             ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400'
                             : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
                             }`}>
-                            {question.type === 'single' || question.type === 'multiple' ? 'QCM' : 'Ouverte'}
+                            {question.type === 'single' || question.type === 'multiple' ? t.teacher.questionCard.mcq : t.teacher.questionCard.open}
                         </span>
                         <Button
                             size="sm"

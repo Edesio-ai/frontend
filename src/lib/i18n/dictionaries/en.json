@@ -587,7 +587,8 @@
       "atLeastOne": "Indicate at least 1 question to generate",
       "noDocuments": "No documents attached",
       "pdfDocuments": "PDF documents ({count})",
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "countsSummary": "({mcq} MCQ, {open} open)"
     },
     "editQuestion": {
       "title": "Edit question",
@@ -598,7 +599,9 @@
       "cancel": "Cancel"
     },
     "questionCard": {
-      "answer": "Answer:"
+      "answer": "Answer:",
+      "mcq": "MCQ",
+      "open": "Open"
     },
     "courseList": {
       "addCourse": "Add lesson",
