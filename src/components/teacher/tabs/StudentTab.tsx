@@ -4,7 +4,7 @@ import { TabsContent } from "@/components/ui/tabs";
 import { Session, StudentSessionWithStudent } from "@/types";
 import { Loader2, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useTranslations } from "@/lib/i18n/client";
+import { useLocale, useTranslations } from "@/lib/i18n/client";
 
 interface StudentTabProps {
     loadingSessionStudents: boolean;
@@ -18,6 +18,8 @@ export function StudentTab({
     selectedSession,
 }: StudentTabProps) {
     const t = useTranslations();
+    const locale = useLocale();
+    const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
     return (
         <TabsContent value="students" className="flex-1 overflow-y-auto m-0 mt-0">
             <div className="p-6">
@@ -56,8 +58,8 @@ export function StudentTab({
                                     <p className="text-sm text-muted-foreground truncate">{sessionsStudents.email}</p>
                                 </div>
                                 <div className="text-right text-sm text-muted-foreground">
-                                    <p>Inscrit le</p>
-                                    <p>{new Date(sessionsStudents.joinedAt).toLocaleDateString("fr-FR")}</p>
+                                    <p>{t.teacher.tabs.enrolledOn}</p>
+                                    <p>{new Date(sessionsStudents.joinedAt).toLocaleDateString(dateLocale)}</p>
                                 </div>
                             </div>
                         ))}

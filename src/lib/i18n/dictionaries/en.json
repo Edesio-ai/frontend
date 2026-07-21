@@ -471,6 +471,7 @@
   },
   "teacher": {
     "loading": "Loading your dashboard...",
+    "dashboardTitle": "Dashboard",
     "emptyTitle": "No classes yet",
     "emptySubtitle": "Create your classes and manage your lessons with Edesio.",
     "emptyCardHint": "Create your first class to start adding lessons and generating AI questions.",
@@ -516,6 +517,7 @@
       "students": "Students ({{count}})",
       "questions": "Q&A",
       "noStudents": "No students enrolled yet",
+      "enrolledOn": "Enrolled on",
       "shareCode": "Share the code {{code}} with your students to let them join.",
       "copyCode": "Copy code",
       "codeCopied": "Code copied!"

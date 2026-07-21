@@ -332,7 +332,7 @@ export default function Teacher() {
                   className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text"
                   data-testid="text-prof-welcome"
                 >
-                  Tableau de bord
+                  {t.teacher.dashboardTitle}
                 </h1>
                 <p className="text-muted-foreground">
                   {t.teacher.emptySubtitle}

@@ -471,6 +471,7 @@
   },
   "teacher": {
     "loading": "Chargement du tableau de bord...",
+    "dashboardTitle": "Tableau de bord",
     "emptyTitle": "Aucune classe créée",
     "emptySubtitle": "Créez vos classes et gérez vos cours avec Edesio.",
     "emptyCardHint": "Créez votre première classe pour commencer à ajouter des cours et générer des questions IA.",
@@ -516,6 +517,7 @@
       "students": "Élèves ({{count}})",
       "questions": "Q&R",
       "noStudents": "Aucun élève inscrit pour l'instant",
+      "enrolledOn": "Inscrit le",
       "shareCode": "Partagez le code {{code}} avec vos élèves pour qu'ils rejoignent.",
       "copyCode": "Copier le code",
       "codeCopied": "Code copié !"
