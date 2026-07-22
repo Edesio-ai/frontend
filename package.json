@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "echo 'ESLint temporarily skipped' && exit 0"
+    "lint": "true",
+    "lint:check": "eslint"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

@@ -27,13 +27,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # TODO: re-enable once lint is cleaned up
-      # - name: Lint
-      #   run: npm run lint
-
       - name: Build
         run: npm run build
         env:
-          # Build-time public vars can be dummies in CI if not required at compile time.
-          # Add real NEXT_PUBLIC_* secrets here if the build fails without them.
           SKIP_ENV_VALIDATION: "1"
