@@ -259,7 +259,7 @@ export default function Student() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-500/5 via-background to-indigo-500/10">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Chargement...</p>
+          <p className="text-muted-foreground">{t.student.loading}</p>
         </div>
       </div>
     );
@@ -516,7 +516,10 @@ export default function Student() {
                       <div className="flex items-center gap-2">
                         {sessionCourses[session.id] && (
                           <Badge variant="secondary" className="bg-background/50">
-                            {sessionCourses[session.id].length} cours
+                            {t.student.coursesCount.replace(
+                              "{count}",
+                              String(sessionCourses[session.id].length),
+                            )}
                           </Badge>
                         )}
                         <ChevronRight
@@ -533,13 +536,13 @@ export default function Student() {
                           <div className="flex items-center justify-center py-6">
                             <Loader2 className="h-5 w-5 animate-spin text-primary" />
                             <span className="ml-2 text-sm text-muted-foreground">
-                              Chargement des cours...
+                              {t.student.loadingCourses}
                             </span>
                           </div>
                         ) : sessionCourses[session.id]?.length === 0 ? (
                           <div className="text-center py-6 text-muted-foreground">
                             <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">Aucun cours disponible pour le moment.</p>
+                            <p className="text-sm">{t.student.noCourses}</p>
                           </div>
                         ) : (
                           <div className="space-y-4">
@@ -610,7 +613,7 @@ export default function Student() {
                                       data-testid={`button-cours-${selectedCoursForActions.id}`}
                                     >
                                       <MessageSquare className="h-4 w-4 mr-2" />
-                                      Revise
+                                      {t.student.revise}
                                     </Button>
                                     <Button
                                       variant="outline"
@@ -624,7 +627,7 @@ export default function Student() {
                                       title={t.student.qaModal.title}
                                     >
                                       <HelpCircle className="h-4 w-4 mr-1" />
-                                      Q&R
+                                      {t.student.qa}
                                       {answeredQuestionsCount[selectedCoursForActions.id] > 0 && (
                                         <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full bg-amber-400 text-[10px] font-bold text-amber-900 flex items-center justify-center px-1 shadow-sm">
                                           {answeredQuestionsCount[selectedCoursForActions.id]}
@@ -640,10 +643,10 @@ export default function Student() {
                                         handleOpenRankings(selectedCoursForActions);
                                       }}
                                       data-testid={`button-rankings-${selectedCoursForActions.id}`}
-                                      title="Classement"
+                                      title={t.student.ranking}
                                     >
                                       <Trophy className="h-4 w-4 mr-1" />
-                                      Classement
+                                      {t.student.ranking}
                                     </Button>
                                   </div>
                                 </Card>
@@ -665,7 +668,7 @@ export default function Student() {
                             data-testid={`button-leave-session-${session.id}`}
                           >
                             <X className="h-4 w-4 mr-2" />
-                            Quitter cette session
+                            {t.student.leaveSession}
                           </Button>
                         </div>
                       </div>
@@ -692,9 +695,9 @@ export default function Student() {
       <Dialog open={leaveModalOpen} onOpenChange={setLeaveModalOpen}>
         <DialogContent data-testid="modal-leave-session">
           <DialogHeader>
-            <DialogTitle className="text-destructive">Leave session?</DialogTitle>
+            <DialogTitle className="text-destructive">{t.student.leaveModalTitle}</DialogTitle>
             <DialogDescription>
-              You will no longer have access to the lessons in &quot;{sessionToLeave?.name}&quot;. You can rejoin using the code.
+              {t.student.leaveModalDesc.replace("{session}", sessionToLeave?.name ?? "")}
             </DialogDescription>
           </DialogHeader>
 
@@ -708,7 +711,7 @@ export default function Student() {
               }}
               data-testid="button-cancel-leave"
             >
-              Annuler
+              {t.common.cancel}
             </Button>
             <Button
               variant="destructive"
@@ -717,7 +720,7 @@ export default function Student() {
               disabled={isLeaving}
               data-testid="button-confirm-leave"
             >
-              {isLeaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Quitter"}
+              {isLeaving ? <Loader2 className="h-4 w-4 animate-spin" /> : t.student.leaveConfirm}
             </Button>
           </div>
         </DialogContent>
