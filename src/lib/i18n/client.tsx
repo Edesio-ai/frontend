@@ -57,25 +57,22 @@ export function LocaleProvider({
     cacheRef.current[initialLocale] = initialDictionary;
   }, [initialLocale, initialDictionary]);
 
-  // Warm the other locale dictionary so switches feel instant
+  // Warm the other locale dictionary so switches feel instant.
+  // Always (re)load so HMR / updated JSON keys are not stuck behind a stale cache.
   useEffect(() => {
     const other: Locale = initialLocale === "fr" ? "en" : "fr";
-    if (!cacheRef.current[other]) {
-      void dictionaryLoaders[other]().then((dict) => {
-        cacheRef.current[other] = dict;
-      });
-    }
+    void dictionaryLoaders[other]().then((dict) => {
+      cacheRef.current[other] = dict;
+    });
   }, [initialLocale]);
 
   const setLocale = useCallback(
     async (next: Locale) => {
       if (next === locale) return;
 
-      let nextDictionary = cacheRef.current[next];
-      if (!nextDictionary) {
-        nextDictionary = await dictionaryLoaders[next]();
-        cacheRef.current[next] = nextDictionary;
-      }
+      // Always reload to pick up dictionary updates (avoids empty labels after i18n changes).
+      const nextDictionary = await dictionaryLoaders[next]();
+      cacheRef.current[next] = nextDictionary;
 
       persistLocaleCookie(next);
       startTransition(() => {

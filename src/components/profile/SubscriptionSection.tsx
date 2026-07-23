@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { useTranslations } from "@/lib/i18n/client";
+import { useLocale, useTranslations } from "@/lib/i18n/client";
 import { Subscription } from "@/types";
 import { BillingService } from "@/services/billing.service";
 import { Badge } from "../ui/badge";
@@ -17,11 +17,14 @@ import { CancelSubscriptionModal } from "./CancelSubscriptionModal";
 export function SubscriptionSection() {
     const { toast } = useToast();
     const t = useTranslations();
+    const locale = useLocale();
+    const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
     const [subscription, setSubscription] = useState<Subscription | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [showCancelDialog, setShowCancelDialog] = useState(false);
     const [isCanceling, setIsCanceling] = useState(false);
     const [isReactivating, setIsReactivating] = useState(false);
+    const s = t.billing.subscriptionSection;
   
     const handleRedirecctToCustomerPortal = async () => {
       const { url } = await BillingService.getCustomerPortalUrl();
@@ -49,7 +52,7 @@ export function SubscriptionSection() {
         await BillingService.cancelSubscription();
   
         toast({
-          title: t.billing.subscriptionSection.cancelled,
+          title: s.cancelled,
           description: t.billing.cancelModal.description,
         });
         fetchSubscription();
@@ -57,7 +60,7 @@ export function SubscriptionSection() {
         console.error("Error canceling subscription:", error);
         toast({
           title: t.common.error,
-          description: t.billing.subscriptionSection.cancel,
+          description: s.cancel,
           variant: "destructive",
         });
       } finally {
@@ -72,14 +75,14 @@ export function SubscriptionSection() {
         await BillingService.reactivateSubscription();
   
         toast({
-          title: t.billing.subscriptionSection.reactivate,
+          title: s.reactivate,
         });
         fetchSubscription();
       } catch (error) {
         console.error("Error reactivating subscription:", error);
         toast({
           title: t.common.error,
-          description: t.billing.subscriptionSection.reactivate,
+          description: s.reactivate,
           variant: "destructive",
         });
       } finally {
@@ -88,7 +91,7 @@ export function SubscriptionSection() {
     };
   
     const formatAmount = (amount: number, currency: string) => {
-      return new Intl.NumberFormat("fr-FR", {
+      return new Intl.NumberFormat(dateLocale, {
         style: "currency",
         currency: currency.toUpperCase(),
       }).format(amount / 100);
@@ -99,7 +102,7 @@ export function SubscriptionSection() {
         return (
           <Badge variant="secondary" className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
             <AlertTriangle className="h-3 w-3 mr-1" />
-            {t.billing.subscriptionSection.cancelled}
+            {s.cancelled}
           </Badge>
         );
       }
@@ -108,21 +111,21 @@ export function SubscriptionSection() {
           return (
             <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
               <CheckCircle2 className="h-3 w-3 mr-1" />
-              Active
+              {s.active}
             </Badge>
           );
         case "past_due":
           return (
             <Badge variant="destructive">
               <XCircle className="h-3 w-3 mr-1" />
-              Past due
+              {s.pastDue}
             </Badge>
           );
         case "canceled":
           return (
             <Badge variant="secondary" className="bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
               <XCircle className="h-3 w-3 mr-1" />
-              {t.billing.subscriptionSection.cancelled}
+              {s.cancelled}
             </Badge>
           );
         default:
@@ -140,7 +143,7 @@ export function SubscriptionSection() {
         jcb: "JCB",
         unionpay: "UnionPay",
       };
-      return brand ? brandNames[brand] || brand.charAt(0).toUpperCase() + brand.slice(1) : "Carte";
+      return brand ? brandNames[brand] || brand.charAt(0).toUpperCase() + brand.slice(1) : s.card;
     };
   
     if (isLoading) {
@@ -169,18 +172,18 @@ export function SubscriptionSection() {
               <CreditCard className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold">Abonnement</h2>
-              <p className="text-sm text-muted-foreground">Manage your subscription</p>
+              <h2 className="text-lg font-semibold">{s.title}</h2>
+              <p className="text-sm text-muted-foreground">{s.manage}</p>
             </div>
           </div>
           <div className="text-center py-8">
             <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground mb-4">
-              {subscription?.isEstablishmentSubscription ? "You are on your institution's subscription." : t.billing.subscriptionSection.noActive}
+              {subscription?.isEstablishmentSubscription ? s.establishmentSubscription : s.noActive}
             </p>
             {(!subscription?.isEstablishmentSubscription )&& (
               <Link href="/billing/choose-plan">
-                <Button>Choisir un forfait</Button>
+                <Button>{s.choosePlan}</Button>
               </Link>
             )}
           </div>
@@ -197,8 +200,8 @@ export function SubscriptionSection() {
                 <CreditCard className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold">Abonnement</h2>
-              <p className="text-sm text-muted-foreground">Manage your subscription</p>
+                <h2 className="text-lg font-semibold">{s.title}</h2>
+              <p className="text-sm text-muted-foreground">{s.manage}</p>
             </div>
           </div>
           <span data-testid="badge-subscription-status">{getStatusBadge(subscription.status, subscription.cancelAtPeriodEnd)}</span>
@@ -207,15 +210,15 @@ export function SubscriptionSection() {
           <div className="space-y-6">
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="p-4 rounded-lg bg-muted/50">
-                <p className="text-sm text-muted-foreground mb-1">Forfait</p>
+                <p className="text-sm text-muted-foreground mb-1">{s.plan}</p>
                 <p className="font-semibold" data-testid="text-subscription-plan">{subscription.plan}</p>
               </div>
               <div className="p-4 rounded-lg bg-muted/50">
-                <p className="text-sm text-muted-foreground mb-1">Montant</p>
+                <p className="text-sm text-muted-foreground mb-1">{s.amount}</p>
                 <p className="font-semibold" data-testid="text-subscription-amount">
                   {formatAmount(subscription.amount, subscription.currency)}
                   <span className="text-sm font-normal text-muted-foreground">
-                    /{subscription.interval === "year" ? "an" : "mois"}
+                    /{subscription.interval === "year" ? s.perYear : s.perMonth}
                   </span>
                 </p>
               </div>
@@ -225,17 +228,19 @@ export function SubscriptionSection() {
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
-                  {subscription.cancelAtPeriodEnd ? "Access ends on" : t.billing.subscriptionSection.nextBilling}
+                  {subscription.cancelAtPeriodEnd ? s.accessEndsLabel : s.nextBilling}
                 </p>
               </div>
-              <p className="font-semibold" data-testid="text-subscription-date">{formatDate(subscription.currentPeriodEnd)}</p>
+              <p className="font-semibold" data-testid="text-subscription-date">
+                {formatDate(subscription.currentPeriodEnd, dateLocale)}
+              </p>
             </div>
   
             {(subscription.last4 && !subscription.cancelAtPeriodEnd) && (
               <div className="p-4 rounded-lg border">
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Moyen de paiement</p>
+                    <p className="text-sm text-muted-foreground mb-1">{s.paymentMethod}</p>
                     <p className="font-medium flex items-center gap-2" data-testid="text-payment-method">
                       <CreditCard className="h-4 w-4 text-muted-foreground" />
                       {getCardBrandDisplay(subscription.cardBrand)} **** {subscription.last4}
@@ -247,7 +252,7 @@ export function SubscriptionSection() {
                       onClick={() => handleRedirecctToCustomerPortal()}
                       data-testid="button-change-card"
                     >
-                      Modifier
+                      {s.modify}
                     </Button>
                 </div>
               </div>
@@ -255,14 +260,14 @@ export function SubscriptionSection() {
   
             {!subscription.last4 && (
               <div className="p-4 rounded-lg border">
-                <p className="text-sm text-muted-foreground mb-3">No payment method on file</p>
+                <p className="text-sm text-muted-foreground mb-3">{s.noPaymentMethod}</p>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handleRedirecctToCustomerPortal()}
                   data-testid="button-add-card"
                 >
-                  Ajouter une carte
+                  {s.addCard}
                 </Button>
               </div>
             )}
@@ -272,10 +277,13 @@ export function SubscriptionSection() {
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <div>
                     <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                      Access ends on {formatDate(subscription.currentPeriodEnd)}
+                      {s.accessEndsOn.replace(
+                        "{date}",
+                        formatDate(subscription.currentPeriodEnd, dateLocale),
+                      )}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      You retain access until that date.
+                      {s.retainAccess}
                     </p>
                   </div>
                   <Button
@@ -287,12 +295,12 @@ export function SubscriptionSection() {
                     {isReactivating ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t.billing.subscriptionSection.reactivating}
+                        {s.reactivating}
                       </>
                     ) : (
                       <>
                         <RefreshCw className="mr-2 h-4 w-4" />
-                        {t.billing.subscriptionSection.reactivate}
+                        {s.reactivate}
                       </>
                     )}
                   </Button>
@@ -304,7 +312,7 @@ export function SubscriptionSection() {
                   onClick={() => setShowCancelDialog(true)}
                   data-testid="button-cancel-subscription"
                 >
-                  {t.billing.subscriptionSection.cancel}
+                  {s.cancel}
                 </Button>
               ) : null}
             </div>
