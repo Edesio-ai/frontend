@@ -148,7 +148,7 @@ export function CreateModal({
                             <div className="space-y-4">
                                 <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide flex items-center gap-2">
                                     <Users className="h-4 w-4" />
-                                    Classe
+                                    {t.teacher.createModal.sectionClass}
                                 </h4>
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <FormField
@@ -202,7 +202,7 @@ export function CreateModal({
                             <div className="border-t pt-6 space-y-4">
                                 <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide flex items-center gap-2">
                                     <BookOpen className="h-4 w-4" />
-                                    Premier cours
+                                    {t.teacher.createModal.sectionFirstCourse}
                                 </h4>
 
                                 <FormField
@@ -244,7 +244,7 @@ export function CreateModal({
                                 <div className="space-y-2">
                                     <FormLabel>{t.teacher.createModal.pdfs}</FormLabel>
                                     <p className="text-xs text-muted-foreground">
-                                        Ajoutez un ou plusieurs fichiers PDF contenant le contenu du cours
+                                        {t.teacher.createModal.pdfHint}
                                     </p>
                                     <div className="space-y-2">
                                         <input
@@ -263,7 +263,9 @@ export function CreateModal({
                                             data-testid="button-select-pdf-new"
                                         >
                                             <Upload className="h-4 w-4 mr-2" />
-                                            {selectedPdfFiles.length > 0 ? "Ajouter d'autres PDFs" : t.teacher.createModal.selectPdfs}
+                                            {selectedPdfFiles.length > 0
+                                              ? t.teacher.createModal.addMorePdfs
+                                              : t.teacher.createModal.selectPdfs}
                                         </Button>
                                         {selectedPdfFiles.length > 0 && (
                                             <div className="flex flex-wrap gap-2 mt-2">

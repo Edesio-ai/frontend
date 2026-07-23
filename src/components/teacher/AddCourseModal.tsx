@@ -153,7 +153,7 @@ export function AddCourseModal({
                   <div className="space-y-2">
                     <FormLabel>{t.teacher.addCourse.pdfs}</FormLabel>
                     <p className="text-xs text-muted-foreground">
-                      Ajoutez un ou plusieurs fichiers PDF contenant le contenu du cours
+                      {t.teacher.addCourse.pdfHint}
                     </p>
                     <div className="space-y-2">
                       <input
@@ -172,7 +172,9 @@ export function AddCourseModal({
                         data-testid="button-select-pdf"
                       >
                         <Upload className="h-4 w-4 mr-2" />
-                        {selectedPdfFiles.length > 0 ? "Ajouter d'autres PDFs" : t.teacher.addCourse.selectPdfs}
+                        {selectedPdfFiles.length > 0
+                          ? t.teacher.addCourse.addMorePdfs
+                          : t.teacher.addCourse.selectPdfs}
                       </Button>
                       {selectedPdfFiles.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">

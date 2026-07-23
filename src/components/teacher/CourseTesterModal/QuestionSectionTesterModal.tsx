@@ -59,7 +59,7 @@ export function QuestionSectionTesterModal({
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => setChatbotModalOpen(true)} data-testid="button-test-chatbot">
             <MessageSquare className="h-4 w-4 mr-1" />
-            Tester le chatbot
+            {t.dashboard.courseTester.testChatbot}
           </Button>
           <Button size="sm" onClick={handleGenerateQuestions} disabled={isGenerating}>
             {isGenerating ? (
@@ -89,7 +89,12 @@ export function QuestionSectionTesterModal({
               <AccordionTrigger className="hover:no-underline p-0 flex-1 [&>svg]:ml-auto">
                 <div className="flex items-center gap-2 text-sm">
                   <HelpCircle className="h-4 w-4" />
-                  <span>Voir les {questions.length} questions</span>
+                  <span>
+                    {t.dashboard.courseTester.viewQuestions.replace(
+                      "{count}",
+                      String(questions.length),
+                    )}
+                  </span>
                   <span className="text-muted-foreground text-xs">
                     {t.teacher.questionGenerator.countsSummary
                       .replace("{mcq}", String(currentSingleCount))

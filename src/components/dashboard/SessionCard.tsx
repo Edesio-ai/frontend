@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useTranslations } from "@/lib/i18n/client";
+import { useLocale, useTranslations } from "@/lib/i18n/client";
 import type { Session } from "@/types";
 import { Calendar, Copy, BookOpen, Check, Trash2, Users, Loader2, MessageCircle, Pencil } from "lucide-react";
 import { useState } from "react";
@@ -21,6 +21,8 @@ interface SessionCardProps {
 
 export function SessionCard({ session, isSelected, onSelect, onDelete, onRename, pendingQuestionsCount = 0 }: SessionCardProps) {
   const t = useTranslations();
+  const locale = useLocale();
+  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
   const [copied, setCopied] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -29,7 +31,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
   const [isRenaming, setIsRenaming] = useState(false);
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("fr-FR", {
+    return new Date(dateStr).toLocaleDateString(dateLocale, {
       day: "numeric",
       month: "long",
       year: "numeric",
