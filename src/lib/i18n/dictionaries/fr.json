@@ -488,6 +488,7 @@
     "manageCourses": "Gérer les cours",
     "classCount_one": "{{count}} classe",
     "classCount_other": "{{count}} classes",
+    "myClasses": "Mes classes",
     "renameModal": {
       "title": "Renommer la session",
       "placeholder": "Modifiez le nom de votre session...",

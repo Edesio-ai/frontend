@@ -36,7 +36,7 @@ export function ClassListSection({
                     <Users className="h-5 w-5 text-indigo-600" />
                 </div>
                 <div>
-                    <h2 className="text-xl font-semibold">Mes classes</h2>
+                    <h2 className="text-xl font-semibold">{t.teacher.myClasses}</h2>
                     <p className="text-sm text-muted-foreground">{classCountLabel}</p>
                 </div>
             </div>
