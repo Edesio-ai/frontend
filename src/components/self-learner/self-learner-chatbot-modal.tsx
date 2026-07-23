@@ -465,6 +465,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         score: finalScore,
         total: finalTotal,
         studentName: user?.metadata.firstname || t.dashboard.questionsPanel.studentFallback,
+        language: cours.language || "francais",
       };
       const feedback = await llmService.generateCompletionFeedback(body);
       const aiFeedback = feedback.feedback || t.chatbot.completionDefault;

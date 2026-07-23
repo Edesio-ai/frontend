@@ -2,7 +2,9 @@ export interface GenerateCompletionFeedbackRequest {
     courseTitle: string;
     score: number;
     total: number;
-    studentName?: string; 
+    studentName?: string;
+    /** Course/session language — feedback is generated in this language. */
+    language?: "francais" | "anglais" | "espagnol" | "allemand";
 }
 
 export interface GenerateQuestionsConfig {

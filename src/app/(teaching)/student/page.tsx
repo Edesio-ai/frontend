@@ -818,6 +818,10 @@ export default function Student() {
           onOpenChange={setChatbotOpen}
           course={selectedCourse}
           questions={coursQuestions}
+          language={
+            joinedSessions.find((s) => s.id === selectedCourse.sessionId)
+              ?.language ?? "francais"
+          }
           studentName={firstname}
           studentPhotoUrl={student?.photoUrl}
           onComplete={async (totalAnswered, correctAnswers) => {

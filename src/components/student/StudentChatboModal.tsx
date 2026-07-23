@@ -26,7 +26,7 @@ import {
   Star,
   ArrowRight,
 } from "lucide-react";
-import { Course, EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, Question } from "@/types";
+import { Course, EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, Language, Question } from "@/types";
 import { llmService } from "@/services/llm.service";
 import { useTranslations } from "@/lib/i18n/client";
 import type { Dictionary } from "@/lib/i18n/client";
@@ -36,6 +36,8 @@ interface StudentChatbotModalProps {
   onOpenChange: (open: boolean) => void;
   course: Course;
   questions: Question[];
+  /** Session language — completion feedback is generated in this language. */
+  language?: Language;
   studentName?: string;
   studentPhotoUrl?: string | null;
   onComplete?: (totalAnswered: number, correctAnswers: number) => void;
@@ -352,6 +354,7 @@ export function StudentChatbotModal({
   onOpenChange,
   course,
   questions,
+  language = "francais",
   studentName,
   studentPhotoUrl,
   onComplete,
@@ -417,6 +420,7 @@ export function StudentChatbotModal({
         score: finalScore,
         total: finalTotal,
         studentName: studentName || undefined,
+        language,
       }
       const data = await llmService.generateCompletionFeedback(body);
       const aiFeedback = data.feedback || t.chatbot.completionDefault;
