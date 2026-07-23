@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Check, Info, Bot } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { annualDiscountPercent, plans } from "@/utils/constants/billing";
+import { annualDiscountPercent, getPlans } from "@/utils/constants/billing";
 import { PlanCard } from "@/components/billing/PlanCard";
-import { useTranslations } from "@/lib/i18n/client";
+import { useLocale, useTranslations } from "@/lib/i18n/client";
 import { useAuth } from "@/contexts/auth-context";
 
 export default function ChoisirPlan() {
@@ -16,7 +16,9 @@ export default function ChoisirPlan() {
   const [recommendedPlan, setRecommendedPlan] = useState<string | null>(null);
   const { getUserRole } = useAuth();
   const t = useTranslations();
+  const locale = useLocale();
   const userRole = getUserRole();
+  const plans = useMemo(() => getPlans(locale), [locale]);
 
   // Map user role to plan id
   const roleToPlanId: Record<string, string> = {
@@ -97,7 +99,7 @@ export default function ChoisirPlan() {
 
         <div className={`grid gap-5 ${filteredPlans.length === 1 ? 'max-w-md mx-auto' : filteredPlans.length === 2 ? 'md:grid-cols-2 max-w-3xl mx-auto' : 'md:grid-cols-3'}`}>
           {filteredPlans.map((plan) => (
-            <PlanCard key={plan.id} plan={plan} recommendedPlan={recommendedPlan ?? ""} isAnnual={isAnnual} />
+            <PlanCard key={`${plan.id}-${locale}`} plan={plan} recommendedPlan={recommendedPlan ?? ""} isAnnual={isAnnual} />
           ))}
         </div>
 

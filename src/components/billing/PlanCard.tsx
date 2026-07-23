@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { annualDiscountPercent } from "@/utils/constants/billing";
 import { BillingService } from "@/services/billing.service";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "@/lib/i18n/client";
+import { useLocale, useTranslations } from "@/lib/i18n/client";
 
 type PlanCardProps = {
 
@@ -17,11 +17,15 @@ type PlanCardProps = {
 
 export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
     const t = useTranslations();
+    const locale = useLocale();
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const planDetails = (t.billing.planDetails as Record<string, { name?: string; description: string; features: string[] }>)[plan.id];
     const formatPrice = (price: number) => {
-        return price.toFixed(2).replace(".", ",") + "€";
+        if (locale === "fr") {
+            return price.toFixed(2).replace(".", ",") + "€";
+        }
+        return "$" + price.toFixed(2);
     };
 
     const getPrice = (monthlyPrice: number) => {
@@ -35,7 +39,11 @@ export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
         setIsLoading(true);
         const priceId = isAnnual ? plan.priceAnnualId : plan.priceMonthlyId;
         const planType = plan.id;
-        const { url } = await BillingService.getStripeUrl(priceId, planType);
+        const { url } = await BillingService.getStripeUrl(
+          priceId,
+          planType,
+          locale === "en" ? "en" : "fr",
+        );
         router.push(url);
         setIsLoading(false);
     };

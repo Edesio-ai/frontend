@@ -5,10 +5,14 @@ export const BillingService = {
         const response = await apiFetch("/api/billing/subscription-status");
         return response;
     },
-    async getStripeUrl(priceId: string, planType: string): Promise<any> {
+    async getStripeUrl(
+      priceId: string,
+      planType: string,
+      locale: "en" | "fr" = "fr",
+    ): Promise<any> {
         const response = await apiFetch("/api/billing/checkout-url", {
             method: "POST",
-            body: JSON.stringify({ priceId, planType }),
+            body: JSON.stringify({ priceId, planType, locale }),
         });
         return response;
     },
