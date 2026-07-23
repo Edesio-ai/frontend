@@ -835,7 +835,9 @@
     },
     "sessionCoursesList": {
       "loading": "Loading lessons...",
-      "empty": "No lessons in this class"
+      "empty": "No lessons in this class",
+      "draft": "Draft",
+      "published": "Published"
     },
     "sessionStudentModal": {
       "title": "Students in {session}",
@@ -845,7 +847,12 @@
     "courseViewModal": {
       "noQuestions": "No questions created.",
       "noStudents": "No students have worked on this lesson yet.",
-      "close": "Close"
+      "close": "Close",
+      "textContent": "Text content",
+      "pdfFiles": "PDF files ({count})",
+      "questions": "Questions ({count})",
+      "mcq": "MCQ",
+      "open": "Open"
     },
     "invitationCodes": "Invitation codes",
     "newCode": "New code",

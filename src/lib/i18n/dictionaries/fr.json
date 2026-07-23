@@ -835,7 +835,9 @@
     },
     "sessionCoursesList": {
       "loading": "Chargement des cours...",
-      "empty": "Aucun cours dans cette classe"
+      "empty": "Aucun cours dans cette classe",
+      "draft": "Brouillon",
+      "published": "Publié"
     },
     "sessionStudentModal": {
       "title": "Élèves de {session}",
@@ -845,7 +847,12 @@
     "courseViewModal": {
       "noQuestions": "Aucune question créée.",
       "noStudents": "Aucun élève n'a encore travaillé sur ce cours.",
-      "close": "Fermer"
+      "close": "Fermer",
+      "textContent": "Contenu du texte",
+      "pdfFiles": "Fichiers PDF ({count})",
+      "questions": "Questions ({count})",
+      "mcq": "QCM",
+      "open": "Ouverte"
     },
     "invitationCodes": "Codes d'invitation",
     "newCode": "Nouveau code",

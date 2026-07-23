@@ -50,7 +50,7 @@ export function CourseViewModal({
                 <div className="space-y-2">
                   <h3 className="font-medium text-sm flex flex-wrap items-center gap-2">
                     <FileText className="h-4 w-4" />
-                    Contenu texte
+                    {t.establishment.courseViewModal.textContent}
                   </h3>
                   <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg whitespace-pre-wrap">
                     {sessionDetails.course.contentText}
@@ -62,7 +62,10 @@ export function CourseViewModal({
                 <div className="space-y-2">
                   <h3 className="font-medium text-sm flex flex-wrap items-center gap-2">
                     <FileText className="h-4 w-4" />
-                    Fichiers PDF ({sessionDetails.files.length})
+                    {t.establishment.courseViewModal.pdfFiles.replace(
+                      "{count}",
+                      String(sessionDetails.files.length),
+                    )}
                   </h3>
                   <div className="space-y-1">
                     {sessionDetails.files.map((f) => (
@@ -78,7 +81,10 @@ export function CourseViewModal({
               <div className="space-y-2">
                 <h3 className="font-medium text-sm flex flex-wrap items-center gap-2">
                   <HelpCircle className="h-4 w-4" />
-                  Questions ({sessionDetails.questions.length})
+                  {t.establishment.courseViewModal.questions.replace(
+                    "{count}",
+                    String(sessionDetails.questions.length),
+                  )}
                 </h3>
                 {sessionDetails.questions.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t.establishment.courseViewModal.noQuestions}</p>
@@ -89,7 +95,9 @@ export function CourseViewModal({
                         <AccordionTrigger className="text-sm text-left">
                           <div className="flex flex-wrap items-center gap-2">
                             <Badge variant={q.type === "single" || q.type === "multiple" ? "default" : "outline"} className="text-xs">
-                              {q.type === "single" || q.type === "multiple" ? "QCM" : "Ouverte"}
+                              {q.type === "single" || q.type === "multiple"
+                                ? t.establishment.courseViewModal.mcq
+                                : t.establishment.courseViewModal.open}
                             </Badge>
                             <span>Q{index + 1}: {q.questionText.length > 80 ? q.questionText.substring(0, 80) + "..." : q.questionText}</span>
                           </div>
