@@ -74,27 +74,42 @@ export default function Establishment() {
   const [loadingCourse, setLoadingCourse] = useState(false);
 
   const statsDashboard = useMemo(() => {
+    const pluralLabel = (count: number, one: string, other: string) =>
+      count === 1 ? one : other;
+
     return [
       {
-        title: t.establishment.teachers,
+        title: pluralLabel(
+          stats.totalTeachers,
+          t.establishment.teachers_one,
+          t.establishment.teachers_other,
+        ),
         value: stats.totalTeachers,
         icon: GraduationCap,
         loading: loading,
       },
       {
-        title: t.establishment.classes,
+        title: pluralLabel(
+          stats.totalSessions,
+          t.establishment.classes_one,
+          t.establishment.classes_other,
+        ),
         value: stats.totalSessions,
         icon: BookOpen,
         loading: loading,
       },
       {
-        title: t.establishment.students,
+        title: pluralLabel(
+          stats.totalStudents,
+          t.establishment.students_one,
+          t.establishment.students_other,
+        ),
         value: stats.totalStudents,
         icon: Users,
         loading: loading,
       },
   ];
-  }, [teachers, stats, t]);
+  }, [teachers, stats, t, loading]);
 
   const role = getUserRole();
 

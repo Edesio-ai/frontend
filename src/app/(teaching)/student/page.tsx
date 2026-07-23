@@ -406,7 +406,9 @@ export default function Student() {
                 <div>
                   <p className="text-2xl font-bold text-indigo-600">{joinedSessions.length}</p>
                   <p className="text-xs text-muted-foreground">
-                    {joinedSessions.length > 1 ? t.student.classLabel_other : t.student.classLabel_one}
+                    {joinedSessions.length === 1
+                      ? t.student.classLabel_one
+                      : t.student.classLabel_other}
                   </p>
                 </div>
               </div>
@@ -420,7 +422,11 @@ export default function Student() {
                   <p className="text-2xl font-bold text-green-600">
                     {Object.values(sessionCourses).flat().length || 0}
                   </p>
-                  <p className="text-xs text-muted-foreground">{t.student.courseLabel}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {(Object.values(sessionCourses).flat().length || 0) === 1
+                      ? t.student.courseLabel_one
+                      : t.student.courseLabel_other}
+                  </p>
                 </div>
               </div>
             </Card>
