@@ -230,7 +230,7 @@ export default function Establishment() {
               <Link href="/profile">
                 <Button variant="ghost" data-testid="button-profile">
                   <UserCog className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Profil</span>
+                  <span className="hidden sm:inline">{t.nav.profile}</span>
                 </Button>
               </Link>
               <Button variant="ghost" onClick={handleSignOut} data-testid="button-signout">
