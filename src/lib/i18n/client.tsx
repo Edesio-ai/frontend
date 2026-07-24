@@ -12,8 +12,6 @@ import {
 } from "react";
 import { LOCALE_COOKIE, type Locale } from "./config";
 
-// Dictionary type is inferred from en.json shape
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Dictionary = any;
 
 interface LocaleContextValue {

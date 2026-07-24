@@ -10,7 +10,6 @@ import { AuthProvider } from "@/contexts/auth-context";
 interface ProvidersProps {
   children: ReactNode;
   locale: Locale;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dictionary: any;
 }
 
