@@ -38,6 +38,7 @@ export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
     const handleSubscribe = async (plan: Plan) => {
         setIsLoading(true);
         const priceId = isAnnual ? plan.priceAnnualId : plan.priceMonthlyId;
+        console.log("🚀 ~ handleSubscribe ~ priceId:", priceId)
         console.log("🚀 ~ handleSubscribe ~ isAnnual:", isAnnual)
         console.log("🚀 ~ handleSubscribe ~ isAnnual:", priceId === null)
         console.log("🚀 ~ handleSubscribe ~ priceId:", priceId === undefined)
