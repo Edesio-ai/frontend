@@ -7,7 +7,7 @@ export async function PATCH(request: NextRequest) {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      "Cookie": request.headers.get("Cookie") ?? "",
+      Cookie: request.headers.get("Cookie") ?? "",
       "x-csrf-token": request.headers.get("x-csrf-token") ?? "",
     },
     body: JSON.stringify(body),
@@ -15,7 +15,10 @@ export async function PATCH(request: NextRequest) {
 
   if (!response.ok) {
     const error = await response.json();
-    return NextResponse.json({ error: error.message || "An error occurred while updating the profile" }, { status: response.status });
+    return NextResponse.json(
+      { error: error.message || "An error occurred while updating the profile" },
+      { status: response.status },
+    );
   }
 
   return NextResponse.json({ success: true });

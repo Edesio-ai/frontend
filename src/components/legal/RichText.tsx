@@ -31,13 +31,13 @@ export function RichText({ text }: { text: string }) {
               className="text-primary hover:underline"
             >
               {label}
-            </a>
+            </a>,
           );
         } else {
           nodes.push(
             <Link key={key++} href={href} className="text-primary hover:underline">
               {label}
-            </Link>
+            </Link>,
           );
         }
       }

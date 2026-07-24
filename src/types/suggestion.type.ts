@@ -1,19 +1,19 @@
 export interface Suggestion {
-    id: string;
-    userId: string;
-    userEmail: string | null;
-    userName: string | null;
-    category: string;
-    title: string;
-    content: string;
-    likesCount: number;
-    createdAt: string;
-    userHasLiked: boolean;
+  id: string;
+  userId: string;
+  userEmail: string | null;
+  userName: string | null;
+  category: string;
+  title: string;
+  content: string;
+  likesCount: number;
+  createdAt: string;
+  userHasLiked: boolean;
 }
 
-export interface CreateSuggestion extends Pick<Suggestion, "category" | "title" | "content"> {}
+export type CreateSuggestion = Pick<Suggestion, "category" | "title" | "content">;
 
 export interface LikeSuggestionResponse {
-    liked: boolean;
-    likesCount: number;
+  liked: boolean;
+  likesCount: number;
 }

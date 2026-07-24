@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteContext = {
-    params: Promise<{ sessionId: string }>;
+  params: Promise<{ sessionId: string }>;
 };
 
 export async function GET(request: NextRequest, { params }: RouteContext) {
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
 
   const response = await fetch(`${process.env.BACKEND_URL}/course-question/pending/${sessionId}`, {
     headers: {
-      "Cookie": request.headers.get("Cookie") ?? "",
+      Cookie: request.headers.get("Cookie") ?? "",
     },
   });
 

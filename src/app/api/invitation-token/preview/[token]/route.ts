@@ -1,27 +1,27 @@
 import { NextResponse } from "next/server";
 
 type RouteContext = {
-    params: Promise<{
-      token: string;
-    }>;
+  params: Promise<{
+    token: string;
+  }>;
 };
 
-export async function GET(request: Request,  { params }: RouteContext) {
-    const { token } = await params;
+export async function GET(request: Request, { params }: RouteContext) {
+  const { token } = await params;
 
-    const response = await fetch(`${process.env.BACKEND_URL}/invitation-token/preview/${token}`, {
-        headers:{
-            "Content-Type": "application/json",
-            "cookie": request.headers.get("cookie") ?? "",
-        }
-    });
+  const response = await fetch(`${process.env.BACKEND_URL}/invitation-token/preview/${token}`, {
+    headers: {
+      "Content-Type": "application/json",
+      cookie: request.headers.get("cookie") ?? "",
+    },
+  });
 
-    if (!response.ok) {
-        const error = await response.json();
-        return NextResponse.json({ error: error.message }, { status: response.status });
-    }
+  if (!response.ok) {
+    const error = await response.json();
+    return NextResponse.json({ error: error.message }, { status: response.status });
+  }
 
-    const data = await response.json();
+  const data = await response.json();
 
-    return NextResponse.json(data);
+  return NextResponse.json(data);
 }

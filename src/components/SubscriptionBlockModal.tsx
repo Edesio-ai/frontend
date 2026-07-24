@@ -20,7 +20,10 @@ interface SubscriptionBlockModalProps {
   children: React.ReactNode;
 }
 
-const planConfig: Record<string, { planKey: "self-learner" | "teacher" | "establishment"; priceId: string; monthlyLink: string; yearlyLink: string }> = {
+const planConfig: Record<
+  string,
+  { planKey: "self-learner" | "teacher" | "establishment"; priceId: string; monthlyLink: string; yearlyLink: string }
+> = {
   "self-learner": {
     planKey: "self-learner",
     priceId: "solo",
@@ -63,8 +66,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
   const { user, loading: authLoading, getUserRole, logout } = useAuth();
   const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isOpeningPortal, setIsOpeningPortal] = useState(false);
+  const [isOpeningPortal] = useState(false);
 
   const handleOpenPortal = async () => {
     if (user) return;
@@ -107,18 +109,17 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
       try {
         const data = await BillingService.getSubscriptionStatus();
         setSubscriptionStatus(data);
-      } catch (err) {
-        setError(t.billing.subscriptionCheckError);
+      } catch {
+        console.error(t.billing.subscriptionCheckError);
       } finally {
         setIsLoading(false);
-
       }
     };
 
     if (!authLoading) {
       checkSubscription();
     }
-  }, [user, authLoading, role]);
+  }, [user, authLoading, role, t]);
 
   if (isLoading || authLoading) {
     return (
@@ -140,9 +141,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
   return (
     <div className="min-h-screen bg-background">
       {/* Blurred background content */}
-      <div className="filter blur-sm pointer-events-none opacity-50">
-        {children}
-      </div>
+      <div className="filter blur-sm pointer-events-none opacity-50">{children}</div>
 
       {/* Blocking overlay */}
       <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -156,14 +155,14 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
           <div className="text-center space-y-2">
             <h2 className="text-2xl font-bold" data-testid="text-subscription-blocked-title">
               {subscriptionStatus?.isPending
-                ? "Payment pending"
+                ? t.billing.blockModal.paymentPendingTitle
                 : subscriptionStatus?.status
-                  ? "Inactive subscription"
-                  : "Subscription required"}
+                  ? t.billing.blockModal.inactiveTitle
+                  : t.billing.blockModal.requiredTitle}
             </h2>
             <p className="text-muted-foreground" data-testid="text-subscription-blocked-description">
               {subscriptionStatus?.isPending
-                ? "Your payment is being processed or requires action. If you just subscribed, please wait a moment and refresh the page."
+                ? t.billing.blockModal.paymentPendingDesc
                 : subscriptionStatus?.status
                   ? t.billing.subscriptionInactive
                   : t.billing.activateDesc}
@@ -173,9 +172,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
           {subscriptionStatus?.isPending && (
             <div className="space-y-4">
               <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-                <p className="text-sm text-amber-800 dark:text-amber-200">
-                  If the issue persists, check that your bank hasn't blocked the payment, or contact us.
-                </p>
+                <p className="text-sm text-amber-800 dark:text-amber-200">{t.billing.blockModal.bankHint}</p>
               </div>
               <Button
                 className="w-full"
@@ -189,7 +186,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
                 ) : (
                   <ExternalLink className="h-4 w-4 mr-2" />
                 )}
-                Manage payment
+                {t.billing.blockModal.managePayment}
               </Button>
               <Button
                 variant="outline"
@@ -198,7 +195,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
                 onClick={() => window.location.reload()}
                 data-testid="button-refresh-subscription"
               >
-                Refresh page
+                {t.billing.blockModal.refreshPage}
               </Button>
             </div>
           )}
@@ -211,9 +208,7 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
                   <span className="font-semibold">{t.billing.planDetails[currentPlan.planKey].name}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {subscriptionStatus?.status
-                    ? t.billing.subscriptionInactive
-                    : t.billing.activateDesc}
+                  {subscriptionStatus?.status ? t.billing.subscriptionInactive : t.billing.activateDesc}
                 </p>
               </div>
 
@@ -240,7 +235,11 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
           <div className="pt-4 border-t space-y-3">
             <p className="text-xs text-center text-muted-foreground">
               {t.billing.contactUs}{" "}
-              <a href="mailto:contact@edesio.ai" className="text-primary hover:underline" data-testid="link-contact-support">
+              <a
+                href="mailto:contact@edesio.ai"
+                className="text-primary hover:underline"
+                data-testid="link-contact-support"
+              >
                 contact@edesio.ai
               </a>
             </p>

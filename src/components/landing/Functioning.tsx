@@ -6,7 +6,11 @@ const stepIcons = [Upload, Sparkles, MessageSquare];
 const stepGradients = [
   { gradient: "from-sky-400 to-indigo-500", bgLight: "bg-sky-50 dark:bg-sky-950/30", iconBg: "bg-indigo-500" },
   { gradient: "from-violet-500 to-purple-500", bgLight: "bg-violet-50 dark:bg-violet-950/30", iconBg: "bg-violet-500" },
-  { gradient: "from-emerald-500 to-green-500", bgLight: "bg-emerald-50 dark:bg-emerald-950/30", iconBg: "bg-emerald-500" },
+  {
+    gradient: "from-emerald-500 to-green-500",
+    bgLight: "bg-emerald-50 dark:bg-emerald-950/30",
+    iconBg: "bg-emerald-500",
+  },
 ];
 
 const featureIcons = [BookOpen, Brain, Target];
@@ -27,16 +31,13 @@ export async function Functioning() {
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold text-primary bg-primary/10 rounded-full">
             {t.badge}
           </span>
-          <h2
-            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
-            data-testid="text-fonctionnement-title"
-          >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6" data-testid="text-fonctionnement-title">
             {t.title}{" "}
-            <span className="bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">{t.titleHighlight}</span>
+            <span className="bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">
+              {t.titleHighlight}
+            </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t.subtitle}
-          </p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t.subtitle}</p>
         </div>
 
         <div className="relative mb-20">
@@ -47,31 +48,28 @@ export async function Functioning() {
               const Icon = stepIcons[index];
               const style = stepGradients[index];
               return (
-                <div
-                  key={index}
-                  className="relative"
-                  data-testid={`card-step-${index + 1}`}
-                >
-                  <Card className={`p-8 h-full ${style.bgLight} border-none shadow-lg hover:shadow-xl transition-all duration-300`}>
-                    <div className={`absolute -top-5 left-8 w-10 h-10 rounded-full bg-gradient-to-br ${style.gradient} text-white flex items-center justify-center text-lg font-bold shadow-lg`}>
+                <div key={index} className="relative" data-testid={`card-step-${index + 1}`}>
+                  <Card
+                    className={`p-8 h-full ${style.bgLight} border-none shadow-lg hover:shadow-xl transition-all duration-300`}
+                  >
+                    <div
+                      className={`absolute -top-5 left-8 w-10 h-10 rounded-full bg-gradient-to-br ${style.gradient} text-white flex items-center justify-center text-lg font-bold shadow-lg`}
+                    >
                       {step.number}
                     </div>
 
                     <div className="pt-4">
-                      <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 shadow-lg`}>
+                      <div
+                        className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 shadow-lg`}
+                      >
                         <Icon className="h-7 w-7 text-white" />
                       </div>
 
-                      <h3
-                        className="text-xl font-bold mb-3"
-                        data-testid={`text-step-${index + 1}-title`}
-                      >
+                      <h3 className="text-xl font-bold mb-3" data-testid={`text-step-${index + 1}-title`}>
                         {step.title}
                       </h3>
 
-                      <p className="text-muted-foreground leading-relaxed">
-                        {step.description}
-                      </p>
+                      <p className="text-muted-foreground leading-relaxed">{step.description}</p>
                     </div>
                   </Card>
                 </div>

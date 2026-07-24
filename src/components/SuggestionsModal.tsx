@@ -1,36 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Lightbulb,
-  ThumbsUp,
-  Loader2,
-  Send,
-  Sparkles,
-  MessageSquarePlus,
-  X,
-  Trash2
-} from "lucide-react";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Lightbulb, ThumbsUp, Loader2, Send, Sparkles, MessageSquarePlus, X, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -71,10 +49,9 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
     },
   });
 
-  const fetchSuggestions = async () => {
+  const fetchSuggestions = useCallback(async () => {
     try {
       setIsLoading(true);
-
 
       const response = await suggestionService.getSuggestions(category);
       if (response) {
@@ -85,7 +62,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [category]);
 
   useEffect(() => {
     if (open) {
@@ -93,7 +70,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
       setShowForm(false);
       form.reset();
     }
-  }, [open, category]);
+  }, [open, category, fetchSuggestions, form]);
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -103,11 +80,11 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
         category,
         title,
         content,
-      }
+      };
       const data = await suggestionService.createSuggestion(suggestionToCreate);
 
       if (data) {
-        setSuggestions(prev => [data, ...prev]);
+        setSuggestions((prev) => [data, ...prev]);
         form.reset();
         setShowForm(false);
         toast({
@@ -127,18 +104,15 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
   const handleLike = async (suggestionId: string) => {
     try {
-      setLikingIds(prev => new Set(prev).add(suggestionId));
+      setLikingIds((prev) => new Set(prev).add(suggestionId));
 
       const response = await suggestionService.likeSuggestion(suggestionId);
 
       const { likesCount, liked } = response;
 
-      setSuggestions(prev => prev.map(s =>
-        s.id === suggestionId
-          ? { ...s, likesCount, userHasLiked: liked }
-          : s
-      ));
-
+      setSuggestions((prev) =>
+        prev.map((s) => (s.id === suggestionId ? { ...s, likesCount, userHasLiked: liked } : s)),
+      );
     } catch (error) {
       console.error("Error liking suggestion:", error);
       toast({
@@ -146,7 +120,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
         variant: "destructive",
       });
     } finally {
-      setLikingIds(prev => {
+      setLikingIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(suggestionId);
         return newSet;
@@ -156,11 +130,11 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
   const handleDelete = async (suggestionId: string) => {
     try {
-      setDeletingIds(prev => new Set(prev).add(suggestionId));
+      setDeletingIds((prev) => new Set(prev).add(suggestionId));
 
       await suggestionService.deleteSuggestion(suggestionId);
 
-      setSuggestions(prev => prev.filter(s => s.id !== suggestionId));
+      setSuggestions((prev) => prev.filter((s) => s.id !== suggestionId));
       toast({
         title: t.suggestions.successTitle,
       });
@@ -171,7 +145,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
         variant: "destructive",
       });
     } finally {
-      setDeletingIds(prev => {
+      setDeletingIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(suggestionId);
         return newSet;
@@ -181,10 +155,11 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 !max-w-none !w-screen !h-[100dvh] !rounded-none !border-0 flex flex-col p-0 overflow-hidden [&>button]:hidden sm:!inset-auto sm:!left-1/2 sm:!top-1/2 sm:!-translate-x-1/2 sm:!-translate-y-1/2 sm:!max-w-2xl sm:!w-[95vw] sm:!h-[85vh] sm:!rounded-2xl sm:!border"
-      >
-        <DialogHeader className="px-4 pt-4 pb-3 border-b flex-shrink-0 sm:px-6 sm:pt-6 sm:pb-4" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}>
+      <DialogContent className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 !max-w-none !w-screen !h-[100dvh] !rounded-none !border-0 flex flex-col p-0 overflow-hidden [&>button]:hidden sm:!inset-auto sm:!left-1/2 sm:!top-1/2 sm:!-translate-x-1/2 sm:!-translate-y-1/2 sm:!max-w-2xl sm:!w-[95vw] sm:!h-[85vh] sm:!rounded-2xl sm:!border">
+        <DialogHeader
+          className="px-4 pt-4 pb-3 border-b flex-shrink-0 sm:px-6 sm:pt-6 sm:pb-4"
+          style={{ paddingTop: "max(16px, env(safe-area-inset-top))" }}
+        >
           <div className="flex items-center justify-between gap-2">
             <DialogTitle className="flex items-center gap-2 flex-1 min-w-0">
               <Lightbulb className="h-5 w-5 text-amber-500 shrink-0" />
@@ -199,9 +174,7 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
               <X className="h-5 w-5" />
             </Button>
           </div>
-          <DialogDescription>
-            {t.suggestions.title}
-          </DialogDescription>
+          <DialogDescription>{t.suggestions.title}</DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 space-y-4">
@@ -299,12 +272,8 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
             ) : suggestions.length === 0 ? (
               <div className="text-center py-12">
                 <Sparkles className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground">
-                  Aucune suggestion pour le moment.
-                </p>
-                <p className="text-sm text-muted-foreground/70 mt-1">
-                  Be the first to suggest an improvement!
-                </p>
+                <p className="text-muted-foreground">Aucune suggestion pour le moment.</p>
+                <p className="text-sm text-muted-foreground/70 mt-1">Be the first to suggest an improvement!</p>
               </div>
             ) : (
               suggestions.map((suggestion) => (
@@ -316,21 +285,19 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                   <div className="flex gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-semibold text-sm sm:text-base line-clamp-2">
-                          {suggestion.title}
-                        </h3>
+                        <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{suggestion.title}</h3>
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
-                        {suggestion.content}
-                      </p>
+                      <p className="text-sm text-muted-foreground line-clamp-3 mb-3">{suggestion.content}</p>
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-2 text-xs text-muted-foreground min-w-0 flex-shrink">
-                          <span className="truncate max-w-[120px] sm:max-w-none">{suggestion.userEmail || "Anonyme"}</span>
+                          <span className="truncate max-w-[120px] sm:max-w-none">
+                            {suggestion.userEmail || "Anonyme"}
+                          </span>
                           <span>•</span>
                           <span className="whitespace-nowrap">
                             {formatDistanceToNow(new Date(suggestion.createdAt), {
                               addSuffix: true,
-                              locale: fr
+                              locale: fr,
                             })}
                           </span>
                         </div>
@@ -356,10 +323,11 @@ export function SuggestionsModal({ open, onOpenChange, category }: SuggestionsMo
                             size="sm"
                             onClick={() => handleLike(suggestion.id)}
                             disabled={likingIds.has(suggestion.id)}
-                            className={`gap-1.5 !ring-0 !ring-offset-0 focus:outline-none ${suggestion.userHasLiked
-                              ? "bg-primary hover:bg-primary/90"
-                              : "hover:bg-primary/10 hover:text-primary hover:border-primary/30"
-                              }`}
+                            className={`gap-1.5 !ring-0 !ring-offset-0 focus:outline-none ${
+                              suggestion.userHasLiked
+                                ? "bg-primary hover:bg-primary/90"
+                                : "hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                            }`}
                             data-testid={`button-like-${suggestion.id}`}
                           >
                             {likingIds.has(suggestion.id) ? (

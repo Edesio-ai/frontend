@@ -9,25 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import InvitationModal from "@/components/establishment/InvitationModal";
 
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SuggestionsModal } from "@/components/SuggestionsModal";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
-import {
-  Building2,
-  Users,
-  GraduationCap,
-  BookOpen,
-  LogOut,
-  Plus,
-  UserCog,
-  Lightbulb,
-} from "lucide-react";
+import { Building2, Users, GraduationCap, BookOpen, LogOut, Plus, UserCog, Lightbulb } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
@@ -64,7 +49,6 @@ export default function Establishment() {
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [showSuggestionsModal, setShowSuggestionsModal] = useState(false);
 
-
   const [selectedSession, setSelectedSession] = useState<SessionWithStudentCount | null>(null);
   const [sessionStudents, setSessionStudents] = useState<Student[]>([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
@@ -74,42 +58,29 @@ export default function Establishment() {
   const [loadingCourse, setLoadingCourse] = useState(false);
 
   const statsDashboard = useMemo(() => {
-    const pluralLabel = (count: number, one: string, other: string) =>
-      count === 1 ? one : other;
+    const pluralLabel = (count: number, one: string, other: string) => (count === 1 ? one : other);
 
     return [
       {
-        title: pluralLabel(
-          stats.totalTeachers,
-          t.establishment.teachers_one,
-          t.establishment.teachers_other,
-        ),
+        title: pluralLabel(stats.totalTeachers, t.establishment.teachers_one, t.establishment.teachers_other),
         value: stats.totalTeachers,
         icon: GraduationCap,
         loading: loading,
       },
       {
-        title: pluralLabel(
-          stats.totalSessions,
-          t.establishment.classes_one,
-          t.establishment.classes_other,
-        ),
+        title: pluralLabel(stats.totalSessions, t.establishment.classes_one, t.establishment.classes_other),
         value: stats.totalSessions,
         icon: BookOpen,
         loading: loading,
       },
       {
-        title: pluralLabel(
-          stats.totalStudents,
-          t.establishment.students_one,
-          t.establishment.students_other,
-        ),
+        title: pluralLabel(stats.totalStudents, t.establishment.students_one, t.establishment.students_other),
         value: stats.totalStudents,
         icon: Users,
         loading: loading,
       },
-  ];
-  }, [teachers, stats, t, loading]);
+    ];
+  }, [stats, t, loading]);
 
   const role = getUserRole();
 
@@ -146,7 +117,7 @@ export default function Establishment() {
       </div>
     );
   }
-  
+
   if (!user || (role && role !== "establishment")) {
     return null;
   }
@@ -250,7 +221,13 @@ export default function Establishment() {
         <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
           <div className="grid md:grid-cols-3 gap-4">
             {statsDashboard.map((stat) => (
-              <StatsCard key={stat.title} title={stat.title} value={stat.value} icon={stat.icon} loading={stat.loading} />
+              <StatsCard
+                key={stat.title}
+                title={stat.title}
+                value={stat.value}
+                icon={stat.icon}
+                loading={stat.loading}
+              />
             ))}
           </div>
 
@@ -269,9 +246,7 @@ export default function Establishment() {
             {invitationTokens.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <p>{t.establishment.noInvitations}</p>
-                <p className="text-sm mt-1">
-                  {t.establishment.createCodeHint}
-                </p>
+                <p className="text-sm mt-1">{t.establishment.createCodeHint}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -291,9 +266,7 @@ export default function Establishment() {
             {teachers.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <p>{t.establishment.noTeachers}</p>
-                <p className="text-sm mt-1">
-                  {t.establishment.inviteTeachersHint}
-                </p>
+                <p className="text-sm mt-1">{t.establishment.inviteTeachersHint}</p>
               </div>
             ) : (
               <Table>

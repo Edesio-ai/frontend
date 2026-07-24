@@ -1,18 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import type { EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, SelfLearnerCourse, SelfLearnerQuestion } from "@/types";
+import type {
+  EvaluateAnswerRequest,
+  GenerateCompletionFeedbackRequest,
+  SelfLearnerCourse,
+  SelfLearnerQuestion,
+} from "@/types";
 import {
   Send,
   User,
@@ -68,32 +67,32 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-
 function getRandomMessage(messages: string[]): string {
   return messages[Math.floor(Math.random() * messages.length)];
 }
 
 function validateOpenAnswer(userAnswer: string, correctAnswer: string): boolean {
-  const normalize = (str: string) => str
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\w\s]/g, " ")
-    .trim()
-    .split(/\s+/)
-    .filter(w => w.length > 2);
+  const normalize = (str: string) =>
+    str
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s]/g, " ")
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 2);
 
   const userWords = normalize(userAnswer);
   const correctWords = normalize(correctAnswer);
-  
+
   if (userWords.length === 0 || correctWords.length === 0) {
     return false;
   }
 
-  const matchedWords = correctWords.filter(cw => 
-    userWords.some(uw => uw === cw || uw.includes(cw) || cw.includes(uw))
+  const matchedWords = correctWords.filter((cw) =>
+    userWords.some((uw) => uw === cw || uw.includes(cw) || cw.includes(uw)),
   );
-  
+
   const matchRatio = matchedWords.length / correctWords.length;
   return matchRatio >= 0.5;
 }
@@ -107,9 +106,15 @@ function TypingIndicator() {
       </Avatar>
       <div className="bg-card border border-border rounded-2xl rounded-tl-md px-5 py-4 shadow-sm">
         <div className="flex gap-1.5">
-          <span className="w-2.5 h-2.5 bg-amber-500/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <span className="w-2.5 h-2.5 bg-amber-500/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <span className="w-2.5 h-2.5 bg-amber-500/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          <span className="w-2.5 h-2.5 bg-amber-500/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+          <span
+            className="w-2.5 h-2.5 bg-amber-500/60 rounded-full animate-bounce"
+            style={{ animationDelay: "150ms" }}
+          />
+          <span
+            className="w-2.5 h-2.5 bg-amber-500/60 rounded-full animate-bounce"
+            style={{ animationDelay: "300ms" }}
+          />
         </div>
       </div>
     </div>
@@ -126,22 +131,24 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
     >
       <Avatar
         className={`h-10 w-10 flex-shrink-0 shadow-md ${
-          isBot 
-            ? "ring-2 ring-amber-500/20" 
-            : "ring-2 ring-amber-500/30"
+          isBot ? "ring-2 ring-amber-500/20" : "ring-2 ring-amber-500/30"
         }`}
       >
-        {isBot ? (
-          <AvatarImage src="/edesio-logo-square.png" alt="Edesio" className="object-cover" />
-        ) : null}
-        <AvatarFallback className={isBot ? "bg-amber-500/10 text-amber-500 text-sm font-semibold" : "bg-gradient-to-br from-amber-500 to-amber-600 text-white font-bold text-sm"}>
+        {isBot ? <AvatarImage src="/edesio-logo-square.png" alt="Edesio" className="object-cover" /> : null}
+        <AvatarFallback
+          className={
+            isBot
+              ? "bg-amber-500/10 text-amber-500 text-sm font-semibold"
+              : "bg-gradient-to-br from-amber-500 to-amber-600 text-white font-bold text-sm"
+          }
+        >
           {isBot ? "IA" : <User className="h-4 w-4" />}
         </AvatarFallback>
       </Avatar>
       <div
         className={`max-w-[85%] shadow-sm ${
-          isBot 
-            ? "bg-card border border-border text-foreground rounded-2xl rounded-tl-md" 
+          isBot
+            ? "bg-card border border-border text-foreground rounded-2xl rounded-tl-md"
             : "bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-2xl rounded-tr-md"
         } ${
           message.type === "feedback" && message.isCorrect === true
@@ -160,7 +167,10 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
             ? "!border-2 !border-emerald-400/60 !bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/40 dark:to-green-900/40"
             : ""
         } ${
-          message.type === "completion" && message.scoreRatio !== undefined && message.scoreRatio >= 0.5 && message.scoreRatio < 0.7
+          message.type === "completion" &&
+          message.scoreRatio !== undefined &&
+          message.scoreRatio >= 0.5 &&
+          message.scoreRatio < 0.7
             ? "!border-2 !border-orange-400/60 !bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/40 dark:to-amber-900/40"
             : ""
         } ${
@@ -170,35 +180,45 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
         } px-4 py-3`}
       >
         {message.type === "completion" && (
-          <div className={`flex items-center gap-2 mb-2 pb-2 border-b ${
-            message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-              ? "border-emerald-300/30" 
-              : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                ? "border-orange-300/30" 
-                : "border-red-300/30"
-          }`}>
-            <div className={`p-1.5 rounded-full ${
-              message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                ? "bg-emerald-500/20" 
-                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                  ? "bg-orange-500/20" 
-                  : "bg-red-500/20"
-            }`}>
-              <Trophy className={`h-4 w-4 ${
-                message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                  ? "text-emerald-600 dark:text-emerald-400" 
-                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                    ? "text-orange-600 dark:text-orange-400" 
-                    : "text-red-600 dark:text-red-400"
-              }`} />
+          <div
+            className={`flex items-center gap-2 mb-2 pb-2 border-b ${
+              message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                ? "border-emerald-300/30"
+                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                  ? "border-orange-300/30"
+                  : "border-red-300/30"
+            }`}
+          >
+            <div
+              className={`p-1.5 rounded-full ${
+                message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                  ? "bg-emerald-500/20"
+                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                    ? "bg-orange-500/20"
+                    : "bg-red-500/20"
+              }`}
+            >
+              <Trophy
+                className={`h-4 w-4 ${
+                  message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                      ? "text-orange-600 dark:text-orange-400"
+                      : "text-red-600 dark:text-red-400"
+                }`}
+              />
             </div>
-            <span className={`font-bold text-sm ${
-              message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                ? "text-emerald-700 dark:text-emerald-300" 
-                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                  ? "text-orange-700 dark:text-orange-300" 
-                  : "text-red-700 dark:text-red-300"
-            }`}>{t.chatbot.sessionEnded}</span>
+            <span
+              className={`font-bold text-sm ${
+                message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                  ? "text-emerald-700 dark:text-emerald-300"
+                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                    ? "text-orange-700 dark:text-orange-300"
+                    : "text-red-700 dark:text-red-300"
+              }`}
+            >
+              {t.chatbot.sessionEnded}
+            </span>
           </div>
         )}
         <p className="text-sm sm:text-base whitespace-pre-wrap leading-relaxed">{message.text}</p>
@@ -256,7 +276,7 @@ function QCMOptions({
             key={i}
             onClick={() => onSelect(i)}
             disabled={disabled}
-            className={`group relative flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 font-medium text-left transition-all duration-200 shadow-sm ${!disabled ? 'hover:bg-amber-100 dark:hover:bg-amber-900/40 hover:border-amber-300 dark:hover:border-amber-600 active:scale-[0.98]' : 'opacity-60'} min-h-[68px]`}
+            className={`group relative flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 font-medium text-left transition-all duration-200 shadow-sm ${!disabled ? "hover:bg-amber-100 dark:hover:bg-amber-900/40 hover:border-amber-300 dark:hover:border-amber-600 active:scale-[0.98]" : "opacity-60"} min-h-[68px]`}
             data-testid={`button-qcm-option-${i}`}
           >
             <span className="flex-shrink-0 w-7 h-7 rounded-md bg-white dark:bg-amber-800/50 border border-amber-200 dark:border-amber-700 flex items-center justify-center text-sm font-bold mt-0.5">
@@ -286,7 +306,10 @@ function MultiOptions({
   t: ReturnType<typeof useTranslations>;
 }) {
   return (
-    <div className="py-4 space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="multi-options-container">
+    <div
+      className="py-4 space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300"
+      data-testid="multi-options-container"
+    >
       <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
         <Star className="h-3.5 w-3.5 text-amber-500" />
         <span>{t.chatbot.selectAllCorrect}</span>
@@ -300,15 +323,19 @@ function MultiOptions({
               onClick={() => onToggle(i)}
               disabled={disabled}
               className={`group flex items-start gap-3 p-4 rounded-xl font-medium text-sm transition-all duration-200 min-h-[68px] ${
-                isSelected 
-                  ? 'bg-amber-500 border-2 border-amber-600 text-white shadow-md' 
-                  : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 shadow-sm'
-              } ${!disabled ? (isSelected ? 'hover:bg-amber-600' : 'hover:bg-amber-100 dark:hover:bg-amber-900/40 hover:border-amber-300 dark:hover:border-amber-600') + ' active:scale-[0.98]' : 'opacity-60'}`}
+                isSelected
+                  ? "bg-amber-500 border-2 border-amber-600 text-white shadow-md"
+                  : "bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 shadow-sm"
+              } ${!disabled ? (isSelected ? "hover:bg-amber-600" : "hover:bg-amber-100 dark:hover:bg-amber-900/40 hover:border-amber-300 dark:hover:border-amber-600") + " active:scale-[0.98]" : "opacity-60"}`}
               data-testid={`button-multi-option-${i}`}
             >
-              <span className={`flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-sm font-bold mt-0.5 ${
-                isSelected ? 'bg-white/20 border border-white/30' : 'bg-white dark:bg-amber-800/50 border border-amber-200 dark:border-amber-700'
-              }`}>
+              <span
+                className={`flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-sm font-bold mt-0.5 ${
+                  isSelected
+                    ? "bg-white/20 border border-white/30"
+                    : "bg-white dark:bg-amber-800/50 border border-amber-200 dark:border-amber-700"
+                }`}
+              >
                 {String.fromCharCode(65 + i)}
               </span>
               <span className="flex-1 text-left leading-snug">{prop}</span>
@@ -326,22 +353,26 @@ function MultiOptions({
         >
           <Check className="h-4 w-4 mr-2" />
           {t.chatbot.validateSelection
-            .replace('{count}', String(selectedIndices.length))
-            .replace('{plural}', selectedIndices.length > 1 ? 's' : '')}
+            .replace("{count}", String(selectedIndices.length))
+            .replace("{plural}", selectedIndices.length > 1 ? "s" : "")}
         </Button>
       </div>
     </div>
   );
 }
 
-export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQuestions }: SelfLearnerChatbotModalProps) {
+export function SelfLearnerChatbotModal({
+  open,
+  onOpenChange,
+  cours,
+  generateQuestions,
+}: SelfLearnerChatbotModalProps) {
   const t = useTranslations();
   const correctFeedbackMessages: string[] = t.chatbot.correctAnswers;
   const incorrectFeedbackMessages: string[] = t.chatbot.encouragementsAfterWrong;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [totalAnswered, setTotalAnswered] = useState(0);
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [chatState, setChatState] = useState<"idle" | "loading" | "greeting" | "asking" | "completed">("idle");
@@ -357,16 +388,85 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
   const loadStartedRef = useRef(false);
   const { user } = useAuth();
 
-  const addMessage = (message: Omit<ChatMessage, "id">) => {
+  const addMessage = useCallback((message: Omit<ChatMessage, "id">) => {
     setMessages((prev) => [...prev, { ...message, id: generateId() }]);
-  };
+  }, []);
 
-  const loadAndStartQuiz = async () => {
+  const askQuestion = useCallback(
+    (index: number, questions: ShuffledQuestion[]) => {
+      if (index >= questions.length) {
+        setChatState("completed");
+        return;
+      }
+
+      const question = questions[index];
+      let questionText = `Question ${index + 1}/${questions.length}\n\n${question.questionText}`;
+
+      if (question.type === "multiple") {
+        questionText += `\n\n${t.chatbot.multipleAnswersHint}`;
+      }
+
+      addMessage({
+        sender: "bot",
+        text: questionText,
+        type: "question",
+      });
+      setSelectedMultiIndices([]);
+      setChatState("asking");
+    },
+    [addMessage, t],
+  );
+
+  const showCompletion = useCallback(
+    async (finalScore: number, finalTotal: number) => {
+      const ratio = finalTotal > 0 ? finalScore / finalTotal : 0;
+      const scoreDisplay = finalScore % 1 === 0 ? finalScore : finalScore.toFixed(1);
+
+      try {
+        const body: GenerateCompletionFeedbackRequest = {
+          courseTitle: cours.title,
+          score: finalScore,
+          total: finalTotal,
+          studentName: user?.metadata.firstname || t.dashboard.questionsPanel.studentFallback,
+          language: cours.language || "francais",
+        };
+        const feedback = await llmService.generateCompletionFeedback(body);
+        const aiFeedback = feedback.feedback || t.chatbot.completionDefault;
+
+        const scoreText = t.chatbot.completionScore
+          .replace("{score}", String(scoreDisplay))
+          .replace("{total}", String(finalTotal))
+          .replace("{percent}", String(Math.round(ratio * 100)));
+        addMessage({
+          sender: "bot",
+          text: `${t.chatbot.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
+          type: "completion",
+          scoreRatio: ratio,
+        });
+      } catch (error) {
+        console.error("Error fetching completion feedback:", error);
+        const scoreText = t.chatbot.completionScore
+          .replace("{score}", String(scoreDisplay))
+          .replace("{total}", String(finalTotal))
+          .replace("{percent}", String(Math.round(ratio * 100)));
+        addMessage({
+          sender: "bot",
+          text: `${t.chatbot.completionTitle}\n\n${scoreText}`,
+          type: "completion",
+          scoreRatio: ratio,
+        });
+      }
+
+      setChatState("completed");
+    },
+    [addMessage, cours.title, cours.language, user, t],
+  );
+
+  const loadAndStartQuiz = useCallback(async () => {
     setChatState("loading");
     setMessages([]);
     setCurrentQuestionIndex(0);
     setScore(0);
-    setTotalAnswered(0);
     setSelectedMultiIndices([]);
     setWaitingForAcknowledge(false);
     setLastAnswerResult(null);
@@ -396,7 +496,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     }
 
     const shuffled = shuffleArray(questions);
-    const processedQuestions = shuffled.map(q => {
+    const processedQuestions = shuffled.map((q) => {
       if ((q.type === "single" || q.type === "multiple") && q.proposals && q.proposals.length > 0) {
         const indices: number[] = q.proposals.map((_: string, i: number) => i);
         const shuffledIndices = shuffleArray<number>(indices);
@@ -423,7 +523,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
       setTimeout(() => {
         addMessage({
           sender: "bot",
-          text: getRandomMessage(t.chatbot.startQuiz).replace('{count}', String(processedQuestions.length)),
+          text: getRandomMessage(t.chatbot.startQuiz).replace("{count}", String(processedQuestions.length)),
           type: "greeting",
         });
         setTimeout(() => {
@@ -431,71 +531,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         }, 1000);
       }, 1500);
     }, 500);
-  };
-
-  const askQuestion = (index: number, questions: ShuffledQuestion[]) => {
-    if (index >= questions.length) {
-      setChatState("completed");
-      return;
-    }
-
-    const question = questions[index];
-    let questionText = `Question ${index + 1}/${questions.length}\n\n${question.questionText}`;
-
-    if (question.type === "multiple") {
-      questionText += `\n\n${t.chatbot.multipleAnswersHint}`;
-    }
-
-    addMessage({
-      sender: "bot",
-      text: questionText,
-      type: "question",
-    });
-    setSelectedMultiIndices([]);
-    setChatState("asking");
-  };
-
-  const showCompletion = async (finalScore: number, finalTotal: number) => {
-    const ratio = finalTotal > 0 ? finalScore / finalTotal : 0;
-    const scoreDisplay = finalScore % 1 === 0 ? finalScore : finalScore.toFixed(1);
-    
-    try {
-      const body: GenerateCompletionFeedbackRequest = {
-        courseTitle: cours.title,
-        score: finalScore,
-        total: finalTotal,
-        studentName: user?.metadata.firstname || t.dashboard.questionsPanel.studentFallback,
-        language: cours.language || "francais",
-      };
-      const feedback = await llmService.generateCompletionFeedback(body);
-      const aiFeedback = feedback.feedback || t.chatbot.completionDefault;
-      
-      const scoreText = t.chatbot.completionScore
-        .replace('{score}', String(scoreDisplay))
-        .replace('{total}', String(finalTotal))
-        .replace('{percent}', String(Math.round(ratio * 100)));
-      addMessage({
-        sender: "bot",
-        text: `${t.chatbot.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
-        type: "completion",
-        scoreRatio: ratio,
-      });
-    } catch (error) {
-      console.error("Error fetching completion feedback:", error);
-      const scoreText = t.chatbot.completionScore
-        .replace('{score}', String(scoreDisplay))
-        .replace('{total}', String(finalTotal))
-        .replace('{percent}', String(Math.round(ratio * 100)));
-      addMessage({
-        sender: "bot",
-        text: `${t.chatbot.completionTitle}\n\n${scoreText}`,
-        type: "completion",
-        scoreRatio: ratio,
-      });
-    }
-    
-    setChatState("completed");
-  };
+  }, [addMessage, askQuestion, cours.id, t]);
 
   useEffect(() => {
     if (!open) {
@@ -504,9 +540,9 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     }
     if (chatState === "idle" && !loadStartedRef.current) {
       loadStartedRef.current = true;
-      loadAndStartQuiz();
+      void loadAndStartQuiz();
     }
-  }, [open, cours.id]);
+  }, [open, cours.id, chatState, loadAndStartQuiz]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -550,7 +586,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     setIsProcessing(true);
     const propositions = question.shuffledPropositions || question.proposals;
     const selectedOption = propositions?.[selectedIndex] || "";
-    
+
     addMessage({
       sender: "user",
       text: `${String.fromCharCode(65 + selectedIndex)}. ${selectedOption}`,
@@ -571,15 +607,13 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     setWaitingForRetry(false);
     setIsProcessing(true);
     const propositions = question.shuffledPropositions || question.proposals;
-    const selectedOptions = selectedMultiIndices
-      .sort((a, b) => a - b)
-      .map(i => propositions?.[i] || "");
-    
+    const selectedOptions = selectedMultiIndices.sort((a, b) => a - b).map((i) => propositions?.[i] || "");
+
     const answerText = selectedMultiIndices
       .sort((a, b) => a - b)
-      .map(i => `${String.fromCharCode(65 + i)}. ${propositions?.[i]}`)
+      .map((i) => `${String.fromCharCode(65 + i)}. ${propositions?.[i]}`)
       .join(", ");
-    
+
     addMessage({
       sender: "user",
       text: answerText,
@@ -587,10 +621,10 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     });
 
     const correctAnswers = question.correctAnswers || [];
-    const isCorrect = 
+    const isCorrect =
       selectedOptions.length === correctAnswers.length &&
-      selectedOptions.every(opt => correctAnswers.includes(opt)) &&
-      correctAnswers.every(ans => selectedOptions.includes(ans));
+      selectedOptions.every((opt) => correctAnswers.includes(opt)) &&
+      correctAnswers.every((ans) => selectedOptions.includes(ans));
 
     const correctDisplay = correctAnswers.join(", ");
     processAnswer(isCorrect, correctDisplay, question.explanation);
@@ -598,19 +632,28 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
 
   const extractStudentQuestion = (input: string): string | null => {
     const sentences = input.split(/(?<=[.!])\s+/);
-    const questionSentence = sentences.find(s => s.trim().endsWith("?") && s.trim().length > 8);
+    const questionSentence = sentences.find((s) => s.trim().endsWith("?") && s.trim().length > 8);
     if (questionSentence) return questionSentence.trim();
     if (input.trim().endsWith("?") && input.trim().length > 8) return input.trim();
     return null;
   };
 
-  const answerStudentQuestion = async (studentQuestion: string, contextQuestion: { question: string; bonne_reponse?: string | null; explication?: string | null }) => {
+  const answerStudentQuestion = async (
+    studentQuestion: string,
+    contextQuestion: {
+      question: string;
+      bonne_reponse?: string | null;
+      explication?: string | null;
+    },
+  ) => {
     try {
       const context = [
         contextQuestion.question,
-        contextQuestion.bonne_reponse ? t.chatbot.answerPrefix.replace('{answer}', contextQuestion.bonne_reponse) : "",
+        contextQuestion.bonne_reponse ? t.chatbot.answerPrefix.replace("{answer}", contextQuestion.bonne_reponse) : "",
         contextQuestion.explication ? contextQuestion.explication : "",
-      ].filter(Boolean).join("\n");
+      ]
+        .filter(Boolean)
+        .join("\n");
 
       const response = await fetch("/api/autonome/explain", {
         method: "POST",
@@ -639,7 +682,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
 
     setIsProcessing(true);
     setShowTyping(true);
-    
+
     addMessage({
       sender: "user",
       text: answer,
@@ -654,22 +697,25 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         explanation: question.explanation || "",
       };
       const evaluation = await llmService.evaluateAnswer(body);
-      processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] ?? "", evaluation.missingElements, studentQuestion, { question: question.questionText, correctAnswer: question.correctAnswers?.[0] ?? "", explication: question.explanation ?? "" });
+      processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] ?? "", studentQuestion, {
+        question: question.questionText,
+        correctAnswer: question.correctAnswers?.[0] ?? "",
+        explication: question.explanation ?? "",
+      });
     } catch (error) {
       console.error("Error evaluating answer:", error);
       setShowTyping(false);
-      const isCorrect = validateOpenAnswer(answer, question.correctAnswers?.[0]  || "");
+      const isCorrect = validateOpenAnswer(answer, question.correctAnswers?.[0] || "");
       processAnswer(isCorrect, question.correctAnswers?.[0] || "", question.explanation);
     }
   };
 
   const processOpenAnswer = (
-    scorePoints: number, 
-    feedback: string, 
+    scorePoints: number,
+    feedback: string,
     correctAnswer: string,
-    missingElements?: string[],
     studentQuestion?: string | null,
-    contextQuestion?: { question: string; correctAnswer?: string | null; explication?: string | null }
+    contextQuestion?: { question: string; correctAnswer?: string | null; explication?: string | null },
   ) => {
     setShowTyping(false);
     setWaitingForRetry(false);
@@ -677,18 +723,15 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     const isFullyCorrect = scorePoints >= 0.7;
 
     const shouldCountQuestion = isFullyCorrect || isRetryAttempt;
-    
+
     if (shouldCountQuestion) {
       setScore((prev) => prev + scorePoints);
-      setTotalAnswered((prev) => prev + 1);
     }
 
     setTimeout(() => {
       if (isFullyCorrect) {
-        const successMessage = isRetryAttempt 
-          ? t.chatbot.goodContinue
-          : feedback;
-        
+        const successMessage = isRetryAttempt ? t.chatbot.goodContinue : feedback;
+
         addMessage({
           sender: "bot",
           text: successMessage,
@@ -704,7 +747,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         if (!isRetryAttempt) {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\n${t.chatbot.expectedAnswer.replace('{answer}', correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
+            text: `${feedback}\n\n${t.chatbot.expectedAnswer.replace("{answer}", correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -744,18 +787,17 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
 
   const processAnswer = (isCorrect: boolean, correctAnswer: string, explication?: string | null) => {
     const shouldCountQuestion = isCorrect || isRetryAttempt;
-    
+
     if (shouldCountQuestion) {
       setScore((prev) => prev + (isCorrect ? 1 : 0));
-      setTotalAnswered((prev) => prev + 1);
     }
 
     setTimeout(() => {
       if (isCorrect) {
-        const successMessage = isRetryAttempt 
+        const successMessage = isRetryAttempt
           ? `${t.chatbot.bravoExact}${explication ? `\n\n${explication}` : ""}`
           : `${getRandomMessage(correctFeedbackMessages)}${explication ? `\n\n${explication}` : ""}`;
-        
+
         addMessage({
           sender: "bot",
           text: successMessage,
@@ -769,7 +811,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
       } else if (!isRetryAttempt) {
         addMessage({
           sender: "bot",
-          text: `${getRandomMessage(incorrectFeedbackMessages)} ${t.chatbot.correctIs.replace('{answer}', correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
+          text: `${getRandomMessage(incorrectFeedbackMessages)} ${t.chatbot.correctIs.replace("{answer}", correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -779,7 +821,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
       } else {
         addMessage({
           sender: "bot",
-          text: `${t.chatbot.correctWas.replace('{answer}', correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
+          text: `${t.chatbot.correctWas.replace("{answer}", correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -791,25 +833,21 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     }, 500);
   };
 
-  const handleAcknowledge = async () => {
+  const handleAcknowledge = useCallback(async () => {
     setWaitingForAcknowledge(false);
     setLastAnswerResult(null);
     const nextIndex = currentQuestionIndex + 1;
     setCurrentQuestionIndex(nextIndex);
-    
+
     if (nextIndex >= shuffledQuestions.length) {
       await showCompletion(score, shuffledQuestions.length);
     } else {
       askQuestion(nextIndex, shuffledQuestions);
     }
-  };
+  }, [currentQuestionIndex, shuffledQuestions, score, showCompletion, askQuestion]);
 
   const toggleMultiOption = (index: number) => {
-    setSelectedMultiIndices(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
+    setSelectedMultiIndices((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
   };
 
   const handleSendMessage = () => {
@@ -833,12 +871,12 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         handleAcknowledge();
       }
     };
-    
+
     if (waitingForAcknowledge) {
       window.addEventListener("keydown", handleGlobalKeyPress);
       return () => window.removeEventListener("keydown", handleGlobalKeyPress);
     }
-  }, [waitingForAcknowledge]);
+  }, [waitingForAcknowledge, handleAcknowledge]);
 
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
   const currentPropositions = currentQuestion?.shuffledPropositions || currentQuestion?.proposals;
@@ -849,14 +887,14 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
     currentQuestion?.type === "single" &&
     !isProcessing &&
     !waitingForAcknowledge;
-  
+
   // Show multi buttons during asking or retry mode
   const showMultiOptions =
     (chatState === "asking" || waitingForRetry) &&
     currentQuestion?.type === "multiple" &&
     !isProcessing &&
     !waitingForAcknowledge;
-  
+
   // Text input only for open questions (during asking or retry)
   // QCM/multi questions show buttons during retry, not text input
   const showTextInput =
@@ -874,14 +912,17 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
-        <DialogHeader className="flex-shrink-0 px-4 py-3 border-b bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent backdrop-blur-sm" style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}>
+        <DialogHeader
+          className="flex-shrink-0 px-4 py-3 border-b bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent backdrop-blur-sm"
+          style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}
+        >
           <div className="flex items-center gap-3">
             <div className="relative shrink-0">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 p-0.5 shadow-lg shadow-amber-500/25">
-                <img 
-                  src="/edesio-logo-square.png" 
-                  alt="Edesio" 
-                  className="w-full h-full rounded-[10px] object-cover bg-white dark:bg-background" 
+                <img
+                  src="/edesio-logo-square.png"
+                  alt="Edesio"
+                  className="w-full h-full rounded-[10px] object-cover bg-white dark:bg-background"
                 />
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-background flex items-center justify-center shadow-sm">
@@ -924,7 +965,7 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
           </div>
         </DialogHeader>
 
-        <div 
+        <div
           ref={scrollRef}
           className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-background to-muted/20"
           data-testid="autonome-chatbot-messages"
@@ -940,26 +981,25 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
               )}
             </div>
           ) : (
-            messages.map((message) => (
-              <MessageBubble key={message.id} message={message} t={t} />
-            ))
+            messages.map((message) => <MessageBubble key={message.id} message={message} t={t} />)
           )}
           {(isProcessing || showTyping) && <TypingIndicator />}
         </div>
 
         {showQCMOptions && currentPropositions && (
-          <div className="flex-shrink-0 px-2 border-t bg-muted/30 backdrop-blur-sm" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
-            <QCMOptions
-              propositions={currentPropositions}
-              onSelect={handleQCMAnswer}
-              disabled={isProcessing}
-              t={t}
-            />
+          <div
+            className="flex-shrink-0 px-2 border-t bg-muted/30 backdrop-blur-sm"
+            style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
+          >
+            <QCMOptions propositions={currentPropositions} onSelect={handleQCMAnswer} disabled={isProcessing} t={t} />
           </div>
         )}
 
         {showMultiOptions && currentPropositions && (
-          <div className="flex-shrink-0 px-2 border-t bg-muted/30 backdrop-blur-sm" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
+          <div
+            className="flex-shrink-0 px-2 border-t bg-muted/30 backdrop-blur-sm"
+            style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
+          >
             <MultiOptions
               propositions={currentPropositions}
               selectedIndices={selectedMultiIndices}
@@ -972,15 +1012,15 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         )}
 
         {waitingForAcknowledge && (
-          <div 
+          <div
             className={`flex-shrink-0 px-4 py-4 border-t backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300 ${
-              lastAnswerResult === "correct" 
-                ? "bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20" 
+              lastAnswerResult === "correct"
+                ? "bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20"
                 : lastAnswerResult === "partial"
-                ? "bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20"
-                : "bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20"
+                  ? "bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20"
+                  : "bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20"
             }`}
-            style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}
+            style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
           >
             <div className="flex justify-center">
               <Button
@@ -989,10 +1029,10 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
                   currentQuestionIndex + 1 >= shuffledQuestions.length
                     ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:opacity-90 text-white border border-amber-600"
                     : lastAnswerResult === "correct"
-                    ? "bg-[#16A34A] hover:bg-[#15803D] text-white border border-[#15803D]"
-                    : lastAnswerResult === "partial"
-                    ? "bg-[#F59E0B] hover:bg-[#D97706] text-white border border-[#D97706]"
-                    : "bg-[#3B82F6] hover:bg-[#2563EB] text-white border border-[#2563EB]"
+                      ? "bg-[#16A34A] hover:bg-[#15803D] text-white border border-[#15803D]"
+                      : lastAnswerResult === "partial"
+                        ? "bg-[#F59E0B] hover:bg-[#D97706] text-white border border-[#D97706]"
+                        : "bg-[#3B82F6] hover:bg-[#2563EB] text-white border border-[#2563EB]"
                 }`}
                 data-testid="button-acknowledge"
               >
@@ -1013,7 +1053,10 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         )}
 
         {showTextInput && (
-          <div className="flex-shrink-0 px-4 py-4 border-t bg-muted/30 backdrop-blur-sm" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
+          <div
+            className="flex-shrink-0 px-4 py-4 border-t bg-muted/30 backdrop-blur-sm"
+            style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
+          >
             <div className="flex gap-3 items-end">
               <div className="flex-1 relative">
                 <Textarea
@@ -1025,11 +1068,11 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
                   data-testid="input-open-answer"
                   disabled={isProcessing}
                   rows={1}
-                  style={{ height: 'auto' }}
+                  style={{ height: "auto" }}
                   onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement;
-                    target.style.height = 'auto';
-                    target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                    target.style.height = "auto";
+                    target.style.height = Math.min(target.scrollHeight, 120) + "px";
                   }}
                 />
               </div>
@@ -1048,7 +1091,10 @@ export function SelfLearnerChatbotModal({ open, onOpenChange, cours, generateQue
         )}
 
         {chatState === "completed" && messages.length > 0 && !waitingForAcknowledge && (
-          <div className="flex-shrink-0 px-4 py-4 border-t bg-muted/30 backdrop-blur-sm" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
+          <div
+            className="flex-shrink-0 px-4 py-4 border-t bg-muted/30 backdrop-blur-sm"
+            style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
+          >
             <div className="flex justify-center">
               <Button
                 className="h-12 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:opacity-90 shadow-lg shadow-amber-500/25 px-8 !ring-0 !ring-offset-0 focus:outline-none border border-amber-600"

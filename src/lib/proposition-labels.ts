@@ -14,11 +14,7 @@ export function propositionLabels(proposals: unknown): string[] {
     .filter((s) => s.length > 0);
 }
 
-export function correctAnswerDisplay(
-  proposals: unknown,
-  correctAnswers: string[] | null,
-): string {
-
+export function correctAnswerDisplay(proposals: unknown, correctAnswers: string[] | null): string {
   if (correctAnswers == null) return "";
 
   if (!Array.isArray(proposals) || proposals.length === 0) {
@@ -28,10 +24,7 @@ export function correctAnswerDisplay(
   if (typeof first === "object" && first !== null && "id" in first) {
     const row = proposals.find(
       (p): p is { id: string; label: string } =>
-        typeof p === "object" &&
-        p !== null &&
-        "id" in p &&
-        (p as { id: string }).id === correctAnswers[0],
+        typeof p === "object" && p !== null && "id" in p && (p as { id: string }).id === correctAnswers[0],
     );
     if (row?.label) return row.label;
   }
@@ -40,44 +33,25 @@ export function correctAnswerDisplay(
   return correctAnswers.join(", ");
 }
 
-export function multipleChoiceIndicesCorrect(
-  proposals: unknown,
-  correctAnswers: string[] | null,
-): number[] {
-  if (
-    !correctAnswers?.length ||
-    proposals == null ||
-    !Array.isArray(proposals) ||
-    proposals.length === 0
-  ) {
+export function multipleChoiceIndicesCorrect(proposals: unknown, correctAnswers: string[] | null): number[] {
+  if (!correctAnswers?.length || proposals == null || !Array.isArray(proposals) || proposals.length === 0) {
     return [];
   }
   const first = proposals[0];
   if (typeof first === "object" && first !== null && "id" in first) {
     const out: number[] = [];
     proposals.forEach((p, i) => {
-      if (
-        typeof p === "object" &&
-        p !== null &&
-        "id" in p &&
-        correctAnswers.includes((p as { id: string }).id)
-      ) {
+      if (typeof p === "object" && p !== null && "id" in p && correctAnswers.includes((p as { id: string }).id)) {
         out.push(i);
       }
     });
     return out;
   }
   const labels = propositionLabels(proposals);
-  return labels
-    .map((label, i) => (correctAnswers.includes(label) ? i : -1))
-    .filter((i) => i >= 0);
+  return labels.map((label, i) => (correctAnswers.includes(label) ? i : -1)).filter((i) => i >= 0);
 }
 
-export function indexMatchesCorrectAnswer(
-  index: number,
-  proposals: unknown,
-  correctAnswer: string | null,
-): boolean {
+export function indexMatchesCorrectAnswer(index: number, proposals: unknown, correctAnswer: string | null): boolean {
   if (correctAnswer == null || !Array.isArray(proposals)) return false;
   if (index < 0 || index >= proposals.length) return false;
   const item = proposals[index];
@@ -94,9 +68,7 @@ export function letterAnswerIsCorrect(question: Question, answerIndex: number): 
     const labels = propositionLabels(question.proposals);
     const label = labels[answerIndex];
     if (label && question.correctAnswers.includes(label)) return true;
-    const item = Array.isArray(question.proposals)
-      ? question.proposals[answerIndex]
-      : undefined;
+    const item = Array.isArray(question.proposals) ? question.proposals[answerIndex] : undefined;
     if (
       item &&
       typeof item === "object" &&
@@ -107,9 +79,5 @@ export function letterAnswerIsCorrect(question: Question, answerIndex: number): 
     }
     return false;
   }
-  return indexMatchesCorrectAnswer(
-    answerIndex,
-    question.proposals,
-    question.correctAnswers?.[0] || null,
-  );
+  return indexMatchesCorrectAnswer(answerIndex, question.proposals, question.correctAnswers?.[0] || null);
 }

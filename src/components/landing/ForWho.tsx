@@ -48,16 +48,13 @@ export async function ForWho() {
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold text-violet-600 dark:text-violet-400 bg-violet-100 dark:bg-violet-900/30 rounded-full">
             {t.badge}
           </span>
-          <h2
-            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
-            data-testid="text-pourqui-title"
-          >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6" data-testid="text-pourqui-title">
             {t.title}{" "}
-            <span className="bg-gradient-to-r from-sky-400 via-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent">{t.titleHighlight}</span>
+            <span className="bg-gradient-to-r from-sky-400 via-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent">
+              {t.titleHighlight}
+            </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t.subtitle.replace("{brand}", "Edesio")}
-          </p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t.subtitle.replace("{brand}", "Edesio")}</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
@@ -71,14 +68,13 @@ export async function ForWho() {
                 data-testid={`card-persona-${index + 1}`}
               >
                 <div className="relative z-10">
-                  <div className={`w-16 h-16 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  <div
+                    className={`w-16 h-16 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                  >
                     <Icon className="h-8 w-8 text-white" />
                   </div>
 
-                  <h3
-                    className="text-2xl font-bold mb-2"
-                    data-testid={`text-persona-${index + 1}-title`}
-                  >
+                  <h3 className="text-2xl font-bold mb-2" data-testid={`text-persona-${index + 1}-title`}>
                     {persona.title}
                   </h3>
 
@@ -86,10 +82,7 @@ export async function ForWho() {
 
                   <ul className="space-y-3">
                     {persona.benefits.map((benefit, benefitIndex) => (
-                      <li
-                        key={benefitIndex}
-                        className="flex items-start gap-3 text-sm"
-                      >
+                      <li key={benefitIndex} className="flex items-start gap-3 text-sm">
                         <CheckCircle2 className={`w-5 h-5 ${style.checkColor} shrink-0 mt-0.5`} />
                         <span>{benefit}</span>
                       </li>

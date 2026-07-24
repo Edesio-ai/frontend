@@ -13,8 +13,8 @@ export const courseQuestionService = {
   getCourseQuestions: async (courseId: string): Promise<CourseQuestion[]> => {
     const response = await apiFetch<CourseQuestion[]>(`/api/course-question/course/${courseId}`);
     return response;
-},
-  sendCourseQuestion: async (body: SendCourseQuestionBody ): Promise<CourseQuestion> => {
+  },
+  sendCourseQuestion: async (body: SendCourseQuestionBody): Promise<CourseQuestion> => {
     const response = await apiFetch<CourseQuestion>(`/api/course-question/`, {
       method: "POST",
       body: JSON.stringify(body),
@@ -33,4 +33,4 @@ export const courseQuestionService = {
       method: "DELETE",
     });
   },
-}
+};

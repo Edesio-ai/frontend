@@ -45,10 +45,7 @@ const STRIPE_PRICE_IDS = {
   },
 } as const;
 
-const planPriceKey: Record<
-  Plan["id"],
-  keyof typeof STRIPE_PRICE_IDS
-> = {
+const planPriceKey: Record<Plan["id"], keyof typeof STRIPE_PRICE_IDS> = {
   "self-learner": "STANDALONE",
   teacher: "TEACHER",
   establishment: "ESTABLISHMENT",

@@ -1,6 +1,5 @@
 import { SessionWithStudentCount } from "./session.type";
 
-
 export interface Teacher {
   id: string;
   supabaseUserId: string;

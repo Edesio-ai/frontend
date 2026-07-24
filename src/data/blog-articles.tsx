@@ -27,16 +27,10 @@ export function getBlogArticles(locale: Locale = "en"): BlogArticle[] {
   return locale === "fr" ? blogArticlesFr : blogArticlesEn;
 }
 
-export function getArticleBySlug(
-  slug: string,
-  locale: Locale = "en",
-): BlogArticle | undefined {
+export function getArticleBySlug(slug: string, locale: Locale = "en"): BlogArticle | undefined {
   return getBlogArticles(locale).find((article) => article.slug === slug);
 }
 
-export function getArticleById(
-  id: string,
-  locale: Locale = "en",
-): BlogArticle | undefined {
+export function getArticleById(id: string, locale: Locale = "en"): BlogArticle | undefined {
   return getBlogArticles(locale).find((article) => article.id === id);
 }

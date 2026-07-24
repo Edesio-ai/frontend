@@ -13,11 +13,11 @@ const articleImages: Record<string, string> = {
 };
 
 const categoryColorsLight: Record<string, string> = {
-  "Éducation": "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-400",
-  "Technologie": "bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-400",
-  "Pédagogie": "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
-  "Sécurité": "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
-  "Témoignages": "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400",
+  Éducation: "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-400",
+  Technologie: "bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-400",
+  Pédagogie: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
+  Sécurité: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
+  Témoignages: "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400",
   Education: "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-400",
   Technology: "bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-400",
   Pedagogy: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
@@ -44,21 +44,13 @@ export async function BlogPreview() {
             <Newspaper className="h-4 w-4" />
             <span>{bt.badge}</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            {bt.title}
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            {bt.subtitle}
-          </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{bt.title}</h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">{bt.subtitle}</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-10">
           {latestArticles.map((article, index) => (
-            <Link
-              key={article.id}
-              href={`/blog/${article.slug}`}
-              className="block group"
-            >
+            <Link key={article.id} href={`/blog/${article.slug}`} className="block group">
               <Card
                 className="h-full overflow-hidden hover-elevate transition-all duration-300 border-border/50"
                 data-testid={`card-article-preview-${index}`}
@@ -100,9 +92,7 @@ export async function BlogPreview() {
                     {article.title}
                   </h3>
 
-                  <p className="text-sm text-muted-foreground line-clamp-3">
-                    {article.excerpt}
-                  </p>
+                  <p className="text-sm text-muted-foreground line-clamp-3">{article.excerpt}</p>
 
                   <div className="mt-4 flex items-center text-primary text-sm font-medium group-hover:gap-2 transition-all">
                     <span>{bt.readArticle}</span>
@@ -116,12 +106,7 @@ export async function BlogPreview() {
 
         <div className="text-center">
           <Link href="/blog">
-            <Button
-              size="lg"
-              variant="outline"
-              className="gap-2"
-              data-testid="button-view-all-articles"
-            >
+            <Button size="lg" variant="outline" className="gap-2" data-testid="button-view-all-articles">
               {bt.viewAll}
               <ArrowRight className="h-4 w-4" />
             </Button>

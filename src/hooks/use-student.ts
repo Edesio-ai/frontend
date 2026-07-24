@@ -9,7 +9,6 @@ import { courseService } from "@/services/teaching/course.service";
 import { studentSessionService } from "@/services/teaching/student-session.service";
 import { courseStudentStatsService } from "@/services/teaching/student-course-stats.service";
 
-
 export function useStudent() {
   const { user, loading: authLoading } = useAuth();
   const t = useTranslations();
@@ -42,7 +41,7 @@ export function useStudent() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, t]);
 
   const fetchJoinedSessions = useCallback(async () => {
     if (!student) {
@@ -59,7 +58,7 @@ export function useStudent() {
       console.error("Unexpected error:", err);
       setError(t.hooks.student.joinError);
     }
-  }, [student]);
+  }, [student, t]);
 
   useEffect(() => {
     if (!authLoading) {
@@ -91,36 +90,30 @@ export function useStudent() {
         return { success: false, error: t.hooks.student.joinError };
       }
     },
-    [student, joinedSessions, fetchJoinedSessions]
+    [student, fetchJoinedSessions, t],
   );
 
-  const fetchCourse = useCallback(
-    async (sessionId: string): Promise<Course[]> => {
-      try {
-        const courses = await courseService.getSessionCourses(sessionId);
+  const fetchCourse = useCallback(async (sessionId: string): Promise<Course[]> => {
+    try {
+      const courses = await courseService.getSessionCourses(sessionId);
 
-        return courses || [];
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        return [];
-      }
-    },
-    []
-  );
+      return courses || [];
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return [];
+    }
+  }, []);
 
-  const fetchQuestions = useCallback(
-    async (courseId: string): Promise<Question[]> => {
-      try {
-        const data = await questionService.getCourseQuestions(courseId);
+  const fetchQuestions = useCallback(async (courseId: string): Promise<Question[]> => {
+    try {
+      const data = await questionService.getCourseQuestions(courseId);
 
-        return data || [];
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        return [];
-      }
-    },
-    []
-  );
+      return data || [];
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return [];
+    }
+  }, []);
 
   const leaveSession = useCallback(
     async (sessionId: string): Promise<boolean> => {
@@ -136,7 +129,7 @@ export function useStudent() {
         return false;
       }
     },
-    [student, fetchJoinedSessions]
+    [student, fetchJoinedSessions],
   );
 
   const uploadProfilePhoto = useCallback(
@@ -159,7 +152,7 @@ export function useStudent() {
 
         const uploadedPhoto = await studentService.uploadPhoto(file);
 
-        setStudent((prev) => prev ? { ...prev, photoUrl: uploadedPhoto.photoUrl } : null);
+        setStudent((prev) => (prev ? { ...prev, photoUrl: uploadedPhoto.photoUrl } : null));
 
         return { success: true, url: uploadedPhoto.photoUrl };
       } catch (err) {
@@ -167,14 +160,14 @@ export function useStudent() {
         return { success: false, error: t.hooks.student.joinError };
       }
     },
-    [student, user]
+    [student, user, t],
   );
 
   const updateCourseProgress = useCallback(
     async (
       coursId: string,
       attemptedQuestions: number,
-      correctAnswers: number
+      correctAnswers: number,
     ): Promise<{ success: boolean; error?: string }> => {
       if (!student) {
         return { success: false, error: t.hooks.student.notLoggedIn };
@@ -184,7 +177,7 @@ export function useStudent() {
         const body = {
           attemptedQuestions,
           correctAnswers,
-        }
+        };
         await courseStudentStatsService.updateOrCreateStudentCourseStats(coursId, body);
 
         return { success: true };
@@ -193,7 +186,7 @@ export function useStudent() {
         return { success: false, error: t.hooks.student.progressError };
       }
     },
-    [student]
+    [student, t],
   );
 
   const fetchCourseRanking = useCallback(
@@ -209,11 +202,14 @@ export function useStudent() {
         return [];
       }
     },
-    [student]
+    [student],
   );
 
   const sendCourseQuestion = useCallback(
-    async (courseId: string, questionText: string): Promise<{ success: boolean; error?: string; question?: CourseQuestion }> => {
+    async (
+      courseId: string,
+      questionText: string,
+    ): Promise<{ success: boolean; error?: string; question?: CourseQuestion }> => {
       if (!student) {
         return { success: false, error: t.hooks.student.notLoggedIn };
       }
@@ -226,7 +222,7 @@ export function useStudent() {
         const body = {
           courseId,
           questionText: questionText.trim(),
-        }
+        };
         const data = await courseQuestionService.sendCourseQuestion(body);
 
         return { success: true, question: data };
@@ -235,39 +231,32 @@ export function useStudent() {
         return { success: false, error: t.hooks.student.questionError };
       }
     },
-    [student]
+    [student, t],
   );
 
-  const fetchQuestionsCoursForCours = useCallback(
-    async (coursId: string): Promise<CourseQuestion[]> => {
-      try {
+  const fetchQuestionsCoursForCours = useCallback(async (coursId: string): Promise<CourseQuestion[]> => {
+    try {
+      const data = await courseQuestionService.getCourseQuestions(coursId);
 
-        const data = await courseQuestionService.getCourseQuestions(coursId);
+      return data || [];
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return [];
+    }
+  }, []);
 
-        return data || [];
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        return [];
-      }
-    },
-    []
-  );
+  const countAnsweredQuestionsForCourse = useCallback(async (): Promise<number> => {
+    if (!student) return 0;
 
-  const countAnsweredQuestionsForCourse = useCallback(
-    async (): Promise<number> => {
-      if (!student) return 0;
+    try {
+      const data = await courseQuestionService.getAnsweredQuestionsCourse();
 
-      try {
-        const data = await courseQuestionService.getAnsweredQuestionsCourse()
-
-        return data.answeredQuestions || 0;
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        return 0;
-      }
-    },
-    [student]
-  );
+      return data.answeredQuestions || 0;
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return 0;
+    }
+  }, [student]);
 
   return {
     student,

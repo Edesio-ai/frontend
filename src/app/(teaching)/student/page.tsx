@@ -6,20 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useStudent } from "@/hooks/use-student";
 import { useToast } from "@/hooks/use-toast";
 
@@ -135,7 +123,7 @@ export default function Student() {
 
     setIsUploadingPhoto(true);
     const result = await uploadProfilePhoto(file);
-    
+
     if (result.success) {
       toast({
         title: t.student.photoUpdated,
@@ -147,7 +135,7 @@ export default function Student() {
         variant: "destructive",
       });
     }
-    
+
     setIsUploadingPhoto(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -179,7 +167,7 @@ export default function Student() {
     async (sessionId: string) => {
       if (expandedSessionId === sessionId) {
         setExpandedSessionId(null);
-        setSelectedCoursIdPerSession(prev => {
+        setSelectedCoursIdPerSession((prev) => {
           const next = { ...prev };
           delete next[sessionId];
           return next;
@@ -194,7 +182,7 @@ export default function Student() {
         const courses = await fetchCourse(sessionId);
         setSessionCourses((prev) => ({ ...prev, [sessionId]: courses }));
         setLoadingCourses((prev) => ({ ...prev, [sessionId]: false }));
-        
+
         for (const cours of courses) {
           const count = await countAnsweredQuestionsForCourse();
           if (count > 0) {
@@ -203,7 +191,7 @@ export default function Student() {
         }
       }
     },
-    [expandedSessionId, sessionCourses, fetchCourse, countAnsweredQuestionsForCourse]
+    [expandedSessionId, sessionCourses, fetchCourse, countAnsweredQuestionsForCourse],
   );
 
   const handleOpenChatbot = async (cours: Course) => {
@@ -240,7 +228,7 @@ export default function Student() {
         delete updated[sessionToLeave.id];
         return updated;
       });
-      setSelectedCoursIdPerSession(prev => {
+      setSelectedCoursIdPerSession((prev) => {
         const next = { ...prev };
         delete next[sessionToLeave.id];
         return next;
@@ -296,16 +284,10 @@ export default function Student() {
               </Button>
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
                 <GraduationCap className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium text-green-700 dark:text-green-400">
-                  {firstname}
-                </span>
+                <span className="text-sm font-medium text-green-700 dark:text-green-400">{firstname}</span>
               </div>
               <Link href="/profile">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  data-testid="button-profile"
-                >
+                <Button variant="ghost" size="sm" data-testid="button-profile">
                   <UserCog className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">{t.nav.profile}</span>
                 </Button>
@@ -346,7 +328,7 @@ export default function Student() {
           className="hidden"
           data-testid="input-profile-photo"
         />
-        
+
         <div className="mb-10">
           <div className="flex items-center gap-4 mb-4">
             <div
@@ -385,15 +367,10 @@ export default function Student() {
               </div>
             </div>
             <div>
-              <h1
-                className="text-3xl md:text-4xl font-bold"
-                data-testid="text-student-welcome"
-              >
+              <h1 className="text-3xl md:text-4xl font-bold" data-testid="text-student-welcome">
                 {t.student.greeting.replace("{name}", firstname)}
               </h1>
-              <p className="text-muted-foreground">
-                {t.student.emptySubtitle}
-              </p>
+              <p className="text-muted-foreground">{t.student.emptySubtitle}</p>
             </div>
           </div>
 
@@ -406,9 +383,7 @@ export default function Student() {
                 <div>
                   <p className="text-2xl font-bold text-indigo-600">{joinedSessions.length}</p>
                   <p className="text-xs text-muted-foreground">
-                    {joinedSessions.length === 1
-                      ? t.student.classLabel_one
-                      : t.student.classLabel_other}
+                    {joinedSessions.length === 1 ? t.student.classLabel_one : t.student.classLabel_other}
                   </p>
                 </div>
               </div>
@@ -485,11 +460,36 @@ export default function Student() {
             <div className="space-y-4">
               {joinedSessions.map((session, index) => {
                 const colors = [
-                  { bg: "from-indigo-500/10 to-indigo-600/5", border: "border-indigo-500/20", icon: "text-indigo-600", iconBg: "bg-indigo-500/20" },
-                  { bg: "from-green-500/10 to-green-600/5", border: "border-green-500/20", icon: "text-green-600", iconBg: "bg-green-500/20" },
-                  { bg: "from-purple-500/10 to-purple-600/5", border: "border-purple-500/20", icon: "text-purple-600", iconBg: "bg-purple-500/20" },
-                  { bg: "from-orange-500/10 to-orange-600/5", border: "border-orange-500/20", icon: "text-orange-600", iconBg: "bg-orange-500/20" },
-                  { bg: "from-pink-500/10 to-pink-600/5", border: "border-pink-500/20", icon: "text-pink-600", iconBg: "bg-pink-500/20" },
+                  {
+                    bg: "from-indigo-500/10 to-indigo-600/5",
+                    border: "border-indigo-500/20",
+                    icon: "text-indigo-600",
+                    iconBg: "bg-indigo-500/20",
+                  },
+                  {
+                    bg: "from-green-500/10 to-green-600/5",
+                    border: "border-green-500/20",
+                    icon: "text-green-600",
+                    iconBg: "bg-green-500/20",
+                  },
+                  {
+                    bg: "from-purple-500/10 to-purple-600/5",
+                    border: "border-purple-500/20",
+                    icon: "text-purple-600",
+                    iconBg: "bg-purple-500/20",
+                  },
+                  {
+                    bg: "from-orange-500/10 to-orange-600/5",
+                    border: "border-orange-500/20",
+                    icon: "text-orange-600",
+                    iconBg: "bg-orange-500/20",
+                  },
+                  {
+                    bg: "from-pink-500/10 to-pink-600/5",
+                    border: "border-pink-500/20",
+                    icon: "text-pink-600",
+                    iconBg: "bg-pink-500/20",
+                  },
                 ];
                 const color = colors[index % colors.length];
 
@@ -513,8 +513,7 @@ export default function Student() {
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <Calendar className="h-3 w-3" />
                             <span>
-                              {t.student.joinedOn}{" "}
-                              {new Date(session.joinedAt).toLocaleDateString(dateLocale)}
+                              {t.student.joinedOn} {new Date(session.joinedAt).toLocaleDateString(dateLocale)}
                             </span>
                           </div>
                         </div>
@@ -522,10 +521,7 @@ export default function Student() {
                       <div className="flex items-center gap-2">
                         {sessionCourses[session.id] && (
                           <Badge variant="secondary" className="bg-background/50">
-                            {t.student.coursesCount.replace(
-                              "{count}",
-                              String(sessionCourses[session.id].length),
-                            )}
+                            {t.student.coursesCount.replace("{count}", String(sessionCourses[session.id].length))}
                           </Badge>
                         )}
                         <ChevronRight
@@ -541,9 +537,7 @@ export default function Student() {
                         {loadingCourses[session.id] ? (
                           <div className="flex items-center justify-center py-6">
                             <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                            <span className="ml-2 text-sm text-muted-foreground">
-                              {t.student.loadingCourses}
-                            </span>
+                            <span className="ml-2 text-sm text-muted-foreground">{t.student.loadingCourses}</span>
                           </div>
                         ) : sessionCourses[session.id]?.length === 0 ? (
                           <div className="text-center py-6 text-muted-foreground">
@@ -560,22 +554,19 @@ export default function Student() {
                               <Select
                                 value={selectedCoursIdPerSession[session.id] || ""}
                                 onValueChange={(value) => {
-                                  setSelectedCoursIdPerSession(prev => ({
+                                  setSelectedCoursIdPerSession((prev) => ({
                                     ...prev,
-                                    [session.id]: value
+                                    [session.id]: value,
                                   }));
                                 }}
                               >
-                                <SelectTrigger 
-                                  className="w-full"
-                                  data-testid={`select-cours-${session.id}`}
-                                >
+                                <SelectTrigger className="w-full" data-testid={`select-cours-${session.id}`}>
                                   <SelectValue placeholder={t.student.chooseCourse} />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {sessionCourses[session.id]?.map((cours) => (
-                                    <SelectItem 
-                                      key={cours.id} 
+                                    <SelectItem
+                                      key={cours.id}
                                       value={cours.id}
                                       className="py-3"
                                       data-testid={`select-cours-item-${cours.id}`}
@@ -590,74 +581,75 @@ export default function Student() {
                               </Select>
                             </div>
 
-                            {selectedCoursIdPerSession[session.id] && (() => {
-                              const selectedCoursForActions = sessionCourses[session.id]?.find(
-                                c => c.id === selectedCoursIdPerSession[session.id]
-                              );
-                              if (!selectedCoursForActions) return null;
-                              
-                              return (
-                                <Card className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-                                  <div className="flex items-start gap-3 mb-4">
-                                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/30 to-primary/20 flex items-center justify-center shrink-0">
-                                      <Sparkles className="h-5 w-5 text-primary" />
+                            {selectedCoursIdPerSession[session.id] &&
+                              (() => {
+                                const selectedCoursForActions = sessionCourses[session.id]?.find(
+                                  (c) => c.id === selectedCoursIdPerSession[session.id],
+                                );
+                                if (!selectedCoursForActions) return null;
+
+                                return (
+                                  <Card className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                                    <div className="flex items-start gap-3 mb-4">
+                                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/30 to-primary/20 flex items-center justify-center shrink-0">
+                                        <Sparkles className="h-5 w-5 text-primary" />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="font-semibold text-sm">{selectedCoursForActions.title}</p>
+                                        {selectedCoursForActions.description && (
+                                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                                            {selectedCoursForActions.description}
+                                          </p>
+                                        )}
+                                      </div>
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                      <p className="font-semibold text-sm">{selectedCoursForActions.title}</p>
-                                      {selectedCoursForActions.description && (
-                                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
-                                          {selectedCoursForActions.description}
-                                        </p>
-                                      )}
+                                    <div className="flex items-center gap-2">
+                                      <Button
+                                        size="sm"
+                                        className="flex-1"
+                                        onClick={() => handleOpenChatbot(selectedCoursForActions)}
+                                        data-testid={`button-cours-${selectedCoursForActions.id}`}
+                                      >
+                                        <MessageSquare className="h-4 w-4 mr-2" />
+                                        {t.student.revise}
+                                      </Button>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="shrink-0 relative"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleOpenQA(selectedCoursForActions);
+                                        }}
+                                        data-testid={`button-qa-${selectedCoursForActions.id}`}
+                                        title={t.student.qaModal.title}
+                                      >
+                                        <HelpCircle className="h-4 w-4 mr-1" />
+                                        {t.student.qa}
+                                        {answeredQuestionsCount[selectedCoursForActions.id] > 0 && (
+                                          <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full bg-amber-400 text-[10px] font-bold text-amber-900 flex items-center justify-center px-1 shadow-sm">
+                                            {answeredQuestionsCount[selectedCoursForActions.id]}
+                                          </span>
+                                        )}
+                                      </Button>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="shrink-0"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleOpenRankings(selectedCoursForActions);
+                                        }}
+                                        data-testid={`button-rankings-${selectedCoursForActions.id}`}
+                                        title={t.student.ranking}
+                                      >
+                                        <Trophy className="h-4 w-4 mr-1" />
+                                        {t.student.ranking}
+                                      </Button>
                                     </div>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <Button
-                                      size="sm"
-                                      className="flex-1"
-                                      onClick={() => handleOpenChatbot(selectedCoursForActions)}
-                                      data-testid={`button-cours-${selectedCoursForActions.id}`}
-                                    >
-                                      <MessageSquare className="h-4 w-4 mr-2" />
-                                      {t.student.revise}
-                                    </Button>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="shrink-0 relative"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleOpenQA(selectedCoursForActions);
-                                      }}
-                                      data-testid={`button-qa-${selectedCoursForActions.id}`}
-                                      title={t.student.qaModal.title}
-                                    >
-                                      <HelpCircle className="h-4 w-4 mr-1" />
-                                      {t.student.qa}
-                                      {answeredQuestionsCount[selectedCoursForActions.id] > 0 && (
-                                        <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full bg-amber-400 text-[10px] font-bold text-amber-900 flex items-center justify-center px-1 shadow-sm">
-                                          {answeredQuestionsCount[selectedCoursForActions.id]}
-                                        </span>
-                                      )}
-                                    </Button>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="shrink-0"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleOpenRankings(selectedCoursForActions);
-                                      }}
-                                      data-testid={`button-rankings-${selectedCoursForActions.id}`}
-                                      title={t.student.ranking}
-                                    >
-                                      <Trophy className="h-4 w-4 mr-1" />
-                                      {t.student.ranking}
-                                    </Button>
-                                  </div>
-                                </Card>
-                              );
-                            })()}
+                                  </Card>
+                                );
+                              })()}
                           </div>
                         )}
 
@@ -732,22 +724,23 @@ export default function Student() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={rankingsModalOpen} onOpenChange={(open) => {
-        setRankingsModalOpen(open);
-        if (!open) {
-          setSelectedCoursForRankings(null);
-          setRankings([]);
-        }
-      }}>
+      <Dialog
+        open={rankingsModalOpen}
+        onOpenChange={(open) => {
+          setRankingsModalOpen(open);
+          if (!open) {
+            setSelectedCoursForRankings(null);
+            setRankings([]);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-md" data-testid="modal-rankings">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Trophy className="h-5 w-5 text-amber-500" />
               Classement
             </DialogTitle>
-            <DialogDescription>
-              {selectedCoursForRankings?.title}
-            </DialogDescription>
+            <DialogDescription>{selectedCoursForRankings?.title}</DialogDescription>
           </DialogHeader>
 
           <div className="py-4">
@@ -766,9 +759,9 @@ export default function Student() {
                 {rankings.map((ranking) => {
                   const isCurrentUser = student && student.id === ranking.studentId;
                   return (
-                    <Card 
+                    <Card
                       key={ranking.studentId}
-                      className={`p-3 flex items-center gap-3 ${isCurrentUser ? 'border-primary bg-primary/5' : ''}`}
+                      className={`p-3 flex items-center gap-3 ${isCurrentUser ? "border-primary bg-primary/5" : ""}`}
                       data-testid={`ranking-student-${ranking.studentId}`}
                     >
                       <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-bold shrink-0">
@@ -785,7 +778,7 @@ export default function Student() {
                       <Avatar className="h-8 w-8 border shrink-0">
                         <AvatarImage src={ranking.photoUrl || undefined} />
                         <AvatarFallback className="text-xs">
-                          {ranking.name?.slice(0, 2).toUpperCase() || '??'}
+                          {ranking.name?.slice(0, 2).toUpperCase() || "??"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
@@ -798,7 +791,7 @@ export default function Student() {
                         </p>
                       </div>
                       <div className="text-right shrink-0">
-                        <span className={`font-bold text-sm ${isCurrentUser ? 'text-primary' : ''}`}>
+                        <span className={`font-bold text-sm ${isCurrentUser ? "text-primary" : ""}`}>
                           {Math.round(ranking.successRate)}%
                         </span>
                       </div>
@@ -818,10 +811,7 @@ export default function Student() {
           onOpenChange={setChatbotOpen}
           course={selectedCourse}
           questions={coursQuestions}
-          language={
-            joinedSessions.find((s) => s.id === selectedCourse.sessionId)
-              ?.language ?? "francais"
-          }
+          language={joinedSessions.find((s) => s.id === selectedCourse.sessionId)?.language ?? "francais"}
           studentName={firstname}
           studentPhotoUrl={student?.photoUrl}
           onComplete={async (totalAnswered, correctAnswers) => {
@@ -858,9 +848,7 @@ export default function Student() {
           <DialogContent className="max-w-xs [&>button]:hidden">
             <DialogHeader className="text-center pb-2">
               <DialogTitle className="text-base">Preparing chatbot</DialogTitle>
-              <DialogDescription>
-                {t.chatbot.loadingQuestions}
-              </DialogDescription>
+              <DialogDescription>{t.chatbot.loadingQuestions}</DialogDescription>
             </DialogHeader>
             <div className="flex flex-col items-center pb-4">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">

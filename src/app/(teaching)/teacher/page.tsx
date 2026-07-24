@@ -7,31 +7,15 @@ import { useTranslations } from "@/lib/i18n/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Tabs,
-} from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs } from "@/components/ui/tabs";
 
 import { useTeacher } from "@/hooks/use-teacher";
 import { SuggestionsModal } from "@/components/SuggestionsModal";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
 import { useToast } from "@/hooks/use-toast";
 import type { Session, Course, StudentSessionWithStudent } from "@/types";
-import {
-  LogOut,
-  Loader2,
-  AlertCircle,
-  UserCog,
-  BookOpen,
-  GraduationCap,
-  Lightbulb
-} from "lucide-react";
+import { LogOut, Loader2, AlertCircle, UserCog, BookOpen, GraduationCap, Lightbulb } from "lucide-react";
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ToolBar } from "@/components/teacher/ToolBar";
@@ -91,7 +75,6 @@ export default function Teacher() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [selectedPdfFiles, setSelectedPdfFiles] = useState<File[]>([]);
 
-
   const [sessionTab, setSessionTab] = useState<"course" | "students" | "qa">("course");
   const [sessionStudents, setSessionStudents] = useState<StudentSessionWithStudent[]>([]);
   const [loadingSessionStudents, setLoadingSessionStudents] = useState(false);
@@ -100,9 +83,6 @@ export default function Teacher() {
   const [newlyCreatedCours, setNewlyCreatedCourse] = useState<Course | null>(null);
 
   const role = getUserRole();
-
-  
-
 
   const form = useForm<CreateSessionFormValues>({
     resolver: zodResolver(createSessionFormSchema),
@@ -121,9 +101,6 @@ export default function Teacher() {
     }
   }, [authLoading, user, role, router]);
 
-
-
-
   useEffect(() => {
     const fetchAllPendingCounts = async () => {
       if (sessions.length === 0) return;
@@ -133,7 +110,7 @@ export default function Teacher() {
         sessions.map(async (session) => {
           const count = await fetchPendingQuestionsCount(session.id);
           counts[session.id] = count;
-        })
+        }),
       );
       setSessionPendingCounts(counts);
     };
@@ -143,7 +120,7 @@ export default function Teacher() {
 
   const refreshPendingCount = async (sessionId: string) => {
     const count = await fetchPendingQuestionsCount(sessionId);
-    setSessionPendingCounts(prev => ({ ...prev, [sessionId]: count }));
+    setSessionPendingCounts((prev) => ({ ...prev, [sessionId]: count }));
     if (selectedSession?.id === sessionId) {
       setPendingQuestionsCount(count);
     }
@@ -226,8 +203,6 @@ export default function Teacher() {
     return success;
   };
 
-
-
   const handleOpenCreateModal = () => {
     form.reset();
     setSelectedPdfFiles([]);
@@ -239,7 +214,6 @@ export default function Teacher() {
     setSelectedPdfFiles([]);
     setCreateModalOpen(false);
   };
-
 
   if (authLoading || profLoading || !user || role !== "teacher") {
     return (
@@ -267,7 +241,9 @@ export default function Teacher() {
             <div className="flex items-center justify-between h-16 md:h-20 gap-3 sm:gap-6">
               <Link href="/" className="flex items-center gap-2 text-xl font-bold shrink-0">
                 <img src="/edesio-logo-square.png" alt="Edesio" className="w-10 h-10 rounded-lg object-cover" />
-                <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+                <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                  Edesio
+                </span>
               </Link>
 
               <div className="flex items-center gap-2 sm:gap-4 min-w-0">
@@ -283,16 +259,10 @@ export default function Teacher() {
                 </Button>
                 <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
                   <GraduationCap className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">
-                    {firstName}
-                  </span>
+                  <span className="text-sm font-medium text-primary">{firstName}</span>
                 </div>
                 <Link href="/profile">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    data-testid="button-profile"
-                  >
+                  <Button variant="ghost" size="sm" data-testid="button-profile">
                     <UserCog className="h-4 w-4 mr-2" />
                     <span className="hidden sm:inline">{t.nav.profile}</span>
                   </Button>
@@ -337,9 +307,7 @@ export default function Teacher() {
                 >
                   {t.teacher.dashboardTitle}
                 </h1>
-                <p className="text-muted-foreground">
-                  {t.teacher.emptySubtitle}
-                </p>
+                <p className="text-muted-foreground">{t.teacher.emptySubtitle}</p>
               </div>
             </div>
           </div>
@@ -372,18 +340,18 @@ export default function Teacher() {
           </div>
         </main>
 
-        <CreateModal 
-        createModalOpen={createModalOpen} 
-        form={form} 
-        onOpenChange={(open: boolean) => !open && handleCloseCreateModal()} 
-        createSession={createSession} 
-        createCourse={createCourse} 
-        setSelectedPdfFiles={setSelectedPdfFiles}
-        selectedPdfFiles={selectedPdfFiles}
-        refreshSessions={refreshSessions}
-        handleCloseCreateModal={handleCloseCreateModal}
-        setSelectedSession={setSelectedSession}
-        setNewlyCreatedCourse={setNewlyCreatedCourse}
+        <CreateModal
+          createModalOpen={createModalOpen}
+          form={form}
+          onOpenChange={(open: boolean) => !open && handleCloseCreateModal()}
+          createSession={createSession}
+          createCourse={createCourse}
+          setSelectedPdfFiles={setSelectedPdfFiles}
+          selectedPdfFiles={selectedPdfFiles}
+          refreshSessions={refreshSessions}
+          handleCloseCreateModal={handleCloseCreateModal}
+          setSelectedSession={setSelectedSession}
+          setNewlyCreatedCourse={setNewlyCreatedCourse}
         />
 
         <Dialog open={!!selectedSession} onOpenChange={(open) => !open && handleCloseSessionModal()}>
@@ -395,15 +363,13 @@ export default function Teacher() {
                 </div>
                 {selectedSession?.name}
               </DialogTitle>
-              <DialogDescription>
-                Manage the lessons for this session and view enrolled students.
-              </DialogDescription>
+              <DialogDescription>Manage the lessons for this session and view enrolled students.</DialogDescription>
             </DialogHeader>
 
             {selectedSession && (
               <Tabs value={sessionTab} onValueChange={handleTabChange} className="flex-1 flex flex-col overflow-hidden">
                 <TabsListHeader sessionStudents={sessionStudents} pendingQuestionsCount={pendingQuestionsCount} />
-               <CourseTab
+                <CourseTab
                   session={selectedSession}
                   fetchCourses={fetchCourses}
                   createCourse={createCourse}

@@ -68,7 +68,12 @@ export function Navbar() {
               </Link>
             </Button>
             <Button size="sm" variant="outline" asChild>
-              <a href="https://cal.com/alexandre-seuzaret-g9g9me/30min" target="_blank" rel="noopener noreferrer" data-testid="button-demo-nav">
+              <a
+                href="https://cal.com/alexandre-seuzaret-g9g9me/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="button-demo-nav"
+              >
                 {t.navbar.demo}
               </a>
             </Button>
@@ -83,11 +88,7 @@ export function Navbar() {
               aria-label={isMobileMenuOpen ? t.common.closeMenu : t.common.openMenu}
               data-testid="button-mobile-menu"
             >
-              {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
             <LanguageSwitcher refreshServer />
           </div>
@@ -95,10 +96,7 @@ export function Navbar() {
       </div>
 
       {isMobileMenuOpen && (
-        <div
-          className="lg:hidden border-t border-border bg-background"
-          data-testid="mobile-menu"
-        >
+        <div className="lg:hidden border-t border-border bg-background" data-testid="mobile-menu">
           <div className="px-4 py-4 space-y-3">
             {navLinks.map((link) => (
               <a
@@ -113,20 +111,12 @@ export function Navbar() {
             ))}
             <div className="pt-4 space-y-3 border-t border-border">
               <Button variant="outline" className="w-full font-semibold" asChild>
-                <Link
-                  href="/login"
-                  onClick={closeMobileMenu}
-                  data-testid="button-mobile-connexion"
-                >
+                <Link href="/login" onClick={closeMobileMenu} data-testid="button-mobile-connexion">
                   {t.navbar.login}
                 </Link>
               </Button>
               <Button className="w-full" asChild>
-                <Link
-                  href="/register"
-                  onClick={closeMobileMenu}
-                  data-testid="button-mobile-signup"
-                >
+                <Link href="/register" onClick={closeMobileMenu} data-testid="button-mobile-signup">
                   {t.navbar.signup}
                 </Link>
               </Button>

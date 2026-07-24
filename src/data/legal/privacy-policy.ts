@@ -354,12 +354,7 @@ const en: LegalPageContent = {
         { type: "h3", text: "3.1 For institutions" },
         {
           type: "ul",
-          items: [
-            "Institution name",
-            "Contact email address",
-            "Password (encrypted)",
-            "Login and usage data",
-          ],
+          items: ["Institution name", "Contact email address", "Password (encrypted)", "Login and usage data"],
         },
         { type: "h3", text: "3.2 For teachers" },
         {

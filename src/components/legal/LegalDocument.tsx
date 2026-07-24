@@ -26,10 +26,7 @@ export function LegalDocument({ content }: { content: LegalPageContent }) {
               {section.blocks.map((block, i) => {
                 if (block.type === "p") {
                   return (
-                    <p
-                      key={i}
-                      className={`text-muted-foreground leading-relaxed${i > 0 ? " mt-4" : ""}`}
-                    >
+                    <p key={i} className={`text-muted-foreground leading-relaxed${i > 0 ? " mt-4" : ""}`}>
                       <RichText text={block.text} />
                     </p>
                   );

@@ -7,87 +7,85 @@ import { Button } from "../ui/button";
 import { useTranslations } from "@/lib/i18n/client";
 
 interface QuestionGeneratorProps {
-    genSingleCount: number;
-    genOpenedCount: number;
-    handleConfigChange: (field: 'single' | 'open', value: number) => void;
-    executeGeneration: () => Promise<void>;
-    isGenerating: boolean;
-    genTotalQuestions: number;
-    generateError: string | null;
-    generateSuccess: string | null;
+  genSingleCount: number;
+  genOpenedCount: number;
+  handleConfigChange: (field: "single" | "open", value: number) => void;
+  executeGeneration: () => Promise<void>;
+  isGenerating: boolean;
+  genTotalQuestions: number;
+  generateError: string | null;
+  generateSuccess: string | null;
 }
 
 export function QuestionGenerator({
-    genSingleCount,
-    genOpenedCount,
-    handleConfigChange,
-    executeGeneration,
-    isGenerating,
-    genTotalQuestions,
-    generateError,
-    generateSuccess,
+  genSingleCount,
+  genOpenedCount,
+  handleConfigChange,
+  executeGeneration,
+  isGenerating,
+  genTotalQuestions,
+  generateError,
+  generateSuccess,
 }: QuestionGeneratorProps) {
-    const t = useTranslations();
-    return (
-        <div className="space-y-4 p-4 border rounded-lg bg-muted/20">
-            <h5 className="font-medium flex flex-wrap items-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                {t.teacher.questionGenerator.title}
-            </h5>
+  const t = useTranslations();
+  return (
+    <div className="space-y-4 p-4 border rounded-lg bg-muted/20">
+      <h5 className="font-medium flex flex-wrap items-center gap-2">
+        <Sparkles className="h-4 w-4" />
+        {t.teacher.questionGenerator.title}
+      </h5>
 
-            <p className="text-sm text-muted-foreground">
-                {t.teacher.questionGeneratorHint}
-            </p>
+      <p className="text-sm text-muted-foreground">{t.teacher.questionGeneratorHint}</p>
 
-            <div className="grid grid-cols-2 gap-4">
-                <div>
-                    <label className="text-sm text-muted-foreground mb-1 block">{t.teacher.questionGenerator.mcqLabel}</label>
-                    <Input
-                        type="number"
-                        min={0}
-                        max={MAX_QUESTIONS}
-                        value={genSingleCount}
-                        onChange={(e) => handleConfigChange('single', parseInt(e.target.value) || 0)}
-                        data-testid="input-qcm-count"
-                    />
-                </div>
-                <div>
-                    <label className="text-sm text-muted-foreground mb-1 block">{t.teacher.questionGenerator.openLabel}</label>
-                    <Input
-                        type="number"
-                        min={0}
-                        max={MAX_QUESTIONS}
-                        value={genOpenedCount}
-                        onChange={(e) => handleConfigChange('open', parseInt(e.target.value) || 0)}
-                        data-testid="input-ouverte-count"
-                    />
-                </div>
-            </div>
-
-            <p className="text-xs text-muted-foreground">
-                Total: {genTotalQuestions} questions (max {MAX_QUESTIONS})
-            </p>
-
-            <Button
-                onClick={executeGeneration}
-                disabled={isGenerating || genTotalQuestions === 0}
-                className="w-full"
-                size="lg"
-                data-testid="button-generate-questions"
-            >
-                {isGenerating ? (
-                    <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.teacher.questionGenerator.generating}</>
-                ) : (
-                    <><Sparkles className="h-4 w-4 mr-2" /> {t.teacher.questionGenerator.generate} {genTotalQuestions} questions</>
-                )}
-            </Button>
-
-            {generateError && (
-                <p className="text-sm text-destructive">{generateError}</p>
-            )}
-            {generateSuccess && (
-                <p className="text-sm text-green-600">{generateSuccess}</p>
-            )}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm text-muted-foreground mb-1 block">{t.teacher.questionGenerator.mcqLabel}</label>
+          <Input
+            type="number"
+            min={0}
+            max={MAX_QUESTIONS}
+            value={genSingleCount}
+            onChange={(e) => handleConfigChange("single", parseInt(e.target.value) || 0)}
+            data-testid="input-qcm-count"
+          />
         </div>
-    )
+        <div>
+          <label className="text-sm text-muted-foreground mb-1 block">{t.teacher.questionGenerator.openLabel}</label>
+          <Input
+            type="number"
+            min={0}
+            max={MAX_QUESTIONS}
+            value={genOpenedCount}
+            onChange={(e) => handleConfigChange("open", parseInt(e.target.value) || 0)}
+            data-testid="input-ouverte-count"
+          />
+        </div>
+      </div>
+
+      <p className="text-xs text-muted-foreground">
+        Total: {genTotalQuestions} questions (max {MAX_QUESTIONS})
+      </p>
+
+      <Button
+        onClick={executeGeneration}
+        disabled={isGenerating || genTotalQuestions === 0}
+        className="w-full"
+        size="lg"
+        data-testid="button-generate-questions"
+      >
+        {isGenerating ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.teacher.questionGenerator.generating}
+          </>
+        ) : (
+          <>
+            <Sparkles className="h-4 w-4 mr-2" /> {t.teacher.questionGenerator.generate} {genTotalQuestions} questions
+          </>
+        )}
+      </Button>
+
+      {generateError && <p className="text-sm text-destructive">{generateError}</p>}
+      {generateSuccess && <p className="text-sm text-green-600">{generateSuccess}</p>}
+    </div>
+  );
 }

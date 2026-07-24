@@ -1,24 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/i18n/client";
 
 import { CourseTesterModal } from "./CourseTesterModal";
-import type {
-  Session,
-  Course,
-  CourseFile,
-  Question,
-  CourseRanking,
-  UpdateQuestionRequest,
-} from "@/types";
-import { 
-  Plus, 
-  Loader2, 
-  FileText, 
-  BookOpen, 
-} from "lucide-react";
+import type { Session, Course, CourseFile, Question, CourseRanking, UpdateQuestionRequest } from "@/types";
+import { Plus, Loader2, FileText, BookOpen } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -46,13 +34,13 @@ interface CourseListProps {
     title: string,
     description: string,
     contentText: string,
-    pdfFiles?: File[]
+    pdfFiles?: File[],
   ) => Promise<Course | null>;
   updateCourse: (
     courseId: string,
     title: string,
     description: string | null,
-    contenuTexte: string | null
+    contenuTexte: string | null,
   ) => Promise<Course | null>;
   deleteCourse?: (courseId: string) => Promise<boolean>;
   reorderCourse?: (coursIds: string[]) => Promise<boolean>;
@@ -61,10 +49,7 @@ interface CourseListProps {
   deleteCourseFile: (fichier: CourseFile) => Promise<boolean>;
   getPdfUrl: (fileId: string, fileName: string) => Promise<void>;
   fetchQuestions: (courseId: string) => Promise<Question[]>;
-  updateQuestion: (
-    questionId: string,
-    updates: UpdateQuestionRequest
-  ) => Promise<Question | null>;
+  updateQuestion: (questionId: string, updates: UpdateQuestionRequest) => Promise<Question | null>;
   deleteQuestion: (questionId: string) => Promise<boolean>;
   createQuestion: (
     courseId: string,
@@ -74,12 +59,12 @@ interface CourseListProps {
       proposals?: string[];
       correctAnswers?: string[];
       explanation?: string;
-    }
+    },
   ) => Promise<Question | null>;
   reorderQuestions?: (questionIds: string[]) => Promise<boolean>;
   generateQuestions: (
     courseId: string,
-    config?: { totalQuestions?: number; qcmCount?: number; ouverteCount?: number }
+    config?: { totalQuestions?: number; qcmCount?: number; ouverteCount?: number },
   ) => Promise<{ success: boolean; questionsCreated?: number; error?: string }>;
   validateQuestions: (courseId: string) => Promise<{ success: boolean; cours?: Course; error?: string }>;
   fetchCourseRanking?: (courseId: string) => Promise<CourseRanking[]>;
@@ -90,7 +75,7 @@ interface CourseListProps {
 export function CourseList({
   session,
   fetchCourses,
-  createCourse, 
+  createCourse,
   updateCourse,
   deleteCourse,
   reorderCourse,
@@ -107,7 +92,7 @@ export function CourseList({
   validateQuestions,
   fetchCourseRanking,
   initialCoursToOpen,
-  onInitialCoursOpened
+  onInitialCoursOpened,
 }: CourseListProps) {
   const t = useTranslations();
   const [courses, setCourses] = useState<Course[]>([]);
@@ -126,19 +111,19 @@ export function CourseList({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
-  const loadCourse = async () => {
+  const loadCourse = useCallback(async () => {
     setLoading(true);
     const data = await fetchCourses(session.id);
     setCourses(data);
     setLoading(false);
-  };
+  }, [fetchCourses, session.id]);
 
   useEffect(() => {
-    loadCourse();
-  }, [session.id]);
+    void loadCourse();
+  }, [loadCourse]);
 
   useEffect(() => {
     if (initialCoursToOpen && !loading) {
@@ -147,7 +132,7 @@ export function CourseList({
         onInitialCoursOpened();
       }
     }
-  }, [initialCoursToOpen, loading]);
+  }, [initialCoursToOpen, loading, onInitialCoursOpened]);
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
@@ -177,17 +162,10 @@ export function CourseList({
     const courseToUpdate = courses.find((c) => c.id === courseId);
     if (!courseToUpdate) return;
 
-    const updated = await updateCourse(
-      courseId,
-      newTitle,
-      courseToUpdate.description,
-      courseToUpdate.contentText
-    );
+    const updated = await updateCourse(courseId, newTitle, courseToUpdate.description, courseToUpdate.contentText);
 
     if (updated) {
-      setCourses((prev) =>
-        prev.map((c) => (c.id === courseId ? updated : c))
-      );
+      setCourses((prev) => prev.map((c) => (c.id === courseId ? updated : c)));
     }
   };
 
@@ -197,9 +175,7 @@ export function CourseList({
   };
 
   const handleCourseUpdated = (updatedCours: Course) => {
-    setCourses((prev) =>
-      prev.map((c) => (c.id === updatedCours.id ? updatedCours : c))
-    );
+    setCourses((prev) => prev.map((c) => (c.id === updatedCours.id ? updatedCours : c)));
     if (selectedCourse?.id === updatedCours.id) {
       setselectedCourse(updatedCours);
     }
@@ -239,8 +215,8 @@ export function CourseList({
         <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
           <h4 className="font-medium flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
-          {t.teacher.courseList.addCourse} ({courses.length})
-        </h4>
+            {t.teacher.courseList.addCourse} ({courses.length})
+          </h4>
           <Button onClick={() => setAddModalOpen(true)} data-testid="button-open-add-course">
             <Plus className="h-4 w-4 mr-2" />
             {t.teacher.courseList.addCourse}
@@ -258,15 +234,8 @@ export function CourseList({
             <p className="text-sm mt-1">{t.teacher.courseList.emptyHint}</p>
           </div>
         ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={courses.map((c) => c.id)}
-              strategy={verticalListSortingStrategy}
-            >
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={courses.map((c) => c.id)} strategy={verticalListSortingStrategy}>
               <div className="space-y-2">
                 {courses.map((c) => (
                   <SortableCourseItem
@@ -320,7 +289,6 @@ export function CourseList({
         deleteModalOpen={deleteModalOpen}
         setDeleteModalOpen={setDeleteModalOpen}
         setCourseToDelete={setCourseToDelete}
-        courseToDelete={courseToDelete}
         isDeleting={isDeleting}
         handleConfirmDelete={handleConfirmDelete}
       />

@@ -23,4 +23,4 @@ export const CoursefileService = {
     const response = await apiFetch<CourseFile[]>(`/api/course-file/course/${courseId}`);
     return response;
   },
-}
+};

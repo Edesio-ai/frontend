@@ -1,13 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "@/lib/i18n/client";
 
-import type {
-  Establishment,
-  InvitationToken,
-  TeacherWithStats,
-  Student,
-  SessionDetails
-} from "@/types";
+import type { CourseBasic, Establishment, InvitationToken, TeacherWithStats, Student, SessionDetails } from "@/types";
 import { establishmentService } from "@/services/teaching/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { invitationTokenService } from "@/services/invitation-token.service";
@@ -39,21 +33,24 @@ export function useEstablishment() {
     totalStudents: 0,
   });
 
-  const insertEstablishment = async (name: string) => {
-    try {
-      const establishment = await establishmentService.createEstablishment(user?.id || "", name, user?.email || "");
-      setEstablishment(establishment);
-      setStats({ totalTeachers: 0, totalSessions: 0, totalStudents: 0 });
-      setTeachers([]);
-      return establishment;
-    } catch (err) {
-      const message = err instanceof Error ? err.message : t.hooks.establishment.error;
-      console.error("Error creating establishment:", message);
-      setError(t.hooks.establishment.profileError);
-    }
-  }
+  const insertEstablishment = useCallback(
+    async (name: string) => {
+      try {
+        const establishment = await establishmentService.createEstablishment(user?.id || "", name, user?.email || "");
+        setEstablishment(establishment);
+        setStats({ totalTeachers: 0, totalSessions: 0, totalStudents: 0 });
+        setTeachers([]);
+        return establishment;
+      } catch (err) {
+        const message = err instanceof Error ? err.message : t.hooks.establishment.error;
+        console.error("Error creating establishment:", message);
+        setError(t.hooks.establishment.profileError);
+      }
+    },
+    [user, t],
+  );
 
-  const getEstablishmentStats = async () => {
+  const getEstablishmentStats = useCallback(async () => {
     try {
       const response = await establishmentService.getEstablishmentStats();
       setEstablishment(response.establishment);
@@ -64,20 +61,21 @@ export function useEstablishment() {
       const message = err instanceof Error ? err.message : t.hooks.establishment.error;
       if (message.includes("Establishment not found")) {
         if (user) {
-          const name = user.metadata?.establishment ||
+          const name =
+            user.metadata?.establishment ||
             (user.metadata?.firstname && user.metadata?.lastname
               ? `${user.metadata.firstname} ${user.metadata.lastname}`
               : "Établissement");
-  
+
           await insertEstablishment(name);
-          return
+          return;
         }
       }
       setError(message || t.hooks.establishment.error);
     } finally {
       setLoading(false);
     }
-  }
+  }, [user, t, insertEstablishment]);
 
   const fetchEtablissementData = useCallback(async () => {
     if (!user) {
@@ -88,14 +86,14 @@ export function useEstablishment() {
 
     setLoading(true);
     await getEstablishmentStats();
-  }, [user]);
+  }, [user, getEstablishmentStats]);
 
   const fetchInvitationTokens = useCallback(async () => {
     if (!establishment) {
       setInvitationTokens([]);
       return;
     }
-    
+
     try {
       const tokens = await invitationTokenService.getEstablishmentInvitationTokens(establishment.id);
       setInvitationTokens(tokens);
@@ -103,112 +101,108 @@ export function useEstablishment() {
       console.error("Unexpected error:", err);
       setError(t.hooks.establishment.error);
     }
-  }, [establishment]);
+  }, [establishment, t]);
 
   const createInvitationToken = useCallback(
     async (invitedEmail: string, expiresInDays: number = 7, assignedChatbots: number = 0): Promise<boolean | null> => {
-        if (!establishment) return null;
-        if (!invitedEmail || !invitedEmail.includes("@")) {
-          return null;
+      if (!establishment) return null;
+      if (!invitedEmail || !invitedEmail.includes("@")) {
+        return null;
+      }
+      try {
+        const token = generateInvitationCode();
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + expiresInDays);
+
+        const body = {
+          establishmentId: establishment.id,
+          token,
+          invitedEmail: invitedEmail.toLowerCase().trim(),
+          expiresAt: expiresAt.toISOString(),
+          assignedChatbots,
+        };
+
+        const { success } = await invitationTokenService.createInvitationToken(body);
+
+        if (!success) {
+          const message = t.hooks.establishment.invitationError;
+          setError(message);
+          throw new Error("Error while creating invitation token");
         }
-        try {
-          const token = generateInvitationCode();
-          const expiresAt = new Date();
-          expiresAt.setDate(expiresAt.getDate() + expiresInDays);
 
-          const body = {
-            establishmentId: establishment.id,
-            token,
+        if (establishment) {
+          const sendInvitationBody = {
             invitedEmail: invitedEmail.toLowerCase().trim(),
-            expiresAt: expiresAt.toISOString(),
+            establishmentName: establishment.name,
+            invitationToken: token,
             assignedChatbots,
-          }
+          };
 
-          const { success } = await invitationTokenService.createInvitationToken(body);
+          const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
 
-          if(!success) {
+          if (!response.success) {
             const message = t.hooks.establishment.invitationError;
             setError(message);
-            throw new Error("Error while creating invitation token");
+            throw new Error("Error while sending invitation email");
           }
 
-          if (establishment) {
-            const sendInvitationBody = {
-              invitedEmail: invitedEmail.toLowerCase().trim(),
-              establishmentName: establishment.name,
-              invitationToken: token,
-              assignedChatbots,
-            }
-
-            const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
-
-            if(!response.success) {
-              const message = t.hooks.establishment.invitationError;
-              setError(message);
-              throw new Error("Error while sending invitation email");
-            }
-
-            await fetchInvitationTokens();
-            return response.success;
-          }
-          return null;
-        } catch (err) {
-          console.error("Unexpected error:", err);
-          setError(t.hooks.establishment.error);
-          return null;
+          await fetchInvitationTokens();
+          return response.success;
         }
+        return null;
+      } catch (err) {
+        console.error("Unexpected error:", err);
+        setError(t.hooks.establishment.error);
+        return null;
+      }
     },
-    [establishment, fetchInvitationTokens, "session"]
+    [establishment, fetchInvitationTokens, t],
   );
 
   const deleteInvitationToken = useCallback(
     async (tokenId: string): Promise<boolean> => {
-        const { success } = await invitationTokenService.deleteInvitationToken(tokenId);
+      const { success } = await invitationTokenService.deleteInvitationToken(tokenId);
 
-        if(!success) {
-          const message = t.hooks.establishment.invitationError;
-          setError(message);
-          throw new Error("Error while deleting invitation token");
-        }
-
-        await fetchInvitationTokens();
-        return success;
-    },
-    [fetchInvitationTokens]
-  );
-
-  const getStudentSessions = useCallback(
-    async (sessionId: string): Promise<Student[]> => {
-      try {
-        const studentsSessions = await studentSessionService.getStudentSession(sessionId);
-        const studentIds = studentsSessions.map((studentSession) => studentSession.id);
-        const students = await studentService.getStudentsByIds(studentIds);
-
-        return students;
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        return [];
+      if (!success) {
+        const message = t.hooks.establishment.invitationError;
+        setError(message);
+        throw new Error("Error while deleting invitation token");
       }
+
+      await fetchInvitationTokens();
+      return success;
     },
-    []
+    [fetchInvitationTokens, t],
   );
 
-  const getSessionCourse = useCallback(
-    async (sessionId: string): Promise<any> => {
-      const courses = await courseService.getSessionCourses(sessionId);
-      return courses || [];
-    },
-    ["session"]
-  );
+  const getStudentSessions = useCallback(async (sessionId: string): Promise<Student[]> => {
+    try {
+      const studentsSessions = await studentSessionService.getStudentSession(sessionId);
+      const studentIds = studentsSessions.map((studentSession) => studentSession.id);
+      const students = await studentService.getStudentsByIds(studentIds);
 
-  const getSessionDetails = useCallback(
-    async (courseId: string): Promise<SessionDetails | null> => {
-      const { data } = await sessionService.getSessionDetails(courseId);
+      return students;
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return [];
+    }
+  }, []);
 
-      return data || null;
-    },
-    ["session"]
-  );
+  const getSessionCourse = useCallback(async (sessionId: string): Promise<CourseBasic[]> => {
+    const courses = await courseService.getSessionCourses(sessionId);
+    return (courses || []).map((course) => ({
+      id: course.id,
+      title: course.title,
+      description: course.description,
+      validatedQuestions: course.validatedQuestions ?? false,
+    }));
+  }, []);
+
+  const getSessionDetails = useCallback(async (courseId: string): Promise<SessionDetails | null> => {
+    const { data } = await sessionService.getSessionDetails(courseId);
+
+    return data || null;
+  }, []);
 
   const refreshData = useCallback(async () => {
     await fetchEtablissementData();

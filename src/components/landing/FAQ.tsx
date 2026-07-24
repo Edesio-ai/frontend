@@ -1,9 +1,4 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { HelpCircle, Shield, Lock } from "lucide-react";
 import { getLocaleFromCookies, getDictionary } from "@/lib/i18n";
 
@@ -23,24 +18,16 @@ export async function FAQ() {
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 mb-4 shadow-lg">
             <HelpCircle className="h-7 w-7 text-white" />
           </div>
-          <h2
-            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
-            data-testid="text-faq-title"
-          >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6" data-testid="text-faq-title">
             {t.title}{" "}
-            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">{t.titleHighlight}</span>
+            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+              {t.titleHighlight}
+            </span>
           </h2>
-          <p className="text-lg text-muted-foreground">
-            {t.subtitle.replace("{brand}", "Edesio")}
-          </p>
+          <p className="text-lg text-muted-foreground">{t.subtitle.replace("{brand}", "Edesio")}</p>
         </div>
 
-        <Accordion
-          type="single"
-          collapsible
-          className="space-y-4"
-          data-testid="accordion-faq"
-        >
+        <Accordion type="single" collapsible className="space-y-4" data-testid="accordion-faq">
           {t.items.map((faq: { question: string; answer: string }, index: number) => (
             <AccordionItem
               key={index}
@@ -51,9 +38,7 @@ export async function FAQ() {
               <AccordionTrigger className="text-left text-base md:text-lg font-semibold hover:no-underline py-5">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
-                {faq.answer}
-              </AccordionContent>
+              <AccordionContent className="text-muted-foreground leading-relaxed pb-5">{faq.answer}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

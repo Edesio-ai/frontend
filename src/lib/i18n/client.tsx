@@ -12,7 +12,7 @@ import {
 } from "react";
 import { LOCALE_COOKIE, type Locale } from "./config";
 
-export type Dictionary = any;
+export type Dictionary = typeof import("./dictionaries/en.json");
 
 interface LocaleContextValue {
   locale: Locale;
@@ -82,9 +82,7 @@ export function LocaleProvider({
   );
 
   return (
-    <LocaleContext.Provider
-      value={{ locale, dictionary, setLocale, isChangingLocale: isPending }}
-    >
+    <LocaleContext.Provider value={{ locale, dictionary, setLocale, isChangingLocale: isPending }}>
       {children}
     </LocaleContext.Provider>
   );

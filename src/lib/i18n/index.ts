@@ -1,12 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
-import {
-  locales,
-  defaultLocale,
-  isLocale,
-  LOCALE_COOKIE,
-  type Locale,
-} from "./config";
+import { locales, defaultLocale, isLocale, LOCALE_COOKIE, type Locale } from "./config";
 export type { Locale } from "./config";
 export { locales, defaultLocale, isLocale, LOCALE_COOKIE };
 

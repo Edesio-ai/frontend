@@ -1,8 +1,8 @@
 import { apiFetch } from "@/lib/api-client";
-import { Course, CourseFile, InsertCourse, UpdateCourseRequest } from "@/types";
+import { Course, InsertCourse, UpdateCourseRequest } from "@/types";
 
 export const courseService = {
-  updateCourse: async (courseId: string, body: UpdateCourseRequest): Promise<{data: Course }> => {
+  updateCourse: async (courseId: string, body: UpdateCourseRequest): Promise<{ data: Course }> => {
     const response = await apiFetch<{ data: Course }>(`/api/course/${courseId}`, {
       method: "PATCH",
       body: JSON.stringify(body),
@@ -10,7 +10,7 @@ export const courseService = {
 
     return response;
   },
-  createCourse: async (body: InsertCourse): Promise<{data: Course }> => {
+  createCourse: async (body: InsertCourse): Promise<{ data: Course }> => {
     const response = await apiFetch<{ data: Course }>(`/api/course`, {
       method: "POST",
       body: JSON.stringify(body),
@@ -34,9 +34,7 @@ export const courseService = {
     });
     return response;
   },
-  getCourseSessionCount: async (
-    sessionId: string,
-  ): Promise<{ coursesCount: number }> => {
+  getCourseSessionCount: async (sessionId: string): Promise<{ coursesCount: number }> => {
     const reponse = await apiFetch<{ coursesCount: number }>(`/api/course/session/${sessionId}/count`);
 
     return reponse;
@@ -46,4 +44,4 @@ export const courseService = {
 
     return reponse;
   },
-}
+};

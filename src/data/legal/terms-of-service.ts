@@ -511,10 +511,7 @@ const en: LegalPageContent = {
         {
           type: "ul",
           style: "none",
-          items: [
-            "**Email:** contact@edesio.ai",
-            "**Address:** 50 boulevard de la Courtille, 28000 Chartres, France",
-          ],
+          items: ["**Email:** contact@edesio.ai", "**Address:** 50 boulevard de la Courtille, 28000 Chartres, France"],
         },
       ],
     },

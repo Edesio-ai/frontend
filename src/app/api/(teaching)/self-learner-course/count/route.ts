@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-    const response = await fetch(`${process.env.BACKEND_URL}/self-learner-course/count`, {
-        method: "GET",
-        headers: {
-            cookie: req.headers.get("cookie") ?? "",
-        },
-    });
+  const response = await fetch(`${process.env.BACKEND_URL}/self-learner-course/count`, {
+    method: "GET",
+    headers: {
+      cookie: req.headers.get("cookie") ?? "",
+    },
+  });
 
-    if(!response.ok) { 
-        const error = await response.json();
-        return NextResponse.json({ error: error.message, code: error.code }, { status: response.status });
-    }
+  if (!response.ok) {
+    const error = await response.json();
+    return NextResponse.json({ error: error.message, code: error.code }, { status: response.status });
+  }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+  const data = await response.json();
+  return NextResponse.json(data);
 }

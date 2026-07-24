@@ -19,7 +19,10 @@ export const questionService = {
     });
     return response;
   },
-  updateQuestion: async (questionId: string, updates: UpdateQuestionRequest): Promise<{ question: Question | null }> => {
+  updateQuestion: async (
+    questionId: string,
+    updates: UpdateQuestionRequest,
+  ): Promise<{ question: Question | null }> => {
     const response = await apiFetch<{ question: Question | null }>(`/api/question/${questionId}`, {
       method: "PATCH",
       body: JSON.stringify(updates),

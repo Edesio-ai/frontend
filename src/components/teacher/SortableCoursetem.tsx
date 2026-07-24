@@ -2,14 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
-import {
-  Calendar,
-  ChevronRight,
-  GripVertical,
-  Pencil,
-  Check,
-  Trash2
-} from "lucide-react";
+import { Calendar, ChevronRight, GripVertical, Pencil, Check, Trash2 } from "lucide-react";
 import { Course } from "@/types";
 import { Button } from "../ui/button";
 
@@ -21,20 +14,12 @@ interface SortableCourseItemProps {
   formatDate: (dateStr: string) => string;
 }
 
-
 export function SortableCourseItem({ course, onSelect, onRename, onDelete, formatDate }: SortableCourseItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(course.title);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: course.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: course.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -140,9 +125,7 @@ export function SortableCourseItem({ course, onSelect, onRename, onDelete, forma
                 )}
               </div>
               {course.description && (
-                <p className="text-sm text-muted-foreground truncate mt-0.5">
-                  {course.description}
-                </p>
+                <p className="text-sm text-muted-foreground truncate mt-0.5">{course.description}</p>
               )}
               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                 <Calendar className="h-3 w-3" />
@@ -151,9 +134,7 @@ export function SortableCourseItem({ course, onSelect, onRename, onDelete, forma
             </>
           )}
         </div>
-        {!isEditing && (
-          <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-        )}
+        {!isEditing && <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />}
       </div>
     </div>
   );
