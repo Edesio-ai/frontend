@@ -46,7 +46,7 @@ export function JoinSessionModal({
           <div className="space-y-4 pt-4">
             <div className="space-y-2">
               <Input
-                placeholder="Code de session (ex: ABC123)"
+                placeholder={t.student.joinModal.codePlaceholder}
                 value={joinCode}
                 onChange={(e) => {
                   setJoinCode(e.target.value.toUpperCase());

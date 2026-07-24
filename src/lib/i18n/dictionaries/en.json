@@ -743,6 +743,7 @@
     "joinModal": {
       "title": "Join a session",
       "placeholder": "Enter the code given by your teacher...",
+      "codePlaceholder": "Session code (e.g. ABC123)",
       "join": "Join",
       "cancel": "Cancel",
       "emptyCode": "Please enter a session code.",
