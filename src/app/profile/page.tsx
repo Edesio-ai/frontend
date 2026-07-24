@@ -8,22 +8,9 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import {
-  ArrowLeft,
-  Loader2,
-  User,
-  Mail,
-  Save,
-} from "lucide-react";
+import { ArrowLeft, Loader2, User, Mail, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { profileService } from "@/services/profile.service";
 import { SubscriptionSection } from "@/components/profile/SubscriptionSection";
@@ -139,9 +126,7 @@ export default function Profile() {
           <h1 className="text-3xl font-bold mb-2" data-testid="text-profile-title">
             {t.profile.title}
           </h1>
-          <p className="text-muted-foreground">
-            {t.profile.personalInfo}
-          </p>
+          <p className="text-muted-foreground">{t.profile.personalInfo}</p>
         </div>
 
         <div className="space-y-6">
@@ -166,11 +151,7 @@ export default function Profile() {
                       <FormItem>
                         <FormLabel>{t.profile.firstName}</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Jean"
-                            {...field}
-                            data-testid="input-profile-firstname"
-                          />
+                          <Input placeholder="Jean" {...field} data-testid="input-profile-firstname" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -184,11 +165,7 @@ export default function Profile() {
                       <FormItem>
                         <FormLabel>{t.profile.lastName}</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Dupont"
-                            {...field}
-                            data-testid="input-profile-lastname"
-                          />
+                          <Input placeholder="Dupont" {...field} data-testid="input-profile-lastname" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -203,11 +180,7 @@ export default function Profile() {
                     <FormItem>
                       <FormLabel>{t.profile.email}</FormLabel>
                       <FormControl>
-                        <Input
-                          type="email"
-                          {...field}
-                          data-testid="input-profile-email"
-                        />
+                        <Input type="email" {...field} data-testid="input-profile-email" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

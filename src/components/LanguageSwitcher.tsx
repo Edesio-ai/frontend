@@ -11,10 +11,7 @@ type LanguageSwitcherProps = {
   refreshServer?: boolean;
 };
 
-export function LanguageSwitcher({
-  className,
-  refreshServer = false,
-}: LanguageSwitcherProps) {
+export function LanguageSwitcher({ className, refreshServer = false }: LanguageSwitcherProps) {
   const locale = useLocale();
   const { setLocale, isChangingLocale } = useSetLocale();
   const router = useRouter();

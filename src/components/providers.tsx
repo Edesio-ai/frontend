@@ -3,14 +3,14 @@
 import type { ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "./ui/toaster";
-import { LocaleProvider } from "@/lib/i18n/client";
+import { LocaleProvider, type Dictionary } from "@/lib/i18n/client";
 import type { Locale } from "@/lib/i18n/config";
 import { AuthProvider } from "@/contexts/auth-context";
 
 interface ProvidersProps {
   children: ReactNode;
   locale: Locale;
-  dictionary: any;
+  dictionary: Dictionary;
 }
 
 export function Providers({ children, locale, dictionary }: ProvidersProps) {

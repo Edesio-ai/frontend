@@ -16,9 +16,12 @@ export async function Hero() {
       data-testid="section-hero"
     >
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        />
       </div>
 
       <div className="absolute inset-0 -z-10">
@@ -43,7 +46,9 @@ export async function Hero() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white"
               data-testid="text-hero-title"
             >
-              <span className="bg-gradient-to-r from-sky-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>{" "}
+              <span className="bg-gradient-to-r from-sky-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                Edesio
+              </span>{" "}
               : {t.title}
             </h1>
 
@@ -55,7 +60,11 @@ export async function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <Button size="lg" className="gap-2 bg-white text-slate-900 hover:bg-slate-100 shadow-xl shadow-white/10" asChild>
+              <Button
+                size="lg"
+                className="gap-2 bg-white text-slate-900 hover:bg-slate-100 shadow-xl shadow-white/10"
+                asChild
+              >
                 <Link href="/register" data-testid="button-hero-signup">
                   <Sparkles className="h-4 w-4" />
                   {t.ctaSignup}
@@ -83,8 +92,11 @@ export async function Hero() {
                 data-testid="badge-mistral"
               >
                 <span className="text-[10px] text-slate-400">{t.poweredBy}</span>
-                <img src='/mistral.png' alt="Mistral AI" className="h-8 w-auto" />
-                <Badge variant="secondary" className="ml-1 bg-indigo-500/20 text-indigo-300 border-indigo-400/30 text-[10px] px-1.5 py-0.5">
+                <img src="/mistral.png" alt="Mistral AI" className="h-8 w-auto" />
+                <Badge
+                  variant="secondary"
+                  className="ml-1 bg-indigo-500/20 text-indigo-300 border-indigo-400/30 text-[10px] px-1.5 py-0.5"
+                >
                   {t.frenchAI}
                 </Badge>
               </a>

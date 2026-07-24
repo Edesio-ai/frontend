@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,12 +51,12 @@ export function QuestionsCoursePanel({
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  const loadQuestions = async () => {
+  const loadQuestions = useCallback(async () => {
     setLoading(true);
     try {
       const courses = await fetchCourses(sessionId);
       const allQuestions: QuestionsCoursWithCourse[] = [];
-      
+
       for (const cours of courses) {
         const courseQuestions = await fetchQuestionsCourseForCourse(cours.id);
         for (const q of courseQuestions) {
@@ -66,22 +66,20 @@ export function QuestionsCoursePanel({
           });
         }
       }
-      
+
       allQuestions.sort((a, b) => {
         if (!a.answer && b.answer) return -1;
         if (a.answer && !b.answer) return 1;
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
-      
+
       setQuestions(allQuestions);
     } catch (err) {
       console.error("Error loading questions:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [sessionId, fetchCourses, fetchQuestionsCourseForCourse]);
 
   useEffect(() => {
     const init = async () => {
@@ -89,7 +87,7 @@ export function QuestionsCoursePanel({
       onPendingCountChange?.();
     };
     init();
-  }, [sessionId]);
+  }, [sessionId, loadQuestions, onPendingCountChange]);
 
   const handleStartAnswer = (questionId: string) => {
     setAnsweringId(questionId);
@@ -103,17 +101,15 @@ export function QuestionsCoursePanel({
 
   const handleSubmitAnswer = async () => {
     if (!answeringId || !answerText.trim()) return;
-    
+
     setSubmitting(true);
     const result = await answerCourseQuestion(answeringId, answerText.trim());
     setSubmitting(false);
-    
+
     if (result) {
-      setQuestions(prev => prev.map(q => 
-        q.id === answeringId 
-          ? { ...q, answer: result.answer, answeredAt: result.answeredAt }
-          : q
-      ));
+      setQuestions((prev) =>
+        prev.map((q) => (q.id === answeringId ? { ...q, answer: result.answer, answeredAt: result.answeredAt } : q)),
+      );
       setAnsweringId(null);
       setAnswerText("");
       onPendingCountChange?.();
@@ -122,16 +118,16 @@ export function QuestionsCoursePanel({
 
   const handleDelete = async () => {
     if (!deleteConfirmId) return;
-    
-    const questionToDelete = questions.find(q => q.id === deleteConfirmId);
+
+    const questionToDelete = questions.find((q) => q.id === deleteConfirmId);
     const wasUnanswered = questionToDelete && !questionToDelete.answer;
-    
+
     setDeleting(true);
     const success = await deleteCourseQuestion(deleteConfirmId);
     setDeleting(false);
-    
+
     if (success) {
-      setQuestions(prev => prev.filter(q => q.id !== deleteConfirmId));
+      setQuestions((prev) => prev.filter((q) => q.id !== deleteConfirmId));
       if (wasUnanswered) {
         onPendingCountChange?.();
       }
@@ -139,8 +135,8 @@ export function QuestionsCoursePanel({
     setDeleteConfirmId(null);
   };
 
-  const pendingCount = questions.filter(q => !q.answer).length;
-  const answeredCount = questions.filter(q => q.answer).length;
+  const pendingCount = questions.filter((q) => !q.answer).length;
+  const answeredCount = questions.filter((q) => q.answer).length;
 
   if (loading) {
     return (
@@ -157,9 +153,7 @@ export function QuestionsCoursePanel({
           <MessageCircle className="h-8 w-8 text-muted-foreground" />
         </div>
         <h3 className="font-semibold text-lg mb-2">{t.dashboard.questionsPanel.noQuestions}</h3>
-        <p className="text-sm text-muted-foreground max-w-md mx-auto">
-          {t.dashboard.questionsPanel.noQuestionsHint}
-        </p>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">{t.dashboard.questionsPanel.noQuestionsHint}</p>
       </div>
     );
   }
@@ -170,21 +164,21 @@ export function QuestionsCoursePanel({
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="gap-1.5">
             <Clock className="h-3 w-3" />
-            {t.student.qaModal.pending.replace('{count}', String(pendingCount))}
+            {t.student.qaModal.pending.replace("{count}", String(pendingCount))}
           </Badge>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="gap-1.5">
             <Check className="h-3 w-3" />
-            {t.dashboard.questionsPanel.answeredCount.replace('{count}', String(answeredCount))}
+            {t.dashboard.questionsPanel.answeredCount.replace("{count}", String(answeredCount))}
           </Badge>
         </div>
       </div>
 
       <div className="space-y-3">
         {questions.map((question) => (
-          <Card 
-            key={question.id} 
+          <Card
+            key={question.id}
             className={`p-4 ${!question.answer ? "border-amber-500/30 bg-amber-500/5" : ""}`}
             data-testid={`question-cours-${question.id}`}
           >
@@ -197,7 +191,7 @@ export function QuestionsCoursePanel({
                     </Badge>
                     {!question.answer && (
                       <Badge className="bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30 text-xs">
-                        {t.student.qaModal.pending.replace(' ({count})', '').replace('({count})', '')}
+                        {t.student.qaModal.pending.replace(" ({count})", "").replace("({count})", "")}
                       </Badge>
                     )}
                   </div>
@@ -206,9 +200,15 @@ export function QuestionsCoursePanel({
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {t.dashboard.questionsPanel.askedBy
-                      .replace('{name}', question.studentName || t.dashboard.questionsPanel.studentFallback)
-                      .replace('{date}', new Date(question.createdAt).toLocaleDateString(dateLocale))
-                      .replace('{time}', new Date(question.createdAt).toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit" }))}
+                      .replace("{name}", question.studentName || t.dashboard.questionsPanel.studentFallback)
+                      .replace("{date}", new Date(question.createdAt).toLocaleDateString(dateLocale))
+                      .replace(
+                        "{time}",
+                        new Date(question.createdAt).toLocaleTimeString(dateLocale, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }),
+                      )}
                   </p>
                 </div>
                 <Button
@@ -227,7 +227,10 @@ export function QuestionsCoursePanel({
                   <p className="text-sm text-muted-foreground mb-1">{t.dashboard.questionsPanel.yourAnswer}</p>
                   <p className="text-sm">{question.answer}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {t.dashboard.questionsPanel.answeredOn.replace('{date}', new Date(question.answeredAt!).toLocaleDateString(dateLocale))}
+                    {t.dashboard.questionsPanel.answeredOn.replace(
+                      "{date}",
+                      new Date(question.answeredAt!).toLocaleDateString(dateLocale),
+                    )}
                   </p>
                 </div>
               ) : answeringId === question.id ? (
@@ -240,12 +243,7 @@ export function QuestionsCoursePanel({
                     data-testid={`textarea-answer-${question.id}`}
                   />
                   <div className="flex items-center gap-2 justify-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCancelAnswer}
-                      disabled={submitting}
-                    >
+                    <Button variant="outline" size="sm" onClick={handleCancelAnswer} disabled={submitting}>
                       {t.common.cancel}
                     </Button>
                     <Button
@@ -283,9 +281,7 @@ export function QuestionsCoursePanel({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t.dashboard.questionsPanel.deleteQuestion}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t.dashboard.questionsPanel.deleteIrreversible}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t.dashboard.questionsPanel.deleteIrreversible}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={deleting}>{t.common.cancel}</AlertDialogCancel>
@@ -294,9 +290,7 @@ export function QuestionsCoursePanel({
               disabled={deleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleting ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              ) : null}
+              {deleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               {t.teacher.deleteQuestionModal.confirm}
             </AlertDialogAction>
           </AlertDialogFooter>

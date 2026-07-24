@@ -9,7 +9,7 @@ export interface CourseQuestion {
   studentName?: string;
 }
 
-export interface SendCourseQuestionBody extends Pick<CourseQuestion, "courseId" | "questionText"> {}
+export type SendCourseQuestionBody = Pick<CourseQuestion, "courseId" | "questionText">;
 
 export interface AnswerCourseQuestionBody extends Pick<CourseQuestion, "answer"> {
   courseQuestionId: string;

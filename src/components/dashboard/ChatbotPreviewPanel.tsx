@@ -4,20 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useChatbotPreview, type ChatMessage } from "@/hooks/use-chatbot-preview.hook";
 import type { Course, Question } from "@/types";
 import { propositionLabels } from "@/lib/proposition-labels";
 import { useTranslations } from "@/lib/i18n/client";
-import { 
-  Send, 
-  User, 
+import {
+  Send,
+  User,
   BookOpen,
   RefreshCw,
   CheckCircle2,
@@ -26,7 +20,7 @@ import {
   MessageCircle,
   Zap,
   Trophy,
-  Star
+  Star,
 } from "lucide-react";
 
 interface ChatbotPreviewPanelProps {
@@ -45,9 +39,9 @@ function TypingIndicator() {
       </Avatar>
       <div className="bg-card border border-border rounded-2xl rounded-tl-md px-5 py-4 shadow-sm">
         <div className="flex gap-1.5">
-          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
         </div>
       </div>
     </div>
@@ -64,22 +58,24 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
     >
       <Avatar
         className={`h-10 w-10 flex-shrink-0 shadow-md ${
-          isBot 
-            ? "ring-2 ring-primary/20" 
-            : "ring-2 ring-emerald-500/30"
+          isBot ? "ring-2 ring-primary/20" : "ring-2 ring-emerald-500/30"
         }`}
       >
-        {isBot ? (
-          <AvatarImage src="/edesio-logo-square.png" alt="Edesio" className="object-cover" />
-        ) : null}
-        <AvatarFallback className={isBot ? "bg-primary/10 text-primary text-sm font-semibold" : "bg-gradient-to-br from-emerald-500 to-green-600 text-white font-bold text-sm"}>
+        {isBot ? <AvatarImage src="/edesio-logo-square.png" alt="Edesio" className="object-cover" /> : null}
+        <AvatarFallback
+          className={
+            isBot
+              ? "bg-primary/10 text-primary text-sm font-semibold"
+              : "bg-gradient-to-br from-emerald-500 to-green-600 text-white font-bold text-sm"
+          }
+        >
           {isBot ? "IA" : <User className="h-4 w-4" />}
         </AvatarFallback>
       </Avatar>
       <div
         className={`max-w-[85%] shadow-sm ${
-          isBot 
-            ? "bg-card border border-border text-foreground rounded-2xl rounded-tl-md" 
+          isBot
+            ? "bg-card border border-border text-foreground rounded-2xl rounded-tl-md"
             : "bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl rounded-tr-md"
         } ${
           message.type === "feedback" && message.isCorrect === true
@@ -98,7 +94,10 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
             ? "!border-2 !border-emerald-400/60 !bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/40 dark:to-green-900/40"
             : ""
         } ${
-          message.type === "completion" && message.scoreRatio !== undefined && message.scoreRatio >= 0.5 && message.scoreRatio < 0.7
+          message.type === "completion" &&
+          message.scoreRatio !== undefined &&
+          message.scoreRatio >= 0.5 &&
+          message.scoreRatio < 0.7
             ? "!border-2 !border-orange-400/60 !bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/40 dark:to-amber-900/40"
             : ""
         } ${
@@ -108,35 +107,45 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
         } px-4 py-3`}
       >
         {message.type === "completion" && (
-          <div className={`flex items-center gap-2 mb-2 pb-2 border-b ${
-            message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-              ? "border-emerald-300/30" 
-              : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                ? "border-orange-300/30" 
-                : "border-red-300/30"
-          }`}>
-            <div className={`p-1.5 rounded-full ${
-              message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                ? "bg-emerald-500/20" 
-                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                  ? "bg-orange-500/20" 
-                  : "bg-red-500/20"
-            }`}>
-              <Trophy className={`h-4 w-4 ${
-                message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                  ? "text-emerald-600 dark:text-emerald-400" 
-                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                    ? "text-orange-600 dark:text-orange-400" 
-                    : "text-red-600 dark:text-red-400"
-              }`} />
+          <div
+            className={`flex items-center gap-2 mb-2 pb-2 border-b ${
+              message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                ? "border-emerald-300/30"
+                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                  ? "border-orange-300/30"
+                  : "border-red-300/30"
+            }`}
+          >
+            <div
+              className={`p-1.5 rounded-full ${
+                message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                  ? "bg-emerald-500/20"
+                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                    ? "bg-orange-500/20"
+                    : "bg-red-500/20"
+              }`}
+            >
+              <Trophy
+                className={`h-4 w-4 ${
+                  message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                      ? "text-orange-600 dark:text-orange-400"
+                      : "text-red-600 dark:text-red-400"
+                }`}
+              />
             </div>
-            <span className={`font-bold text-sm ${
-              message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                ? "text-emerald-700 dark:text-emerald-300" 
-                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                  ? "text-orange-700 dark:text-orange-300" 
-                  : "text-red-700 dark:text-red-300"
-            }`}>{t.chatbot.sessionEnded}</span>
+            <span
+              className={`font-bold text-sm ${
+                message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                  ? "text-emerald-700 dark:text-emerald-300"
+                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                    ? "text-orange-700 dark:text-orange-300"
+                    : "text-red-700 dark:text-red-300"
+              }`}
+            >
+              {t.chatbot.sessionEnded}
+            </span>
           </div>
         )}
         <p className="text-sm sm:text-base whitespace-pre-wrap leading-relaxed">{message.text}</p>
@@ -194,17 +203,15 @@ function CourseSelectionDropdown({
         <span>{t.chatbot.selectCourseToRevise}</span>
       </div>
       <Select onValueChange={handleValueChange}>
-        <SelectTrigger className="w-full h-12 text-base bg-background border-2 border-primary/40 focus:ring-primary/50 focus:border-primary font-medium" data-testid="select-course-dropdown">
+        <SelectTrigger
+          className="w-full h-12 text-base bg-background border-2 border-primary/40 focus:ring-primary/50 focus:border-primary font-medium"
+          data-testid="select-course-dropdown"
+        >
           <SelectValue placeholder={t.student.chooseCourse} />
         </SelectTrigger>
         <SelectContent>
           {course.map((c) => (
-            <SelectItem 
-              key={c.id} 
-              value={c.id}
-              className="py-3"
-              data-testid={`select-course-item-${c.id}`}
-            >
+            <SelectItem key={c.id} value={c.id} className="py-3" data-testid={`select-course-item-${c.id}`}>
               {c.title}
             </SelectItem>
           ))}
@@ -251,12 +258,7 @@ function QCMOptions({
   );
 }
 
-export function ChatbotPreviewPanel({
-  course,
-  sessionName,
-  fetchQuestions,
-  refreshKey,
-}: ChatbotPreviewPanelProps) {
+export function ChatbotPreviewPanel({ course, sessionName, fetchQuestions, refreshKey }: ChatbotPreviewPanelProps) {
   const t = useTranslations();
   const chatbot = useChatbotPreview();
   const [inputValue, setInputValue] = useState("");
@@ -273,7 +275,7 @@ export function ChatbotPreviewPanel({
     if (course.length > 0) {
       chatbot.initializeWithCours(course, sessionName);
     }
-  }, [refreshKey, sessionName]);
+  }, [refreshKey, sessionName, course, chatbot]);
 
   useEffect(() => {
     if (chatbot.chatbotState === "greeting" && !hasAskedCourse) {
@@ -283,25 +285,28 @@ export function ChatbotPreviewPanel({
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [chatbot.chatbotState, hasAskedCourse]);
+  }, [chatbot, hasAskedCourse]);
 
   useEffect(() => {
     if (
-      chatbot.chatbotState === "asking_questions" && 
-      chatbot.selectedCourse && 
+      chatbot.chatbotState === "asking_questions" &&
+      chatbot.selectedCourse &&
       chatbot.currentQuestionIndex < chatbot.questions.length &&
       chatbot.currentQuestionIndex !== lastAskedQuestionIndex
     ) {
-      const timer = setTimeout(() => {
-        const questionData = chatbot.askCurrentQuestion();
-        if (questionData) {
-          chatbot.addBotMessage(questionData.text, "question", { questionId: questionData.question.id });
-          setLastAskedQuestionIndex(chatbot.currentQuestionIndex);
-        }
-      }, chatbot.currentQuestionIndex === 0 ? 1000 : 1500);
+      const timer = setTimeout(
+        () => {
+          const questionData = chatbot.askCurrentQuestion();
+          if (questionData) {
+            chatbot.addBotMessage(questionData.text, "question", { questionId: questionData.question.id });
+            setLastAskedQuestionIndex(chatbot.currentQuestionIndex);
+          }
+        },
+        chatbot.currentQuestionIndex === 0 ? 1000 : 1500,
+      );
       return () => clearTimeout(timer);
     }
-  }, [chatbot.chatbotState, chatbot.selectedCourse, chatbot.currentQuestionIndex, chatbot.questions.length, lastAskedQuestionIndex]);
+  }, [chatbot, lastAskedQuestionIndex]);
 
   useEffect(() => {
     if (chatbot.chatbotState === "completed" && chatbot.selectedCourse && chatbot.questions.length > 0) {
@@ -309,18 +314,14 @@ export function ChatbotPreviewPanel({
         const totalQuestions = chatbot.questions.length;
         const scoreRatio = totalQuestions > 0 ? chatbot.score / totalQuestions : 0;
         const scoreText = t.chatbot.completionScore
-          .replace('{score}', String(chatbot.score))
-          .replace('{total}', String(totalQuestions))
-          .replace('{percent}', String(Math.round(scoreRatio * 100)));
-        chatbot.addBotMessage(
-          `${t.chatbot.completionTitle}\n\n${scoreText}`,
-          "completion",
-          { scoreRatio }
-        );
+          .replace("{score}", String(chatbot.score))
+          .replace("{total}", String(totalQuestions))
+          .replace("{percent}", String(Math.round(scoreRatio * 100)));
+        chatbot.addBotMessage(`${t.chatbot.completionTitle}\n\n${scoreText}`, "completion", { scoreRatio });
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [chatbot.chatbotState, chatbot.selectedCourse, chatbot.score, chatbot.questions.length]);
+  }, [chatbot, t]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -338,7 +339,7 @@ export function ChatbotPreviewPanel({
 
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
-    
+
     if (chatbot.chatbotState === "asking_questions") {
       chatbot.submitAnswer(inputValue.trim());
       setInputValue("");
@@ -363,8 +364,8 @@ export function ChatbotPreviewPanel({
   };
 
   const currentQuestion = chatbot.getCurrentQuestion();
-  const showCourseSelection = 
-    chatbot.messages.some((m:ChatMessage) => m.type === "course_selection") && 
+  const showCourseSelection =
+    chatbot.messages.some((m: ChatMessage) => m.type === "course_selection") &&
     !chatbot.selectedCourse &&
     course.length > 0;
   // Show QCM buttons when asking a question OR during retry mode for QCM
@@ -374,12 +375,19 @@ export function ChatbotPreviewPanel({
     (chatbot.messages[chatbot.messages.length - 1]?.type === "question" || chatbot.retryMode);
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-b from-background to-muted/20" data-testid="chatbot-preview-panel">
+    <div
+      className="h-full flex flex-col bg-gradient-to-b from-background to-muted/20"
+      data-testid="chatbot-preview-panel"
+    >
       <div className="flex items-center justify-between px-4 py-3 border-b bg-gradient-to-r from-primary/10 via-violet-500/5 to-transparent backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-violet-600 p-0.5 shadow-lg shadow-primary/20">
-              <img src="/edesio-logo-square.png" alt="Edesio" className="w-full h-full rounded-[10px] object-cover bg-white dark:bg-background" />
+              <img
+                src="/edesio-logo-square.png"
+                alt="Edesio"
+                className="w-full h-full rounded-[10px] object-cover bg-white dark:bg-background"
+              />
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-background flex items-center justify-center">
               <Sparkles className="h-2.5 w-2.5 text-white" />
@@ -404,11 +412,7 @@ export function ChatbotPreviewPanel({
         </Button>
       </div>
 
-      <div 
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4"
-        data-testid="chatbot-messages"
-      >
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4" data-testid="chatbot-messages">
         {chatbot.messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="relative mb-4">
@@ -420,16 +424,14 @@ export function ChatbotPreviewPanel({
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-1">{t.chatbot.chatbotStarting}</p>
-            {course.length === 0 && (
-              <p className="text-xs text-muted-foreground/70">{t.chatbot.addCoursesToTest}</p>
-            )}
+            {course.length === 0 && <p className="text-xs text-muted-foreground/70">{t.chatbot.addCoursesToTest}</p>}
           </div>
         ) : (
           <>
             {chatbot.messages.map((message: ChatMessage) => (
               <MessageBubble key={message.id} message={message} t={t} />
             ))}
-            
+
             {isLoadingQuestions && <TypingIndicator />}
           </>
         )}
@@ -443,8 +445,8 @@ export function ChatbotPreviewPanel({
 
       {showQCMOptions && currentQuestion && (
         <div className="px-4 pb-4">
-          <QCMOptions 
-            question={currentQuestion} 
+          <QCMOptions
+            question={currentQuestion}
             onSelect={(answer) => {
               chatbot.submitAnswer(answer);
             }}

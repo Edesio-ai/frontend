@@ -1,48 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteContext = {
-    params: Promise<{ courseId: string }>;
-}
+  params: Promise<{ courseId: string }>;
+};
 export async function PATCH(req: NextRequest, context: RouteContext) {
-    const { courseId } = await context.params;
+  const { courseId } = await context.params;
 
-    const body = await req.json();
+  const body = await req.json();
 
-    const response = await fetch(`${process.env.BACKEND_URL}/self-learner-course/${courseId}`, {
-        method: "PATCH",
-        headers: {
-            "cookie": req.headers.get("cookie") ?? "",
-            "Content-Type": "application/json",
-            "x-csrf-token": req.headers.get("x-csrf-token") ?? "",
-        },
-        body: JSON.stringify(body),
-    });
+  const response = await fetch(`${process.env.BACKEND_URL}/self-learner-course/${courseId}`, {
+    method: "PATCH",
+    headers: {
+      cookie: req.headers.get("cookie") ?? "",
+      "Content-Type": "application/json",
+      "x-csrf-token": req.headers.get("x-csrf-token") ?? "",
+    },
+    body: JSON.stringify(body),
+  });
 
-    if(!response.ok) {
-        const error = await response.json();
-        return NextResponse.json({ error: error.message, code: error.code }, { status: response.status });
-    }
+  if (!response.ok) {
+    const error = await response.json();
+    return NextResponse.json({ error: error.message, code: error.code }, { status: response.status });
+  }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+  const data = await response.json();
+  return NextResponse.json(data);
 }
 
 export async function DELETE(req: NextRequest, context: RouteContext) {
-    const { courseId } = await context.params;
+  const { courseId } = await context.params;
 
-    const response = await fetch(`${process.env.BACKEND_URL}/self-learner-course/${courseId}`, {
-        method: "DELETE",
-        headers: {
-            "cookie": req.headers.get("cookie") ?? "",
-            "Content-Type": "application/json",
-            "x-csrf-token": req.headers.get("x-csrf-token") ?? "",
-        },
-    });
+  const response = await fetch(`${process.env.BACKEND_URL}/self-learner-course/${courseId}`, {
+    method: "DELETE",
+    headers: {
+      cookie: req.headers.get("cookie") ?? "",
+      "Content-Type": "application/json",
+      "x-csrf-token": req.headers.get("x-csrf-token") ?? "",
+    },
+  });
 
-    if(!response.ok) {
-        const error = await response.json();
-        return NextResponse.json({ error: error.message, code: error.code }, { status: response.status });
-    }
+  if (!response.ok) {
+    const error = await response.json();
+    return NextResponse.json({ error: error.message, code: error.code }, { status: response.status });
+  }
 
-    return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true });
 }

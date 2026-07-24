@@ -28,17 +28,14 @@ export async function Benefits() {
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 rounded-full">
             {t.badge}
           </span>
-          <h2
-            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
-            data-testid="text-benefices-title"
-          >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6" data-testid="text-benefices-title">
             {t.title}{" "}
-            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">{t.titleHighlight}</span>{" "}
+            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+              {t.titleHighlight}
+            </span>{" "}
             {t.titleSuffix}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t.subtitle}
-          </p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t.subtitle}</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -52,19 +49,16 @@ export async function Benefits() {
                 data-testid={`card-benefit-${index + 1}`}
               >
                 <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${style.gradient} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  <div
+                    className={`w-12 h-12 rounded-xl bg-gradient-to-br ${style.gradient} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                  >
                     <Icon className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h3
-                      className="font-bold text-lg mb-2"
-                      data-testid={`text-benefit-${index + 1}-title`}
-                    >
+                    <h3 className="font-bold text-lg mb-2" data-testid={`text-benefit-${index + 1}-title`}>
                       {benefit.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {benefit.description}
-                    </p>
+                    <p className="text-muted-foreground leading-relaxed">{benefit.description}</p>
                   </div>
                 </div>
               </Card>

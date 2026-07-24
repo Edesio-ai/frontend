@@ -23,14 +23,13 @@ export default function ChoisirPlan() {
   // Map user role to plan id
   const roleToPlanId: Record<string, string> = {
     "self-learner": "self-learner",
-    "teacher": "teacher",
-    "establishment": "establishment",
+    teacher: "teacher",
+    establishment: "establishment",
   };
 
   // Filter plans based on user role - only show the relevant plan
-  const filteredPlans = userRole && roleToPlanId[userRole]
-    ? plans.filter(plan => plan.id === roleToPlanId[userRole])
-    : plans; // Show all plans if no role (fallback for landing page visitors)
+  const filteredPlans =
+    userRole && roleToPlanId[userRole] ? plans.filter((plan) => plan.id === roleToPlanId[userRole]) : plans; // Show all plans if no role (fallback for landing page visitors)
 
   // Scroll to top when page loads
   useEffect(() => {
@@ -44,16 +43,17 @@ export default function ChoisirPlan() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
           <Link href="/" className="inline-block mb-6" data-testid="link-home">
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Edesio
+            </span>
           </Link>
           <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white" data-testid="text-choose-plan-title">
             {t.billing.title}
           </h1>
           <p className="text-lg text-slate-300 max-w-xl mx-auto mb-6">
-            {filteredPlans.length === 1 
+            {filteredPlans.length === 1
               ? t.billing.activateDesc
-              : "Your account has been created. Choose the plan that fits your needs."
-            }
+              : "Your account has been created. Choose the plan that fits your needs."}
           </p>
 
           <div className="flex items-center justify-center gap-4 mb-6">
@@ -78,28 +78,34 @@ export default function ChoisirPlan() {
 
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
             <Bot className="h-4 w-4 text-amber-400" />
-            <span className="text-sm text-slate-200">
-              {t.billing.classInfo}
-            </span>
+            <span className="text-sm text-slate-200">{t.billing.classInfo}</span>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button className="p-0.5 hover:bg-white/10 rounded-full transition-colors" data-testid="button-classe-info">
+                <button
+                  className="p-0.5 hover:bg-white/10 rounded-full transition-colors"
+                  data-testid="button-classe-info"
+                >
                   <Info className="h-3.5 w-3.5 text-slate-400" />
                 </button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-xs text-left">
                 <p className="font-medium mb-1">{t.billing.classTooltipTitle}</p>
-                <p className="text-xs text-muted-foreground">
-                  {t.billing.classTooltipDesc}
-                </p>
+                <p className="text-xs text-muted-foreground">{t.billing.classTooltipDesc}</p>
               </TooltipContent>
             </Tooltip>
           </div>
         </div>
 
-        <div className={`grid gap-5 ${filteredPlans.length === 1 ? 'max-w-md mx-auto' : filteredPlans.length === 2 ? 'md:grid-cols-2 max-w-3xl mx-auto' : 'md:grid-cols-3'}`}>
+        <div
+          className={`grid gap-5 ${filteredPlans.length === 1 ? "max-w-md mx-auto" : filteredPlans.length === 2 ? "md:grid-cols-2 max-w-3xl mx-auto" : "md:grid-cols-3"}`}
+        >
           {filteredPlans.map((plan) => (
-            <PlanCard key={`${plan.id}-${locale}`} plan={plan} recommendedPlan={recommendedPlan ?? ""} isAnnual={isAnnual} />
+            <PlanCard
+              key={`${plan.id}-${locale}`}
+              plan={plan}
+              recommendedPlan={recommendedPlan ?? ""}
+              isAnnual={isAnnual}
+            />
           ))}
         </div>
 

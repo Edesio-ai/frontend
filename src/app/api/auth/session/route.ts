@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     headers: {
       cookie: req.headers.get("cookie") ?? "",
     },
-  }
+  };
 
   if (authToken) {
     options.headers.authorization = authToken;
@@ -25,9 +25,12 @@ export async function GET(req: NextRequest) {
 
   const response = await fetch(`${process.env.BACKEND_URL}/auth/session`, options);
 
-  if(!response.ok) {
+  if (!response.ok) {
     const error = await response.json();
-    return NextResponse.json({ error: error.message || "An error occured while fetching the session" }, { status: response.status });
+    return NextResponse.json(
+      { error: error.message || "An error occured while fetching the session" },
+      { status: response.status },
+    );
   }
 
   const { user, role } = await response.json();

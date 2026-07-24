@@ -7,18 +7,11 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslations, useLocale } from "@/lib/i18n/client";
+import { useTranslations } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 import { useAuth } from "@/contexts/auth-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -30,7 +23,6 @@ export default function Connexion() {
   const { signIn, user, loading, getUserRole } = useAuth();
   const router = useRouter();
   const t = useTranslations();
-  const locale = useLocale();
   const lt = t.login;
 
   const formSchema = z.object({
@@ -69,7 +61,7 @@ export default function Connexion() {
       return response;
     } catch (error) {
       const message = error instanceof Error ? error.message : lt.defaultError;
-      const translated = translateSupabaseError(message, t.supabaseErrors, locale);
+      const translated = translateSupabaseError(message, t.supabaseErrors);
       setErrorMessage(translated);
       setIsSubmitting(false);
       throw new Error(translated);
@@ -106,7 +98,7 @@ export default function Connexion() {
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : lt.defaultError;
-      setErrorMessage(translateSupabaseError(message, t.supabaseErrors, locale));
+      setErrorMessage(translateSupabaseError(message, t.supabaseErrors));
       setIsSubmitting(false);
     }
   };
@@ -119,14 +111,14 @@ export default function Connexion() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Edesio
+            </span>
           </Link>
           <h1 className="text-3xl font-bold mb-2" data-testid="text-login-title">
             {lt.title}
           </h1>
-          <p className="text-muted-foreground">
-            {lt.subtitle}
-          </p>
+          <p className="text-muted-foreground">{lt.subtitle}</p>
         </div>
 
         <Card className="p-6 md:p-8">
@@ -191,11 +183,7 @@ export default function Connexion() {
                           data-testid="button-toggle-password"
                           tabIndex={-1}
                         >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                       </div>
                     </FormControl>
@@ -226,11 +214,7 @@ export default function Connexion() {
           <div className="text-center pt-6">
             <p className="text-sm text-muted-foreground">
               {lt.noAccount}{" "}
-              <Link
-                href="/register"
-                className="text-primary hover:underline"
-                data-testid="link-signup"
-              >
+              <Link href="/register" className="text-primary hover:underline" data-testid="link-signup">
                 {lt.signup}
               </Link>
             </p>

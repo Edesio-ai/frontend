@@ -656,9 +656,7 @@
       "Here we go! {count} questions are waiting for you.",
       "Perfect! Here are {count} questions to test your knowledge."
     ],
-    "cheatMessages": [
-      "Nice try, but cheating won't help you learn!"
-    ],
+    "cheatMessages": ["Nice try, but cheating won't help you learn!"],
     "noQuestions": "I don't have any questions for \"{course}\" yet. Ask your teacher to generate some!",
     "welcomeToClass": "Welcome to the {session} class.\n\nThere are no lessons available yet. Ask your teacher to add some!",
     "selectCourse": "Welcome to the {session} class. Which lesson would you like to revise today?",
@@ -842,6 +840,7 @@
     "logout": "Log out",
     "invitationModal": {
       "title": "Invite a teacher",
+      "description": "Enter the teacher's email address. An invitation code will be generated for that address only.",
       "email": "Teacher's email address",
       "emailPlaceholder": "teacher@school.com",
       "create": "Create invitation",
@@ -971,6 +970,15 @@
     "subscriptionInactive": "Your subscription is no longer active. Renew it to regain access.",
     "subscriptionCheckError": "Unable to verify subscription status",
     "contactUs": "Need help? Contact us at",
+    "blockModal": {
+      "paymentPendingTitle": "Payment pending",
+      "inactiveTitle": "Inactive subscription",
+      "requiredTitle": "Subscription required",
+      "paymentPendingDesc": "Your payment is being processed or requires action. If you just subscribed, please wait a moment and refresh the page.",
+      "bankHint": "If the issue persists, check that your bank hasn't blocked the payment, or contact us.",
+      "managePayment": "Manage payment",
+      "refreshPage": "Refresh page"
+    },
     "planDetails": {
       "self-learner": {
         "name": "Edesio Solo",

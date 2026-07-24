@@ -1,7 +1,7 @@
 "use client";
 
 import { DndContext, closestCenter, DragEndEvent, SensorDescriptor, SensorOptions } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy  } from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { ListChecks, MessageSquare, Plus, Sparkles, Loader2, HelpCircle, Download } from "lucide-react";
 import { Question } from "@/types";
 import { UpdateQuestionRequest } from "@/types";
@@ -28,9 +28,9 @@ type QuestionSectionTesterModalProps = {
   deleteQuestion: (questionId: string) => Promise<boolean>;
   handleDownloadQuestionsPdf: (e: React.MouseEvent<HTMLButtonElement>) => void;
   questionSensors: SensorDescriptor<SensorOptions>[] | undefined;
-}
+};
 
-export function QuestionSectionTesterModal({ 
+export function QuestionSectionTesterModal({
   questions,
   handleGenerateQuestions,
   isGenerating,
@@ -57,24 +57,32 @@ export function QuestionSectionTesterModal({
           Questions ({questions.length})
         </h5>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setChatbotModalOpen(true)} data-testid="button-test-chatbot">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setChatbotModalOpen(true)}
+            data-testid="button-test-chatbot"
+          >
             <MessageSquare className="h-4 w-4 mr-1" />
             {t.dashboard.courseTester.testChatbot}
           </Button>
           <Button size="sm" onClick={handleGenerateQuestions} disabled={isGenerating}>
             {isGenerating ? (
-              <><Loader2 className="h-4 w-4 animate-spin mr-1" /> {t.teacher.questionGenerator.generating}</>
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-1" /> {t.teacher.questionGenerator.generating}
+              </>
             ) : (
-              <><Sparkles className="h-4 w-4 mr-1" /> {questions.length > 0 ? t.teacher.questionGenerator.regenerate : t.teacher.questionGenerator.generate}</>
+              <>
+                <Sparkles className="h-4 w-4 mr-1" />{" "}
+                {questions.length > 0 ? t.teacher.questionGenerator.regenerate : t.teacher.questionGenerator.generate}
+              </>
             )}
           </Button>
         </div>
       </div>
 
       {generateError && (
-        <Card className="p-3 bg-destructive/10 border-destructive/20 text-destructive text-sm">
-          {generateError}
-        </Card>
+        <Card className="p-3 bg-destructive/10 border-destructive/20 text-destructive text-sm">{generateError}</Card>
       )}
       {generateSuccess && (
         <Card className="p-3 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm">
@@ -89,12 +97,7 @@ export function QuestionSectionTesterModal({
               <AccordionTrigger className="hover:no-underline p-0 flex-1 [&>svg]:ml-auto">
                 <div className="flex items-center gap-2 text-sm">
                   <HelpCircle className="h-4 w-4" />
-                  <span>
-                    {t.dashboard.courseTester.viewQuestions.replace(
-                      "{count}",
-                      String(questions.length),
-                    )}
-                  </span>
+                  <span>{t.dashboard.courseTester.viewQuestions.replace("{count}", String(questions.length))}</span>
                   <span className="text-muted-foreground text-xs">
                     {t.teacher.questionGenerator.countsSummary
                       .replace("{mcq}", String(currentSingleCount))
@@ -118,10 +121,7 @@ export function QuestionSectionTesterModal({
                 collisionDetection={closestCenter}
                 onDragEnd={handleQuestionDragEnd}
               >
-                <SortableContext
-                  items={questions.map((q) => q.id)}
-                  strategy={verticalListSortingStrategy}
-                >
+                <SortableContext items={questions.map((q) => q.id)} strategy={verticalListSortingStrategy}>
                   <div className="space-y-2 px-4 pb-4 max-h-[500px] overflow-y-auto">
                     {questions.map((q, index) => (
                       <SortableQuestionItem
@@ -168,5 +168,5 @@ export function QuestionSectionTesterModal({
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,13 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { useState, useEffect, useCallback } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +15,10 @@ interface StudentQAModalProps {
   onOpenChange: (open: boolean) => void;
   cours: Course;
   fetchQuestionsCoursForCours: (coursId: string) => Promise<CourseQuestion[]>;
-  sendCourseQuestion: (coursId: string, questionText: string) => Promise<{ success: boolean; error?: string; question?: CourseQuestion }>;
+  sendCourseQuestion: (
+    coursId: string,
+    questionText: string,
+  ) => Promise<{ success: boolean; error?: string; question?: CourseQuestion }>;
 }
 
 export function StudentQAModal({
@@ -40,7 +37,7 @@ export function StudentQAModal({
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  const loadQuestions = async () => {
+  const loadQuestions = useCallback(async () => {
     setLoading(true);
     try {
       const data = await fetchQuestionsCoursForCours(cours.id);
@@ -50,7 +47,7 @@ export function StudentQAModal({
     } finally {
       setLoading(false);
     }
-  };
+  }, [cours.id, fetchQuestionsCoursForCours]);
 
   useEffect(() => {
     if (open) {
@@ -58,7 +55,7 @@ export function StudentQAModal({
       setNewQuestion("");
       setSubmitError("");
     }
-  }, [open, cours.id]);
+  }, [open, cours.id, loadQuestions]);
 
   const handleSubmitQuestion = async () => {
     if (!newQuestion.trim()) {
@@ -68,21 +65,21 @@ export function StudentQAModal({
 
     setSubmitting(true);
     setSubmitError("");
-    
+
     const result = await sendCourseQuestion(cours.id, newQuestion.trim());
-    
+
     if (result.success && result.question) {
-      setQuestions(prev => [result.question!, ...prev]);
+      setQuestions((prev) => [result.question!, ...prev]);
       setNewQuestion("");
     } else {
       setSubmitError(result.error || t.common.error);
     }
-    
+
     setSubmitting(false);
   };
 
-  const answeredQuestions = questions.filter(q => q.answer);
-  const pendingQuestions = questions.filter(q => !q.answer);
+  const answeredQuestions = questions.filter((q) => q.answer);
+  const pendingQuestions = questions.filter((q) => !q.answer);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -94,9 +91,7 @@ export function StudentQAModal({
             </div>
             {t.student.qaModal.title}
           </DialogTitle>
-          <DialogDescription>
-            {t.student.qaModal.description.replace('{course}', cours.title)}
-          </DialogDescription>
+          <DialogDescription>{t.student.qaModal.description.replace("{course}", cours.title)}</DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
@@ -116,20 +111,14 @@ export function StudentQAModal({
               disabled={submitting}
               data-testid="textarea-new-question"
             />
-            {submitError && (
-              <p className="text-sm text-destructive mb-2">{submitError}</p>
-            )}
+            {submitError && <p className="text-sm text-destructive mb-2">{submitError}</p>}
             <div className="flex justify-end">
               <Button
                 onClick={handleSubmitQuestion}
                 disabled={!newQuestion.trim() || submitting}
                 data-testid="button-submit-question"
               >
-                {submitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : (
-                  <Send className="h-4 w-4 mr-2" />
-                )}
+                {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
                 {t.student.qaModal.send}
               </Button>
             </div>
@@ -144,12 +133,8 @@ export function StudentQAModal({
               <div className="w-12 h-12 rounded-xl bg-muted/50 flex items-center justify-center mx-auto mb-3">
                 <MessageCircle className="h-6 w-6 text-muted-foreground" />
               </div>
-              <p className="text-sm text-muted-foreground">
-                {t.student.qaModal.empty}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {t.student.qaModal.beFirst}
-              </p>
+              <p className="text-sm text-muted-foreground">{t.student.qaModal.empty}</p>
+              <p className="text-sm text-muted-foreground">{t.student.qaModal.beFirst}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -157,22 +142,25 @@ export function StudentQAModal({
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                     <Clock className="h-4 w-4" />
-                    {t.student.qaModal.pending.replace('{count}', String(pendingQuestions.length))}
+                    {t.student.qaModal.pending.replace("{count}", String(pendingQuestions.length))}
                   </h4>
                   {pendingQuestions.map((question) => (
-                    <Card 
-                      key={question.id} 
+                    <Card
+                      key={question.id}
                       className="p-4 border-amber-500/30 bg-amber-500/5"
                       data-testid={`pending-question-${question.id}`}
                     >
                       <div className="flex items-start gap-2 mb-2">
                         <Badge className="bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30 text-xs shrink-0">
-                          {t.student.qaModal.pending.replace(' ({count})', '').replace('({count})', '')}
+                          {t.student.qaModal.pending.replace(" ({count})", "").replace("({count})", "")}
                         </Badge>
                       </div>
                       <p className="text-sm">{question.questionText}</p>
                       <p className="text-xs text-muted-foreground mt-2">
-                        {t.student.qaModal.askedOn.replace('{date}', new Date(question.createdAt).toLocaleDateString(dateLocale))}
+                        {t.student.qaModal.askedOn.replace(
+                          "{date}",
+                          new Date(question.createdAt).toLocaleDateString(dateLocale),
+                        )}
                       </p>
                     </Card>
                   ))}
@@ -183,20 +171,19 @@ export function StudentQAModal({
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                     <Check className="h-4 w-4" />
-                    {t.student.qaModal.answered.replace('{count}', String(answeredQuestions.length))}
+                    {t.student.qaModal.answered.replace("{count}", String(answeredQuestions.length))}
                   </h4>
                   {answeredQuestions.map((question) => (
-                    <Card 
-                      key={question.id} 
-                      className="p-4"
-                      data-testid={`answered-question-${question.id}`}
-                    >
+                    <Card key={question.id} className="p-4" data-testid={`answered-question-${question.id}`}>
                       <p className="text-sm font-medium mb-3">{question.questionText}</p>
                       <div className="pl-4 border-l-2 border-primary/30">
                         <p className="text-xs text-muted-foreground mb-1">{t.student.qaModal.teacherAnswer}</p>
                         <p className="text-sm">{question.answer}</p>
                         <p className="text-xs text-muted-foreground mt-2">
-                          {t.student.qaModal.answeredOn.replace('{date}', new Date(question.answeredAt!).toLocaleDateString(dateLocale))}
+                          {t.student.qaModal.answeredOn.replace(
+                            "{date}",
+                            new Date(question.answeredAt!).toLocaleDateString(dateLocale),
+                          )}
                         </p>
                       </div>
                     </Card>

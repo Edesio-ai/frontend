@@ -656,9 +656,7 @@
       "Allez, on se lance ! {count} questions t'attendent.",
       "Parfait ! Voici {count} questions pour tester tes connaissances."
     ],
-    "cheatMessages": [
-      "Bien essayé, mais ce n'est pas en trichant que l'on apprend !"
-    ],
+    "cheatMessages": ["Bien essayé, mais ce n'est pas en trichant que l'on apprend !"],
     "noQuestions": "Je n'ai pas encore de questions pour \"{course}\". Demande à ton professeur de générer des questions !",
     "welcomeToClass": "Bienvenue dans la classe {session}.\n\nIl n'y a pas encore de cours disponibles. Demande à ton professeur d'en ajouter !",
     "selectCourse": "Bienvenue dans la classe {session}. Quel cours aimerais-tu réviser aujourd'hui ?",
@@ -842,6 +840,7 @@
     "logout": "Déconnexion",
     "invitationModal": {
       "title": "Inviter un professeur",
+      "description": "Saisissez l'adresse email du professeur. Un code d'invitation sera généré uniquement pour cette adresse.",
       "email": "Adresse email du professeur",
       "emailPlaceholder": "professeur@ecole.fr",
       "create": "Créer l'invitation",
@@ -971,6 +970,15 @@
     "subscriptionInactive": "Votre abonnement n'est plus actif. Renouvelez-le pour retrouver l'accès.",
     "subscriptionCheckError": "Impossible de vérifier le statut de l'abonnement",
     "contactUs": "Besoin d'aide ? Contactez-nous à",
+    "blockModal": {
+      "paymentPendingTitle": "Paiement en attente",
+      "inactiveTitle": "Abonnement inactif",
+      "requiredTitle": "Abonnement requis",
+      "paymentPendingDesc": "Votre paiement est en cours de traitement ou nécessite une action. Si vous venez de vous abonner, patientez un instant puis actualisez la page.",
+      "bankHint": "Si le problème persiste, vérifiez que votre banque n'a pas bloqué le paiement, ou contactez-nous.",
+      "managePayment": "Gérer le paiement",
+      "refreshPage": "Actualiser la page"
+    },
     "planDetails": {
       "self-learner": {
         "name": "Edesio Solo",

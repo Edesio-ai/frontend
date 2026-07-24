@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocale, useTranslations } from "@/lib/i18n/client";
 import type { Session } from "@/types";
-import { Calendar, Copy, BookOpen, Check, Trash2, Users, Loader2, MessageCircle, Pencil } from "lucide-react";
+import { Calendar, Copy, BookOpen, Check, Trash2, Users, Pencil } from "lucide-react";
 import { useState } from "react";
 import { RenameSessionModal } from "../teacher/RenameSessionModal";
 import { DeleteSessionModal } from "../teacher/DeleteSessionModal";
@@ -19,7 +19,14 @@ interface SessionCardProps {
   pendingQuestionsCount?: number;
 }
 
-export function SessionCard({ session, isSelected, onSelect, onDelete, onRename, pendingQuestionsCount = 0 }: SessionCardProps) {
+export function SessionCard({
+  session,
+  isSelected,
+  onSelect,
+  onDelete,
+  onRename,
+  pendingQuestionsCount = 0,
+}: SessionCardProps) {
   const t = useTranslations();
   const locale = useLocale();
   const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
@@ -84,15 +91,13 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
     <>
       <Card
         className={`relative overflow-hidden cursor-pointer transition-all hover-elevate group ${
-          isSelected
-            ? "ring-2 ring-primary bg-primary/5"
-            : ""
+          isSelected ? "ring-2 ring-primary bg-primary/5" : ""
         }`}
         onClick={() => onSelect(session)}
         data-testid={`card-session-${session.id}`}
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60" />
-        
+
         <div className="p-5">
           <div className="flex flex-col gap-4">
             <div className="flex items-start justify-between gap-2">
@@ -100,7 +105,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
                 <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0">
                   <Users className="h-5 w-5 text-primary" />
                   {pendingQuestionsCount > 0 && (
-                    <span 
+                    <span
                       className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center"
                       data-testid={`badge-pending-questions-${session.id}`}
                     >
@@ -108,7 +113,10 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
                     </span>
                   )}
                 </div>
-                <h3 className="font-semibold text-lg leading-tight break-words" data-testid={`text-session-name-${session.id}`}>
+                <h3
+                  className="font-semibold text-lg leading-tight break-words"
+                  data-testid={`text-session-name-${session.id}`}
+                >
                   {session.name}
                 </h3>
               </div>
@@ -139,9 +147,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
             </div>
 
             <div className="space-y-2">
-              <p className="text-xs text-muted-foreground font-medium">
-                {t.dashboard.sessionCard.code}
-              </p>
+              <p className="text-xs text-muted-foreground font-medium">{t.dashboard.sessionCard.code}</p>
               <div className="flex items-center gap-2">
                 <Badge
                   variant="secondary"
@@ -157,11 +163,7 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
                   onClick={handleCopyCode}
                   data-testid={`button-copy-code-${session.id}`}
                 >
-                  {copied ? (
-                    <Check className="h-4 w-4 text-green-600" />
-                  ) : (
-                    <Copy className="h-4 w-4" />
-                  )}
+                  {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
                 </Button>
               </div>
             </div>
@@ -193,12 +195,11 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
       <DeleteSessionModal
         deleteModalOpen={deleteModalOpen}
         setDeleteModalOpen={setDeleteModalOpen}
-        session={session}
         isDeleting={isDeleting}
         handleConfirmDelete={handleConfirmDelete}
       />
 
-      <RenameSessionModal 
+      <RenameSessionModal
         renameModalOpen={renameModalOpen}
         setRenameModalOpen={setRenameModalOpen}
         newName={newName}
@@ -206,7 +207,6 @@ export function SessionCard({ session, isSelected, onSelect, onDelete, onRename,
         isRenaming={isRenaming}
         handleConfirmRename={handleConfirmRename}
       />
-          
     </>
   );
 }

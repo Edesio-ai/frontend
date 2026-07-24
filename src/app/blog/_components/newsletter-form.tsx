@@ -18,7 +18,7 @@ export function NewsletterForm({ source = "blog" }: NewsletterFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !email.includes("@")) {
       toast({
         title: "Invalid email",
@@ -58,7 +58,7 @@ export function NewsletterForm({ source = "blog" }: NewsletterFormProps) {
           throw new Error(data.message || t.blog.newsletterError);
         }
       }
-    } catch (error) {
+    } catch {
       toast({
         title: t.common.error,
         description: t.blog.newsletterError,

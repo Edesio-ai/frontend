@@ -1,5 +1,3 @@
-import type { Locale } from "./config";
-
 export type SupabaseErrorDictionary = {
   invalidCredentials: string;
   genericError: string;
@@ -30,10 +28,7 @@ const matchers: { key: keyof SupabaseErrorDictionary; patterns: string[] }[] = [
   },
   {
     key: "userAlreadyRegistered",
-    patterns: [
-      "User already registered",
-      "A user with this email address has already been registered",
-    ],
+    patterns: ["User already registered", "A user with this email address has already been registered"],
   },
   {
     key: "passwordTooShort",
@@ -57,9 +52,7 @@ const matchers: { key: keyof SupabaseErrorDictionary; patterns: string[] }[] = [
   },
   {
     key: "securityWait",
-    patterns: [
-      "For security purposes, you can only request this once every 60 seconds",
-    ],
+    patterns: ["For security purposes, you can only request this once every 60 seconds"],
   },
 ];
 
@@ -67,11 +60,7 @@ const matchers: { key: keyof SupabaseErrorDictionary; patterns: string[] }[] = [
  * Maps raw Supabase/auth error messages to localized dictionary strings.
  * Falls back to the original message when no match is found.
  */
-export function translateSupabaseError(
-  message: string,
-  dict: SupabaseErrorDictionary,
-  _locale?: Locale,
-): string {
+export function translateSupabaseError(message: string, dict: SupabaseErrorDictionary): string {
   const lower = message.toLowerCase();
 
   for (const { key, patterns } of matchers) {

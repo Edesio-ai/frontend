@@ -7,21 +7,8 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "../ui/input";
@@ -96,27 +83,17 @@ export function DemoForm() {
 
   if (isSubmitted) {
     return (
-      <section
-        id="demo"
-        className="py-16 md:py-24 lg:py-32 px-4 md:px-8"
-        data-testid="section-demo"
-      >
+      <section id="demo" className="py-16 md:py-24 lg:py-32 px-4 md:px-8" data-testid="section-demo">
         <div id="signup" />
         <div className="max-w-2xl mx-auto">
           <Card className="p-8 md:p-12 text-center">
             <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
-            <h3
-              className="text-2xl font-bold mb-4"
-              data-testid="text-success-title"
-            >
+            <h3 className="text-2xl font-bold mb-4" data-testid="text-success-title">
               {dt.successTitle}
             </h3>
-            <p
-              className="text-muted-foreground"
-              data-testid="text-success-message"
-            >
+            <p className="text-muted-foreground" data-testid="text-success-message">
               {dt.successMessage}
             </p>
           </Card>
@@ -126,32 +103,19 @@ export function DemoForm() {
   }
 
   return (
-    <section
-      id="demo"
-      className="py-16 md:py-24 lg:py-32 px-4 md:px-8"
-      data-testid="section-demo"
-    >
+    <section id="demo" className="py-16 md:py-24 lg:py-32 px-4 md:px-8" data-testid="section-demo">
       <div id="signup" />
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-12">
-          <h2
-            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
-            data-testid="text-demo-title"
-          >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" data-testid="text-demo-title">
             {dt.title}
           </h2>
-          <p className="text-lg text-muted-foreground">
-            {dt.subtitle}
-          </p>
+          <p className="text-lg text-muted-foreground">{dt.subtitle}</p>
         </div>
 
         <Card className="p-6 md:p-8">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6"
-              data-testid="form-demo"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" data-testid="form-demo">
               <div className="grid sm:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -160,11 +124,7 @@ export function DemoForm() {
                     <FormItem>
                       <FormLabel>{dt.firstName}</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder={dt.firstNamePlaceholder}
-                          {...field}
-                          data-testid="input-firstname"
-                        />
+                        <Input placeholder={dt.firstNamePlaceholder} {...field} data-testid="input-firstname" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -178,11 +138,7 @@ export function DemoForm() {
                     <FormItem>
                       <FormLabel>{dt.lastName}</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder={dt.lastNamePlaceholder}
-                          {...field}
-                          data-testid="input-lastname"
-                        />
+                        <Input placeholder={dt.lastNamePlaceholder} {...field} data-testid="input-lastname" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,11 +153,7 @@ export function DemoForm() {
                   <FormItem>
                     <FormLabel>{dt.establishment}</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={dt.establishmentPlaceholder}
-                        {...field}
-                        data-testid="input-establishment"
-                      />
+                      <Input placeholder={dt.establishmentPlaceholder} {...field} data-testid="input-establishment" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -215,12 +167,7 @@ export function DemoForm() {
                   <FormItem>
                     <FormLabel>{dt.email}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="email"
-                        placeholder={dt.emailPlaceholder}
-                        {...field}
-                        data-testid="input-email"
-                      />
+                      <Input type="email" placeholder={dt.emailPlaceholder} {...field} data-testid="input-email" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -233,10 +180,7 @@ export function DemoForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{dt.establishmentType}</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger data-testid="select-establishment-type">
                           <SelectValue placeholder={dt.selectType} />
@@ -287,10 +231,7 @@ export function DemoForm() {
                           data-testid="checkbox-free-account"
                         />
                       </FormControl>
-                      <label
-                        htmlFor="wantsFreeAccount"
-                        className="text-sm font-normal leading-relaxed cursor-pointer"
-                      >
+                      <label htmlFor="wantsFreeAccount" className="text-sm font-normal leading-relaxed cursor-pointer">
                         {dt.wantsFreeAccount}
                       </label>
                     </FormItem>
@@ -311,10 +252,7 @@ export function DemoForm() {
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <label
-                          htmlFor="wantsDemo"
-                          className="text-sm font-normal leading-relaxed cursor-pointer"
-                        >
+                        <label htmlFor="wantsDemo" className="text-sm font-normal leading-relaxed cursor-pointer">
                           {dt.wantsDemo}
                         </label>
                         <FormMessage />

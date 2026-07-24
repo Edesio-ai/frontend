@@ -28,20 +28,13 @@ function safeEqual(a: string, b: string): boolean {
 }
 
 async function sessionToken(user: string, password: string): Promise<string> {
-  const digest = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(`preprod:${user}:${password}`),
-  );
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`preprod:${user}:${password}`));
   return Array.from(new Uint8Array(digest))
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
 }
 
-function attachSessionCookie(
-  response: NextResponse,
-  token: string,
-  request: NextRequest,
-): void {
+function attachSessionCookie(response: NextResponse, token: string, request: NextRequest): void {
   // Session cookie (no maxAge): cleared when the browser is closed.
   response.cookies.set(PREPROD_AUTH_COOKIE, token, {
     httpOnly: true,
@@ -51,9 +44,7 @@ function attachSessionCookie(
   });
 }
 
-type AuthResult =
-  | { ok: true; setCookieToken?: string }
-  | { ok: false; response: NextResponse };
+type AuthResult = { ok: true; setCookieToken?: string } | { ok: false; response: NextResponse };
 
 async function enforcePreprodAuth(request: NextRequest): Promise<AuthResult> {
   const user = process.env.BASIC_AUTH_USER;
@@ -158,7 +149,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|.*\\.png$|.*\\.jpg$|.*\\.svg$).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|.*\\.png$|.*\\.jpg$|.*\\.svg$).*)"],
 };

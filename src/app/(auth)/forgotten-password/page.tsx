@@ -7,14 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2, Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useTranslations } from "@/lib/i18n/client";
 import { useAuth } from "@/contexts/auth-context";
@@ -64,7 +57,9 @@ export default function MotDePasseOublie() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <Link href="/" className="inline-block mb-6">
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                Edesio
+              </span>
             </Link>
           </div>
 
@@ -78,9 +73,7 @@ export default function MotDePasseOublie() {
             <p className="text-muted-foreground mb-6">
               {ft.successMessage.replace("{email}", form.getValues("email"))}
             </p>
-            <p className="text-sm text-muted-foreground mb-6">
-              {ft.successSpamNote}
-            </p>
+            <p className="text-sm text-muted-foreground mb-6">{ft.successSpamNote}</p>
             <Link href="/login">
               <Button className="w-full" data-testid="button-back-login">
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -105,9 +98,7 @@ export default function MotDePasseOublie() {
           <h1 className="text-3xl font-bold mb-2" data-testid="text-forgot-password-title">
             {ft.title}
           </h1>
-          <p className="text-muted-foreground">
-            {ft.subtitle}
-          </p>
+          <p className="text-muted-foreground">{ft.subtitle}</p>
         </div>
 
         <Card className="p-6 md:p-8">

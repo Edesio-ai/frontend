@@ -9,11 +9,11 @@ export const teacherService = {
     });
     return reponse as Teacher | null;
   },
-  
-  fetchTeacher: async (): Promise<{ teacher: Teacher}> => {
-    const reponse = await apiFetch<{ teacher: Teacher}>(`/api/teacher/`, {
+
+  fetchTeacher: async (): Promise<{ teacher: Teacher }> => {
+    const reponse = await apiFetch<{ teacher: Teacher }>(`/api/teacher/`, {
       method: "GET",
     });
     return reponse;
   },
-}
+};

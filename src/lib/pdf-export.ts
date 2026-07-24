@@ -2,25 +2,21 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { CourseRanking } from "@/types";
 
-export function exportClassementPdf(
-  rankings: CourseRanking[],
-  courseTitle: string,
-  sessionName: string
-) {
+export function exportClassementPdf(rankings: CourseRanking[], courseTitle: string, sessionName: string) {
   const doc = new jsPDF();
-  
+
   doc.setFontSize(20);
   doc.setTextColor(59, 130, 246);
   doc.text("Edesio", 14, 20);
-  
+
   doc.setFontSize(10);
   doc.setTextColor(100);
   doc.text(`Session : ${sessionName}`, 14, 28);
-  
+
   doc.setFontSize(16);
   doc.setTextColor(0);
   doc.text(`Results — ${courseTitle}`, 14, 40);
-  
+
   doc.setFontSize(10);
   doc.setTextColor(100);
   doc.text(`Exported on ${new Date().toLocaleDateString("en-US")}`, 14, 48);

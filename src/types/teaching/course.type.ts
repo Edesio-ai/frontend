@@ -27,10 +27,7 @@ export type CourseRanking = {
   lastAttempt: string;
 };
 
-export type InsertCourse = Omit<
-  Course,
-  "id" | "createdAt" | "validatedQuestions" | "positionOrder"
->;
+export type InsertCourse = Omit<Course, "id" | "createdAt" | "validatedQuestions" | "positionOrder">;
 
 export type UpdateCourseRequest = {
   title?: string;

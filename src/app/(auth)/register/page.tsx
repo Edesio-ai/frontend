@@ -8,19 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Users, ArrowLeft, Loader2, Building2, Sparkles, GraduationCap, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UserRole } from "@/types";
-import { useTranslations, useLocale } from "@/lib/i18n/client";
+import { useTranslations } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 import { useAuth } from "@/contexts/auth-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -55,7 +48,6 @@ export default function Register() {
   const router = useRouter();
   const t = useTranslations();
   const rt = t.register;
-  const locale = useLocale();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -73,12 +65,21 @@ export default function Register() {
 
   const handleSignUp = async (data: FormValues) => {
     try {
-      const response = await signUp(data.email, data.password, selectedRole as UserRole, data.acceptTerms, data.firstName, data.lastName, data.establishment, data.invitationToken);
+      const response = await signUp(
+        data.email,
+        data.password,
+        selectedRole as UserRole,
+        data.acceptTerms,
+        data.firstName,
+        data.lastName,
+        data.establishment,
+        data.invitationToken,
+      );
       return response;
     } catch (error) {
       setIsSubmitting(false);
       const message = error instanceof Error ? error.message : t.supabaseErrors.genericError;
-      const translatedError = translateSupabaseError(message, t.supabaseErrors, locale);
+      const translatedError = translateSupabaseError(message, t.supabaseErrors);
       setErrorMessage(`${rt.errorPrefix}${translatedError}`);
       throw new Error(translatedError);
     }
@@ -90,7 +91,7 @@ export default function Register() {
     } catch (error) {
       setIsSubmitting(false);
       const message = error instanceof Error ? error.message : t.supabaseErrors.genericError;
-      const translatedError = translateSupabaseError(message, t.supabaseErrors, locale);
+      const translatedError = translateSupabaseError(message, t.supabaseErrors);
       setErrorMessage(`${rt.signInErrorPrefix}${translatedError}`);
       throw new Error(translatedError);
     }
@@ -127,10 +128,14 @@ export default function Register() {
 
   const getRoleLabel = (role: UserRole) => {
     switch (role) {
-      case "student": return rt.roleStudent;
-      case "self-learner": return rt.roleSolo;
-      case "teacher": return rt.roleTeacher;
-      case "establishment": return rt.roleEstablishment;
+      case "student":
+        return rt.roleStudent;
+      case "self-learner":
+        return rt.roleSolo;
+      case "teacher":
+        return rt.roleTeacher;
+      case "establishment":
+        return rt.roleEstablishment;
     }
   };
 
@@ -142,14 +147,14 @@ export default function Register() {
       <div className={`w-full ${!selectedRole ? "max-w-4xl" : "max-w-lg"}`}>
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Edesio
+            </span>
           </Link>
           <h1 className="text-3xl font-bold mb-2" data-testid="text-signup-title">
             {rt.title}
           </h1>
-          <p className="text-muted-foreground">
-            {rt.subtitle}
-          </p>
+          <p className="text-muted-foreground">{rt.subtitle}</p>
         </div>
 
         {!selectedRole ? (
@@ -167,9 +172,7 @@ export default function Register() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold">{t.billing.planDetails["self-learner"].name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {rt.soloDesc}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{rt.soloDesc}</p>
                   </div>
                 </div>
               </Card>
@@ -189,9 +192,7 @@ export default function Register() {
                     </div>
                     <div>
                       <h3 className="text-base font-semibold">{rt.studentTitle}</h3>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {rt.studentDesc}
-                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">{rt.studentDesc}</p>
                     </div>
                   </div>
                 </Card>
@@ -207,9 +208,7 @@ export default function Register() {
                     </div>
                     <div>
                       <h3 className="text-base font-semibold">{rt.teacherTitle}</h3>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {rt.teacherDesc}
-                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">{rt.teacherDesc}</p>
                     </div>
                   </div>
                 </Card>
@@ -225,9 +224,7 @@ export default function Register() {
                     </div>
                     <div>
                       <h3 className="text-base font-semibold">{rt.establishmentTitle}</h3>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {rt.establishmentDesc}
-                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">{rt.establishmentDesc}</p>
                     </div>
                   </div>
                 </Card>
@@ -237,11 +234,7 @@ export default function Register() {
             <div className="text-center pt-2">
               <p className="text-sm text-muted-foreground">
                 {rt.alreadyHaveAccount}{" "}
-                <Link
-                  href="/login"
-                  className="text-primary hover:underline"
-                  data-testid="link-login"
-                >
+                <Link href="/login" className="text-primary hover:underline" data-testid="link-login">
                   {rt.login}
                 </Link>
               </p>
@@ -259,12 +252,15 @@ export default function Register() {
               {rt.changeProfile}
             </button>
 
-            <div className={`flex items-center gap-3 mb-6 p-3 rounded-lg ${selectedRole === "self-learner"
-              ? "bg-amber-500/10 border border-amber-500/20"
-              : selectedRole === "teacher"
-                ? "bg-emerald-500/10 border border-emerald-500/20"
-                : "bg-primary/5 border border-primary/20"
-              }`}>
+            <div
+              className={`flex items-center gap-3 mb-6 p-3 rounded-lg ${
+                selectedRole === "self-learner"
+                  ? "bg-amber-500/10 border border-amber-500/20"
+                  : selectedRole === "teacher"
+                    ? "bg-emerald-500/10 border border-emerald-500/20"
+                    : "bg-primary/5 border border-primary/20"
+              }`}
+            >
               {selectedRole === "student" ? (
                 <Users className="h-5 w-5 text-primary" />
               ) : selectedRole === "self-learner" ? (
@@ -314,11 +310,7 @@ export default function Register() {
                       <FormItem>
                         <FormLabel>{rt.lastName}</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder={rt.lastNamePlaceholder}
-                            {...field}
-                            data-testid="input-signup-lastname"
-                          />
+                          <Input placeholder={rt.lastNamePlaceholder} {...field} data-testid="input-signup-lastname" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -460,10 +452,7 @@ export default function Register() {
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <label
-                          htmlFor="acceptTerms"
-                          className="text-sm font-normal cursor-pointer"
-                        >
+                        <label htmlFor="acceptTerms" className="text-sm font-normal cursor-pointer">
                           {rt.acceptTerms}{" "}
                           <Link
                             href="/terms-of-service"
@@ -472,8 +461,8 @@ export default function Register() {
                             onClick={(e) => e.stopPropagation()}
                           >
                             {rt.termsLink}
-                          </Link>
-                          {" "}{rt.and}{" "}
+                          </Link>{" "}
+                          {rt.and}{" "}
                           <Link
                             href="/privacy-policy"
                             className="text-primary underline hover:no-underline"
@@ -511,11 +500,7 @@ export default function Register() {
             <div className="text-center pt-6">
               <p className="text-sm text-muted-foreground">
                 {rt.alreadyHaveAccount}{" "}
-                <Link
-                  href="/login"
-                  className="text-primary hover:underline"
-                  data-testid="link-login-bottom"
-                >
+                <Link href="/login" className="text-primary hover:underline" data-testid="link-login-bottom">
                   {rt.login}
                 </Link>
               </p>

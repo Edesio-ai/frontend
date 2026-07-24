@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "@/lib/i18n/client";
-import type { 
-  SelfLearner, 
-  SelfLearnerCourse, 
+import type {
+  SelfLearner,
+  SelfLearnerCourse,
   InsertSelfLearnerCourse,
   Language,
   SelfLearnerCourseFile,
@@ -10,7 +10,7 @@ import type {
   GenerateQuestionsConfig,
   CreateManualQuestionRequest,
   QuestionType,
-  UpdateQuestion
+  UpdateQuestion,
 } from "@/types";
 import { selfLearnerService } from "@/services/teaching/self-learner.service";
 import { selfLearnerCourseService } from "@/services/teaching/self-learner-courses.service";
@@ -53,7 +53,7 @@ export function useSelfLearner() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, t]);
 
   const fetchSelfLearnerCourses = useCallback(async () => {
     if (!selfLearner) {
@@ -70,20 +70,35 @@ export function useSelfLearner() {
       console.error("Unexpected error:", err);
       setError(t.hooks.selfLearner.error);
     }
-  }, [selfLearner]);
+  }, [selfLearner, t]);
+
+  const uploadCoursePdf = useCallback(
+    async (courseId: string, file: File): Promise<SelfLearnerCourseFile | null> => {
+      try {
+        const { data } = await selfLearnerCourseFileService.uploadPdfForCourse(courseId, file);
+
+        setError(null);
+        return data;
+      } catch (err) {
+        console.error("Unexpected error:", err);
+        setError(t.hooks.selfLearner.uploadError);
+        return null;
+      }
+    },
+    [t],
+  );
 
   const createSelfLearnerCourse = useCallback(
     async (
       title: string,
       description: string,
       contentText: string,
-      language: Language = 'francais',
-      pdfFiles?: File[]
+      language: Language = "francais",
+      pdfFiles?: File[],
     ): Promise<SelfLearnerCourse | null> => {
       if (!selfLearner) return null;
 
       try {
-
         const { count } = await selfLearnerCourseService.getSelfLearnerCoursesCount();
 
         if (count !== null && count >= MAX_COURSES) {
@@ -115,7 +130,7 @@ export function useSelfLearner() {
         return null;
       }
     },
-    [selfLearner]
+    [selfLearner, t, uploadCoursePdf],
   );
 
   const updateSelfLearnerCourse = useCallback(
@@ -123,7 +138,7 @@ export function useSelfLearner() {
       coursId: string,
       titre: string,
       description: string | null,
-      contenuTexte: string | null
+      contenuTexte: string | null,
     ): Promise<SelfLearnerCourse | null> => {
       try {
         const body = {
@@ -133,9 +148,7 @@ export function useSelfLearner() {
         };
 
         const data = await selfLearnerCourseService.updateSelfLearnerCourse(coursId, body);
-        setCourse((prev) =>
-          prev.map((c) => (c.id === coursId ? data : c))
-        );
+        setCourse((prev) => prev.map((c) => (c.id === coursId ? data : c)));
         setError(null);
         return data;
       } catch (err) {
@@ -144,7 +157,7 @@ export function useSelfLearner() {
         return null;
       }
     },
-    []
+    [t],
   );
 
   const deleteSelfLearnerCourse = useCallback(
@@ -161,38 +174,19 @@ export function useSelfLearner() {
         return false;
       }
     },
-    []
+    [t],
   );
 
-  const uploadCoursePdf = useCallback(
-    async (courseId: string, file: File): Promise<SelfLearnerCourseFile | null> => {
-      try {
-        const { data } = await selfLearnerCourseFileService.uploadPdfForCourse(courseId, file);
-        
-        setError(null);
-        return data;
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        setError(t.hooks.selfLearner.uploadError);
-        return null;
-      }
-    },
-    []
-  );
+  const fetchSelfLearnerCourseFiles = useCallback(async (courseId: string): Promise<SelfLearnerCourseFile[]> => {
+    try {
+      const data = await selfLearnerCourseFileService.getSelfLearnerCourseFiles(courseId);
 
-  const fetchSelfLearnerCourseFiles = useCallback(
-    async (courseId: string): Promise<SelfLearnerCourseFile[]> => {
-      try {
-        const data = await selfLearnerCourseFileService.getSelfLearnerCourseFiles(courseId);
-
-        return data || [];
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        return [];
-      }
-    },
-    []
-  );
+      return data || [];
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return [];
+    }
+  }, []);
 
   const deleteSelfLearnerCourseFile = useCallback(
     async (file: SelfLearnerCourseFile): Promise<boolean> => {
@@ -207,41 +201,35 @@ export function useSelfLearner() {
         return false;
       }
     },
-    []
+    [t],
   );
 
-  const getPdfUrl = useCallback(
-    async (courseId: string): Promise<string | null> => {
-      try {
-        const data = await selfLearnerCourseFileService.getSelfLearnerCourseFileSignedUrl(courseId);
+  const getPdfUrl = useCallback(async (courseId: string): Promise<string | null> => {
+    try {
+      const data = await selfLearnerCourseFileService.getSelfLearnerCourseFileSignedUrl(courseId);
 
-        return data?.signedUrl || null;
-      } catch (err) {
-        console.error("Error getting PDF URL:", err);
-        return null;
-      }
-    },
-    []
-  );
+      return data?.signedUrl || null;
+    } catch (err) {
+      console.error("Error getting PDF URL:", err);
+      return null;
+    }
+  }, []);
 
-  const fetchSelfLearnerQuestions = useCallback(
-    async (courseId: string): Promise<SelfLearnerQuestion[]> => {
-      try {
-        const data = await selfLearnerQuestionService.getSelfLearnerQuestions(courseId);
+  const fetchSelfLearnerQuestions = useCallback(async (courseId: string): Promise<SelfLearnerQuestion[]> => {
+    try {
+      const data = await selfLearnerQuestionService.getSelfLearnerQuestions(courseId);
 
-        return data;
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        return [];
-      }
-    },
-    []
-  );
+      return data;
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return [];
+    }
+  }, []);
 
   const generateQuestions = useCallback(
     async (
       coursId: string,
-      config: GenerateQuestionsConfig
+      config: GenerateQuestionsConfig,
     ): Promise<{ success: boolean; questionsCreated?: number; error?: string }> => {
       try {
         const result = await llmService.generateQuestions(coursId, config);
@@ -252,7 +240,7 @@ export function useSelfLearner() {
         return { success: false, error: t.hooks.selfLearner.generateError };
       }
     },
-    []
+    [t],
   );
 
   const deleteSelfLearnerQuestion = useCallback(
@@ -268,14 +256,14 @@ export function useSelfLearner() {
         return false;
       }
     },
-    []
+    [t],
   );
 
   const updateSelfLearnerQuestion = useCallback(
     async (questionId: string, updates: UpdateQuestion): Promise<boolean> => {
       try {
         await selfLearnerQuestionService.updateSelfLearnerQuestion(questionId, updates);
-        
+
         setError(null);
         return true;
       } catch (err) {
@@ -284,7 +272,7 @@ export function useSelfLearner() {
         return false;
       }
     },
-    []
+    [t],
   );
 
   const refreshCours = useCallback(async () => {
@@ -294,7 +282,7 @@ export function useSelfLearner() {
   const generateSelfLearnerQuestion = useCallback(
     async (
       courseId: string,
-      type: Omit<QuestionType, 'multiple'>
+      type: Omit<QuestionType, "multiple">,
     ): Promise<{ success: boolean; question?: SelfLearnerQuestion; error?: string }> => {
       try {
         const question = await llmService.generateSelfLearnerQuestion(courseId, type);
@@ -305,13 +293,13 @@ export function useSelfLearner() {
         return { success: false, error: t.hooks.selfLearner.generateError };
       }
     },
-    []
+    [t],
   );
 
   const createManualQuestion = useCallback(
     async (
       coursId: string,
-      data: CreateManualQuestionRequest
+      data: CreateManualQuestionRequest,
     ): Promise<{ success: boolean; question?: SelfLearnerQuestion; error?: string }> => {
       try {
         const question = await selfLearnerQuestionService.createSelfLearnerQuestion(coursId, data);
@@ -322,7 +310,7 @@ export function useSelfLearner() {
         return { success: false, error: t.hooks.selfLearner.error };
       }
     },
-    []
+    [t],
   );
 
   useEffect(() => {

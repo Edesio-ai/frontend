@@ -1,21 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-    const authToken = req.headers.get("authorization") || "{}";
-    
-    const response = await fetch(`${process.env.BACKEND_URL}/auth/session/token`, {
-        method: "GET",
-        headers: {
-            "authorization": authToken,
-        },
-    });
+  const authToken = req.headers.get("authorization") || "{}";
 
-    if(!response.ok) {
-        const error = await response.json();
-        return NextResponse.json({ error: error.message || "An error occured while fetching the session by access token" }, { status: response.status });
-    }
+  const response = await fetch(`${process.env.BACKEND_URL}/auth/session/token`, {
+    method: "GET",
+    headers: {
+      authorization: authToken,
+    },
+  });
 
-    const session = await response.json();
+  if (!response.ok) {
+    const error = await response.json();
+    return NextResponse.json(
+      { error: error.message || "An error occured while fetching the session by access token" },
+      { status: response.status },
+    );
+  }
 
-    return NextResponse.json({ session });
+  const session = await response.json();
+
+  return NextResponse.json({ session });
 }

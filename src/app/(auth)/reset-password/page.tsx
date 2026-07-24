@@ -7,13 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2, Lock, CheckCircle2, XCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Form } from "@/components/ui/form";
@@ -75,7 +69,7 @@ export default function ResetPassword() {
   };
 
   useEffect(() => {
-    handleRecoverySession();
+    void handleRecoverySession();
   }, []);
 
   const onSubmit = async (data: FormValues) => {
@@ -125,9 +119,7 @@ export default function ResetPassword() {
             <h1 className="text-2xl font-bold mb-2" data-testid="text-invalid-link-title">
               {rpt.invalidLinkTitle}
             </h1>
-            <p className="text-muted-foreground mb-6">
-              {rpt.invalidLinkDesc}
-            </p>
+            <p className="text-muted-foreground mb-6">{rpt.invalidLinkDesc}</p>
             <Link href="/forgotten-password">
               <Button className="w-full" data-testid="button-request-new-link">
                 {rpt.requestNewLink}
@@ -145,7 +137,9 @@ export default function ResetPassword() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <Link href="/" className="inline-block mb-6">
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                Edesio
+              </span>
             </Link>
           </div>
 
@@ -156,14 +150,8 @@ export default function ResetPassword() {
             <h1 className="text-2xl font-bold mb-2" data-testid="text-success-title">
               {rpt.successTitle}
             </h1>
-            <p className="text-muted-foreground mb-6">
-              {rpt.successMessage}
-            </p>
-            <Button
-              className="w-full"
-              onClick={() => router.push("/login")}
-              data-testid="button-go-login"
-            >
+            <p className="text-muted-foreground mb-6">{rpt.successMessage}</p>
+            <Button className="w-full" onClick={() => router.push("/login")} data-testid="button-go-login">
               {rpt.goToLogin}
             </Button>
           </Card>
@@ -184,9 +172,7 @@ export default function ResetPassword() {
           <h1 className="text-3xl font-bold mb-2" data-testid="text-reset-password-title">
             {rpt.title}
           </h1>
-          <p className="text-muted-foreground">
-            {rpt.subtitle}
-          </p>
+          <p className="text-muted-foreground">{rpt.subtitle}</p>
         </div>
 
         <Card className="p-6 md:p-8">
@@ -212,12 +198,7 @@ export default function ResetPassword() {
                   <FormItem>
                     <FormLabel>{rpt.password}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="••••••••"
-                        {...field}
-                        data-testid="input-new-password"
-                      />
+                      <Input type="password" placeholder="••••••••" {...field} data-testid="input-new-password" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -231,12 +212,7 @@ export default function ResetPassword() {
                   <FormItem>
                     <FormLabel>{rpt.confirmPassword}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="••••••••"
-                        {...field}
-                        data-testid="input-confirm-password"
-                      />
+                      <Input type="password" placeholder="••••••••" {...field} data-testid="input-confirm-password" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,13 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -71,32 +65,32 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-
 function getRandomMessage(messages: string[]): string {
   return messages[Math.floor(Math.random() * messages.length)];
 }
 
 function validateOpenAnswer(userAnswer: string, correctAnswer: string): boolean {
-  const normalize = (str: string) => str
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\w\s]/g, " ")
-    .trim()
-    .split(/\s+/)
-    .filter(w => w.length > 2);
+  const normalize = (str: string) =>
+    str
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s]/g, " ")
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 2);
 
   const userWords = normalize(userAnswer);
   const correctWords = normalize(correctAnswer);
-  
+
   if (userWords.length === 0 || correctWords.length === 0) {
     return false;
   }
 
-  const matchedWords = correctWords.filter(cw => 
-    userWords.some(uw => uw === cw || uw.includes(cw) || cw.includes(uw))
+  const matchedWords = correctWords.filter((cw) =>
+    userWords.some((uw) => uw === cw || uw.includes(cw) || cw.includes(uw)),
   );
-  
+
   const matchRatio = matchedWords.length / correctWords.length;
   return matchRatio >= 0.5;
 }
@@ -110,21 +104,21 @@ function TypingIndicator() {
       </Avatar>
       <div className="bg-card border border-border rounded-2xl rounded-tl-md px-5 py-4 shadow-sm">
         <div className="flex gap-1.5">
-          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+          <span className="w-2.5 h-2.5 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
         </div>
       </div>
     </div>
   );
 }
 
-function MessageBubble({ 
-  message, 
+function MessageBubble({
+  message,
   studentName,
   studentPhotoUrl,
   t,
-}: { 
+}: {
   message: ChatMessage;
   studentName?: string;
   studentPhotoUrl?: string | null;
@@ -139,24 +133,32 @@ function MessageBubble({
     >
       <Avatar
         className={`h-10 w-10 flex-shrink-0 shadow-md ${
-          isBot 
-            ? "ring-2 ring-primary/20" 
-            : "ring-2 ring-emerald-500/30"
+          isBot ? "ring-2 ring-primary/20" : "ring-2 ring-emerald-500/30"
         }`}
       >
         {isBot ? (
           <AvatarImage src="/edesio-logo-square.png" alt="Edesio" className="object-cover" />
         ) : studentPhotoUrl ? (
-          <AvatarImage src={studentPhotoUrl} alt={studentName || t.dashboard.questionsPanel.studentFallback} className="object-cover" />
+          <AvatarImage
+            src={studentPhotoUrl}
+            alt={studentName || t.dashboard.questionsPanel.studentFallback}
+            className="object-cover"
+          />
         ) : null}
-        <AvatarFallback className={isBot ? "bg-primary/10 text-primary text-sm font-semibold" : "bg-gradient-to-br from-emerald-500 to-green-600 text-white font-bold text-sm"}>
+        <AvatarFallback
+          className={
+            isBot
+              ? "bg-primary/10 text-primary text-sm font-semibold"
+              : "bg-gradient-to-br from-emerald-500 to-green-600 text-white font-bold text-sm"
+          }
+        >
           {isBot ? "IA" : studentName ? studentName.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
         </AvatarFallback>
       </Avatar>
       <div
         className={`max-w-[85%] shadow-sm ${
-          isBot 
-            ? "bg-card border border-border text-foreground rounded-2xl rounded-tl-md" 
+          isBot
+            ? "bg-card border border-border text-foreground rounded-2xl rounded-tl-md"
             : "bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl rounded-tr-md"
         } ${
           message.type === "feedback" && message.isCorrect === true
@@ -175,7 +177,10 @@ function MessageBubble({
             ? "!border-2 !border-emerald-400/60 !bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/40 dark:to-green-900/40"
             : ""
         } ${
-          message.type === "completion" && message.scoreRatio !== undefined && message.scoreRatio >= 0.5 && message.scoreRatio < 0.7
+          message.type === "completion" &&
+          message.scoreRatio !== undefined &&
+          message.scoreRatio >= 0.5 &&
+          message.scoreRatio < 0.7
             ? "!border-2 !border-orange-400/60 !bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/40 dark:to-amber-900/40"
             : ""
         } ${
@@ -185,35 +190,45 @@ function MessageBubble({
         } px-4 py-3`}
       >
         {message.type === "completion" && (
-          <div className={`flex items-center gap-2 mb-2 pb-2 border-b ${
-            message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-              ? "border-emerald-300/30" 
-              : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                ? "border-orange-300/30" 
-                : "border-red-300/30"
-          }`}>
-            <div className={`p-1.5 rounded-full ${
-              message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                ? "bg-emerald-500/20" 
-                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                  ? "bg-orange-500/20" 
-                  : "bg-red-500/20"
-            }`}>
-              <Trophy className={`h-4 w-4 ${
-                message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                  ? "text-emerald-600 dark:text-emerald-400" 
-                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                    ? "text-orange-600 dark:text-orange-400" 
-                    : "text-red-600 dark:text-red-400"
-              }`} />
+          <div
+            className={`flex items-center gap-2 mb-2 pb-2 border-b ${
+              message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                ? "border-emerald-300/30"
+                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                  ? "border-orange-300/30"
+                  : "border-red-300/30"
+            }`}
+          >
+            <div
+              className={`p-1.5 rounded-full ${
+                message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                  ? "bg-emerald-500/20"
+                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                    ? "bg-orange-500/20"
+                    : "bg-red-500/20"
+              }`}
+            >
+              <Trophy
+                className={`h-4 w-4 ${
+                  message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                      ? "text-orange-600 dark:text-orange-400"
+                      : "text-red-600 dark:text-red-400"
+                }`}
+              />
             </div>
-            <span className={`font-bold text-sm ${
-              message.scoreRatio !== undefined && message.scoreRatio >= 0.7 
-                ? "text-emerald-700 dark:text-emerald-300" 
-                : message.scoreRatio !== undefined && message.scoreRatio >= 0.5 
-                  ? "text-orange-700 dark:text-orange-300" 
-                  : "text-red-700 dark:text-red-300"
-            }`}>{t.chatbot.sessionEnded}</span>
+            <span
+              className={`font-bold text-sm ${
+                message.scoreRatio !== undefined && message.scoreRatio >= 0.7
+                  ? "text-emerald-700 dark:text-emerald-300"
+                  : message.scoreRatio !== undefined && message.scoreRatio >= 0.5
+                    ? "text-orange-700 dark:text-orange-300"
+                    : "text-red-700 dark:text-red-300"
+              }`}
+            >
+              {t.chatbot.sessionEnded}
+            </span>
           </div>
         )}
         <p className="text-sm sm:text-base whitespace-pre-wrap leading-relaxed">{message.text}</p>
@@ -271,7 +286,7 @@ function QCMOptions({
             key={i}
             onClick={() => onSelect(i)}
             disabled={disabled}
-            className={`group relative flex items-start gap-3 p-4 rounded-xl bg-[#EAF2FF] border border-[#D0E2FF] text-[#1E40AF] font-medium text-left transition-all duration-200 shadow-sm ${!disabled ? 'hover:bg-[#DCEAFF] hover:border-[#A5C8FF] active:scale-[0.98]' : 'opacity-60'} min-h-[68px]`}
+            className={`group relative flex items-start gap-3 p-4 rounded-xl bg-[#EAF2FF] border border-[#D0E2FF] text-[#1E40AF] font-medium text-left transition-all duration-200 shadow-sm ${!disabled ? "hover:bg-[#DCEAFF] hover:border-[#A5C8FF] active:scale-[0.98]" : "opacity-60"} min-h-[68px]`}
             data-testid={`button-qcm-option-${i}`}
           >
             <span className="flex-shrink-0 w-7 h-7 rounded-md bg-white border border-[#D0E2FF] flex items-center justify-center text-sm font-bold mt-0.5">
@@ -301,7 +316,10 @@ function MultiOptions({
   t: Dictionary;
 }) {
   return (
-    <div className="py-4 space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="multi-options-container">
+    <div
+      className="py-4 space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300"
+      data-testid="multi-options-container"
+    >
       <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
         <Star className="h-3.5 w-3.5 text-primary" />
         <span>{t.chatbot.selectAllCorrect}</span>
@@ -315,15 +333,17 @@ function MultiOptions({
               onClick={() => onToggle(i)}
               disabled={disabled}
               className={`group flex items-start gap-3 p-4 rounded-xl font-medium text-sm transition-all duration-200 min-h-[68px] ${
-                isSelected 
-                  ? 'bg-[#3B82F6] border-2 border-[#2563EB] text-white shadow-md' 
-                  : 'bg-[#EAF2FF] border border-[#D0E2FF] text-[#1E40AF] shadow-sm'
-              } ${!disabled ? (isSelected ? 'hover:bg-[#2563EB]' : 'hover:bg-[#DCEAFF] hover:border-[#A5C8FF]') + ' active:scale-[0.98]' : 'opacity-60'}`}
+                isSelected
+                  ? "bg-[#3B82F6] border-2 border-[#2563EB] text-white shadow-md"
+                  : "bg-[#EAF2FF] border border-[#D0E2FF] text-[#1E40AF] shadow-sm"
+              } ${!disabled ? (isSelected ? "hover:bg-[#2563EB]" : "hover:bg-[#DCEAFF] hover:border-[#A5C8FF]") + " active:scale-[0.98]" : "opacity-60"}`}
               data-testid={`button-multi-option-${i}`}
             >
-              <span className={`flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-sm font-bold mt-0.5 ${
-                isSelected ? 'bg-white/20 border border-white/30' : 'bg-white border border-[#D0E2FF]'
-              }`}>
+              <span
+                className={`flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-sm font-bold mt-0.5 ${
+                  isSelected ? "bg-white/20 border border-white/30" : "bg-white border border-[#D0E2FF]"
+                }`}
+              >
                 {String.fromCharCode(65 + i)}
               </span>
               <span className="flex-1 text-left leading-snug">{prop}</span>
@@ -341,8 +361,8 @@ function MultiOptions({
         >
           <Check className="h-4 w-4 mr-2" />
           {t.chatbot.validateSelection
-            .replace('{count}', String(selectedIndices.length))
-            .replace('{plural}', selectedIndices.length > 1 ? 's' : '')}
+            .replace("{count}", String(selectedIndices.length))
+            .replace("{plural}", selectedIndices.length > 1 ? "s" : "")}
         </Button>
       </div>
     </div>
@@ -365,7 +385,6 @@ export function StudentChatbotModal({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [totalAnswered, setTotalAnswered] = useState(0);
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [chatState, setChatState] = useState<"idle" | "greeting" | "asking" | "completed">("idle");
@@ -377,25 +396,28 @@ export function StudentChatbotModal({
   const [waitingForRetry, setWaitingForRetry] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const chatStateRef = useRef(chatState);
-  chatStateRef.current = chatState;
   const studentNameRef = useRef(studentName);
-  studentNameRef.current = studentName;
   const coursTitleRef = useRef(course.title);
-  coursTitleRef.current = course.title;
   const [conversationNonce, setConversationNonce] = useState(0);
   const askQuestionRef = useRef<(index: number) => void>(() => {});
 
+  useEffect(() => {
+    chatStateRef.current = chatState;
+    studentNameRef.current = studentName;
+    coursTitleRef.current = course.title;
+  }, [chatState, studentName, course.title]);
+
   const shuffledQuestions = useMemo(() => {
     if (questions.length === 0) return [];
-    
+
     const shuffled = shuffleArray<Question>(questions);
-    
-    return shuffled.map(q => {
+
+    return shuffled.map((q) => {
       if ((q.type === "single" || q.type === "multiple") && q.proposals && q.proposals.length > 0) {
         const indices = q.proposals.map((_, i) => i);
         const shuffledIndices = shuffleArray(indices);
-        const shuffledPropositions = shuffledIndices.map(i => q.proposals[i]);
-        
+        const shuffledPropositions = shuffledIndices.map((i) => q.proposals[i]);
+
         return {
           ...q,
           shuffledPropositions,
@@ -406,57 +428,60 @@ export function StudentChatbotModal({
     });
   }, [questions]);
 
-  const addMessage = (message: Omit<ChatMessage, "id">) => {
+  const addMessage = useCallback((message: Omit<ChatMessage, "id">) => {
     setMessages((prev) => [...prev, { ...message, id: generateId() }]);
-  };
+  }, []);
 
-  const showCompletion = async (finalScore: number, finalTotal: number) => {
-    const ratio = finalTotal > 0 ? finalScore / finalTotal : 0;
-    const scoreDisplay = finalScore % 1 === 0 ? finalScore : finalScore.toFixed(1);
-    
-    try {
-      const body: GenerateCompletionFeedbackRequest = {
-        courseTitle: course.title,
-        score: finalScore,
-        total: finalTotal,
-        studentName: studentName || undefined,
-        language,
+  const showCompletion = useCallback(
+    async (finalScore: number, finalTotal: number) => {
+      const ratio = finalTotal > 0 ? finalScore / finalTotal : 0;
+      const scoreDisplay = finalScore % 1 === 0 ? finalScore : finalScore.toFixed(1);
+
+      try {
+        const body: GenerateCompletionFeedbackRequest = {
+          courseTitle: course.title,
+          score: finalScore,
+          total: finalTotal,
+          studentName: studentName || undefined,
+          language,
+        };
+        const data = await llmService.generateCompletionFeedback(body);
+        const aiFeedback = data.feedback || t.chatbot.completionDefault;
+
+        const scoreText = t.chatbot.completionScore
+          .replace("{score}", String(scoreDisplay))
+          .replace("{total}", String(finalTotal))
+          .replace("{percent}", String(Math.round(ratio * 100)));
+        addMessage({
+          sender: "bot",
+          text: `${t.chatbot.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
+          type: "completion",
+          scoreRatio: ratio,
+        });
+      } catch (error) {
+        console.error("Error fetching completion feedback:", error);
+        const scoreText = t.chatbot.completionScore
+          .replace("{score}", String(scoreDisplay))
+          .replace("{total}", String(finalTotal))
+          .replace("{percent}", String(Math.round(ratio * 100)));
+        addMessage({
+          sender: "bot",
+          text: `${t.chatbot.completionTitle}\n\n${scoreText}`,
+          type: "completion",
+          scoreRatio: ratio,
+        });
       }
-      const data = await llmService.generateCompletionFeedback(body);
-      const aiFeedback = data.feedback || t.chatbot.completionDefault;
-      
-      const scoreText = t.chatbot.completionScore
-        .replace('{score}', String(scoreDisplay))
-        .replace('{total}', String(finalTotal))
-        .replace('{percent}', String(Math.round(ratio * 100)));
-      addMessage({
-        sender: "bot",
-        text: `${t.chatbot.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
-        type: "completion",
-        scoreRatio: ratio,
-      });
-    } catch (error) {
-      console.error("Error fetching completion feedback:", error);
-      const scoreText = t.chatbot.completionScore
-        .replace('{score}', String(scoreDisplay))
-        .replace('{total}', String(finalTotal))
-        .replace('{percent}', String(Math.round(ratio * 100)));
-      addMessage({
-        sender: "bot",
-        text: `${t.chatbot.completionTitle}\n\n${scoreText}`,
-        type: "completion",
-        scoreRatio: ratio,
-      });
-    }
-    
-    setChatState("completed");
-    if (onComplete) {
-      console.log("Calling onComplete with:", { finalTotal, finalScore });
-      onComplete(finalTotal, finalScore);
-    } else {
-      console.warn("onComplete callback is not defined!");
-    }
-  };
+
+      setChatState("completed");
+      if (onComplete) {
+        console.log("Calling onComplete with:", { finalTotal, finalScore });
+        onComplete(finalTotal, finalScore);
+      } else {
+        console.warn("onComplete callback is not defined!");
+      }
+    },
+    [addMessage, course.title, studentName, language, t, onComplete],
+  );
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -464,30 +489,35 @@ export function StudentChatbotModal({
     }
   }, [messages.length]);
 
-  const askQuestion = (index: number) => {
-    if (index >= shuffledQuestions.length) {
-      setChatState("completed");
-      return;
-    }
+  const askQuestion = useCallback(
+    (index: number) => {
+      if (index >= shuffledQuestions.length) {
+        setChatState("completed");
+        return;
+      }
 
-    const question = shuffledQuestions[index];
-    
-    let questionText = `Question ${index + 1}/${shuffledQuestions.length}\n\n${question.questionText}`;
+      const question = shuffledQuestions[index];
 
-    if (question.type === "multiple") {
-      questionText += `\n\n${t.chatbot.multipleAnswersHint}`;
-    }
+      let questionText = `Question ${index + 1}/${shuffledQuestions.length}\n\n${question.questionText}`;
 
-    addMessage({
-      sender: "bot",
-      text: questionText,
-      type: "question",
-    });
-    setSelectedMultiIndices([]);
-    setChatState("asking");
-  };
+      if (question.type === "multiple") {
+        questionText += `\n\n${t.chatbot.multipleAnswersHint}`;
+      }
 
-  askQuestionRef.current = askQuestion;
+      addMessage({
+        sender: "bot",
+        text: questionText,
+        type: "question",
+      });
+      setSelectedMultiIndices([]);
+      setChatState("asking");
+    },
+    [addMessage, shuffledQuestions, t],
+  );
+
+  useEffect(() => {
+    askQuestionRef.current = askQuestion;
+  });
 
   useEffect(() => {
     if (!open || chatStateRef.current !== "idle") {
@@ -499,14 +529,12 @@ export function StudentChatbotModal({
     let t2: ReturnType<typeof setTimeout> | undefined;
     let t3: ReturnType<typeof setTimeout> | undefined;
 
-    const name = studentNameRef.current;
     const title = coursTitleRef.current;
 
     if (shuffledQuestions.length > 0) {
       setMessages([]);
       setCurrentQuestionIndex(0);
       setScore(0);
-      setTotalAnswered(0);
       setInputValue("");
       setSelectedMultiIndices([]);
 
@@ -525,7 +553,7 @@ export function StudentChatbotModal({
           if (cancelled) return;
           addMessage({
             sender: "bot",
-            text: getRandomMessage(t.chatbot.startQuiz).replace('{count}', String(shuffledQuestions.length)),
+            text: getRandomMessage(t.chatbot.startQuiz).replace("{count}", String(shuffledQuestions.length)),
             type: "greeting",
           });
           if (cancelled) return;
@@ -542,7 +570,7 @@ export function StudentChatbotModal({
         setChatState("greeting");
         addMessage({
           sender: "bot",
-          text: t.chatbot.noQuestions.replace('{course}', title),
+          text: t.chatbot.noQuestions.replace("{course}", title),
           type: "greeting",
         });
         if (cancelled) return;
@@ -564,7 +592,7 @@ export function StudentChatbotModal({
       clearTimeout(t2);
       clearTimeout(t3);
     };
-  }, [open, course.id, shuffledQuestions.length, conversationNonce]);
+  }, [open, course.id, shuffledQuestions.length, conversationNonce, t, addMessage]);
 
   const handleQCMAnswer = (selectedIndex: number) => {
     if (isProcessing || waitingForAcknowledge) return;
@@ -572,20 +600,20 @@ export function StudentChatbotModal({
 
     const question = shuffledQuestions[currentQuestionIndex];
     if (!question) return;
-    
+
     setWaitingForRetry(false);
 
     setIsProcessing(true);
     const propositions = question.shuffledPropositions || question.proposals;
     const selectedOption = propositions?.[selectedIndex] || "";
-    
+
     addMessage({
       sender: "student",
       text: `${String.fromCharCode(65 + selectedIndex)}. ${selectedOption}`,
       type: "answer",
     });
 
-        const isCorrect = selectedOption === question.correctAnswers?.[0];
+    const isCorrect = selectedOption === question.correctAnswers?.[0];
     processAnswer(isCorrect, question.correctAnswers?.[0] || "", question.explanation || "");
   };
 
@@ -595,20 +623,18 @@ export function StudentChatbotModal({
 
     const question = shuffledQuestions[currentQuestionIndex];
     if (!question) return;
-    
+
     setWaitingForRetry(false);
 
     setIsProcessing(true);
     const propositions = question.shuffledPropositions || question.proposals;
-    const selectedOptions = selectedMultiIndices
-      .sort((a, b) => a - b)
-      .map(i => propositions?.[i] || "");
-    
+    const selectedOptions = selectedMultiIndices.sort((a, b) => a - b).map((i) => propositions?.[i] || "");
+
     const answerText = selectedMultiIndices
       .sort((a, b) => a - b)
-      .map(i => `${String.fromCharCode(65 + i)}. ${propositions?.[i]}`)
+      .map((i) => `${String.fromCharCode(65 + i)}. ${propositions?.[i]}`)
       .join(", ");
-    
+
     addMessage({
       sender: "student",
       text: answerText,
@@ -616,10 +642,10 @@ export function StudentChatbotModal({
     });
 
     const correctAnswers = question.correctAnswers || [];
-    const isCorrect = 
+    const isCorrect =
       selectedOptions.length === correctAnswers.length &&
-      selectedOptions.every(opt => correctAnswers.includes(opt)) &&
-      correctAnswers.every(ans => selectedOptions.includes(ans));
+      selectedOptions.every((opt) => correctAnswers.includes(opt)) &&
+      correctAnswers.every((ans) => selectedOptions.includes(ans));
 
     const correctDisplay = correctAnswers.join(", ");
     processAnswer(isCorrect, correctDisplay, question.explanation || "");
@@ -634,7 +660,7 @@ export function StudentChatbotModal({
 
     setIsProcessing(true);
     setShowTyping(true);
-    
+
     addMessage({
       sender: "student",
       text: answer,
@@ -647,11 +673,11 @@ export function StudentChatbotModal({
         correctAnswer: question.correctAnswers?.[0] || "",
         answer: answer,
         explanation: question.explanation || "",
-      }
+      };
 
       const evaluation = await llmService.evaluateAnswer(body);
 
-      processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] || "", evaluation.missingElements);
+      processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] || "");
     } catch (error) {
       console.error("Error evaluating answer:", error);
       setShowTyping(false);
@@ -660,30 +686,22 @@ export function StudentChatbotModal({
     }
   };
 
-  const processOpenAnswer = (
-    scorePoints: number, 
-    feedback: string, 
-    correctAnswer: string,
-    missingElements?: string[]
-  ) => {
+  const processOpenAnswer = (scorePoints: number, feedback: string, correctAnswer: string) => {
     setShowTyping(false);
     setWaitingForRetry(false);
 
     const isFullyCorrect = scorePoints >= 0.7;
 
     const shouldCountQuestion = isFullyCorrect || isRetryAttempt;
-    
+
     if (shouldCountQuestion) {
       setScore((prev) => prev + scorePoints);
-      setTotalAnswered((prev) => prev + 1);
     }
 
     setTimeout(() => {
       if (isFullyCorrect) {
-        const successMessage = isRetryAttempt 
-          ? t.chatbot.goodContinue
-          : feedback;
-        
+        const successMessage = isRetryAttempt ? t.chatbot.goodContinue : feedback;
+
         addMessage({
           sender: "bot",
           text: successMessage,
@@ -699,7 +717,7 @@ export function StudentChatbotModal({
         if (!isRetryAttempt) {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\n${t.chatbot.expectedAnswer.replace('{answer}', correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
+            text: `${feedback}\n\n${t.chatbot.expectedAnswer.replace("{answer}", correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -725,18 +743,17 @@ export function StudentChatbotModal({
   const processAnswer = (isCorrect: boolean, correctAnswer: string, explication?: string | null) => {
     // Only count the question when we're done with it (not on first failed attempt for QCM)
     const shouldCountQuestion = isCorrect || isRetryAttempt;
-    
+
     if (shouldCountQuestion) {
       setScore((prev) => prev + (isCorrect ? 1 : 0));
-      setTotalAnswered((prev) => prev + 1);
     }
 
     setTimeout(() => {
       if (isCorrect) {
-        const successMessage = isRetryAttempt 
+        const successMessage = isRetryAttempt
           ? `${t.chatbot.bravoExact}${explication ? `\n\n${explication}` : ""}`
           : `${getRandomMessage(correctFeedbackMessages)}${explication ? `\n\n${explication}` : ""}`;
-        
+
         addMessage({
           sender: "bot",
           text: successMessage,
@@ -751,7 +768,7 @@ export function StudentChatbotModal({
         // First attempt failed - give them a chance to retry
         addMessage({
           sender: "bot",
-          text: `${getRandomMessage(incorrectFeedbackMessages)} ${t.chatbot.correctIs.replace('{answer}', correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
+          text: `${getRandomMessage(incorrectFeedbackMessages)} ${t.chatbot.correctIs.replace("{answer}", correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -762,7 +779,7 @@ export function StudentChatbotModal({
         // Second attempt also failed - move on
         addMessage({
           sender: "bot",
-          text: `${t.chatbot.correctWas.replace('{answer}', correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
+          text: `${t.chatbot.correctWas.replace("{answer}", correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -774,7 +791,7 @@ export function StudentChatbotModal({
     }, 500);
   };
 
-  const handleAcknowledge = async () => {
+  const handleAcknowledge = useCallback(async () => {
     setWaitingForAcknowledge(false);
     setLastAnswerResult(null);
     const nextIndex = currentQuestionIndex + 1;
@@ -785,7 +802,7 @@ export function StudentChatbotModal({
     } else {
       askQuestion(nextIndex);
     }
-  };
+  }, [currentQuestionIndex, shuffledQuestions.length, score, showCompletion, askQuestion]);
 
   const handleSendMessage = () => {
     if (!inputValue.trim() || isProcessing) return;
@@ -807,18 +824,17 @@ export function StudentChatbotModal({
         handleAcknowledge();
       }
     };
-    
+
     if (waitingForAcknowledge) {
       window.addEventListener("keydown", handleGlobalKeyPress);
       return () => window.removeEventListener("keydown", handleGlobalKeyPress);
     }
-  }, [waitingForAcknowledge]);
+  }, [waitingForAcknowledge, handleAcknowledge]);
 
   const handleReset = () => {
     setMessages([]);
     setCurrentQuestionIndex(0);
     setScore(0);
-    setTotalAnswered(0);
     setInputValue("");
     setIsProcessing(false);
     setSelectedMultiIndices([]);
@@ -839,28 +855,24 @@ export function StudentChatbotModal({
   };
 
   const toggleMultiOption = (index: number) => {
-    setSelectedMultiIndices(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
+    setSelectedMultiIndices((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
   };
 
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
   const currentPropositions = currentQuestion?.shuffledPropositions || currentQuestion?.proposals;
-  
+
   const showQCMOptions =
     (chatState === "asking" || waitingForRetry) &&
     currentQuestion?.type === "single" &&
     !isProcessing &&
     !waitingForAcknowledge;
-  
+
   const showMultiOptions =
     (chatState === "asking" || waitingForRetry) &&
     currentQuestion?.type === "multiple" &&
     !isProcessing &&
     !waitingForAcknowledge;
-  
+
   const showTextInput =
     (chatState === "asking" || waitingForRetry) &&
     currentQuestion?.type === "open" &&
@@ -876,14 +888,17 @@ export function StudentChatbotModal({
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
-        <DialogHeader className="flex-shrink-0 px-4 py-3 border-b bg-gradient-to-r from-primary/10 via-violet-500/5 to-transparent backdrop-blur-sm" style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}>
+        <DialogHeader
+          className="flex-shrink-0 px-4 py-3 border-b bg-gradient-to-r from-primary/10 via-violet-500/5 to-transparent backdrop-blur-sm"
+          style={{ paddingTop: "max(12px, env(safe-area-inset-top))" }}
+        >
           <div className="flex items-center gap-3">
             <div className="relative shrink-0">
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-violet-600 p-0.5 shadow-lg shadow-primary/25">
-                <img 
-                  src="/edesio-logo-square.png" 
-                  alt="Edesio" 
-                  className="w-full h-full rounded-[10px] object-cover bg-white dark:bg-background" 
+                <img
+                  src="/edesio-logo-square.png"
+                  alt="Edesio"
+                  className="w-full h-full rounded-[10px] object-cover bg-white dark:bg-background"
                 />
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-background flex items-center justify-center shadow-sm">
@@ -925,16 +940,16 @@ export function StudentChatbotModal({
           </div>
         </DialogHeader>
 
-        <div 
+        <div
           ref={scrollRef}
           className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-background to-muted/20"
           data-testid="student-chatbot-messages"
-          style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}
+          style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
         >
           {messages.map((message) => (
-            <MessageBubble 
-              key={message.id} 
-              message={message} 
+            <MessageBubble
+              key={message.id}
+              message={message}
               studentName={studentName}
               studentPhotoUrl={studentPhotoUrl}
               t={t}
@@ -945,12 +960,7 @@ export function StudentChatbotModal({
 
         {showQCMOptions && currentPropositions && (
           <div className="flex-shrink-0 px-2 border-t bg-muted/30 backdrop-blur-sm">
-            <QCMOptions
-              propositions={currentPropositions}
-              onSelect={handleQCMAnswer}
-              disabled={isProcessing}
-              t={t}
-            />
+            <QCMOptions propositions={currentPropositions} onSelect={handleQCMAnswer} disabled={isProcessing} t={t} />
           </div>
         )}
 
@@ -968,15 +978,15 @@ export function StudentChatbotModal({
         )}
 
         {waitingForAcknowledge && (
-          <div 
+          <div
             className={`flex-shrink-0 px-4 py-4 border-t backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300 ${
-              lastAnswerResult === "correct" 
-                ? "bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20" 
+              lastAnswerResult === "correct"
+                ? "bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20"
                 : lastAnswerResult === "partial"
-                ? "bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20"
-                : "bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20"
-            }`} 
-            style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}
+                  ? "bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20"
+                  : "bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20"
+            }`}
+            style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
           >
             <div className="flex justify-center">
               <Button
@@ -985,10 +995,10 @@ export function StudentChatbotModal({
                   currentQuestionIndex + 1 >= shuffledQuestions.length
                     ? "bg-gradient-to-r from-primary to-violet-600 hover:opacity-90 text-white border border-violet-700"
                     : lastAnswerResult === "correct"
-                    ? "bg-[#16A34A] hover:bg-[#15803D] text-white border border-[#15803D]"
-                    : lastAnswerResult === "partial"
-                    ? "bg-[#F59E0B] hover:bg-[#D97706] text-white border border-[#D97706]"
-                    : "bg-[#3B82F6] hover:bg-[#2563EB] text-white border border-[#2563EB]"
+                      ? "bg-[#16A34A] hover:bg-[#15803D] text-white border border-[#15803D]"
+                      : lastAnswerResult === "partial"
+                        ? "bg-[#F59E0B] hover:bg-[#D97706] text-white border border-[#D97706]"
+                        : "bg-[#3B82F6] hover:bg-[#2563EB] text-white border border-[#2563EB]"
                 }`}
                 data-testid="button-acknowledge"
               >
@@ -1009,7 +1019,10 @@ export function StudentChatbotModal({
         )}
 
         {showTextInput && (
-          <div className="flex-shrink-0 px-4 py-4 border-t bg-muted/30 backdrop-blur-sm" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
+          <div
+            className="flex-shrink-0 px-4 py-4 border-t bg-muted/30 backdrop-blur-sm"
+            style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
+          >
             <div className="flex gap-3 items-end">
               <div className="flex-1 relative">
                 <Textarea
@@ -1021,11 +1034,11 @@ export function StudentChatbotModal({
                   data-testid="input-student-answer"
                   disabled={isProcessing}
                   rows={1}
-                  style={{ height: 'auto' }}
+                  style={{ height: "auto" }}
                   onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement;
-                    target.style.height = 'auto';
-                    target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                    target.style.height = "auto";
+                    target.style.height = Math.min(target.scrollHeight, 120) + "px";
                   }}
                 />
               </div>
@@ -1044,7 +1057,10 @@ export function StudentChatbotModal({
         )}
 
         {chatState === "completed" && messages.length > 0 && (
-          <div className="flex-shrink-0 px-4 py-4 border-t bg-muted/30 backdrop-blur-sm" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
+          <div
+            className="flex-shrink-0 px-4 py-4 border-t bg-muted/30 backdrop-blur-sm"
+            style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
+          >
             <div className="flex gap-3">
               <Button
                 variant="outline"

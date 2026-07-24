@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,17 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { GraduationCap, Loader2, CheckCircle2, XCircle, Building2 } from "lucide-react";
 import { invitationTokenService } from "@/services/invitation-token.service";
-import { useTranslations, useLocale } from "@/lib/i18n/client";
+import { useTranslations } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -37,7 +30,6 @@ export default function TeacherInvitation() {
   const { signIn, signUp } = useAuth();
   const t = useTranslations();
   const ti = t.teacherInvitation;
-  const locale = useLocale();
   const [isValidating, setIsValidating] = useState(true);
   const [invitationData, setInvitationData] = useState<InvitationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -61,7 +53,7 @@ export default function TeacherInvitation() {
           message: ti.passwordMismatch,
           path: ["confirmPassword"],
         }),
-    [ti]
+    [ti],
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -78,7 +70,7 @@ export default function TeacherInvitation() {
     },
   });
 
-  const validateToken = async () => {
+  const validateToken = useCallback(async () => {
     if (!token) {
       setValidationError(ti.invalidLink);
       setIsValidating(false);
@@ -99,11 +91,11 @@ export default function TeacherInvitation() {
       setValidationError(ti.validationError);
       setIsValidating(false);
     }
-  };
+  }, [token, ti]);
 
   useEffect(() => {
     validateToken();
-  }, [token]);
+  }, [validateToken]);
 
   const onSubmit = async (data: FormValues) => {
     if (!invitationData || !token) return;
@@ -122,13 +114,12 @@ export default function TeacherInvitation() {
         invitationData.establishmentName,
         token,
       );
-      const user = await signIn(data.email, data.password);
+      await signIn(data.email, data.password);
       router.push("/teacher");
     } catch (err) {
       const translatedError = translateSupabaseError(
         err instanceof Error ? err.message : ti.unknownError,
         t.supabaseErrors,
-        locale,
       );
       setErrorMessage(translatedError);
     } finally {
@@ -169,14 +160,14 @@ export default function TeacherInvitation() {
       <div className="w-full max-w-lg">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Edesio
+            </span>
           </Link>
           <h1 className="text-3xl font-bold mb-2" data-testid="text-signup-title">
             {ti.createAccount}
           </h1>
-          <p className="text-muted-foreground">
-            {ti.invited}
-          </p>
+          <p className="text-muted-foreground">{ti.invited}</p>
         </div>
 
         <Card className="p-6 md:p-8">
@@ -233,11 +224,7 @@ export default function TeacherInvitation() {
                     <FormItem>
                       <FormLabel>{ti.firstname}</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder={ti.firstnamePlaceholder}
-                          {...field}
-                          data-testid="input-signup-firstname"
-                        />
+                        <Input placeholder={ti.firstnamePlaceholder} {...field} data-testid="input-signup-firstname" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -251,11 +238,7 @@ export default function TeacherInvitation() {
                     <FormItem>
                       <FormLabel>{ti.lastname}</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder={ti.lastnamePlaceholder}
-                          {...field}
-                          data-testid="input-signup-lastname"
-                        />
+                        <Input placeholder={ti.lastnamePlaceholder} {...field} data-testid="input-signup-lastname" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -277,9 +260,7 @@ export default function TeacherInvitation() {
                         data-testid="input-signup-email"
                       />
                     </FormControl>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {ti.emailHint}
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">{ti.emailHint}</p>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -292,12 +273,7 @@ export default function TeacherInvitation() {
                   <FormItem>
                     <FormLabel>{ti.password}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="••••••••"
-                        {...field}
-                        data-testid="input-signup-password"
-                      />
+                      <Input type="password" placeholder="••••••••" {...field} data-testid="input-signup-password" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -337,10 +313,7 @@ export default function TeacherInvitation() {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <label
-                        htmlFor="acceptTerms"
-                        className="text-sm font-normal cursor-pointer"
-                      >
+                      <label htmlFor="acceptTerms" className="text-sm font-normal cursor-pointer">
                         {ti.acceptTerms}
                       </label>
                       <FormMessage />
@@ -371,11 +344,7 @@ export default function TeacherInvitation() {
           <div className="text-center pt-6">
             <p className="text-sm text-muted-foreground">
               {ti.hasAccount}{" "}
-              <Link
-                href="/connexion"
-                className="text-primary hover:underline"
-                data-testid="link-login-bottom"
-              >
+              <Link href="/connexion" className="text-primary hover:underline" data-testid="link-login-bottom">
                 {ti.login}
               </Link>
             </p>

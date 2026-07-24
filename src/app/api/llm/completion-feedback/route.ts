@@ -5,7 +5,7 @@ export async function POST(request: Request) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Cookie": request.headers.get("Cookie") ?? "",
+      Cookie: request.headers.get("Cookie") ?? "",
       "x-csrf-token": request.headers.get("x-csrf-token") ?? "",
     },
     body: JSON.stringify(body),

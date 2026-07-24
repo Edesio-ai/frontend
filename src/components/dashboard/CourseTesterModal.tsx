@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   DndContext,
   closestCenter,
@@ -20,13 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 import {
   AlertDialog,
@@ -39,17 +33,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import type { Course, CourseFile, Question, CourseRanking, UpdateQuestionRequest } from "@/types";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Loader2,
   FileText,
-  X,
   Upload,
   Sparkles,
   FileDown,
@@ -58,13 +45,12 @@ import {
   Trash2,
   RefreshCw,
   Files,
-  MessageSquare,
   BookOpen,
   Plus,
   Trophy,
   Award,
   Download,
-  ArrowLeft
+  ArrowLeft,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { exportClassementPdf } from "@/lib/pdf-export";
@@ -81,8 +67,6 @@ import { QuestionSectionTesterModal } from "../teacher/CourseTesterModal/Questio
 import { RegenerateQuestionModal } from "../teacher/CourseTesterModal/RegenerateQuestionModal";
 import { ChatbotModal } from "../teacher/CourseTesterModal/ChatbotModal";
 
-
-
 interface CourseTesterModalProps {
   course: Course;
   allCourses: Course[];
@@ -93,17 +77,14 @@ interface CourseTesterModalProps {
     courseId: string,
     title: string,
     description: string | null,
-    contentText: string | null
+    contentText: string | null,
   ) => Promise<Course | null>;
   uploadPdfForCourse: (courseId: string, file: File) => Promise<CourseFile | null>;
   fetchCourseFiles: (courseId: string) => Promise<CourseFile[]>;
   deleteCourseFile: (file: CourseFile) => Promise<boolean>;
   getPdfUrl: (fileId: string, fileName: string) => Promise<void>;
   fetchQuestions: (courseId: string) => Promise<Question[]>;
-  updateQuestion: (
-    questionId: string,
-    updates: UpdateQuestionRequest
-  ) => Promise<Question | null>;
+  updateQuestion: (questionId: string, updates: UpdateQuestionRequest) => Promise<Question | null>;
   deleteQuestion: (questionId: string) => Promise<boolean>;
   createQuestion: (
     courseId: string,
@@ -114,11 +95,11 @@ interface CourseTesterModalProps {
       correctAnswer?: string;
       correctAnswers?: string[];
       explanation?: string;
-    }
+    },
   ) => Promise<Question | null>;
   generateQuestions: (
     courseId: string,
-    config?: GenerateQuestionsConfig
+    config?: GenerateQuestionsConfig,
   ) => Promise<{ success: boolean; questionCount?: number; questions?: Question[]; error?: string }>;
   validateQuestions: (courseId: string) => Promise<{ success: boolean; course?: Course; error?: string }>;
   reorderQuestions?: (questionIds: string[]) => Promise<boolean>;
@@ -172,7 +153,6 @@ export function CourseTesterModal({
   const [newQuestionText, setNewQuestionText] = useState("");
   const [newProposals, setNewProposals] = useState(["", "", "", ""]);
   const [newCorrectIndex, setNewCorrectIndex] = useState(0);
-  const [newCorrectIndices, setNewCorrectIndices] = useState<number[]>([]);
   const [newGoodAnswer, setNewGoodAnswer] = useState("");
   const [newExplication, setNewExplication] = useState("");
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
@@ -201,7 +181,7 @@ export function CourseTesterModal({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleQuestionDragEnd = async (event: DragEndEvent) => {
@@ -228,31 +208,14 @@ export function CourseTesterModal({
     }
   };
 
-  useEffect(() => {
-    if (open) {
-      loadData();
-      setShowQuestionGenerator(true);
-    }
-  }, [open, course.id]);
-
-  useEffect(() => {
-    setEditedTitle(course.title);
-    setEditedDescription(course.description || "");
-    setEditedContent(course.contentText || "");
-    setQuestionsValidated(course.validatedQuestions);
-  }, [course]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
 
     const freshCourse = await courseService.getCourseValidatedQuestions(course.id);
     if (freshCourse) {
       setQuestionsValidated(freshCourse.validatedQuestions);
     }
-    const [fileData, questionsData] = await Promise.all([
-      fetchCourseFiles(course.id),
-      fetchQuestions(course.id),
-    ]);
+    const [fileData, questionsData] = await Promise.all([fetchCourseFiles(course.id), fetchQuestions(course.id)]);
 
     setFiles(fileData);
     setQuestions(questionsData);
@@ -264,16 +227,25 @@ export function CourseTesterModal({
       setRankings(rankingsData);
       setLoadingRankings(false);
     }
-  };
+  }, [course.id, fetchCourseFiles, fetchQuestions, fetchCourseRanking]);
+
+  useEffect(() => {
+    if (open) {
+      loadData();
+      setShowQuestionGenerator(true);
+    }
+  }, [open, course.id, loadData]);
+
+  useEffect(() => {
+    setEditedTitle(course.title);
+    setEditedDescription(course.description || "");
+    setEditedContent(course.contentText || "");
+    setQuestionsValidated(course.validatedQuestions);
+  }, [course]);
 
   const handleSave = async () => {
     setIsSaving(true);
-    const updated = await updateCourse(
-      course.id,
-      editedTitle,
-      editedDescription || null,
-      editedContent || null
-    );
+    const updated = await updateCourse(course.id, editedTitle, editedDescription || null, editedContent || null);
     if (updated) {
       onCourseUpdated(updated);
       setIsEditing(false);
@@ -334,14 +306,13 @@ export function CourseTesterModal({
       const config = {
         totalQuestions: genTotalQuestions,
         singleCount: singleGenCount,
-        openedCount: openGenerateCount
+        openedCount: openGenerateCount,
       };
 
-      const { questionCount, success, questions} = await generateQuestions(course.id, config);
- 
+      const { questionCount, success, questions } = await generateQuestions(course.id, config);
 
       if (success) {
-        setGenerateSuccess(t.dashboard.courseTester.successGenerated.replace('{count}', String(questionCount)));
+        setGenerateSuccess(t.dashboard.courseTester.successGenerated.replace("{count}", String(questionCount)));
         if (questions && questions.length > 0) {
           console.log("Using questions directly from generation response:", questionCount);
           setQuestions(questions);
@@ -360,19 +331,19 @@ export function CourseTesterModal({
     }
   };
 
-  const handleConfigChange = (field: 'single' | 'open', value: number) => {
+  const handleConfigChange = (field: "single" | "open", value: number) => {
     const newValue = Math.max(0, Math.min(MAX_QUESTIONS, value));
     let newSingleQuestion = singleGenCount;
     let newOpenQuestion = openGenerateCount;
 
-    if (field === 'single') newSingleQuestion = newValue;
-    if (field === 'open') newOpenQuestion = newValue;
+    if (field === "single") newSingleQuestion = newValue;
+    if (field === "open") newOpenQuestion = newValue;
 
     let total = newSingleQuestion + newOpenQuestion;
 
     // Limit total to MAX_QUESTIONS
     if (total > MAX_QUESTIONS) {
-        if (field === 'single') {
+      if (field === "single") {
         newSingleQuestion = Math.max(0, MAX_QUESTIONS - newOpenQuestion);
       } else {
         newOpenQuestion = Math.max(0, MAX_QUESTIONS - newSingleQuestion);
@@ -385,9 +356,7 @@ export function CourseTesterModal({
   };
 
   const handleQuestionUpdated = (updatedQuestion: Question) => {
-    setQuestions((prev) =>
-      prev.map((q) => (q.id === updatedQuestion.id ? updatedQuestion : q))
-    );
+    setQuestions((prev) => prev.map((q) => (q.id === updatedQuestion.id ? updatedQuestion : q)));
   };
 
   const handleQuestionDeleted = (questionId: string) => {
@@ -399,7 +368,6 @@ export function CourseTesterModal({
     setNewQuestionText("");
     setNewProposals(["", "", "", ""]);
     setNewCorrectIndex(0);
-    setNewCorrectIndices([]);
     setNewGoodAnswer("");
     setNewExplication("");
   };
@@ -420,19 +388,19 @@ export function CourseTesterModal({
       type: newQuestionType,
       questionText: newQuestionText,
       explanation: newExplication || undefined,
-      correctAnswers: []
+      correctAnswers: [],
     };
 
     if (newQuestionType === "single") {
-      const filteredProposals = newProposals.filter(p => p.trim() !== "");
+      const filteredProposals = newProposals.filter((p) => p.trim() !== "");
       if (filteredProposals.length < 2) {
         setIsAddingQuestion(false);
         return;
       }
       questionData.proposals = filteredProposals;
-      questionData.correctAnswers.push(filteredProposals[newCorrectIndex] || filteredProposals[0])
+      questionData.correctAnswers.push(filteredProposals[newCorrectIndex] || filteredProposals[0]);
     } else {
-      if(newGoodAnswer) {
+      if (newGoodAnswer) {
         questionData.correctAnswers.push(newGoodAnswer);
       }
     }
@@ -469,17 +437,18 @@ export function CourseTesterModal({
     setIsValidating(false);
   };
 
-  const currentSingleCount = questions.filter(
-    (q) => q.type === "single" || q.type === "multiple",
-  ).length;
+  const currentSingleCount = questions.filter((q) => q.type === "single" || q.type === "multiple").length;
   const currentOpenCount = questions.filter((q) => q.type === "open").length;
 
   // Shared Add Question Dialog (used in both phases)
   const renderAddQuestionDialog = () => (
-    <Dialog open={addQuestionOpen} onOpenChange={(open) => {
-      setAddQuestionOpen(open);
-      if (!open) resetAddQuestionForm();
-    }}>
+    <Dialog
+      open={addQuestionOpen}
+      onOpenChange={(open) => {
+        setAddQuestionOpen(open);
+        if (!open) resetAddQuestionForm();
+      }}
+    >
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -488,8 +457,8 @@ export function CourseTesterModal({
           </DialogTitle>
           <DialogDescription>
             {t.dashboard.courseTester.createNewQuestion
-              .replace('{count}', String(questions.length))
-              .replace('{max}', String(MAX_QUESTIONS))}
+              .replace("{count}", String(questions.length))
+              .replace("{max}", String(MAX_QUESTIONS))}
           </DialogDescription>
         </DialogHeader>
 
@@ -542,7 +511,11 @@ export function CourseTesterModal({
                     className="h-9 w-9 p-0"
                     data-testid={`button-new-correct-${i}`}
                   >
-                    {newCorrectIndex === i ? <CheckCircle2 className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4 opacity-30" />}
+                    {newCorrectIndex === i ? (
+                      <CheckCircle2 className="h-4 w-4" />
+                    ) : (
+                      <CheckCircle2 className="h-4 w-4 opacity-30" />
+                    )}
                   </Button>
                 </div>
               ))}
@@ -584,14 +557,18 @@ export function CourseTesterModal({
             disabled={
               isAddingQuestion ||
               !newQuestionText.trim() ||
-              (newQuestionType === "single" && newProposals.filter(p => p.trim()).length < 2)
+              (newQuestionType === "single" && newProposals.filter((p) => p.trim()).length < 2)
             }
             data-testid="button-confirm-add-question"
           >
             {isAddingQuestion ? (
-              <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.common.loading}</>
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.common.loading}
+              </>
             ) : (
-              <><Plus className="h-4 w-4 mr-2" /> {t.selfLearner.createQuestion}</>
+              <>
+                <Plus className="h-4 w-4 mr-2" /> {t.selfLearner.createQuestion}
+              </>
             )}
           </Button>
         </div>
@@ -622,7 +599,7 @@ export function CourseTesterModal({
                     {showQuestionGenerator ? (
                       <>
                         <Sparkles className="h-5 w-5" />
-                        {t.dashboard.courseTester.title.replace('{name}', course.title)}
+                        {t.dashboard.courseTester.title.replace("{name}", course.title)}
                       </>
                     ) : (
                       <>
@@ -634,8 +611,7 @@ export function CourseTesterModal({
                   <DialogDescription>
                     {showQuestionGenerator
                       ? t.dashboard.courseTester.generateOrAdd
-                      : t.dashboard.courseTester.editBeforeGenerate
-                    }
+                      : t.dashboard.courseTester.editBeforeGenerate}
                   </DialogDescription>
                 </div>
               </div>
@@ -672,9 +648,7 @@ export function CourseTesterModal({
                         <Plus className="h-4 w-4" />
                         {t.teacher.questionGenerator.addManually}
                       </h5>
-                      <p className="text-xs text-muted-foreground">
-                        {t.dashboard.courseTester.createOwn}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{t.dashboard.courseTester.createOwn}</p>
                     </div>
                     <Button
                       variant="outline"
@@ -692,7 +666,7 @@ export function CourseTesterModal({
                   </div>
                   {questions.length >= MAX_QUESTIONS && (
                     <p className="text-xs text-amber-600">
-                      {t.dashboard.courseTester.questionLimit.replace('{max}', String(MAX_QUESTIONS))}
+                      {t.dashboard.courseTester.questionLimit.replace("{max}", String(MAX_QUESTIONS))}
                     </p>
                   )}
                 </div>
@@ -703,7 +677,7 @@ export function CourseTesterModal({
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <h5 className="font-medium text-sm flex flex-wrap items-center gap-2">
                         <ListChecks className="h-4 w-4" />
-                        {t.dashboard.courseTester.generatedCount.replace('{count}', String(questions.length))}
+                        {t.dashboard.courseTester.generatedCount.replace("{count}", String(questions.length))}
                       </h5>
                       <Button
                         variant="outline"
@@ -720,10 +694,7 @@ export function CourseTesterModal({
                       collisionDetection={closestCenter}
                       onDragEnd={handleQuestionDragEnd}
                     >
-                      <SortableContext
-                        items={questions.map((q) => q.id)}
-                        strategy={verticalListSortingStrategy}
-                      >
+                      <SortableContext items={questions.map((q) => q.id)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-2 max-h-[500px] overflow-y-auto">
                           {questions.map((q, index) => (
                             <SortableQuestionItem
@@ -733,9 +704,7 @@ export function CourseTesterModal({
                               updateQuestion={updateQuestion}
                               deleteQuestion={deleteQuestion}
                               onQuestionUpdated={(updated) => {
-                                setQuestions((prev) =>
-                                  prev.map((pq) => (pq.id === updated.id ? updated : pq))
-                                );
+                                setQuestions((prev) => prev.map((pq) => (pq.id === updated.id ? updated : pq)));
                               }}
                               onQuestionDeleted={(deletedId) => {
                                 setQuestions((prev) => prev.filter((pq) => pq.id !== deletedId));
@@ -751,9 +720,7 @@ export function CourseTesterModal({
                 {/* Validate button */}
                 {questions.length > 0 && (
                   <div className="pt-4 border-t">
-                    {validateError && (
-                      <p className="text-sm text-destructive mb-2">{validateError}</p>
-                    )}
+                    {validateError && <p className="text-sm text-destructive mb-2">{validateError}</p>}
                     <Button
                       onClick={handleValidateQuestions}
                       disabled={isValidating || questions.length === 0}
@@ -762,9 +729,13 @@ export function CourseTesterModal({
                       data-testid="button-validate-questions"
                     >
                       {isValidating ? (
-                        <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.dashboard.courseTester.validating}</>
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.dashboard.courseTester.validating}
+                        </>
                       ) : (
-                        <><CheckCircle2 className="h-4 w-4 mr-2" /> {t.dashboard.courseTester.validate}</>
+                        <>
+                          <CheckCircle2 className="h-4 w-4 mr-2" /> {t.dashboard.courseTester.validate}
+                        </>
                       )}
                     </Button>
                     <p className="text-xs text-muted-foreground text-center mt-2">
@@ -832,30 +803,46 @@ export function CourseTesterModal({
                         data-testid="button-upload-pdf"
                       >
                         {isUploadingPdf ? (
-                          <><Loader2 className="h-4 w-4 animate-spin mr-1" /> {t.common.loading}</>
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin mr-1" /> {t.common.loading}
+                          </>
                         ) : (
-                          <><Upload className="h-4 w-4 mr-1" /> {t.teacher.addCourse.selectPdfs}</>
+                          <>
+                            <Upload className="h-4 w-4 mr-1" /> {t.teacher.addCourse.selectPdfs}
+                          </>
                         )}
                       </Button>
                     </div>
                   </div>
                   {files.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                      {t.dashboard.courseTester.noPdfs}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{t.dashboard.courseTester.noPdfs}</p>
                   ) : (
                     <div className="space-y-1">
                       {files.map((f) => (
-                        <div key={f.id} className="flex flex-wrap items-center justify-between gap-2 p-2 rounded bg-muted/30 text-sm">
+                        <div
+                          key={f.id}
+                          className="flex flex-wrap items-center justify-between gap-2 p-2 rounded bg-muted/30 text-sm"
+                        >
                           <div className="flex flex-wrap items-center gap-2 min-w-0">
                             <FileText className="h-4 w-4 flex-shrink-0" />
                             <span className="truncate">{f.fileName}</span>
                           </div>
                           <div className="flex gap-1">
-                            <Button variant="ghost" size="icon" onClick={() => handleDownloadPdf(f)} data-testid={`button-download-pdf-${f.id}`}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDownloadPdf(f)}
+                              data-testid={`button-download-pdf-${f.id}`}
+                            >
                               <FileDown className="h-3.5 w-3.5" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteFile(f)} data-testid={`button-delete-pdf-${f.id}`}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive"
+                              onClick={() => handleDeleteFile(f)}
+                              data-testid={`button-delete-pdf-${f.id}`}
+                            >
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>
                           </div>
@@ -870,9 +857,18 @@ export function CourseTesterModal({
                   <Button
                     onClick={async () => {
                       // Save course changes before going to questions
-                      if (editedTitle !== course.title || editedDescription !== (course.description || "") || editedContent !== (course.contentText || "")) {
+                      if (
+                        editedTitle !== course.title ||
+                        editedDescription !== (course.description || "") ||
+                        editedContent !== (course.contentText || "")
+                      ) {
                         setIsSaving(true);
-                        const updated = await updateCourse(course.id, editedTitle, editedDescription || null, editedContent || null);
+                        const updated = await updateCourse(
+                          course.id,
+                          editedTitle,
+                          editedDescription || null,
+                          editedContent || null,
+                        );
                         if (updated) {
                           onCourseUpdated(updated);
                         }
@@ -886,9 +882,13 @@ export function CourseTesterModal({
                     data-testid="button-continue-to-questions"
                   >
                     {isSaving ? (
-                      <><Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.profile.saving}</>
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" /> {t.profile.saving}
+                      </>
                     ) : (
-                      <><Sparkles className="h-4 w-4 mr-2" /> {t.common.next}</>
+                      <>
+                        <Sparkles className="h-4 w-4 mr-2" /> {t.common.next}
+                      </>
                     )}
                   </Button>
                 </div>
@@ -902,13 +902,15 @@ export function CourseTesterModal({
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>{t.dashboard.courseTester.deleteFile}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {t.dashboard.courseTester.deleteFileIrreversible}
-              </AlertDialogDescription>
+              <AlertDialogDescription>{t.dashboard.courseTester.deleteFileIrreversible}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel disabled={isDeletingFichier}>{t.common.cancel}</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDeleteFile} disabled={isDeletingFichier} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              <AlertDialogAction
+                onClick={confirmDeleteFile}
+                disabled={isDeletingFichier}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
                 {isDeletingFichier ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                 {t.teacher.deleteCourseModal.confirm}
               </AlertDialogAction>
@@ -931,9 +933,7 @@ export function CourseTesterModal({
               <BookOpen className="h-5 w-5" />
               {course.title}
             </DialogTitle>
-            <DialogDescription>
-              {t.dashboard.courseTester.manageContent}
-            </DialogDescription>
+            <DialogDescription>{t.dashboard.courseTester.manageContent}</DialogDescription>
           </DialogHeader>
 
           {loading ? (
@@ -950,8 +950,8 @@ export function CourseTesterModal({
                 course={course}
                 editedTitle={editedTitle}
                 setEditedTitle={setEditedTitle}
-                editedDescription={editedDescription} 
-                setEditedDescription={setEditedDescription} 
+                editedDescription={editedDescription}
+                setEditedDescription={setEditedDescription}
                 editedContent={editedContent}
                 setEditedContent={setEditedContent}
               />
@@ -963,7 +963,7 @@ export function CourseTesterModal({
                 handleDownloadPdf={handleDownloadPdf}
                 handleDeleteFile={handleDeleteFile}
               />
-              <QuestionSectionTesterModal 
+              <QuestionSectionTesterModal
                 questions={questions}
                 handleGenerateQuestions={handleGenerateQuestions}
                 isGenerating={isGenerating}
@@ -1010,7 +1010,7 @@ export function CourseTesterModal({
                         title={t.dashboard.courseTester.refreshRanking}
                         data-testid="button-refresh-rankings"
                       >
-                        <RefreshCw className={`h-4 w-4 ${loadingRankings ? 'animate-spin' : ''}`} />
+                        <RefreshCw className={`h-4 w-4 ${loadingRankings ? "animate-spin" : ""}`} />
                       </Button>
                       {rankings.length > 0 && (
                         <Button
@@ -1040,7 +1040,7 @@ export function CourseTesterModal({
                       {rankings.map((ranking) => (
                         <Card
                           key={ranking.studentId}
-                          className={`p-3 flex items-center gap-3 ${ranking.rank <= 3 ? 'border-primary/30' : ''}`}
+                          className={`p-3 flex items-center gap-3 ${ranking.rank <= 3 ? "border-primary/30" : ""}`}
                           data-testid={`ranking-item-${ranking.studentId}`}
                         >
                           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-bold">
@@ -1057,21 +1057,19 @@ export function CourseTesterModal({
                           <Avatar className="h-8 w-8 border">
                             <AvatarImage src={ranking.photoUrl || undefined} />
                             <AvatarFallback className="text-xs">
-                              {ranking.name?.slice(0, 2).toUpperCase() || '??'}
+                              {ranking.name?.slice(0, 2).toUpperCase() || "??"}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm truncate">{ranking.name}</p>
                             <p className="text-xs text-muted-foreground">
                               {t.dashboard.courseTester.correctAnswers
-                                .replace('{correct}', String(ranking.correctAnswers))
-                                .replace('{total}', String(ranking.attemptedQuestions))}
+                                .replace("{correct}", String(ranking.correctAnswers))
+                                .replace("{total}", String(ranking.attemptedQuestions))}
                             </p>
                           </div>
                           <div className="text-right">
-                            <span className="font-bold text-sm">
-                              {Math.round(ranking.successRate)}%
-                            </span>
+                            <span className="font-bold text-sm">{Math.round(ranking.successRate)}%</span>
                           </div>
                         </Card>
                       ))}
@@ -1099,13 +1097,15 @@ export function CourseTesterModal({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t.dashboard.courseTester.deleteFile}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t.dashboard.courseTester.deleteFileIrreversible}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t.dashboard.courseTester.deleteFileIrreversible}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isDeletingFichier}>{t.common.cancel}</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteFile} disabled={isDeletingFichier} className="bg-destructive text-destructive-foreground">
+            <AlertDialogAction
+              onClick={confirmDeleteFile}
+              disabled={isDeletingFichier}
+              className="bg-destructive text-destructive-foreground"
+            >
               {isDeletingFichier ? <Loader2 className="h-4 w-4 animate-spin" /> : t.teacher.deleteCourseModal.confirm}
             </AlertDialogAction>
           </AlertDialogFooter>
