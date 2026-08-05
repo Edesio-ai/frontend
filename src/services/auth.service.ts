@@ -1,4 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
+import { getCookie } from "@/lib/cookies";
 import { UserRole } from "@/types";
 import { User } from "@/types/user.type";
 
@@ -16,11 +17,29 @@ type TeacherInvitationSignupBody = {
   acceptTerms: boolean;
 };
 
+type CsrfResponse = {
+  csrfToken?: string;
+  maxAgeMs?: number;
+};
+
+function persistCsrfCookie(csrfToken: string, maxAgeMs?: number) {
+  const maxAgeSeconds = Math.max(1, Math.floor((maxAgeMs ?? 24 * 60 * 60 * 1000) / 1000));
+  const secure = typeof window !== "undefined" && window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `csrf_token=${encodeURIComponent(csrfToken)}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax${secure}`;
+}
+
 export const authService = {
-  async initCsrf(): Promise<Record<string, unknown>> {
-    return await apiFetch<Record<string, unknown>>("/api/auth/csrf", {
+  async initCsrf(): Promise<CsrfResponse> {
+    const payload = await apiFetch<CsrfResponse>("/api/auth/csrf", {
       method: "GET",
     });
+
+    // Ensure the token is readable by JS even if Set-Cookie proxying failed.
+    if (payload.csrfToken && !getCookie("csrf_token")) {
+      persistCsrfCookie(payload.csrfToken, payload.maxAgeMs);
+    }
+
+    return payload;
   },
   async register(
     email: string,

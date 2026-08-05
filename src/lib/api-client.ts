@@ -1,10 +1,32 @@
 import { getCookie } from "./cookies";
 import { authService } from "@/services/auth.service";
 
+let csrfInitPromise: Promise<unknown> | null = null;
+
+async function ensureCsrfToken(): Promise<string | null> {
+  const existing = getCookie("csrf_token");
+  if (existing) return existing;
+
+  if (!csrfInitPromise) {
+    csrfInitPromise = authService.initCsrf().finally(() => {
+      csrfInitPromise = null;
+    });
+  }
+
+  try {
+    await csrfInitPromise;
+  } catch {
+    return null;
+  }
+
+  return getCookie("csrf_token");
+}
+
 export async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
   const method = (options.method ?? "GET").toUpperCase();
   const isMutableMethod = ["POST", "PUT", "PATCH", "DELETE"].includes(method);
-  const csrfToken = isMutableMethod ? getCookie("csrf_token") : null;
+  const isCsrfBootstrap = url.includes("/api/auth/csrf");
+  const csrfToken = isMutableMethod && !isCsrfBootstrap ? await ensureCsrfToken() : null;
   const isFormData = options.body instanceof FormData;
 
   const response = await fetch(url, {
