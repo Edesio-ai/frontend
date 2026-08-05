@@ -1,7 +1,16 @@
-import { useState, useEffect, useCallback } from "react";
-import { useTranslations } from "@/lib/i18n/client";
+"use client";
 
-import type { CourseBasic, Establishment, InvitationToken, TeacherWithStats, Student, SessionDetails } from "@/types";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { useTranslations } from "@/lib/i18n/client";
+import type {
+  CourseBasic,
+  Establishment,
+  EstablishmentStats,
+  InvitationToken,
+  TeacherWithStats,
+  Student,
+  SessionDetails,
+} from "@/types";
 import { establishmentService } from "@/services/teaching/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { invitationTokenService } from "@/services/invitation-token.service";
@@ -12,13 +21,28 @@ import { studentSessionService } from "@/services/teaching/student-session.servi
 import { emailService } from "@/services/email.service";
 import { useAuth } from "@/contexts/auth-context";
 
-interface EtablissementStats {
-  totalTeachers: number;
-  totalSessions: number;
-  totalStudents: number;
+interface EstablishmentContextType {
+  establishment: Establishment | null;
+  teachers: TeacherWithStats[];
+  invitationTokens: InvitationToken[];
+  stats: EstablishmentStats;
+  loading: boolean;
+  error: string | null;
+  refreshData: () => Promise<void>;
+  createInvitationToken: (
+    invitedEmail: string,
+    expiresInDays?: number,
+    assignedChatbots?: number,
+  ) => Promise<boolean | null>;
+  deleteInvitationToken: (tokenId: string) => Promise<boolean>;
+  getStudentSessions: (sessionId: string) => Promise<Student[]>;
+  getSessionCourse: (sessionId: string) => Promise<CourseBasic[]>;
+  getSessionDetails: (courseId: string) => Promise<SessionDetails | null>;
 }
 
-export function useEstablishment() {
+const EstablishmentContext = createContext<EstablishmentContextType | null>(null);
+
+export function EstablishmentProvider({ children }: { children: ReactNode }) {
   const { user, loading: authLoading } = useAuth();
   const t = useTranslations();
   const [establishment, setEstablishment] = useState<Establishment | null>(null);
@@ -26,8 +50,7 @@ export function useEstablishment() {
   const [invitationTokens, setInvitationTokens] = useState<InvitationToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const [stats, setStats] = useState<EtablissementStats>({
+  const [stats, setStats] = useState<EstablishmentStats>({
     totalTeachers: 0,
     totalSessions: 0,
     totalStudents: 0,
@@ -36,11 +59,11 @@ export function useEstablishment() {
   const insertEstablishment = useCallback(
     async (name: string) => {
       try {
-        const establishment = await establishmentService.createEstablishment(user?.id || "", name, user?.email || "");
-        setEstablishment(establishment);
+        const created = await establishmentService.createEstablishment(user?.id || "", name, user?.email || "");
+        setEstablishment(created);
         setStats({ totalTeachers: 0, totalSessions: 0, totalStudents: 0 });
         setTeachers([]);
-        return establishment;
+        return created;
       } catch (err) {
         const message = err instanceof Error ? err.message : t.hooks.establishment.error;
         console.error("Error creating establishment:", message);
@@ -125,31 +148,26 @@ export function useEstablishment() {
         const { success } = await invitationTokenService.createInvitationToken(body);
 
         if (!success) {
-          const message = t.hooks.establishment.invitationError;
-          setError(message);
+          setError(t.hooks.establishment.invitationError);
           throw new Error("Error while creating invitation token");
         }
 
-        if (establishment) {
-          const sendInvitationBody = {
-            invitedEmail: invitedEmail.toLowerCase().trim(),
-            establishmentName: establishment.name,
-            invitationToken: token,
-            assignedChatbots,
-          };
+        const sendInvitationBody = {
+          invitedEmail: invitedEmail.toLowerCase().trim(),
+          establishmentName: establishment.name,
+          invitationToken: token,
+          assignedChatbots,
+        };
 
-          const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
+        const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
 
-          if (!response.success) {
-            const message = t.hooks.establishment.invitationError;
-            setError(message);
-            throw new Error("Error while sending invitation email");
-          }
-
-          await fetchInvitationTokens();
-          return response.success;
+        if (!response.success) {
+          setError(t.hooks.establishment.invitationError);
+          throw new Error("Error while sending invitation email");
         }
-        return null;
+
+        await fetchInvitationTokens();
+        return response.success;
       } catch (err) {
         console.error("Unexpected error:", err);
         setError(t.hooks.establishment.error);
@@ -164,8 +182,7 @@ export function useEstablishment() {
       const { success } = await invitationTokenService.deleteInvitationToken(tokenId);
 
       if (!success) {
-        const message = t.hooks.establishment.invitationError;
-        setError(message);
+        setError(t.hooks.establishment.invitationError);
         throw new Error("Error while deleting invitation token");
       }
 
@@ -179,9 +196,7 @@ export function useEstablishment() {
     try {
       const studentsSessions = await studentSessionService.getStudentSession(sessionId);
       const studentIds = studentsSessions.map((studentSession) => studentSession.id);
-      const students = await studentService.getStudentsByIds(studentIds);
-
-      return students;
+      return await studentService.getStudentsByIds(studentIds);
     } catch (err) {
       console.error("Unexpected error:", err);
       return [];
@@ -200,7 +215,6 @@ export function useEstablishment() {
 
   const getSessionDetails = useCallback(async (courseId: string): Promise<SessionDetails | null> => {
     const { data } = await sessionService.getSessionDetails(courseId);
-
     return data || null;
   }, []);
 
@@ -213,17 +227,17 @@ export function useEstablishment() {
 
   useEffect(() => {
     if (!authLoading && user) {
-      fetchEtablissementData();
+      void fetchEtablissementData();
     }
   }, [authLoading, user, fetchEtablissementData]);
 
   useEffect(() => {
     if (establishment) {
-      fetchInvitationTokens();
+      void fetchInvitationTokens();
     }
   }, [establishment, fetchInvitationTokens]);
 
-  return {
+  const value: EstablishmentContextType = {
     establishment,
     teachers,
     invitationTokens,
@@ -237,4 +251,14 @@ export function useEstablishment() {
     getSessionCourse,
     getSessionDetails,
   };
+
+  return <EstablishmentContext.Provider value={value}>{children}</EstablishmentContext.Provider>;
+}
+
+export function useEstablishment() {
+  const context = useContext(EstablishmentContext);
+  if (!context) {
+    throw new Error("useEstablishment must be used within EstablishmentProvider");
+  }
+  return context;
 }

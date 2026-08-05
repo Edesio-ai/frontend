@@ -32,6 +32,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const ensureCsrf = useCallback(async () => {
+    try {
+      await authService.initCsrf();
+    } catch (error) {
+      console.warn("CSRF initialization failed", error);
+    }
+  }, []);
+
   const refreshUserSession = useCallback(async () => {
     setLoading(true);
     try {
@@ -45,29 +53,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     void (async () => {
-      try {
-        await authService.initCsrf();
-      } catch (error) {
-        console.warn("CSRF initialization failed", error);
-      }
+      await ensureCsrf();
       await refreshUserSession();
     })();
-  }, [refreshUserSession]);
+  }, [ensureCsrf, refreshUserSession]);
 
   const signIn = useCallback(
     async (email: string, password: string): Promise<User> => {
       const { user } = await authService.signIn(email, password);
+      // Logout clears csrf_token; AuthProvider does not remount on SPA login,
+      // so we must mint a fresh token before any protected mutation.
+      await ensureCsrf();
       await refreshUserSession();
       return user;
     },
-    [refreshUserSession],
+    [ensureCsrf, refreshUserSession],
   );
 
   const logout = useCallback(async () => {
     await authService.logout();
     setUser(null);
     setRole(null);
-  }, []);
+    await ensureCsrf();
+  }, [ensureCsrf]);
 
   const signUp = useCallback(
     async (

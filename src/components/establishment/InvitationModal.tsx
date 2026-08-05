@@ -1,3 +1,5 @@
+"use client";
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
