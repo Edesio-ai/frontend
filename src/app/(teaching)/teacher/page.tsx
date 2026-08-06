@@ -1,77 +1,42 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "@/lib/i18n/client";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { BookOpen } from "lucide-react";
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs } from "@/components/ui/tabs";
-
-import { useTeacher } from "@/hooks/use-teacher";
-import { SuggestionsModal } from "@/components/SuggestionsModal";
-import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
+import { useTeacher } from "./_contexts/teacher-context";
 import { useToast } from "@/hooks/use-toast";
+
 import type { Session, Course, StudentSessionWithStudent } from "@/types";
-import { LogOut, Loader2, AlertCircle, UserCog, BookOpen, GraduationCap, Lightbulb } from "lucide-react";
-import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { ToolBar } from "@/components/teacher/ToolBar";
-import { CreateModal } from "@/components/teacher/CreateModal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateSessionFormValues } from "@/types/zod.type";
 import { createSessionFormSchema } from "@/utils/constants/zod";
-import { ClassListSection } from "@/components/teacher/section/classListSection";
-import { TabsListHeader } from "@/components/teacher/tabs/TabsList";
-import { CourseTab } from "@/components/teacher/tabs/CourseTab";
-import { StudentTab } from "@/components/teacher/tabs/StudentTab";
-import { CourseQuestionTab } from "@/components/teacher/tabs/CourseQuestionTab";
 import { useAuth } from "@/contexts/auth-context";
+import { Loader } from "@/app/_components/loader";
+import { ClassListSection } from "./_components/section/class-list-section";
+import { ToolBar } from "./_components/tool-bar";
+import { CreateModal } from "./_components/create-modal";
+import { SessionWorkspace } from "./_components/session-worspace";
+import { ErrorBanner } from "./_components/error-banner";
 
 export default function Teacher() {
-  const { user, loading: authLoading, logout, getUserRole } = useAuth();
+  const { user, loading: authLoading, getUserRole } = useAuth();
   const t = useTranslations();
   const {
-    teacher,
     sessions,
     loading: profLoading,
     error,
-    createSession,
     updateSession,
     deleteSession,
-    fetchCourses,
-    createCourse,
-    updateCourse,
-    deleteCourse,
-    reorderCourse,
-    uploadPdfForCourse,
-    fetchCourseFiles,
-    deleteCourseFile,
-    getPdfUrl,
-    fetchQuestions,
-    updateQuestion,
-    deleteQuestion,
-    createQuestion,
-    reorderQuestions,
-    generateQuestions,
-    validateQuestions,
-    refreshSessions,
     fetchSessionStudents,
-    fetchCourseRanking,
-    fetchQuestionsCourseForCourse,
     fetchPendingQuestionsCount,
-    answerCourseQuestion,
-    deleteCourseQuestion,
   } = useTeacher();
+
   const { toast } = useToast();
   const router = useRouter();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
-  const [showInstallModal, setShowInstallModal] = useState(false);
-  const [showSuggestionsModal, setShowSuggestionsModal] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [selectedPdfFiles, setSelectedPdfFiles] = useState<File[]>([]);
 
@@ -124,12 +89,6 @@ export default function Teacher() {
     if (selectedSession?.id === sessionId) {
       setPendingQuestionsCount(count);
     }
-  };
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    await logout();
-    router.push("/");
   };
 
   const handleSelectSession = async (session: Session) => {
@@ -216,199 +175,69 @@ export default function Teacher() {
   };
 
   if (authLoading || profLoading || !user || role !== "teacher") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-primary/10">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">{t.teacher.loading}</p>
-        </div>
-      </div>
-    );
+    return <Loader text={t.teacher.loading} />;
   }
 
-  const firstName = user.metadata?.firstName || teacher?.name || "Professeur";
-
   return (
-    <SubscriptionBlockModal>
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+    <main className="relative max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/25">
+            <BookOpen className="h-6 w-6 text-primary-foreground" />
+          </div>
+          <div>
+            <h1
+              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text"
+              data-testid="text-prof-welcome"
+            >
+              {t.teacher.dashboardTitle}
+            </h1>
+            <p className="text-muted-foreground">{t.teacher.emptySubtitle}</p>
+          </div>
         </div>
-
-        <header className="sticky top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 md:px-8">
-            <div className="flex items-center justify-between h-16 md:h-20 gap-3 sm:gap-6">
-              <Link href="/" className="flex items-center gap-2 text-xl font-bold shrink-0">
-                <img src="/edesio-logo-square.png" alt="Edesio" className="w-10 h-10 rounded-lg object-cover" />
-                <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                  Edesio
-                </span>
-              </Link>
-
-              <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowSuggestionsModal(true)}
-                  className="border-amber-300 text-amber-600 dark:border-amber-600 dark:text-amber-400"
-                  data-testid="button-suggestions"
-                >
-                  <Lightbulb className="h-4 w-4 mr-1.5" />
-                  {t.nav.suggestions}
-                </Button>
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
-                  <GraduationCap className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">{firstName}</span>
-                </div>
-                <Link href="/profile">
-                  <Button variant="ghost" size="sm" data-testid="button-profile">
-                    <UserCog className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">{t.nav.profile}</span>
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleLogout}
-                  disabled={isLoggingOut}
-                  data-testid="button-logout"
-                >
-                  {isLoggingOut ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline">{t.nav.logout}</span>
-                    </>
-                  )}
-                </Button>
-              </div>
-
-              <LanguageSwitcher className="shrink-0" />
-            </div>
-          </div>
-        </header>
-
-        <MobileInstallBanner onOpenModal={() => setShowInstallModal(true)} />
-        <MobileInstallModal open={showInstallModal} onOpenChange={setShowInstallModal} />
-        <SuggestionsModal open={showSuggestionsModal} onOpenChange={setShowSuggestionsModal} category="teacher" />
-
-        <main className="relative max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
-          <div className="mb-10">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/25">
-                <BookOpen className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h1
-                  className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text"
-                  data-testid="text-prof-welcome"
-                >
-                  {t.teacher.dashboardTitle}
-                </h1>
-                <p className="text-muted-foreground">{t.teacher.emptySubtitle}</p>
-              </div>
-            </div>
-          </div>
-
-          {error && (
-            <Card className="p-4 mb-6 bg-destructive/10 border-destructive/20">
-              <div className="flex items-center gap-3">
-                <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
-                <p className="text-destructive" data-testid="text-error-message">
-                  {error}
-                </p>
-              </div>
-            </Card>
-          )}
-
-          <div className="space-y-8">
-            <ToolBar
-              setSelectedSession={setSelectedSession}
-              handleOpenCreateModal={handleOpenCreateModal}
-              sessions={sessions}
-            />
-            <ClassListSection
-              sessions={sessions}
-              handleOpenCreateModal={handleOpenCreateModal}
-              handleSelectSession={handleSelectSession}
-              handleRenameSession={handleRenameSession}
-              handleDeleteSession={handleDeleteSession}
-              sessionPendingCounts={sessionPendingCounts}
-            />
-          </div>
-        </main>
-
-        <CreateModal
-          createModalOpen={createModalOpen}
-          form={form}
-          onOpenChange={(open: boolean) => !open && handleCloseCreateModal()}
-          createSession={createSession}
-          createCourse={createCourse}
-          setSelectedPdfFiles={setSelectedPdfFiles}
-          selectedPdfFiles={selectedPdfFiles}
-          refreshSessions={refreshSessions}
-          handleCloseCreateModal={handleCloseCreateModal}
-          setSelectedSession={setSelectedSession}
-          setNewlyCreatedCourse={setNewlyCreatedCourse}
-        />
-
-        <Dialog open={!!selectedSession} onOpenChange={(open) => !open && handleCloseSessionModal()}>
-          <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-hidden flex flex-col p-0">
-            <DialogHeader className="px-6 pt-6 pb-4 border-b flex-shrink-0">
-              <DialogTitle className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <BookOpen className="h-4 w-4 text-primary-foreground" />
-                </div>
-                {selectedSession?.name}
-              </DialogTitle>
-              <DialogDescription>Manage the lessons for this session and view enrolled students.</DialogDescription>
-            </DialogHeader>
-
-            {selectedSession && (
-              <Tabs value={sessionTab} onValueChange={handleTabChange} className="flex-1 flex flex-col overflow-hidden">
-                <TabsListHeader sessionStudents={sessionStudents} pendingQuestionsCount={pendingQuestionsCount} />
-                <CourseTab
-                  session={selectedSession}
-                  fetchCourses={fetchCourses}
-                  createCourse={createCourse}
-                  updateCourse={updateCourse}
-                  deleteCourse={deleteCourse}
-                  reorderCourse={reorderCourse}
-                  uploadPdfForCourse={uploadPdfForCourse}
-                  fetchCourseFiles={fetchCourseFiles}
-                  deleteCourseFile={deleteCourseFile}
-                  getPdfUrl={getPdfUrl}
-                  fetchQuestions={fetchQuestions}
-                  updateQuestion={updateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  createQuestion={createQuestion}
-                  reorderQuestions={reorderQuestions}
-                  generateQuestions={generateQuestions}
-                  validateQuestions={validateQuestions}
-                  fetchCourseRanking={fetchCourseRanking}
-                  newlyCreatedCours={newlyCreatedCours}
-                  setNewlyCreatedCourse={setNewlyCreatedCourse}
-                />
-                <StudentTab
-                  loadingSessionStudents={loadingSessionStudents}
-                  sessionStudents={sessionStudents}
-                  selectedSession={selectedSession}
-                />
-                <CourseQuestionTab
-                  sessionId={selectedSession?.id || ""}
-                  fetchCourses={fetchCourses}
-                  fetchQuestionsCourseForCourse={fetchQuestionsCourseForCourse}
-                  answerCourseQuestion={answerCourseQuestion}
-                  deleteCourseQuestion={deleteCourseQuestion}
-                  onPendingCountChange={() => refreshPendingCount(selectedSession.id)}
-                />
-              </Tabs>
-            )}
-          </DialogContent>
-        </Dialog>
       </div>
-    </SubscriptionBlockModal>
+
+      {error && <ErrorBanner error={error} />}
+
+      <div className="space-y-8">
+        <ToolBar
+          setSelectedSession={setSelectedSession}
+          handleOpenCreateModal={handleOpenCreateModal}
+          sessions={sessions}
+        />
+        <ClassListSection
+          sessions={sessions}
+          handleOpenCreateModal={handleOpenCreateModal}
+          handleSelectSession={handleSelectSession}
+          handleRenameSession={handleRenameSession}
+          handleDeleteSession={handleDeleteSession}
+          sessionPendingCounts={sessionPendingCounts}
+        />
+      </div>
+
+      <CreateModal
+        createModalOpen={createModalOpen}
+        form={form}
+        onOpenChange={(open: boolean) => !open && handleCloseCreateModal()}
+        setSelectedPdfFiles={setSelectedPdfFiles}
+        selectedPdfFiles={selectedPdfFiles}
+        handleCloseCreateModal={handleCloseCreateModal}
+        setSelectedSession={setSelectedSession}
+        setNewlyCreatedCourse={setNewlyCreatedCourse}
+      />
+
+      <SessionWorkspace
+        selectedSession={selectedSession}
+        sessionTab={sessionTab}
+        sessionStudents={sessionStudents}
+        pendingQuestionsCount={pendingQuestionsCount}
+        newlyCreatedCours={newlyCreatedCours}
+        setNewlyCreatedCourse={setNewlyCreatedCourse}
+        loadingSessionStudents={loadingSessionStudents}
+        handleCloseSessionModal={handleCloseSessionModal}
+        handleTabChange={handleTabChange}
+        refreshPendingCount={refreshPendingCount}
+      />
+    </main>
   );
 }

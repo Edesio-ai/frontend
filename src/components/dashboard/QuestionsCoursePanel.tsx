@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageCircle, Send, Check, Clock, Trash2 } from "lucide-react";
-import type { Course, CourseQuestion } from "@/types";
+import type { CourseQuestion } from "@/types";
 import { useTranslations, useLocale } from "@/lib/i18n/client";
 import {
   AlertDialog,
@@ -18,6 +16,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useTeacher } from "@/app/(teaching)/teacher/_contexts/teacher-context";
+import { cn } from "@/lib/utils";
 
 interface QuestionsCoursWithCourse extends CourseQuestion {
   courseTitle?: string;
@@ -25,31 +25,25 @@ interface QuestionsCoursWithCourse extends CourseQuestion {
 
 interface QuestionsCoursPanelProps {
   sessionId: string;
-  fetchCourses: (sessionId: string) => Promise<Course[]>;
-  fetchQuestionsCourseForCourse: (courseId: string) => Promise<CourseQuestion[]>;
-  answerCourseQuestion: (questionId: string, reponse: string) => Promise<CourseQuestion | null>;
-  deleteCourseQuestion: (questionId: string) => Promise<boolean>;
   onPendingCountChange?: () => void;
 }
 
-export function QuestionsCoursePanel({
-  sessionId,
-  fetchCourses,
-  fetchQuestionsCourseForCourse,
-  answerCourseQuestion,
-  deleteCourseQuestion,
-  onPendingCountChange,
-}: QuestionsCoursPanelProps) {
+type FilterTab = "pending" | "answered";
+
+export function QuestionsCoursePanel({ sessionId, onPendingCountChange }: QuestionsCoursPanelProps) {
   const t = useTranslations();
   const locale = useLocale();
   const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<QuestionsCoursWithCourse[]>([]);
+  const [filter, setFilter] = useState<FilterTab>("pending");
   const [answeringId, setAnsweringId] = useState<string | null>(null);
   const [answerText, setAnswerText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  const { fetchCourses, fetchQuestionsCourseForCourse, answerCourseQuestion, deleteCourseQuestion } = useTeacher();
 
   const loadQuestions = useCallback(async () => {
     setLoading(true);
@@ -82,12 +76,18 @@ export function QuestionsCoursePanel({
   }, [sessionId, fetchCourses, fetchQuestionsCourseForCourse]);
 
   useEffect(() => {
-    const init = async () => {
-      await loadQuestions();
-      onPendingCountChange?.();
-    };
-    init();
-  }, [sessionId, loadQuestions, onPendingCountChange]);
+    void loadQuestions();
+  }, [sessionId, loadQuestions]);
+
+  const pendingQuestions = useMemo(() => questions.filter((q) => !q.answer), [questions]);
+  const answeredQuestions = useMemo(() => questions.filter((q) => q.answer), [questions]);
+  const visibleQuestions = filter === "pending" ? pendingQuestions : answeredQuestions;
+
+  useEffect(() => {
+    if (filter === "pending" && pendingQuestions.length === 0 && answeredQuestions.length > 0) {
+      setFilter("answered");
+    }
+  }, [filter, pendingQuestions.length, answeredQuestions.length]);
 
   const handleStartAnswer = (questionId: string) => {
     setAnsweringId(questionId);
@@ -135,147 +135,193 @@ export function QuestionsCoursePanel({
     setDeleteConfirmId(null);
   };
 
-  const pendingCount = questions.filter((q) => !q.answer).length;
-  const answeredCount = questions.filter((q) => q.answer).length;
+  const formatAskedBy = (question: QuestionsCoursWithCourse) =>
+    t.dashboard.questionsPanel.askedBy
+      .replace("{name}", question.studentName || t.dashboard.questionsPanel.studentFallback)
+      .replace("{date}", new Date(question.createdAt).toLocaleDateString(dateLocale))
+      .replace(
+        "{time}",
+        new Date(question.createdAt).toLocaleTimeString(dateLocale, {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      );
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="h-7 w-7 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   if (questions.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center mx-auto mb-4">
-          <MessageCircle className="h-8 w-8 text-muted-foreground" />
+      <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+          <MessageCircle className="h-5 w-5 text-muted-foreground" />
         </div>
-        <h3 className="font-semibold text-lg mb-2">{t.dashboard.questionsPanel.noQuestions}</h3>
-        <p className="text-sm text-muted-foreground max-w-md mx-auto">{t.dashboard.questionsPanel.noQuestionsHint}</p>
+        <h3 className="text-base font-medium">{t.dashboard.questionsPanel.noQuestions}</h3>
+        <p className="mt-1 max-w-sm text-sm text-muted-foreground">{t.dashboard.questionsPanel.noQuestionsHint}</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 mb-6">
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="gap-1.5">
-            <Clock className="h-3 w-3" />
-            {t.student.qaModal.pending.replace("{count}", String(pendingCount))}
-          </Badge>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="gap-1.5">
-            <Check className="h-3 w-3" />
-            {t.dashboard.questionsPanel.answeredCount.replace("{count}", String(answeredCount))}
-          </Badge>
-        </div>
+      <div className="inline-flex rounded-lg border bg-muted/40 p-1">
+        <button
+          type="button"
+          onClick={() => setFilter("pending")}
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors",
+            filter === "pending"
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          <Clock className="h-3.5 w-3.5" />
+          {t.student.qaModal.pending.replace("{count}", String(pendingQuestions.length))}
+        </button>
+        <button
+          type="button"
+          onClick={() => setFilter("answered")}
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors",
+            filter === "answered"
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          <Check className="h-3.5 w-3.5" />
+          {t.dashboard.questionsPanel.answeredCount.replace("{count}", String(answeredQuestions.length))}
+        </button>
       </div>
 
-      <div className="space-y-3">
-        {questions.map((question) => (
-          <Card
-            key={question.id}
-            className={`p-4 ${!question.answer ? "border-amber-500/30 bg-amber-500/5" : ""}`}
-            data-testid={`question-cours-${question.id}`}
-          >
-            <div className="space-y-3">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <Badge variant="outline" className="text-xs">
-                      {question.courseTitle}
-                    </Badge>
-                    {!question.answer && (
-                      <Badge className="bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30 text-xs">
-                        {t.student.qaModal.pending.replace(" ({count})", "").replace("({count})", "")}
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-sm font-medium" data-testid={`question-text-${question.id}`}>
-                    {question.questionText}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {t.dashboard.questionsPanel.askedBy
-                      .replace("{name}", question.studentName || t.dashboard.questionsPanel.studentFallback)
-                      .replace("{date}", new Date(question.createdAt).toLocaleDateString(dateLocale))
-                      .replace(
-                        "{time}",
-                        new Date(question.createdAt).toLocaleTimeString(dateLocale, {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }),
-                      )}
-                  </p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="shrink-0 text-muted-foreground hover:text-destructive"
-                  onClick={() => setDeleteConfirmId(question.id)}
-                  data-testid={`button-delete-question-${question.id}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
+      {visibleQuestions.length === 0 ? (
+        <div className="rounded-xl border border-dashed px-4 py-10 text-center text-sm text-muted-foreground">
+          {filter === "pending"
+            ? t.dashboard.questionsPanel.noPendingQuestions
+            : t.dashboard.questionsPanel.noAnsweredQuestions}
+        </div>
+      ) : (
+        <ul className="space-y-2">
+          {visibleQuestions.map((question) => {
+            const isPending = !question.answer;
+            const isAnswering = answeringId === question.id;
 
-              {question.answer ? (
-                <div className="pl-4 border-l-2 border-primary/30">
-                  <p className="text-sm text-muted-foreground mb-1">{t.dashboard.questionsPanel.yourAnswer}</p>
-                  <p className="text-sm">{question.answer}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {t.dashboard.questionsPanel.answeredOn.replace(
-                      "{date}",
-                      new Date(question.answeredAt!).toLocaleDateString(dateLocale),
-                    )}
-                  </p>
-                </div>
-              ) : answeringId === question.id ? (
-                <div className="space-y-2">
-                  <Textarea
-                    placeholder={t.dashboard.questionsPanel.answerPlaceholder}
-                    value={answerText}
-                    onChange={(e) => setAnswerText(e.target.value)}
-                    className="min-h-[80px]"
-                    data-testid={`textarea-answer-${question.id}`}
-                  />
-                  <div className="flex items-center gap-2 justify-end">
-                    <Button variant="outline" size="sm" onClick={handleCancelAnswer} disabled={submitting}>
-                      {t.common.cancel}
-                    </Button>
+            return (
+              <li
+                key={question.id}
+                className={cn(
+                  "rounded-xl border bg-background",
+                  isPending ? "border-l-4 border-l-amber-500" : "border-l-4 border-l-emerald-500/70",
+                )}
+                data-testid={`question-cours-${question.id}`}
+              >
+                <div className="flex items-start gap-3 px-4 py-3">
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {question.courseTitle ? (
+                        <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                          {question.courseTitle}
+                        </span>
+                      ) : null}
+                      <span
+                        className={cn(
+                          "rounded-md px-2 py-0.5 text-xs font-medium",
+                          isPending
+                            ? "bg-amber-500/15 text-amber-700 dark:text-amber-400"
+                            : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
+                        )}
+                      >
+                        {isPending ? t.dashboard.questionsPanel.pendingLabel : t.dashboard.questionsPanel.answeredLabel}
+                      </span>
+                    </div>
+
+                    <p className="text-sm leading-snug" data-testid={`question-text-${question.id}`}>
+                      {question.questionText}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{formatAskedBy(question)}</p>
+
+                    {question.answer ? (
+                      <div className="rounded-lg bg-muted/50 px-3 py-2.5">
+                        <p className="mb-1 text-xs font-medium text-muted-foreground">
+                          {t.dashboard.questionsPanel.yourAnswer}
+                        </p>
+                        <p className="text-sm leading-relaxed">{question.answer}</p>
+                        {question.answeredAt ? (
+                          <p className="mt-1.5 text-xs text-muted-foreground">
+                            {t.dashboard.questionsPanel.answeredOn.replace(
+                              "{date}",
+                              new Date(question.answeredAt).toLocaleDateString(dateLocale),
+                            )}
+                          </p>
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                    {isAnswering ? (
+                      <div className="space-y-2 pt-1">
+                        <Textarea
+                          placeholder={t.dashboard.questionsPanel.answerPlaceholder}
+                          value={answerText}
+                          onChange={(e) => setAnswerText(e.target.value)}
+                          className="min-h-[88px] resize-y"
+                          autoFocus
+                          data-testid={`textarea-answer-${question.id}`}
+                        />
+                        <div className="flex items-center justify-end gap-2">
+                          <Button variant="ghost" size="sm" onClick={handleCancelAnswer} disabled={submitting}>
+                            {t.common.cancel}
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={handleSubmitAnswer}
+                            disabled={!answerText.trim() || submitting}
+                            data-testid={`button-submit-answer-${question.id}`}
+                          >
+                            {submitting ? (
+                              <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <Send className="mr-1.5 h-3.5 w-3.5" />
+                            )}
+                            {t.dashboard.questionsPanel.answer}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="flex shrink-0 items-center gap-1">
+                    {isPending && !isAnswering ? (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="h-8"
+                        onClick={() => handleStartAnswer(question.id)}
+                        data-testid={`button-answer-${question.id}`}
+                      >
+                        <MessageCircle className="mr-1.5 h-3.5 w-3.5" />
+                        {t.dashboard.questionsPanel.answer}
+                      </Button>
+                    ) : null}
                     <Button
-                      size="sm"
-                      onClick={handleSubmitAnswer}
-                      disabled={!answerText.trim() || submitting}
-                      data-testid={`button-submit-answer-${question.id}`}
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => setDeleteConfirmId(question.id)}
+                      data-testid={`button-delete-question-${question.id}`}
                     >
-                      {submitting ? (
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      ) : (
-                        <Send className="h-4 w-4 mr-2" />
-                      )}
-                      {t.dashboard.questionsPanel.answer}
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
-              ) : (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => handleStartAnswer(question.id)}
-                  data-testid={`button-answer-${question.id}`}
-                >
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  {t.dashboard.questionsPanel.answer}
-                </Button>
-              )}
-            </div>
-          </Card>
-        ))}
-      </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       <AlertDialog open={!!deleteConfirmId} onOpenChange={() => setDeleteConfirmId(null)}>
         <AlertDialogContent>
@@ -290,7 +336,7 @@ export function QuestionsCoursePanel({
               disabled={deleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               {t.teacher.deleteQuestionModal.confirm}
             </AlertDialogAction>
           </AlertDialogFooter>

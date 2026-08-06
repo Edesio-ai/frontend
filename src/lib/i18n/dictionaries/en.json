@@ -938,12 +938,16 @@
     "questionsPanel": {
       "noQuestions": "No questions",
       "noQuestionsHint": "Students haven't asked any questions yet...",
+      "noPendingQuestions": "No pending questions",
+      "noAnsweredQuestions": "No answered questions yet",
       "answerPlaceholder": "Write your answer...",
       "answer": "Reply",
       "deleteQuestion": "Delete this question?",
       "answeredCount": "{count} answered",
+      "pendingLabel": "Pending",
+      "answeredLabel": "Answered",
       "askedBy": "By {name} on {date} at {time}",
-      "yourAnswer": "Your answer:",
+      "yourAnswer": "Your answer",
       "answeredOn": "Answered on {date}",
       "deleteIrreversible": "This action is irreversible. The question and any answer will be permanently deleted.",
       "studentFallback": "Student"

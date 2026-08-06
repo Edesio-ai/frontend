@@ -4,10 +4,10 @@ import { correctAnswerDisplay, indexMatchesCorrectAnswer, propositionLabels } fr
 import { Question, UpdateQuestionRequest } from "@/types";
 import { useState } from "react";
 import { useTranslations } from "@/lib/i18n/client";
-import { Card } from "../ui/card";
-import { Button } from "../ui/button";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { CheckCircle2, Pencil } from "lucide-react";
-import { EditQuestionModal } from "./EditQuestionModal";
+import { EditQuestionModal } from "./edeit-question-modal";
 
 export function QuestionCard({
   question,

@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/i18n/client";
 
-import { CourseTesterModal } from "./CourseTesterModal";
-import type { Session, Course, CourseFile, Question, CourseRanking, UpdateQuestionRequest } from "@/types";
+import type { Session, Course } from "@/types";
 import { Plus, Loader2, FileText, BookOpen } from "lucide-react";
 import {
   DndContext,
@@ -22,78 +21,19 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { AddCourseModal } from "../teacher/AddCourseModal";
-import { SortableCourseItem } from "../teacher/SortableCoursetem";
-import { DeleteCourseModal } from "../teacher/DeleteCourseModal";
+import { AddCourseModal } from "./add-course-modal";
+import { DeleteCourseModal } from "./delete-course-modal";
+import { useTeacher } from "@/app/(teaching)/teacher/_contexts/teacher-context";
+import { CourseTesterModal } from "./course-tester-modal";
+import { SortableCourseItem } from "./sortable-course-item";
 
 interface CourseListProps {
   session: Session;
-  fetchCourses: (sessionId: string) => Promise<Course[]>;
-  createCourse: (
-    sessionId: string,
-    title: string,
-    description: string,
-    contentText: string,
-    pdfFiles?: File[],
-  ) => Promise<Course | null>;
-  updateCourse: (
-    courseId: string,
-    title: string,
-    description: string | null,
-    contenuTexte: string | null,
-  ) => Promise<Course | null>;
-  deleteCourse?: (courseId: string) => Promise<boolean>;
-  reorderCourse?: (coursIds: string[]) => Promise<boolean>;
-  uploadPdfForCourse: (courseId: string, file: File) => Promise<CourseFile | null>;
-  fetchCourseFiles: (courseId: string) => Promise<CourseFile[]>;
-  deleteCourseFile: (fichier: CourseFile) => Promise<boolean>;
-  getPdfUrl: (fileId: string, fileName: string) => Promise<void>;
-  fetchQuestions: (courseId: string) => Promise<Question[]>;
-  updateQuestion: (questionId: string, updates: UpdateQuestionRequest) => Promise<Question | null>;
-  deleteQuestion: (questionId: string) => Promise<boolean>;
-  createQuestion: (
-    courseId: string,
-    questionData: {
-      type: "single" | "multiple" | "open";
-      questionText: string;
-      proposals?: string[];
-      correctAnswers?: string[];
-      explanation?: string;
-    },
-  ) => Promise<Question | null>;
-  reorderQuestions?: (questionIds: string[]) => Promise<boolean>;
-  generateQuestions: (
-    courseId: string,
-    config?: { totalQuestions?: number; qcmCount?: number; ouverteCount?: number },
-  ) => Promise<{ success: boolean; questionsCreated?: number; error?: string }>;
-  validateQuestions: (courseId: string) => Promise<{ success: boolean; cours?: Course; error?: string }>;
-  fetchCourseRanking?: (courseId: string) => Promise<CourseRanking[]>;
   initialCoursToOpen?: Course | null;
   onInitialCoursOpened?: () => void;
 }
 
-export function CourseList({
-  session,
-  fetchCourses,
-  createCourse,
-  updateCourse,
-  deleteCourse,
-  reorderCourse,
-  uploadPdfForCourse,
-  fetchCourseFiles,
-  deleteCourseFile,
-  getPdfUrl,
-  fetchQuestions,
-  updateQuestion,
-  deleteQuestion,
-  createQuestion,
-  reorderQuestions,
-  generateQuestions,
-  validateQuestions,
-  fetchCourseRanking,
-  initialCoursToOpen,
-  onInitialCoursOpened,
-}: CourseListProps) {
+export function CourseList({ session, initialCoursToOpen, onInitialCoursOpened }: CourseListProps) {
   const t = useTranslations();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,6 +42,8 @@ export function CourseList({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const { fetchCourses, createCourse, updateCourse, deleteCourse, reorderCourse } = useTeacher();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -243,7 +185,7 @@ export function CourseList({
                     course={c}
                     onSelect={setselectedCourse}
                     onRename={handleRenameCourse}
-                    onDelete={deleteCourse ? handleDeleteCourse : undefined}
+                    onDelete={handleDeleteCourse}
                     formatDate={formatDate}
                   />
                 ))}
@@ -268,19 +210,6 @@ export function CourseList({
           sessionName={session.name}
           open={!!selectedCourse}
           onOpenChange={(open) => !open && setselectedCourse(null)}
-          updateCourse={updateCourse}
-          uploadPdfForCourse={uploadPdfForCourse}
-          fetchCourseFiles={fetchCourseFiles}
-          deleteCourseFile={deleteCourseFile}
-          getPdfUrl={getPdfUrl}
-          fetchQuestions={fetchQuestions}
-          updateQuestion={updateQuestion}
-          deleteQuestion={deleteQuestion}
-          createQuestion={createQuestion}
-          reorderQuestions={reorderQuestions}
-          generateQuestions={generateQuestions}
-          validateQuestions={validateQuestions}
-          fetchCourseRanking={fetchCourseRanking}
           onCourseUpdated={handleCourseUpdated}
         />
       )}

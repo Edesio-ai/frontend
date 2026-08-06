@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 import { Plus, Users } from "lucide-react";
-import { Card } from "../ui/card";
+import { Card } from "@/components/ui/card";
 import { useTranslations } from "@/lib/i18n/client";
 
 type EmptySessionCardProps = {

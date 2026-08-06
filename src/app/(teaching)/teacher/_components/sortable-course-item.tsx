@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Calendar, ChevronRight, GripVertical, Pencil, Check, Trash2 } from "lucide-react";
 import { Course } from "@/types";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 interface SortableCourseItemProps {
   course: Course;

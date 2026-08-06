@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Loader2, Save, Trash2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { DeleteQuestionModal } from "./DeleteQuestionModal";
+import { DeleteQuestionModal } from "./delete-question-modal";
 import { useTranslations } from "@/lib/i18n/client";
 
 type EditQuestionModalProps = {

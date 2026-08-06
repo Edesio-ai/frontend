@@ -7,8 +7,8 @@ import { useLocale, useTranslations } from "@/lib/i18n/client";
 import type { Session } from "@/types";
 import { Calendar, Copy, BookOpen, Check, Trash2, Users, Pencil } from "lucide-react";
 import { useState } from "react";
-import { RenameSessionModal } from "../teacher/RenameSessionModal";
-import { DeleteSessionModal } from "../teacher/DeleteSessionModal";
+import { RenameSessionModal } from "./rename-session-modal";
+import { DeleteSessionModal } from "./delete-session-modal";
 
 interface SessionCardProps {
   session: Session;

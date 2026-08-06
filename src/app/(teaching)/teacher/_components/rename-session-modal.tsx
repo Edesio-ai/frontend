@@ -1,12 +1,12 @@
 "use client";
 
 import { Check, Loader2 } from "lucide-react";
-import { Dialog, DialogContent } from "../ui/dialog";
-import { DialogHeader } from "../ui/dialog";
-import { DialogTitle } from "../ui/dialog";
-import { DialogDescription } from "../ui/dialog";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { DialogHeader } from "@/components/ui/dialog";
+import { DialogTitle } from "@/components/ui/dialog";
+import { DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/i18n/client";
 
 type RenameSessionModalProps = {
