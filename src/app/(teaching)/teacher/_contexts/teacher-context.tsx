@@ -1,41 +1,106 @@
-import { useState, useEffect, useCallback } from "react";
-import { useTranslations } from "@/lib/i18n/client";
+"use client";
 
-import type {
-  Teacher,
-  Session,
-  Language,
-  Course,
-  CourseFile,
-  Question,
-  CourseQuestion,
-  InsertSession,
-  InsertCourse,
-  CourseRanking,
-  CreateQuestionRequest,
-  UpdateQuestionRequest,
-  UpdateCourseRequest,
-  StudentSessionWithStudent,
-  AnswerCourseQuestionBody,
-  TeacherWithEstablishment,
-  ValidateInvitationTokenResponse,
-} from "@/types";
-import { teacherService } from "@/services/teaching/teacher.service";
-import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
-import { sessionService } from "@/services/teaching/session.service";
+import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/lib/i18n/client";
+import { exportService } from "@/services/export.service";
+import { invitationTokenService } from "@/services/invitation-token.service";
+import { llmService } from "@/services/llm.service";
+import { CoursefileService } from "@/services/teaching/course-file.service";
+import { courseQuestionService } from "@/services/teaching/course-question.service";
 import { courseService } from "@/services/teaching/course.service";
 import { questionService } from "@/services/teaching/question.service";
-import { GenerateQuestionsConfig } from "@/types";
-import { CoursefileService } from "@/services/teaching/course-file.service";
-import { exportService } from "@/services/export.service";
-import { courseQuestionService } from "@/services/teaching/course-question.service";
-import { llmService } from "@/services/llm.service";
+import { sessionService } from "@/services/teaching/session.service";
 import { courseStudentStatsService } from "@/services/teaching/student-course-stats.service";
 import { studentSessionService } from "@/services/teaching/student-session.service";
-import { invitationTokenService } from "@/services/invitation-token.service";
-import { useAuth } from "@/contexts/auth-context";
+import { teacherService } from "@/services/teaching/teacher.service";
+import {
+  AnswerCourseQuestionBody,
+  Course,
+  CourseFile,
+  CourseQuestion,
+  CourseRanking,
+  CreateQuestionRequest,
+  GenerateQuestionsConfig,
+  InsertCourse,
+  InsertSession,
+  Language,
+  Question,
+  Session,
+  StudentSessionWithStudent,
+  Teacher,
+  TeacherWithEstablishment,
+  UpdateCourseRequest,
+  UpdateQuestionRequest,
+  ValidateInvitationTokenResponse,
+} from "@/types";
+import { generateUniqueSessionCode } from "@/utils/functions/session.utils";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 
-export function useTeacher() {
+interface TeacherContextType {
+  teacher: Teacher | null;
+  sessions: Session[];
+  loading: boolean;
+  error: string | null;
+  handleFetchTeacher: () => Promise<Teacher>;
+  handleInvitationValidation: (invitationToken: string) => Promise<ValidateInvitationTokenResponse | undefined>;
+  handleCreateTeacher: (name: string, email: string) => Promise<Teacher | null>;
+  fetchOrCreateTeacher: () => Promise<void>;
+  fetchSessions: () => Promise<void>;
+  createSession: (name: string, language: Language) => Promise<Session | null>;
+  handleUpdateSessionName: (sessionId: string, name: string) => Promise<Session>;
+  updateSession: (sessionId: string, name: string) => Promise<Session>;
+  handleDeleteSession: (sessionId: string) => Promise<void>;
+  deleteSession: (sessionId: string) => Promise<boolean>;
+  fetchCourses: (sessionId: string) => Promise<Course[]>;
+  updateCourse: (
+    courseId: string,
+    title: string,
+    description: string | null,
+    contentText: string | null,
+  ) => Promise<Course | null>;
+  handleGetCoursesCount: (sessionId: string) => Promise<number>;
+  handleCreateCourse: (coursData: InsertCourse) => Promise<Course>;
+  handleUploadPdfForCours: (courseId: string, file: File) => Promise<CourseFile>;
+  uploadPdfForCourse: (courseId: string, file: File) => Promise<CourseFile>;
+  fetchCourseFiles: (courseId: string) => Promise<CourseFile[]>;
+  deleteCourseFile: (fileId: CourseFile) => Promise<boolean>;
+  getPdfUrl: (fileId: string, fileName: string) => Promise<void>;
+  fetchQuestions: (courseId: string) => Promise<Question[]>;
+  updateQuestion: (questionId: string, updates: UpdateQuestionRequest) => Promise<Question | null>;
+  deleteQuestion: (questionId: string) => Promise<boolean>;
+  createQuestion: (courseId: string, questionData: Omit<CreateQuestionRequest, "courseId">) => Promise<Question | null>;
+  generateQuestions: (
+    courseId: string,
+    config?: GenerateQuestionsConfig,
+  ) => Promise<{
+    success: boolean;
+    questionCount?: number;
+    questions?: Question[];
+    error?: string;
+  }>;
+  validateQuestions: (courseId: string) => Promise<{ success: boolean; course?: Course; error?: string }>;
+  fetchSessionStudents: (sessionId: string) => Promise<StudentSessionWithStudent[]>;
+  fetchCourseRanking: (courseId: string) => Promise<CourseRanking[]>;
+  fetchQuestionsCourseForCourse: (courseId: string) => Promise<CourseQuestion[]>;
+  fetchPendingQuestionsCount: (sessionId: string) => Promise<number>;
+  answerCourseQuestion: (courseQuestionId: string, answer: string) => Promise<CourseQuestion | null>;
+  deleteCourseQuestion: (courseQuestionId: string) => Promise<boolean>;
+  reorderCourse: (coursIds: string[]) => Promise<boolean>;
+  deleteCourse: (courseId: string) => Promise<boolean>;
+  reorderQuestions: (questionIds: string[]) => Promise<boolean>;
+  createCourse: (
+    sessionId: string,
+    title: string,
+    description: string,
+    contentText: string,
+    pdfFiles?: File[],
+  ) => Promise<Course | null>;
+  refreshSessions: () => Promise<void>;
+}
+
+const TeacherContext = createContext<TeacherContextType | null>(null);
+
+export function TeacherProvider({ children }: { children: ReactNode }) {
   const { user, loading: authLoading } = useAuth();
   const t = useTranslations();
   const [teacher, setTeacher] = useState<Teacher | null>(null);
@@ -68,7 +133,7 @@ export function useTeacher() {
   );
 
   const handleCreateTeacher = useCallback(
-    async (name: string, email: string) => {
+    async (name: string, email: string): Promise<Teacher | null> => {
       try {
         const response = await teacherService.createTeacher(name, email);
         return response;
@@ -76,12 +141,12 @@ export function useTeacher() {
         console.error("Error creating teacher:", err);
         setError(t.hooks.teacher.error);
         setLoading(false);
-        return;
+        return null;
       }
     },
     [t],
   );
-  const fetchOrCreateTeacher = useCallback(async () => {
+  const fetchOrCreateTeacher = useCallback(async (): Promise<void> => {
     if (!user) {
       setTeacher(null);
       setLoading(false);
@@ -93,7 +158,7 @@ export function useTeacher() {
     if (teacher) {
       setTeacher(teacher);
       const invitationToken = user.metadata?.invitationToken;
-      const teacherWithEstab = teacher as TeacherWithEstablishment;
+      const teacherWithEstab: TeacherWithEstablishment = teacher;
       if (invitationToken && !teacherWithEstab.establishmentId) {
         await handleInvitationValidation(invitationToken);
       }
@@ -189,11 +254,11 @@ export function useTeacher() {
   );
 
   const updateSession = useCallback(
-    async (sessionId: string, nom: string): Promise<Session | null> => {
-      if (!teacher) return null;
+    async (sessionId: string, name: string): Promise<Session> => {
+      if (!teacher) throw new Error("Teacher not found");
 
       try {
-        const data = await handleUpdateSessionName(sessionId, nom);
+        const data = await handleUpdateSessionName(sessionId, name);
 
         setSessions((prev) => prev.map((s) => (s.id === sessionId ? data : s)));
         setError(null);
@@ -201,16 +266,16 @@ export function useTeacher() {
       } catch (err) {
         console.error("Unexpected error:", err);
         setError(t.hooks.teacher.error);
-        return null;
+        throw err;
       }
     },
     [teacher, handleUpdateSessionName, t],
   );
 
   const handleDeleteSession = useCallback(
-    async (sessionId: string): Promise<unknown> => {
+    async (sessionId: string): Promise<void> => {
       try {
-        return await sessionService.deleteSession(sessionId);
+        await sessionService.deleteSession(sessionId);
       } catch (err) {
         console.error("Error deleting session courses:", err);
         setError(t.hooks.teacher.sessionDeleteError);
@@ -219,6 +284,7 @@ export function useTeacher() {
     },
     [t],
   );
+
   const deleteSession = useCallback(
     async (sessionId: string): Promise<boolean> => {
       if (!teacher) return false;
@@ -592,18 +658,6 @@ export function useTeacher() {
     [t],
   );
 
-  useEffect(() => {
-    if (!authLoading) {
-      fetchOrCreateTeacher();
-    }
-  }, [authLoading, fetchOrCreateTeacher]);
-
-  useEffect(() => {
-    if (teacher) {
-      fetchSessions();
-    }
-  }, [teacher, fetchSessions]);
-
   const reorderCourse = useCallback(
     async (coursIds: string[]): Promise<boolean> => {
       try {
@@ -660,36 +714,68 @@ export function useTeacher() {
     [t, updateQuestion],
   );
 
-  return {
+  useEffect(() => {
+    if (!authLoading) {
+      fetchOrCreateTeacher();
+    }
+  }, [authLoading, fetchOrCreateTeacher]);
+
+  useEffect(() => {
+    if (teacher) {
+      fetchSessions();
+    }
+  }, [teacher, fetchSessions]);
+
+  const value: TeacherContextType = {
     teacher,
     sessions,
-    loading: authLoading || loading,
+    loading: loading || authLoading,
     error,
+    handleFetchTeacher,
+    handleInvitationValidation,
+    handleCreateTeacher,
+    fetchOrCreateTeacher,
+    fetchSessions,
     createSession,
     updateSession,
+    handleDeleteSession,
     deleteSession,
     fetchCourses,
-    createCourse,
     updateCourse,
-    deleteCourse,
-    reorderCourse,
+    handleGetCoursesCount,
+    handleCreateCourse,
+    handleUploadPdfForCours,
     uploadPdfForCourse,
     fetchCourseFiles,
-    deleteCourseFile,
     getPdfUrl,
     fetchQuestions,
     updateQuestion,
     deleteQuestion,
     createQuestion,
-    reorderQuestions,
     generateQuestions,
     validateQuestions,
-    refreshSessions: fetchSessions,
     fetchSessionStudents,
     fetchCourseRanking,
     fetchQuestionsCourseForCourse,
     fetchPendingQuestionsCount,
     answerCourseQuestion,
     deleteCourseQuestion,
+    reorderCourse,
+    deleteCourse,
+    reorderQuestions,
+    handleUpdateSessionName,
+    deleteCourseFile,
+    createCourse,
+    refreshSessions: fetchSessions,
   };
+
+  return <TeacherContext.Provider value={value}>{children}</TeacherContext.Provider>;
+}
+
+export function useTeacher() {
+  const context = useContext(TeacherContext);
+  if (!context) {
+    throw new Error("useTeacher must be used within TeacherProvider");
+  }
+  return context;
 }

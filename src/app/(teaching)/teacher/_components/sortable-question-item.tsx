@@ -2,7 +2,7 @@ import { Question, UpdateQuestionRequest } from "@/types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
-import { QuestionCard } from "./QuestionCard";
+import { QuestionCard } from "./question-card";
 
 interface SortableQuestionItemProps {
   question: Question;

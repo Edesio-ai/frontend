@@ -8,7 +8,7 @@ import { UpdateQuestionRequest } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { SortableQuestionItem } from "@/components/teacher/SotableQuestionItem";
+import { SortableQuestionItem } from "../sortable-question-item";
 import { useTranslations } from "@/lib/i18n/client";
 
 type QuestionSectionTesterModalProps = {

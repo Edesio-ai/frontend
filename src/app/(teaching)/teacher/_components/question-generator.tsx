@@ -1,9 +1,9 @@
 "use client";
 
 import { Loader2, Sparkles } from "lucide-react";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import { MAX_QUESTIONS } from "@/utils/constants/teacher";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/i18n/client";
 
 interface QuestionGeneratorProps {

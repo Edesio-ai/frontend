@@ -32,7 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Course, CourseFile, Question, CourseRanking, UpdateQuestionRequest } from "@/types";
+import type { Course, CourseFile, Question, CourseRanking } from "@/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Loader2,
@@ -56,16 +56,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { exportClassementPdf } from "@/lib/pdf-export";
 import { useTranslations } from "@/lib/i18n/client";
 import { courseService } from "@/services/teaching/course.service";
-import { QuestionGenerator } from "../teacher/QuestionGenerator";
+import { QuestionGenerator } from "./question-generator";
 import { MAX_QUESTIONS } from "@/utils/constants/teacher";
-import { GenerateQuestionsConfig } from "@/types";
-import { SortableQuestionItem } from "../teacher/SotableQuestionItem";
+import { SortableQuestionItem } from "./sortable-question-item";
 import { exportService } from "@/services/export.service";
-import { EditQuestionTesterModalSection } from "../teacher/CourseTesterModal/EditQuestionTesterModalSection";
-import { FileSectionTesterModal } from "../teacher/CourseTesterModal/FileSectionTesterModal";
-import { QuestionSectionTesterModal } from "../teacher/CourseTesterModal/QuestionSectionTesterModal";
-import { RegenerateQuestionModal } from "../teacher/CourseTesterModal/RegenerateQuestionModal";
-import { ChatbotModal } from "../teacher/CourseTesterModal/ChatbotModal";
+import { EditQuestionTesterModalSection } from "./course-tester-modal/edit-question-tester-modal-section";
+import { FileSectionTesterModal } from "./course-tester-modal/file-section-tester-modal";
+import { QuestionSectionTesterModal } from "./course-tester-modal/question-section-tester-modal";
+import { RegenerateQuestionModal } from "./course-tester-modal/regenerate-question-modal";
+import { ChatbotModal } from "./course-tester-modal/chatbot-modal";
+import { useTeacher } from "@/app/(teaching)/teacher/_contexts/teacher-context";
 
 interface CourseTesterModalProps {
   course: Course;
@@ -73,37 +73,6 @@ interface CourseTesterModalProps {
   sessionName: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  updateCourse: (
-    courseId: string,
-    title: string,
-    description: string | null,
-    contentText: string | null,
-  ) => Promise<Course | null>;
-  uploadPdfForCourse: (courseId: string, file: File) => Promise<CourseFile | null>;
-  fetchCourseFiles: (courseId: string) => Promise<CourseFile[]>;
-  deleteCourseFile: (file: CourseFile) => Promise<boolean>;
-  getPdfUrl: (fileId: string, fileName: string) => Promise<void>;
-  fetchQuestions: (courseId: string) => Promise<Question[]>;
-  updateQuestion: (questionId: string, updates: UpdateQuestionRequest) => Promise<Question | null>;
-  deleteQuestion: (questionId: string) => Promise<boolean>;
-  createQuestion: (
-    courseId: string,
-    questionData: {
-      type: "single" | "open" | "multiple";
-      questionText: string;
-      propositions?: string[];
-      correctAnswer?: string;
-      correctAnswers?: string[];
-      explanation?: string;
-    },
-  ) => Promise<Question | null>;
-  generateQuestions: (
-    courseId: string,
-    config?: GenerateQuestionsConfig,
-  ) => Promise<{ success: boolean; questionCount?: number; questions?: Question[]; error?: string }>;
-  validateQuestions: (courseId: string) => Promise<{ success: boolean; course?: Course; error?: string }>;
-  reorderQuestions?: (questionIds: string[]) => Promise<boolean>;
-  fetchCourseRanking?: (courseId: string) => Promise<CourseRanking[]>;
   onCourseUpdated: (updatedCourse: Course) => void;
 }
 
@@ -113,19 +82,6 @@ export function CourseTesterModal({
   sessionName,
   open,
   onOpenChange,
-  updateCourse,
-  uploadPdfForCourse,
-  fetchCourseFiles,
-  deleteCourseFile,
-  getPdfUrl,
-  fetchQuestions,
-  updateQuestion,
-  deleteQuestion,
-  createQuestion,
-  generateQuestions,
-  validateQuestions,
-  reorderQuestions,
-  fetchCourseRanking,
   onCourseUpdated,
 }: CourseTesterModalProps) {
   const t = useTranslations();
@@ -171,6 +127,22 @@ export function CourseTesterModal({
   const [questionsValidated, setQuestionsValidated] = useState(course.validatedQuestions);
   // Phase 1 sub-view: course editing vs question generation
   const [showQuestionGenerator, setShowQuestionGenerator] = useState(false);
+
+  const {
+    updateCourse,
+    uploadPdfForCourse,
+    fetchCourseFiles,
+    deleteCourseFile,
+    getPdfUrl,
+    fetchQuestions,
+    updateQuestion,
+    deleteQuestion,
+    createQuestion,
+    reorderQuestions,
+    generateQuestions,
+    validateQuestions,
+    fetchCourseRanking,
+  } = useTeacher();
 
   // DnD sensors for questions reordering
   const questionSensors = useSensors(
@@ -703,10 +675,10 @@ export function CourseTesterModal({
                               index={index}
                               updateQuestion={updateQuestion}
                               deleteQuestion={deleteQuestion}
-                              onQuestionUpdated={(updated) => {
+                              onQuestionUpdated={(updated: Question) => {
                                 setQuestions((prev) => prev.map((pq) => (pq.id === updated.id ? updated : pq)));
                               }}
-                              onQuestionDeleted={(deletedId) => {
+                              onQuestionDeleted={(deletedId: string) => {
                                 setQuestions((prev) => prev.filter((pq) => pq.id !== deletedId));
                               }}
                             />

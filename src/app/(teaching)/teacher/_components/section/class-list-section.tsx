@@ -3,7 +3,7 @@
 import { SessionCard } from "@/components/dashboard";
 import { Session } from "@/types";
 import { Users } from "lucide-react";
-import { EmptySessionCard } from "../EmptySessionCard";
+import { EmptySessionCard } from "../empty-session-card";
 import { useTranslations } from "@/lib/i18n/client";
 
 type ClassListSectionProps = {

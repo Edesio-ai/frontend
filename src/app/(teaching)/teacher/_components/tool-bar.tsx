@@ -2,9 +2,9 @@
 
 import { ChevronRight, Loader2, Plus, Search, Users } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { Card } from "../ui/card";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Session } from "@/types";
 import { useTranslations } from "@/lib/i18n/client";
 

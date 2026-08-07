@@ -1,39 +1,31 @@
 "use client";
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BookOpen, FileText, Globe, Loader2, Plus, Sparkles, Upload, Users, X } from "lucide-react";
-import { Form, FormMessage } from "../ui/form";
-import { FormField } from "../ui/form";
-import { FormItem } from "../ui/form";
-import { FormLabel } from "../ui/form";
-import { FormControl } from "../ui/form";
-import { Input } from "../ui/input";
-import { Select } from "../ui/select";
+import { Form, FormMessage } from "@/components/ui/form";
+import { FormField } from "@/components/ui/form";
+import { FormItem } from "@/components/ui/form";
+import { FormLabel } from "@/components/ui/form";
+import { FormControl } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { Course, Session, Language } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Button } from "../ui/button";
+import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { CreateSessionFormValues } from "@/types/zod.type";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { useTranslations } from "@/lib/i18n/client";
+import { useTeacher } from "../_contexts/teacher-context";
 
 type CreateModalProps = {
   createModalOpen: boolean;
   onOpenChange: (open: boolean) => void;
   form: UseFormReturn<CreateSessionFormValues>;
-  createSession: (sessionNom: string, sessionLangue: Language) => Promise<Session | null>;
-  createCourse: (
-    sessionId: string,
-    coursTitre: string,
-    coursDescription: string,
-    coursContenu: string,
-    pdfFiles: File[] | undefined,
-  ) => Promise<Course | null>;
   setSelectedPdfFiles: Dispatch<SetStateAction<File[]>>;
   selectedPdfFiles: File[];
-  refreshSessions: () => Promise<void>;
   handleCloseCreateModal: () => void;
   setSelectedSession: Dispatch<SetStateAction<Session | null>>;
   setNewlyCreatedCourse: Dispatch<SetStateAction<Course | null>>;
@@ -43,11 +35,8 @@ export function CreateModal({
   createModalOpen,
   onOpenChange,
   form,
-  createSession,
-  createCourse,
   setSelectedPdfFiles,
   selectedPdfFiles,
-  refreshSessions,
   handleCloseCreateModal,
   setSelectedSession,
   setNewlyCreatedCourse,
@@ -55,6 +44,7 @@ export function CreateModal({
   const t = useTranslations();
   const [isCreating, setIsCreating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { createSession, createCourse, refreshSessions } = useTeacher();
 
   const langueLabels: Record<Language, string> = {
     francais: t.selfLearner.langueLabels.francais,

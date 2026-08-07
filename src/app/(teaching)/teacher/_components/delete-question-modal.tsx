@@ -9,8 +9,8 @@ import {
   AlertDialogTitle,
   AlertDialogCancel,
   AlertDialogAction,
-} from "../ui/alert-dialog";
-import { AlertDialogHeader } from "../ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
+import { AlertDialogHeader } from "@/components/ui/alert-dialog";
 import { useTranslations } from "@/lib/i18n/client";
 
 type DeleteQuestionModalProps = {
