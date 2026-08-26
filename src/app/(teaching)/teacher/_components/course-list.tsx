@@ -208,6 +208,7 @@ export function CourseList({ session, initialCoursToOpen, onInitialCoursOpened }
           course={selectedCourse}
           allCourses={courses}
           sessionName={session.name}
+          language={session.language}
           open={!!selectedCourse}
           onOpenChange={(open) => !open && setselectedCourse(null)}
           onCourseUpdated={handleCourseUpdated}

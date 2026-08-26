@@ -1,5 +1,5 @@
 import { useReducer, useCallback } from "react";
-import type { Course, Question, EvaluateAnswerRequest } from "@/types";
+import type { Course, Question, EvaluateAnswerRequest, Language } from "@/types";
 import { useTranslations } from "@/lib/i18n/client";
 import { propositionLabels, correctAnswerDisplay, letterAnswerIsCorrect } from "@/lib/proposition-labels";
 import { llmService } from "@/services/llm.service";
@@ -155,7 +155,7 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-export function useChatbotPreview() {
+export function useChatbotPreview(language: Language = "francais") {
   const [state, dispatch] = useReducer(reducer, initialState);
   const t = useTranslations();
 
@@ -260,6 +260,7 @@ export function useChatbotPreview() {
         correctAnswer: correctAnswerDisplay(question.proposals, question.correctAnswers || []) || "",
         answer: answer,
         explanation: question.explanation || "",
+        language,
       };
       let isCheating = false;
       let isCorrect = false;
@@ -349,20 +350,15 @@ export function useChatbotPreview() {
             );
           } else {
             const retryPrompt = pickRandom(retryEncouragements);
-            const cheatMessage = pickRandom(cheatMessages);
             const wrongAnswer = correctAnswerDisplay(question.proposals, question.correctAnswers || []);
+            const openFeedback = t.chatbot.wrongOpen
+              .replace("{encouragement}", encouragement)
+              .replace("{answer}", wrongAnswer)
+              .replace("{retry}", retryPrompt);
 
-            addBotMessage(
-              isCheating
-                ? cheatMessage
-                : t.chatbot.wrongOpen
-                    .replace("{cheat}", cheatMessage)
-                    .replace("{encouragement}", encouragement)
-                    .replace("{answer}", wrongAnswer)
-                    .replace("{retry}", retryPrompt),
-              "feedback",
-              { isCorrect: false },
-            );
+            addBotMessage(isCheating ? `${pickRandom(cheatMessages)}\n\n${openFeedback}` : openFeedback, "feedback", {
+              isCorrect: false,
+            });
           }
           dispatch({ type: "ENTER_RETRY_MODE" });
         }
@@ -380,6 +376,7 @@ export function useChatbotPreview() {
       afterRetryMessages,
       retryEncouragements,
       cheatMessages,
+      language,
     ],
   );
 

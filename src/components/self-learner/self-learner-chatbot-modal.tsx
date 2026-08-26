@@ -35,7 +35,7 @@ import { useTranslations } from "@/lib/i18n/client";
 interface SelfLearnerChatbotModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  cours: SelfLearnerCourse;
+  course: SelfLearnerCourse;
   generateQuestions?: (coursId: string) => Promise<{ success: boolean; error?: string }>;
 }
 
@@ -364,7 +364,7 @@ function MultiOptions({
 export function SelfLearnerChatbotModal({
   open,
   onOpenChange,
-  cours,
+  course,
   generateQuestions,
 }: SelfLearnerChatbotModalProps) {
   const t = useTranslations();
@@ -424,11 +424,11 @@ export function SelfLearnerChatbotModal({
 
       try {
         const body: GenerateCompletionFeedbackRequest = {
-          courseTitle: cours.title,
+          courseTitle: course.title,
           score: finalScore,
           total: finalTotal,
           studentName: user?.metadata.firstname || t.dashboard.questionsPanel.studentFallback,
-          language: cours.language || "francais",
+          language: course.language || "francais",
         };
         const feedback = await llmService.generateCompletionFeedback(body);
         const aiFeedback = feedback.feedback || t.chatbot.completionDefault;
@@ -459,7 +459,7 @@ export function SelfLearnerChatbotModal({
 
       setChatState("completed");
     },
-    [addMessage, cours.title, cours.language, user, t],
+    [addMessage, course.title, course.language, user, t],
   );
 
   const loadAndStartQuiz = useCallback(async () => {
@@ -473,7 +473,7 @@ export function SelfLearnerChatbotModal({
     setIsRetryAttempt(false);
     setWaitingForRetry(false);
 
-    const questions = await selfLearnerQuestionService.getSelfLearnerQuestions(cours.id);
+    const questions = await selfLearnerQuestionService.getSelfLearnerQuestions(course.id);
 
     if (questions.length === 0) {
       setChatState("greeting");
@@ -531,7 +531,7 @@ export function SelfLearnerChatbotModal({
         }, 1000);
       }, 1500);
     }, 500);
-  }, [addMessage, askQuestion, cours.id, t]);
+  }, [addMessage, askQuestion, course.id, t]);
 
   useEffect(() => {
     if (!open) {
@@ -542,7 +542,7 @@ export function SelfLearnerChatbotModal({
       loadStartedRef.current = true;
       void loadAndStartQuiz();
     }
-  }, [open, cours.id, chatState, loadAndStartQuiz]);
+  }, [open, course.id, chatState, loadAndStartQuiz]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -567,7 +567,7 @@ export function SelfLearnerChatbotModal({
     setIsGeneratingNew(true);
 
     if (generateQuestions) {
-      await generateQuestions(cours.id);
+      await generateQuestions(course.id);
     }
 
     setIsGeneratingNew(false);
@@ -661,7 +661,7 @@ export function SelfLearnerChatbotModal({
         body: JSON.stringify({
           studentQuestion,
           questionContext: context,
-          language: cours.language || "français",
+          language: course.language || "français",
         }),
       });
       const data = await response.json();
@@ -695,6 +695,7 @@ export function SelfLearnerChatbotModal({
         correctAnswer: question.correctAnswers?.[0] || "",
         answer: answer,
         explanation: question.explanation || "",
+        language: course.language || "francais",
       };
       const evaluation = await llmService.evaluateAnswer(body);
       processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] ?? "", studentQuestion, {
@@ -933,7 +934,7 @@ export function SelfLearnerChatbotModal({
               <DialogTitle className="text-base font-bold leading-tight">Edesio</DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground truncate flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                {cours.title}
+                {course.title}
               </DialogDescription>
             </div>
             <div className="flex items-center gap-1 shrink-0">
