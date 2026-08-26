@@ -731,6 +731,12 @@
     "revise": "Réviser",
     "qa": "Q&R",
     "ranking": "Classement",
+    "rankingModal": {
+      "you": "(Toi)",
+      "empty": "Personne n'a encore participé à ce cours.",
+      "beFirst": "Sois le premier à réviser !",
+      "correctAnswers": "{correct}/{total} réponses correctes"
+    },
     "leaveSession": "Quitter cette session",
     "leaveModalTitle": "Quitter la session ?",
     "leaveModalDesc": "Tu n'auras plus accès aux cours de « {session} ». Tu pourras rejoindre à nouveau avec le code.",

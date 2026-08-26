@@ -731,6 +731,12 @@
     "revise": "Revise",
     "qa": "Q&A",
     "ranking": "Ranking",
+    "rankingModal": {
+      "you": "(You)",
+      "empty": "Nobody has participated in this lesson yet.",
+      "beFirst": "Be the first to revise!",
+      "correctAnswers": "{correct}/{total} correct answers"
+    },
     "leaveSession": "Leave this session",
     "leaveModalTitle": "Leave session?",
     "leaveModalDesc": "You will no longer have access to the lessons in \"{session}\". You can rejoin using the code.",
