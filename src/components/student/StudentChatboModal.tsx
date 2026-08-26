@@ -673,6 +673,7 @@ export function StudentChatbotModal({
         correctAnswer: question.correctAnswers?.[0] || "",
         answer: answer,
         explanation: question.explanation || "",
+        language,
       };
 
       const evaluation = await llmService.evaluateAnswer(body);

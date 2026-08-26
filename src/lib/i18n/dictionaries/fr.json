@@ -665,7 +665,7 @@
     "reflectionWrong": "Hmm, ta réponse ne correspond pas vraiment à la notion.\n\nLa bonne réponse était : {answer}{explanation}\n\nPas de souci, passons à la suite !",
     "reflectionNext": "D'accord, passons à la suite.\n\nPour rappel, la bonne réponse était : {answer}{explanation}",
     "wrongQCM": "{encouragement}\n\nLa bonne réponse est : {answer}\n\nEssaie de sélectionner la bonne réponse cette fois !",
-    "wrongOpen": "{cheat}\n\n{encouragement}\n\nLa bonne réponse est : {answer}\n\n{retry}",
+    "wrongOpen": "{encouragement}\n\nLa bonne réponse est : {answer}\n\n{retry}",
     "sessionEnded": "Session terminée !",
     "goodAnswer": "Bonne réponse ! +1 point",
     "partialAnswer": "Réponse partielle +0.5 point",

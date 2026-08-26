@@ -4,7 +4,7 @@ import { ChatbotPreviewPanel } from "@/components/dashboard/ChatbotPreviewPanel"
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { MessageSquare, RefreshCw, X } from "lucide-react";
-import { Course } from "@/types";
+import { Course, Language } from "@/types";
 import { Question } from "@/types";
 import { useTranslations } from "@/lib/i18n/client";
 
@@ -12,6 +12,7 @@ interface ChatbotModalProps {
   course: Course;
   allCourses: Course[];
   sessionName: string;
+  language?: Language;
   fetchQuestions: (courseId: string) => Promise<Question[]>;
   chatbotRefreshKey: number;
   setChatbotRefreshKey: (key: number) => void;
@@ -23,6 +24,7 @@ export function ChatbotModal({
   course,
   allCourses,
   sessionName,
+  language = "francais",
   fetchQuestions,
   chatbotRefreshKey,
   setChatbotRefreshKey,
@@ -70,6 +72,7 @@ export function ChatbotModal({
             sessionName={sessionName}
             fetchQuestions={fetchQuestions}
             refreshKey={chatbotRefreshKey}
+            language={language}
           />
         </div>
       </DialogContent>

@@ -1602,7 +1602,7 @@ export default function SelfLearner() {
               setChatbotModalOpen(open);
               if (!open) setCourseForChatbot(null);
             }}
-            cours={courseForChatbot}
+            course={courseForChatbot}
             generateQuestions={async (coursId: string) => {
               return generateQuestions(coursId, {
                 simpleCount: qcmCount,
@@ -1637,7 +1637,7 @@ export default function SelfLearner() {
                 }}
                 maxLength={200}
                 disabled={isSavingCardRename}
-                data-testid="input-rename-card-cours"
+                data-testid="input-rename-card-course"
               />
               <div className="flex justify-end gap-2">
                 <Button

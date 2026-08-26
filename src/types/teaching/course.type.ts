@@ -1,3 +1,5 @@
+import { Language } from "..";
+
 export interface Course {
   id: string;
   sessionId: string;
@@ -7,6 +9,7 @@ export interface Course {
   validatedQuestions?: boolean;
   positionOrder?: number;
   createdAt?: string;
+  language?: Language;
 }
 
 export interface CourseBasic {

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useChatbotPreview, type ChatMessage } from "@/hooks/use-chatbot-preview.hook";
-import type { Course, Question } from "@/types";
+import type { Course, Question, Language } from "@/types";
 import { propositionLabels } from "@/lib/proposition-labels";
 import { useTranslations } from "@/lib/i18n/client";
 import {
@@ -28,6 +28,7 @@ interface ChatbotPreviewPanelProps {
   sessionName: string;
   fetchQuestions: (courseId: string) => Promise<Question[]>;
   refreshKey: number;
+  language?: Language;
 }
 
 function TypingIndicator() {
@@ -258,7 +259,13 @@ function QCMOptions({
   );
 }
 
-export function ChatbotPreviewPanel({ course, sessionName, fetchQuestions, refreshKey }: ChatbotPreviewPanelProps) {
+export function ChatbotPreviewPanel({
+  course,
+  sessionName,
+  fetchQuestions,
+  refreshKey,
+  language = "francais",
+}: ChatbotPreviewPanelProps) {
   const t = useTranslations();
   const {
     chatbotState,
@@ -276,7 +283,7 @@ export function ChatbotPreviewPanel({ course, sessionName, fetchQuestions, refre
     askCurrentQuestion,
     submitAnswer,
     getCurrentQuestion,
-  } = useChatbotPreview();
+  } = useChatbotPreview(language);
   const [inputValue, setInputValue] = useState("");
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
   const [hasAskedCourse, setHasAskedCourse] = useState(false);

@@ -32,7 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Course, CourseFile, Question, CourseRanking } from "@/types";
+import type { Course, CourseFile, Question, CourseRanking, Language } from "@/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Loader2,
@@ -71,6 +71,7 @@ interface CourseTesterModalProps {
   course: Course;
   allCourses: Course[];
   sessionName: string;
+  language?: Language;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCourseUpdated: (updatedCourse: Course) => void;
@@ -80,6 +81,7 @@ export function CourseTesterModal({
   course,
   allCourses,
   sessionName,
+  language = "francais",
   open,
   onOpenChange,
   onCourseUpdated,
@@ -1058,6 +1060,7 @@ export function CourseTesterModal({
         course={course}
         allCourses={allCourses}
         sessionName={sessionName}
+        language={language}
         fetchQuestions={fetchQuestions}
         chatbotRefreshKey={chatbotRefreshKey}
         setChatbotRefreshKey={setChatbotRefreshKey}

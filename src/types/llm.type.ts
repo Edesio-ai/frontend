@@ -1,10 +1,12 @@
+import { Language } from "./index";
+
 export interface GenerateCompletionFeedbackRequest {
   courseTitle: string;
   score: number;
   total: number;
   studentName?: string;
   /** Course/session language — feedback is generated in this language. */
-  language?: "francais" | "anglais" | "espagnol" | "allemand";
+  language?: Language;
 }
 
 export interface GenerateQuestionsConfig {
@@ -18,4 +20,5 @@ export interface EvaluateAnswerRequest {
   correctAnswer: string;
   answer: string;
   explanation: string;
+  language?: Language;
 }
