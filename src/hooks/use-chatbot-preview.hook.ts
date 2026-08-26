@@ -173,7 +173,12 @@ export function useChatbotPreview() {
 
   const initializeWithCours = useCallback(
     (cours: Course[], sessionName: string) => {
-      dispatch({ type: "SET_COURS", cours, sessionName, greetingText: pickRandom(greetings) });
+      dispatch({
+        type: "SET_COURS",
+        cours,
+        sessionName,
+        greetingText: pickRandom(greetings),
+      });
     },
     [greetings],
   );
