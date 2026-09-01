@@ -398,6 +398,7 @@ export function StudentChatbotModal({
   const chatStateRef = useRef(chatState);
   const studentNameRef = useRef(studentName);
   const coursTitleRef = useRef(course.title);
+  const isAcknowledgingRef = useRef(false);
   const [conversationNonce, setConversationNonce] = useState(0);
   const askQuestionRef = useRef<(index: number) => void>(() => {});
 
@@ -474,10 +475,11 @@ export function StudentChatbotModal({
 
       setChatState("completed");
       if (onComplete) {
-        console.log("Calling onComplete with:", { finalTotal, finalScore });
-        onComplete(finalTotal, finalScore);
-      } else {
-        console.warn("onComplete callback is not defined!");
+        try {
+          await onComplete(finalTotal, finalScore);
+        } catch (error) {
+          console.error("Error saving course progress:", error);
+        }
       }
     },
     [addMessage, course.title, studentName, language, t, onComplete],
@@ -793,15 +795,24 @@ export function StudentChatbotModal({
   };
 
   const handleAcknowledge = useCallback(async () => {
+    if (isAcknowledgingRef.current) return;
+    isAcknowledgingRef.current = true;
+
     setWaitingForAcknowledge(false);
     setLastAnswerResult(null);
     const nextIndex = currentQuestionIndex + 1;
     setCurrentQuestionIndex(nextIndex);
 
-    if (nextIndex >= shuffledQuestions.length) {
-      await showCompletion(score, shuffledQuestions.length);
-    } else {
-      askQuestion(nextIndex);
+    try {
+      if (nextIndex >= shuffledQuestions.length) {
+        await showCompletion(score, shuffledQuestions.length);
+      } else {
+        askQuestion(nextIndex);
+        isAcknowledgingRef.current = false;
+      }
+    } catch (error) {
+      console.error("Error acknowledging answer:", error);
+      isAcknowledgingRef.current = false;
     }
   }, [currentQuestionIndex, shuffledQuestions.length, score, showCompletion, askQuestion]);
 
@@ -821,8 +832,9 @@ export function StudentChatbotModal({
   useEffect(() => {
     const handleGlobalKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Enter" && waitingForAcknowledge) {
+        if (e.target instanceof HTMLButtonElement) return;
         e.preventDefault();
-        handleAcknowledge();
+        void handleAcknowledge();
       }
     };
 
@@ -845,6 +857,7 @@ export function StudentChatbotModal({
     setIsRetryAttempt(false);
     setWaitingForRetry(false);
     setChatState("idle");
+    isAcknowledgingRef.current = false;
     setConversationNonce((n) => n + 1);
   };
 
@@ -991,7 +1004,7 @@ export function StudentChatbotModal({
           >
             <div className="flex justify-center">
               <Button
-                onClick={handleAcknowledge}
+                onClick={() => void handleAcknowledge()}
                 className={`w-full max-w-xs h-12 rounded-xl font-semibold shadow-md !ring-0 !ring-offset-0 focus:outline-none ${
                   currentQuestionIndex + 1 >= shuffledQuestions.length
                     ? "bg-gradient-to-r from-primary to-violet-600 hover:opacity-90 text-white border border-violet-700"
