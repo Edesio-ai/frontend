@@ -66,13 +66,11 @@ export default function InvitationModal({
                 data-testid="input-invite-email"
               />
             </div>
-            <p className="text-xs text-muted-foreground">
-              The code is valid for 7 days and can only be used by this email address.
-            </p>
+            <p className="text-xs text-muted-foreground">{t.establishment.invitationModal.emailHint}</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="chatbots-count">Allocated chatbots</Label>
+            <Label htmlFor="chatbots-count">{t.establishment.invitationModal.allocatedChatbots}</Label>
             <Input
               id="chatbots-count"
               type="number"
@@ -83,7 +81,7 @@ export default function InvitationModal({
               className="w-32"
               data-testid="input-chatbots-count"
             />
-            <p className="text-xs text-muted-foreground">Number of sessions/chatbots this teacher can create.</p>
+            <p className="text-xs text-muted-foreground">{t.establishment.invitationModal.allocatedChatbotsHint}</p>
           </div>
         </div>
 

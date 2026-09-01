@@ -849,6 +849,9 @@
       "description": "Enter the teacher's email address. An invitation code will be generated for that address only.",
       "email": "Teacher's email address",
       "emailPlaceholder": "teacher@school.com",
+      "emailHint": "The code is valid for 7 days and can only be used by this email address.",
+      "allocatedChatbots": "Allocated chatbots",
+      "allocatedChatbotsHint": "Number of sessions/chatbots this teacher can create.",
       "create": "Create invitation",
       "creating": "Creating...",
       "cancel": "Cancel"
@@ -874,6 +877,7 @@
       "close": "Close"
     },
     "courseViewModal": {
+      "title": "Lesson",
       "noQuestions": "No questions created.",
       "noStudents": "No students have worked on this lesson yet.",
       "close": "Close",
