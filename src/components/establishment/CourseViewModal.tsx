@@ -28,7 +28,7 @@ export function CourseViewModal({
         <DialogHeader>
           <DialogTitle className="flex flex-wrap items-center gap-2">
             <BookOpen className="h-5 w-5" />
-            {sessionDetails?.course.title || "Cours"}
+            {sessionDetails?.course.title || t.establishment.courseViewModal.title}
           </DialogTitle>
           {sessionDetails?.course.description && (
             <DialogDescription>{sessionDetails.course.description}</DialogDescription>

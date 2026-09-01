@@ -849,6 +849,9 @@
       "description": "Saisissez l'adresse email du professeur. Un code d'invitation sera généré uniquement pour cette adresse.",
       "email": "Adresse email du professeur",
       "emailPlaceholder": "professeur@ecole.fr",
+      "emailHint": "Le code est valable 7 jours et ne peut être utilisé que par cette adresse email.",
+      "allocatedChatbots": "Chatbots alloués",
+      "allocatedChatbotsHint": "Nombre de sessions/chatbots que ce professeur peut créer.",
       "create": "Créer l'invitation",
       "creating": "Création en cours...",
       "cancel": "Annuler"
@@ -874,6 +877,7 @@
       "close": "Fermer"
     },
     "courseViewModal": {
+      "title": "Cours",
       "noQuestions": "Aucune question créée.",
       "noStudents": "Aucun élève n'a encore travaillé sur ce cours.",
       "close": "Fermer",
