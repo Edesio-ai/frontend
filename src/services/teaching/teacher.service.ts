@@ -16,4 +16,9 @@ export const teacherService = {
     });
     return reponse;
   },
+  deleteTeacher: async (teacherId: string): Promise<void> => {
+    await apiFetch(`/api/teacher/${teacherId}`, {
+      method: "DELETE",
+    });
+  },
 };

@@ -20,6 +20,7 @@ import { courseService } from "@/services/teaching/course.service";
 import { studentSessionService } from "@/services/teaching/student-session.service";
 import { emailService } from "@/services/email.service";
 import { useAuth } from "@/contexts/auth-context";
+import { teacherService } from "@/services/teaching/teacher.service";
 
 interface EstablishmentContextType {
   establishment: Establishment | null;
@@ -38,6 +39,7 @@ interface EstablishmentContextType {
   getStudentSessions: (sessionId: string) => Promise<Student[]>;
   getSessionCourse: (sessionId: string) => Promise<CourseBasic[]>;
   getSessionDetails: (courseId: string) => Promise<SessionDetails | null>;
+  deleteTeacher: (teacherId: string) => Promise<void>;
 }
 
 const EstablishmentContext = createContext<EstablishmentContextType | null>(null);
@@ -218,6 +220,11 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
     return data || null;
   }, []);
 
+  const deleteTeacher = useCallback(async (teacherId: string): Promise<void> => {
+    await teacherService.deleteTeacher(teacherId);
+    setTeachers((state) => state.filter((teacher) => teacher.id !== teacherId));
+  }, []);
+
   const refreshData = useCallback(async () => {
     await fetchEtablissementData();
     if (establishment) {
@@ -250,6 +257,7 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
     getStudentSessions,
     getSessionCourse,
     getSessionDetails,
+    deleteTeacher,
   };
 
   return <EstablishmentContext.Provider value={value}>{children}</EstablishmentContext.Provider>;
