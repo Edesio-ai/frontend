@@ -386,6 +386,7 @@ export function SelfLearnerChatbotModal({
   const [isGeneratingNew, setIsGeneratingNew] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const loadStartedRef = useRef(false);
+  const isAcknowledgingRef = useRef(false);
   const { user } = useAuth();
 
   const addMessage = useCallback((message: Omit<ChatMessage, "id">) => {
@@ -536,6 +537,7 @@ export function SelfLearnerChatbotModal({
   useEffect(() => {
     if (!open) {
       loadStartedRef.current = false;
+      isAcknowledgingRef.current = false;
       return;
     }
     if (chatState === "idle" && !loadStartedRef.current) {
@@ -561,6 +563,7 @@ export function SelfLearnerChatbotModal({
   };
 
   const handleReset = async () => {
+    isAcknowledgingRef.current = false;
     setChatState("loading");
     setMessages([]);
     setShuffledQuestions([]);
@@ -835,15 +838,24 @@ export function SelfLearnerChatbotModal({
   };
 
   const handleAcknowledge = useCallback(async () => {
+    if (isAcknowledgingRef.current) return;
+    isAcknowledgingRef.current = true;
+
     setWaitingForAcknowledge(false);
     setLastAnswerResult(null);
     const nextIndex = currentQuestionIndex + 1;
     setCurrentQuestionIndex(nextIndex);
 
-    if (nextIndex >= shuffledQuestions.length) {
-      await showCompletion(score, shuffledQuestions.length);
-    } else {
-      askQuestion(nextIndex, shuffledQuestions);
+    try {
+      if (nextIndex >= shuffledQuestions.length) {
+        await showCompletion(score, shuffledQuestions.length);
+      } else {
+        askQuestion(nextIndex, shuffledQuestions);
+        isAcknowledgingRef.current = false;
+      }
+    } catch (error) {
+      console.error("Error acknowledging answer:", error);
+      isAcknowledgingRef.current = false;
     }
   }, [currentQuestionIndex, shuffledQuestions, score, showCompletion, askQuestion]);
 
@@ -868,8 +880,9 @@ export function SelfLearnerChatbotModal({
   useEffect(() => {
     const handleGlobalKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Enter" && waitingForAcknowledge) {
+        if (e.target instanceof HTMLButtonElement) return;
         e.preventDefault();
-        handleAcknowledge();
+        void handleAcknowledge();
       }
     };
 
@@ -1025,7 +1038,7 @@ export function SelfLearnerChatbotModal({
           >
             <div className="flex justify-center">
               <Button
-                onClick={handleAcknowledge}
+                onClick={() => void handleAcknowledge()}
                 className={`w-full max-w-xs h-12 rounded-xl font-semibold shadow-md !ring-0 !ring-offset-0 focus:outline-none ${
                   currentQuestionIndex + 1 >= shuffledQuestions.length
                     ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:opacity-90 text-white border border-amber-600"
