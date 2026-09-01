@@ -2,10 +2,11 @@ import { CourseBasic, SessionWithStudentCount, TeacherWithStats } from "@/types"
 import { useState } from "react";
 import { TableCell, TableRow } from "../ui/table";
 import { useTranslations } from "@/lib/i18n/client";
-import { BookOpen, ChevronDown, ChevronRight, Users } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight, Trash2, Users } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { SessionCoursesList } from "./SessionCoursesList";
+import { useEstablishment } from "@/app/(teaching)/establishment/_contexts/establishment-context";
 
 export function TeacherRow({
   teacher,
@@ -19,6 +20,7 @@ export function TeacherRow({
   getSessionCourse: (sessionId: string) => Promise<CourseBasic[]>;
 }) {
   const t = useTranslations();
+  const { deleteTeacher } = useEstablishment();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -44,6 +46,16 @@ export function TeacherRow({
           <Badge variant="outline">
             {t.establishment.teacherRow.students.replace("{{count}}", String(teacher.studentsCount))}
           </Badge>
+        </TableCell>
+        <TableCell>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => deleteTeacher(teacher.id)}
+            data-testid={`button-delete-token-${teacher.id}`}
+          >
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </Button>
         </TableCell>
       </TableRow>
 

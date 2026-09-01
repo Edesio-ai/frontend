@@ -47,6 +47,7 @@ export function TeacherTable({ teachers }: { teachers: TeacherWithStats[] }) {
             <TableHead>{t.establishment.email}</TableHead>
             <TableHead>{t.establishment.classes}</TableHead>
             <TableHead>{t.establishment.students}</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
