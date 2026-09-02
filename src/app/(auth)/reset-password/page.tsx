@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect, useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
@@ -13,18 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Form } from "@/components/ui/form";
 import { authService } from "@/services/auth.service";
 import { useTranslations } from "@/lib/i18n/client";
+import { PasswordCriteriaList } from "@/components/auth/password-criteria-list";
+import { PASSWORD_COMPLEXITY_REGEX, PASSWORD_MIN_LENGTH } from "@/lib/password-criteria";
 
-const formSchema = z
-  .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = {
+  password: string;
+  confirmPassword: string;
+};
 
 export default function ResetPassword() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +30,24 @@ export default function ResetPassword() {
   const router = useRouter();
   const t = useTranslations();
   const rpt = t.resetPassword;
+  const passwordCriteria = t.register.passwordCriteria;
+
+  const formSchema = useMemo(
+    () =>
+      z
+        .object({
+          password: z
+            .string()
+            .min(PASSWORD_MIN_LENGTH, passwordCriteria.minLength)
+            .regex(PASSWORD_COMPLEXITY_REGEX, t.register.passwordWeak),
+          confirmPassword: z.string().min(1, t.register.confirmRequired),
+        })
+        .refine((data) => data.password === data.confirmPassword, {
+          message: t.register.passwordMismatch,
+          path: ["confirmPassword"],
+        }),
+    [passwordCriteria, t.register],
+  );
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -43,6 +56,9 @@ export default function ResetPassword() {
       confirmPassword: "",
     },
   });
+
+  const password = useWatch({ control: form.control, name: "password", defaultValue: "" });
+  const confirmPassword = useWatch({ control: form.control, name: "confirmPassword", defaultValue: "" });
 
   const handleRecoverySession = async () => {
     try {
@@ -218,6 +234,8 @@ export default function ResetPassword() {
                   </FormItem>
                 )}
               />
+
+              <PasswordCriteriaList password={password} confirmPassword={confirmPassword} labels={passwordCriteria} />
 
               <Button
                 type="submit"

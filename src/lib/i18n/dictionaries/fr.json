@@ -409,7 +409,22 @@
     "submitting": "Création en cours...",
     "defaultError": "Échec de l'inscription.",
     "errorPrefix": "Erreur lors de la création du compte : ",
-    "signInErrorPrefix": "Compte créé mais erreur de connexion : "
+    "signInErrorPrefix": "Compte créé mais erreur de connexion : ",
+    "passwordWeak": "Le mot de passe ne respecte pas tous les critères",
+    "firstNameRequired": "Le prénom est requis",
+    "lastNameRequired": "Le nom est requis",
+    "emailInvalid": "Adresse e-mail invalide",
+    "confirmRequired": "Veuillez confirmer votre mot de passe",
+    "acceptRequired": "Vous devez accepter les conditions générales",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordCriteria": {
+      "minLength": "Au moins 12 caractères",
+      "uppercase": "Une lettre majuscule",
+      "lowercase": "Une lettre minuscule",
+      "number": "Un chiffre",
+      "special": "Un caractère spécial",
+      "match": "Les deux mots de passe sont identiques"
+    }
   },
   "teacherInvitation": {
     "createAccount": "Créer votre compte professeur",
@@ -1216,7 +1231,7 @@
     "successMessage": "Votre mot de passe a été modifié avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
     "goToLogin": "Se connecter",
     "samePasswordError": "Le nouveau mot de passe doit être différent de l'ancien.",
-    "weakPasswordError": "Le mot de passe est trop faible. Utilisez au moins 6 caractères.",
+    "weakPasswordError": "Le mot de passe ne respecte pas tous les critères.",
     "sessionExpiredError": "Votre session a expiré. Veuillez demander un nouveau lien de réinitialisation.",
     "defaultError": "Une erreur s'est produite. Veuillez réessayer.",
     "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer."

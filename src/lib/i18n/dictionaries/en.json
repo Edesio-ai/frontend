@@ -409,7 +409,22 @@
     "submitting": "Creating account...",
     "defaultError": "Registration failed.",
     "errorPrefix": "Error creating account: ",
-    "signInErrorPrefix": "Account created but login failed: "
+    "signInErrorPrefix": "Account created but login failed: ",
+    "passwordWeak": "The password does not meet all the requirements",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "emailInvalid": "Invalid email address",
+    "confirmRequired": "Please confirm your password",
+    "acceptRequired": "You must accept the terms and conditions",
+    "passwordMismatch": "Passwords do not match",
+    "passwordCriteria": {
+      "minLength": "At least 12 characters",
+      "uppercase": "One uppercase letter",
+      "lowercase": "One lowercase letter",
+      "number": "One number",
+      "special": "One special character",
+      "match": "Both passwords match"
+    }
   },
   "teacherInvitation": {
     "createAccount": "Create your teacher account",
@@ -1216,7 +1231,7 @@
     "successMessage": "Your password has been successfully changed. You can now log in with your new password.",
     "goToLogin": "Log in",
     "samePasswordError": "The new password must be different from the old one.",
-    "weakPasswordError": "The password is too weak. Use at least 6 characters.",
+    "weakPasswordError": "The password does not meet all the requirements.",
     "sessionExpiredError": "Your session has expired. Please request a new reset link.",
     "defaultError": "An error occurred. Please try again.",
     "unexpectedError": "An unexpected error occurred. Please try again."

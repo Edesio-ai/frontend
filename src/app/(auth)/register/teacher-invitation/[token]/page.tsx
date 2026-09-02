@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
@@ -16,6 +16,8 @@ import { invitationTokenService } from "@/services/invitation-token.service";
 import { useTranslations } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 import { useAuth } from "@/contexts/auth-context";
+import { PasswordCriteriaList } from "@/components/auth/password-criteria-list";
+import { PASSWORD_COMPLEXITY_REGEX, PASSWORD_MIN_LENGTH } from "@/lib/password-criteria";
 
 interface InvitationData {
   maskedEmail: string;
@@ -30,6 +32,7 @@ export default function TeacherInvitation() {
   const { signIn, signUp } = useAuth();
   const t = useTranslations();
   const ti = t.teacherInvitation;
+  const passwordCriteria = t.register.passwordCriteria;
   const [isValidating, setIsValidating] = useState(true);
   const [invitationData, setInvitationData] = useState<InvitationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -45,7 +48,10 @@ export default function TeacherInvitation() {
           firstname: z.string().min(1, ti.firstnameRequired),
           lastname: z.string().min(1, ti.lastnameRequired),
           email: z.string().email(ti.emailInvalid),
-          password: z.string().min(6, ti.passwordMin),
+          password: z
+            .string()
+            .min(PASSWORD_MIN_LENGTH, passwordCriteria.minLength)
+            .regex(PASSWORD_COMPLEXITY_REGEX, t.register.passwordWeak),
           confirmPassword: z.string().min(1, ti.confirmRequired),
           acceptTerms: z.boolean().refine((val) => val === true, {
             message: ti.acceptRequired,
@@ -55,7 +61,7 @@ export default function TeacherInvitation() {
           message: ti.passwordMismatch,
           path: ["confirmPassword"],
         }),
-    [ti],
+    [ti, passwordCriteria, t.register.passwordWeak],
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -71,6 +77,9 @@ export default function TeacherInvitation() {
       acceptTerms: false,
     },
   });
+
+  const password = useWatch({ control: form.control, name: "password", defaultValue: "" });
+  const confirmPassword = useWatch({ control: form.control, name: "confirmPassword", defaultValue: "" });
 
   const validateToken = useCallback(async () => {
     if (!token) {
@@ -279,6 +288,7 @@ export default function TeacherInvitation() {
                         <Input
                           type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
+                          className="pr-10"
                           {...field}
                           data-testid="input-signup-password"
                         />
@@ -308,6 +318,7 @@ export default function TeacherInvitation() {
                         <Input
                           type={showConfirmPassword ? "text" : "password"}
                           placeholder="••••••••"
+                          className="pr-10"
                           {...field}
                           data-testid="input-signup-confirm-password"
                         />
@@ -325,6 +336,8 @@ export default function TeacherInvitation() {
                   </FormItem>
                 )}
               />
+
+              <PasswordCriteriaList password={password} confirmPassword={confirmPassword} labels={passwordCriteria} />
 
               <FormField
                 control={form.control}
