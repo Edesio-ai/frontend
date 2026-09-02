@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { useTranslations } from "@/lib/i18n/client";
+import { useLocale, useTranslations } from "@/lib/i18n/client";
 import type {
   CourseBasic,
   Establishment,
@@ -47,6 +47,7 @@ const EstablishmentContext = createContext<EstablishmentContextType | null>(null
 export function EstablishmentProvider({ children }: { children: ReactNode }) {
   const { user, loading: authLoading } = useAuth();
   const t = useTranslations();
+  const locale = useLocale();
   const [establishment, setEstablishment] = useState<Establishment | null>(null);
   const [teachers, setTeachers] = useState<TeacherWithStats[]>([]);
   const [invitationTokens, setInvitationTokens] = useState<InvitationToken[]>([]);
@@ -159,6 +160,7 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
           establishmentName: establishment.name,
           invitationToken: token,
           assignedChatbots,
+          locale,
         };
 
         const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
@@ -176,7 +178,7 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
         return null;
       }
     },
-    [establishment, fetchInvitationTokens, t],
+    [establishment, fetchInvitationTokens, locale, t],
   );
 
   const deleteInvitationToken = useCallback(

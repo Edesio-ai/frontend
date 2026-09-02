@@ -1,5 +1,6 @@
 import { apiFetch } from "@/lib/api-client";
 import { getCookie } from "@/lib/cookies";
+import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { UserRole } from "@/types";
 import { User } from "@/types/user.type";
 
@@ -50,6 +51,7 @@ export const authService = {
     lastname?: string,
     establishment?: string,
     invitationToken?: string,
+    locale: Locale = defaultLocale,
   ): Promise<{ success: boolean }> {
     const body = {
       email,
@@ -60,6 +62,7 @@ export const authService = {
       lastname,
       establishment,
       invitationToken,
+      locale,
     };
 
     return await apiFetch<{ success: boolean }>("/api/auth/register", {
