@@ -540,18 +540,22 @@
     },
     "addCourse": {
       "title": "Add a new lesson",
+      "subtitle": "Add a title, documents and content for this lesson.",
       "name": "Lesson title",
       "namePlaceholder": "e.g. The French Revolution",
-      "description": "Description",
+      "description": "Description (optional)",
       "descriptionPlaceholder": "Brief description of the lesson...",
-      "content": "Content",
+      "content": "Content (optional)",
       "contentPlaceholder": "Enter the lesson content...",
-      "pdfs": "PDF files",
+      "pdfs": "PDF files (optional)",
       "pdfHint": "Add one or more PDF files containing the lesson content",
       "selectPdfs": "Select PDFs",
       "addMorePdfs": "Add more PDFs",
       "create": "Create lesson",
-      "creating": "Creating..."
+      "creating": "Creating...",
+      "titleRequired": "Lesson title is required",
+      "titleTooLong": "Lesson title is too long",
+      "descriptionTooLong": "Description is too long"
     },
     "createModal": {
       "title": "Create a new class",

@@ -540,18 +540,22 @@
     },
     "addCourse": {
       "title": "Ajouter un nouveau cours",
+      "subtitle": "Renseignez le titre, les documents et le contenu de la leçon.",
       "name": "Titre du cours",
       "namePlaceholder": "Ex: La Révolution française",
-      "description": "Description",
+      "description": "Description (optionnelle)",
       "descriptionPlaceholder": "Courte description du cours...",
-      "content": "Contenu",
+      "content": "Contenu (optionnel)",
       "contentPlaceholder": "Saisissez le contenu du cours...",
-      "pdfs": "Fichiers PDF",
+      "pdfs": "Fichiers PDF (optionnel)",
       "pdfHint": "Ajoutez un ou plusieurs fichiers PDF contenant le contenu du cours",
       "selectPdfs": "Sélectionner des PDFs",
       "addMorePdfs": "Ajouter d'autres PDFs",
       "create": "Créer le cours",
-      "creating": "Création en cours..."
+      "creating": "Création en cours...",
+      "titleRequired": "Le titre est requis",
+      "titleTooLong": "Le titre est trop long",
+      "descriptionTooLong": "La description est trop longue"
     },
     "createModal": {
       "title": "Créer une nouvelle classe",
