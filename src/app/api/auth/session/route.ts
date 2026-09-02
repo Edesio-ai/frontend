@@ -1,4 +1,3 @@
-// src/app/api/auth/me/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
 interface Options {
@@ -7,6 +6,26 @@ interface Options {
     cookie: string;
     authorization?: string;
   };
+}
+
+function appendSetCookies(from: Response, to: NextResponse) {
+  const getSetCookie = (
+    from.headers as Headers & {
+      getSetCookie?: () => string[];
+    }
+  ).getSetCookie;
+
+  if (typeof getSetCookie === "function") {
+    for (const cookie of getSetCookie.call(from.headers)) {
+      to.headers.append("set-cookie", cookie);
+    }
+    return;
+  }
+
+  const raw = from.headers.get("set-cookie");
+  if (raw) {
+    to.headers.append("set-cookie", raw);
+  }
 }
 
 export async function GET(req: NextRequest) {
@@ -34,6 +53,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { user, role } = await response.json();
-
-  return NextResponse.json({ user, role });
+  const res = NextResponse.json({ user, role });
+  appendSetCookies(response, res);
+  return res;
 }
