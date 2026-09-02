@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useMemo, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -17,26 +17,19 @@ import { useTranslations } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 import { useAuth } from "@/contexts/auth-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { PasswordCriteriaList } from "@/components/auth/password-criteria-list";
+import { PASSWORD_COMPLEXITY_REGEX, PASSWORD_MIN_LENGTH } from "@/lib/password-criteria";
 
-const formSchema = z
-  .object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-    establishment: z.string().optional(),
-    invitationToken: z.string().optional(),
-    acceptTerms: z.boolean().refine((val) => val === true, {
-      message: "You must accept the terms and conditions",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  establishment?: string;
+  invitationToken?: string;
+  acceptTerms: boolean;
+};
 
 export default function Register() {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
@@ -48,6 +41,31 @@ export default function Register() {
   const router = useRouter();
   const t = useTranslations();
   const rt = t.register;
+
+  const formSchema = useMemo(
+    () =>
+      z
+        .object({
+          firstName: z.string().min(1, rt.firstNameRequired),
+          lastName: z.string().min(1, rt.lastNameRequired),
+          email: z.string().email(rt.emailInvalid),
+          password: z
+            .string()
+            .min(PASSWORD_MIN_LENGTH, rt.passwordCriteria.minLength)
+            .regex(PASSWORD_COMPLEXITY_REGEX, rt.passwordWeak),
+          confirmPassword: z.string().min(1, rt.confirmRequired),
+          establishment: z.string().optional(),
+          invitationToken: z.string().optional(),
+          acceptTerms: z.boolean().refine((val) => val === true, {
+            message: rt.acceptRequired,
+          }),
+        })
+        .refine((data) => data.password === data.confirmPassword, {
+          message: rt.passwordMismatch,
+          path: ["confirmPassword"],
+        }),
+    [rt],
+  );
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -62,6 +80,9 @@ export default function Register() {
       acceptTerms: false,
     },
   });
+
+  const password = useWatch({ control: form.control, name: "password", defaultValue: "" });
+  const confirmPassword = useWatch({ control: form.control, name: "confirmPassword", defaultValue: "" });
 
   const handleSignUp = async (data: FormValues) => {
     try {
@@ -348,6 +369,7 @@ export default function Register() {
                           <Input
                             type={showPassword ? "text" : "password"}
                             placeholder="••••••••"
+                            className="pr-10"
                             {...field}
                             data-testid="input-signup-password"
                           />
@@ -377,6 +399,7 @@ export default function Register() {
                           <Input
                             type={showConfirmPassword ? "text" : "password"}
                             placeholder="••••••••"
+                            className="pr-10"
                             {...field}
                             data-testid="input-signup-confirm-password"
                           />
@@ -393,6 +416,12 @@ export default function Register() {
                       <FormMessage />
                     </FormItem>
                   )}
+                />
+
+                <PasswordCriteriaList
+                  password={password}
+                  confirmPassword={confirmPassword}
+                  labels={rt.passwordCriteria}
                 />
 
                 {selectedRole !== "establishment" && selectedRole !== "self-learner" && (
