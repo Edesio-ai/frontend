@@ -58,6 +58,7 @@ export default function Student() {
     error: eleveError,
     joinSessionByCode,
     fetchCourse,
+    fetchCourseCount,
     fetchQuestions,
     leaveSession,
     uploadProfilePhoto,
@@ -82,6 +83,7 @@ export default function Student() {
 
   const [expandedSessionId, setExpandedSessionId] = useState<string | null>(null);
   const [sessionCourses, setSessionCourses] = useState<Record<string, Course[]>>({});
+  const [sessionCourseCounts, setSessionCourseCounts] = useState<Record<string, number>>({});
   const [loadingCourses, setLoadingCourses] = useState<Record<string, boolean>>({});
   const [selectedCoursIdPerSession, setSelectedCoursIdPerSession] = useState<Record<string, string>>({});
 
@@ -110,6 +112,33 @@ export default function Student() {
       router.push("/login");
     }
   }, [authLoading, user, role, router]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCourseCounts = async () => {
+      if (joinedSessions.length === 0) {
+        setSessionCourseCounts({});
+        return;
+      }
+
+      const entries = await Promise.all(
+        joinedSessions.map(async (session) => {
+          const count = await fetchCourseCount(session.id);
+          return [session.id, count] as const;
+        }),
+      );
+
+      if (!cancelled) {
+        setSessionCourseCounts(Object.fromEntries(entries));
+      }
+    };
+
+    void loadCourseCounts();
+    return () => {
+      cancelled = true;
+    };
+  }, [joinedSessions, fetchCourseCount]);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -181,6 +210,7 @@ export default function Student() {
         setLoadingCourses((prev) => ({ ...prev, [sessionId]: true }));
         const courses = await fetchCourse(sessionId);
         setSessionCourses((prev) => ({ ...prev, [sessionId]: courses }));
+        setSessionCourseCounts((prev) => ({ ...prev, [sessionId]: courses.length }));
         setLoadingCourses((prev) => ({ ...prev, [sessionId]: false }));
 
         for (const cours of courses) {
@@ -228,6 +258,11 @@ export default function Student() {
         delete updated[sessionToLeave.id];
         return updated;
       });
+      setSessionCourseCounts((prev) => {
+        const updated = { ...prev };
+        delete updated[sessionToLeave.id];
+        return updated;
+      });
       setSelectedCoursIdPerSession((prev) => {
         const next = { ...prev };
         delete next[sessionToLeave.id];
@@ -241,6 +276,8 @@ export default function Student() {
     setLeaveModalOpen(false);
     setSessionToLeave(null);
   };
+
+  const totalCoursesCount = Object.values(sessionCourseCounts).reduce((sum, count) => sum + count, 0);
 
   if (authLoading || eleveLoading || !user || role !== "student") {
     return (
@@ -394,13 +431,9 @@ export default function Student() {
                   <Target className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-green-600">
-                    {Object.values(sessionCourses).flat().length || 0}
-                  </p>
+                  <p className="text-2xl font-bold text-green-600">{totalCoursesCount}</p>
                   <p className="text-xs text-muted-foreground">
-                    {(Object.values(sessionCourses).flat().length || 0) === 1
-                      ? t.student.courseLabel_one
-                      : t.student.courseLabel_other}
+                    {totalCoursesCount === 1 ? t.student.courseLabel_one : t.student.courseLabel_other}
                   </p>
                 </div>
               </div>
@@ -519,9 +552,9 @@ export default function Student() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {sessionCourses[session.id] && (
+                        {sessionCourseCounts[session.id] !== undefined && (
                           <Badge variant="secondary" className="bg-background/50">
-                            {t.student.coursesCount.replace("{count}", String(sessionCourses[session.id].length))}
+                            {t.student.coursesCount.replace("{count}", String(sessionCourseCounts[session.id]))}
                           </Badge>
                         )}
                         <ChevronRight

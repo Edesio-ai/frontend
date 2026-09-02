@@ -104,6 +104,16 @@ export function useStudent() {
     }
   }, []);
 
+  const fetchCourseCount = useCallback(async (sessionId: string): Promise<number> => {
+    try {
+      const { coursesCount } = await courseService.getCourseSessionCount(sessionId);
+      return coursesCount;
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return 0;
+    }
+  }, []);
+
   const fetchQuestions = useCallback(async (courseId: string): Promise<Question[]> => {
     try {
       const data = await questionService.getCourseQuestions(courseId);
@@ -265,6 +275,7 @@ export function useStudent() {
     error,
     joinSessionByCode,
     fetchCourse,
+    fetchCourseCount,
     fetchQuestions,
     leaveSession,
     refreshSessions: fetchJoinedSessions,
