@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+
   const response = await fetch(`${process.env.BACKEND_URL}/billing/subscription/cancel`, {
     method: "POST",
     headers: {
@@ -8,6 +10,7 @@ export async function POST(request: Request) {
       cookie: request.headers.get("cookie") || "",
       "x-csrf-token": request.headers.get("x-csrf-token") || "",
     },
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {

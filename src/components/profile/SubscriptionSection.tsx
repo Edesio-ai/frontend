@@ -49,7 +49,7 @@ export function SubscriptionSection() {
   const handleCancelSubscription = async () => {
     setIsCanceling(true);
     try {
-      await BillingService.cancelSubscription();
+      await BillingService.cancelSubscription(locale);
 
       toast({
         title: s.cancelled,

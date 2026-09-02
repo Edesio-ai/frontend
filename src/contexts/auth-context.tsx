@@ -2,6 +2,7 @@
 import { authService } from "@/services/auth.service";
 import { UserRole } from "@/types";
 import { User } from "@/types/user.type";
+import { useLocale } from "@/lib/i18n/client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 interface AuthContextType {
@@ -28,6 +29,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const locale = useLocale();
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
@@ -97,9 +99,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         lastname,
         establishment,
         invitationToken,
+        locale,
       );
     },
-    [],
+    [locale],
   );
 
   const getUserRole = useCallback(() => {
