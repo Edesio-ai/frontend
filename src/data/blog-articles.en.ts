@@ -108,7 +108,7 @@ export const blogArticlesEn: BlogArticle[] = [
           "Immediate feedback enabling faster progress",
           "Automatic generation of questions tailored to the content studied",
           "Detailed progress tracking for teachers",
-          "24/7 availability to revise at one's own pace",
+          "24/7 availability to study at one's own pace",
         ],
       },
       {
@@ -713,7 +713,7 @@ export const blogArticlesEn: BlogArticle[] = [
       {
         type: "quote",
         content:
-          "My students are much more involved since we started using the chatbot to revise. The interactive aspect and the rankings among them create positive motivation that I had never managed to achieve with traditional methods.",
+          "My students are much more involved since we started using the chatbot to study. The interactive aspect and the rankings among them create positive motivation that I had never managed to achieve with traditional methods.",
         source: "Thomas R., middle school history and geography teacher",
       },
       {
@@ -1180,22 +1180,22 @@ export const blogArticlesEn: BlogArticle[] = [
   {
     id: "revisions-bac-2026-ia",
     slug: "revisions-bac-2026-methodes-ia",
-    title: "Baccalaureate 2026 Revision: How AI Can Help You Succeed",
-    metaTitle: "Baccalaureate 2026 Revision: Best Methods with AI | Edesio",
+    title: "Studying for the Baccalaureate 2026: How AI Can Help You Succeed",
+    metaTitle: "Studying for the Baccalaureate 2026: Best Methods with AI | Edesio",
     metaDescription:
-      "Prepare for the Baccalaureate 2026 effectively with AI. Discover the best revision techniques, personalized schedules, and smart tools to maximize your results.",
+      "Prepare for the Baccalaureate 2026 effectively with AI. Discover the best study techniques, personalized schedules, and smart tools to maximize your results.",
     excerpt:
-      "The Baccalaureate 2026 is approaching! Discover how to use artificial intelligence to revise more effectively and maximize your chances of success.",
+      "The Baccalaureate 2026 is approaching! Discover how to use artificial intelligence to study more effectively and maximize your chances of success.",
     category: "Education",
     author: "Edesio Team",
     date: "January 8, 2026",
     readTime: "10 min",
     featured: false,
     keywords: [
-      "baccalaureate revision 2026",
+      "baccalaureate study 2026",
       "baccalaureate 2026 AI",
-      "revise with artificial intelligence",
-      "baccalaureate revision methods",
+      "study with artificial intelligence",
+      "baccalaureate study methods",
       "baccalaureate preparation",
       "pass baccalaureate 2026",
     ],
@@ -1203,7 +1203,7 @@ export const blogArticlesEn: BlogArticle[] = [
       {
         type: "paragraph",
         content:
-          "The 2026 Baccalaureate is fast approaching. Whether you are in general, technological, or vocational track, the revision period is crucial. In 2026, artificial intelligence is becoming an essential ally to optimize your preparation. Here is how to make the most of it.",
+          "The 2026 Baccalaureate is fast approaching. Whether you are in general, technological, or vocational track, the study period is crucial. In 2026, artificial intelligence is becoming an essential ally to optimize your preparation. Here is how to make the most of it.",
       },
       {
         type: "heading2",
@@ -1221,16 +1221,16 @@ export const blogArticlesEn: BlogArticle[] = [
       },
       {
         type: "callout",
-        content: "With specialty exams in March, you only have a few weeks left to prepare. Start revising now!",
+        content: "With specialty exams in March, you only have a few weeks left to prepare. Start studying now!",
         highlight: true,
       },
       {
         type: "heading2",
-        content: "Why AI changes the game for revision",
+        content: "Why AI changes the game for studying",
       },
       {
         type: "stat",
-        content: "Students using AI to revise improve their results by 23% on average",
+        content: "Students using AI to study improve their results by 23% on average",
         source: "EdTech Study 2026",
       },
       {
@@ -1240,7 +1240,7 @@ export const blogArticlesEn: BlogArticle[] = [
       },
       {
         type: "heading2",
-        content: "The 5 most effective revision techniques with AI",
+        content: "The 5 most effective study techniques with AI",
       },
       {
         type: "heading3",
@@ -1249,7 +1249,7 @@ export const blogArticlesEn: BlogArticle[] = [
       {
         type: "paragraph",
         content:
-          "Cognitive science has proven that we retain information better when we space our revisions over time. AI calculates the optimal moment to review each concept, just before you forget it. This is Ebbinghaus's forgetting curve, optimized by algorithm.",
+          "Cognitive science has proven that we retain information better when we space our studying over time. AI calculates the optimal moment to review each concept, just before you forget it. This is Ebbinghaus's forgetting curve, optimized by algorithm.",
       },
       {
         type: "heading3",
@@ -1289,27 +1289,27 @@ export const blogArticlesEn: BlogArticle[] = [
       },
       {
         type: "heading2",
-        content: "How to organize your revision: the ideal schedule",
+        content: "How to organize your studying: the ideal schedule",
       },
       {
         type: "paragraph",
         content:
-          "A good revision schedule follows the funnel principle: start broad and gradually narrow your focus. Here is a typical organization for the final weeks before the exams.",
+          "A good study schedule follows the funnel principle: start broad and gradually narrow your focus. Here is a typical organization for the final weeks before the exams.",
       },
       {
         type: "list",
-        content: "Recommended revision schedule:",
+        content: "Recommended study schedule:",
         items: [
           "D-60: Global review of all chapters, identification of major gaps",
           "D-45: In-depth work on problematic chapters, targeted exercises",
           "D-30: Past papers and sample questions, detailed correction with AI",
-          "D-15: Intensive revision of weak points, summary sheets",
-          "D-7: Light revision, rereading summary sheets, stress management",
+          "D-15: Intensive studying of weak points, summary sheets",
+          "D-7: Light studying, rereading summary sheets, stress management",
         ],
       },
       {
         type: "heading2",
-        content: "The mistake to avoid: revising without testing yourself",
+        content: "The mistake to avoid: studying without testing yourself",
       },
       {
         type: "quote",
@@ -1664,7 +1664,7 @@ export const blogArticlesEn: BlogArticle[] = [
       {
         type: "paragraph",
         content:
-          '"Revise the entire math curriculum" is discouraging. "Answer 5 questions correctly on quadratic equations" is achievable. AI automatically breaks learning into micro-goals, creating a progressive path toward mastery.',
+          '"Study the entire math curriculum" is discouraging. "Answer 5 questions correctly on quadratic equations" is achievable. AI automatically breaks learning into micro-goals, creating a progressive path toward mastery.',
       },
       {
         type: "heading2",
@@ -1683,13 +1683,13 @@ export const blogArticlesEn: BlogArticle[] = [
           "Leaderboards: stimulate healthy competition (optional)",
           "Badges and achievements: reward effort, not just results",
           "Levels: create a sense of advancement",
-          "Streaks: encourage consistency (revising several days in a row)",
+          "Streaks: encourage consistency (studying several days in a row)",
         ],
       },
       {
         type: "callout",
         content:
-          'Edesio integrates these mechanisms: real-time score, leaderboard by course, visible progress. Students want to "beat their record" and come back spontaneously to revise.',
+          'Edesio integrates these mechanisms: real-time score, leaderboard by course, visible progress. Students want to "beat their record" and come back spontaneously to study.',
         highlight: true,
       },
       {
@@ -1714,7 +1714,7 @@ export const blogArticlesEn: BlogArticle[] = [
       {
         type: "paragraph",
         content:
-          'Teachers using gamified AI tools observe rapid changes: students who ask to continue after the bell, who revise spontaneously at home, who encourage each other to "move up the leaderboard."',
+          'Teachers using gamified AI tools observe rapid changes: students who ask to continue after the bell, who study spontaneously at home, who encourage each other to "move up the leaderboard."',
       },
       {
         type: "heading3",
@@ -1723,7 +1723,7 @@ export const blogArticlesEn: BlogArticle[] = [
       {
         type: "paragraph",
         content:
-          '"My 9th-grade students, whom I used to have to beg to revise for the brevet exam, now log in every evening to practice. They compare their scores and challenge each other. I never would have believed I\'d see that."',
+          '"My 9th-grade students, whom I used to have to beg to study for the brevet exam, now log in every evening to practice. They compare their scores and challenge each other. I never would have believed I\'d see that."',
       },
       {
         type: "heading3",
@@ -1744,7 +1744,7 @@ export const blogArticlesEn: BlogArticle[] = [
         items: [
           "Make leaderboards optional (some students are stressed by competition)",
           "Value effort and progress, not just the final score",
-          "Integrate AI revision sessions into the class schedule",
+          "Integrate AI study sessions into the class schedule",
           "Celebrate collective successes (class goal achieved)",
           "Use data to identify and support struggling students",
         ],

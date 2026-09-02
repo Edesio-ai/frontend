@@ -43,9 +43,9 @@
     "gdpr": "compliant"
   },
   "chatSimulation": {
-    "title": "Edesio - Revision",
+    "title": "Edesio - Study",
     "messages": [
-      "Hi! I'm Edesio. I'll help you revise your lesson on the solar system. Let's go!",
+      "Hi! I'm Edesio. I'll help you study your lesson on the solar system. Let's go!",
       "Question 1: What is the largest planet in the solar system?\n\nA. Saturn\nB. Jupiter\nC. Neptune",
       "I think it's Jupiter, so answer B!",
       "Well done! That's the right answer! Jupiter is the largest planet in the solar system, with a diameter 11 times that of Earth."
@@ -70,7 +70,7 @@
       {
         "number": "3",
         "title": "The chatbot trains students",
-        "description": "Students revise by chatting with Edesio. The chatbot asks questions, corrects mistakes and explains concepts."
+        "description": "Students study by chatting with Edesio. The chatbot asks questions, corrects mistakes and explains concepts."
       }
     ],
     "features": [
@@ -149,9 +149,9 @@
       },
       {
         "title": "Students",
-        "description": "Revise interactively and effectively",
+        "description": "Study interactively and effectively",
         "benefits": [
-          "Guided revision in natural conversation mode",
+          "Guided study in natural conversation mode",
           "Personalized explanations based on your level",
           "Available 24/7 for practice",
           "Immediate feedback on your answers"
@@ -267,7 +267,7 @@
       },
       {
         "question": "How does the AI generate questions?",
-        "answer": "Our AI analyzes the content of your lessons (PDFs, documents) and generates questions directly linked to your teaching. Each question is based on the material you provided, ensuring relevant revision aligned with your curriculum."
+        "answer": "Our AI analyzes the content of your lessons (PDFs, documents) and generates questions directly linked to your teaching. Each question is based on the material you provided, ensuring relevant practice aligned with your curriculum."
       },
       {
         "question": "What types of institutions is Edesio designed for?",
@@ -372,11 +372,11 @@
     "subtitle": "Choose your profile to customize your Edesio space.",
     "forIndividuals": "For individuals",
     "forSchools": "For educational institutions",
-    "soloDesc": "Create your own revisions and train with AI",
+    "soloDesc": "Create your own study sessions and train with AI",
     "studentTitle": "I am a student",
     "studentDesc": "Join your teacher's session",
     "teacherTitle": "I am a teacher",
-    "teacherDesc": "Create a class and make your students revise",
+    "teacherDesc": "Create a class and help your students study",
     "establishmentTitle": "I am an institution",
     "establishmentDesc": "Manage your teachers and monitor activity",
     "alreadyHaveAccount": "Already have an account?",
@@ -637,10 +637,10 @@
   },
   "chatbot": {
     "greetings": [
-      "Hi! I'm Edesio, your revision assistant. Ready to learn together?",
-      "Hello! It's Edesio. I'm here to help you revise in a fun way!",
-      "Welcome! I'm Edesio and I'll guide you through your revision.",
-      "Hey! It's Edesio. Shall we revise together today?"
+      "Hi! I'm Edesio, your study assistant. Ready to learn together?",
+      "Hello! It's Edesio. I'm here to help you study in a fun way!",
+      "Welcome! I'm Edesio and I'll guide you as you study.",
+      "Hey! It's Edesio. Shall we study together today?"
     ],
     "correctAnswers": [
       "Great! That's exactly right!",
@@ -678,9 +678,9 @@
     "cheatMessages": ["Nice try, but cheating won't help you learn!"],
     "noQuestions": "I don't have any questions for \"{course}\" yet. Ask your teacher to generate some!",
     "welcomeToClass": "Welcome to the {session} class.\n\nThere are no lessons available yet. Ask your teacher to add some!",
-    "selectCourse": "Welcome to the {session} class. Which lesson would you like to revise today?",
-    "studentAnswers": "I want to revise \"{course}\"",
-    "startingCourse": "Great, let's revise \"{course}\"! ",
+    "selectCourse": "Welcome to the {session} class. Which lesson would you like to study today?",
+    "studentAnswers": "I want to study \"{course}\"",
+    "startingCourse": "Great, let's study \"{course}\"! ",
     "reflectionWrong": "Hmm, your answer doesn't really match the concept.\n\nThe correct answer was: {answer}{explanation}\n\nNo worries, let's move on!",
     "reflectionNext": "OK, let's move on.\n\nFor reference, the correct answer was: {answer}{explanation}",
     "wrongQCM": "{encouragement}\n\nThe correct answer is: {answer}\n\nTry to select the right answer this time!",
@@ -703,14 +703,14 @@
     "completionScore": "You scored {score}/{total} ({percent}%)",
     "completionGood": "Excellent work! You've mastered this topic.",
     "completionMedium": "Good effort! A little more practice and you'll have it.",
-    "completionLow": "Keep it up! Revision takes time — you'll get there.",
+    "completionLow": "Keep it up! Studying takes time — you'll get there.",
     "testChatbot": "Test chatbot - {name}",
     "simulateExperience": "Simulate the student experience for this lesson",
     "clickAnswer": "Click your answer",
     "selectAllCorrect": "Select all correct answers",
     "validateSelection": "Validate ({count} selected)",
     "multipleAnswersHint": "(Multiple answers possible)",
-    "completionDefault": "Well done for finishing this revision!",
+    "completionDefault": "Well done for finishing this study session!",
     "goodContinue": "Great! That's the right answer! Keep it up.",
     "expectedAnswer": "Expected answer: {answer}",
     "keyElementPrompt": "What do you think is the key element of this answer?",
@@ -724,7 +724,7 @@
     "generating": "Generating...",
     "preview": "Preview",
     "chatbotStarting": "The chatbot is starting...",
-    "selectCourseToRevise": "Choose the lesson to revise",
+    "selectCourseToRevise": "Choose the lesson to study",
     "evaluationError": "Error during evaluation",
     "addCoursesToTest": "Add lessons to test",
     "answerPrefix": "Answer: {answer}"
@@ -734,7 +734,7 @@
     "loadingCourses": "Loading lessons...",
     "greeting": "Hi, {name}!",
     "emptyTitle": "No classes joined",
-    "emptySubtitle": "Ready to revise with Edesio?",
+    "emptySubtitle": "Ready to study with Edesio?",
     "joinClass": "Join a class",
     "myClasses": "My classes",
     "classLabel_one": "Class",
@@ -747,13 +747,13 @@
     "clickClassHint": "Click a class to see the lessons",
     "joinedOn": "Joined on",
     "chooseCourse": "Choose a lesson...",
-    "revise": "Revise",
+    "revise": "Study",
     "qa": "Q&A",
     "ranking": "Ranking",
     "rankingModal": {
       "you": "(You)",
       "empty": "Nobody has participated in this lesson yet.",
-      "beFirst": "Be the first to revise!",
+      "beFirst": "Be the first to study!",
       "correctAnswers": "{correct}/{total} correct answers"
     },
     "leaveSession": "Leave this session",
@@ -804,7 +804,7 @@
     "courseCount": "{count} lesson(s) created",
     "emptyHint": "Create your first lesson to start generating questions and practicing with AI.",
     "details": "Details",
-    "revise": "Revise",
+    "revise": "Study",
     "createModalTitle": "Create a new lesson",
     "createModalDesc": "Add text content and/or PDF files to generate questions.",
     "titlePlaceholder": "e.g. Introduction to philosophy",
