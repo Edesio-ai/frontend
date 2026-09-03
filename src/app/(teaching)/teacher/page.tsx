@@ -15,6 +15,7 @@ import { CreateSessionFormValues } from "@/types/zod.type";
 import { createSessionFormSchema } from "@/utils/constants/zod";
 import { useAuth } from "@/contexts/auth-context";
 import { Loader } from "@/app/_components/loader";
+import { canAccessModule, USER_ROLE } from "@/utils/functions/role.utils";
 import { ClassListSection } from "./_components/section/class-list-section";
 import { ToolBar } from "./_components/tool-bar";
 import { CreateModal } from "./_components/create-modal";
@@ -61,7 +62,7 @@ export default function Teacher() {
   });
 
   useEffect(() => {
-    if (!authLoading && (!user || role !== "teacher")) {
+    if (!authLoading && (!user || !canAccessModule(role, USER_ROLE.teacher))) {
       router.push("/login");
     }
   }, [authLoading, user, role, router]);
@@ -174,7 +175,7 @@ export default function Teacher() {
     setCreateModalOpen(false);
   };
 
-  if (authLoading || profLoading || !user || role !== "teacher") {
+  if (authLoading || profLoading || !user || !canAccessModule(role, USER_ROLE.teacher)) {
     return <Loader text={t.teacher.loading} />;
   }
 

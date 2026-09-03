@@ -15,6 +15,7 @@ import { useTranslations } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 import { useAuth } from "@/contexts/auth-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { getPostLoginPath } from "@/utils/functions/role.utils";
 
 export default function Connexion() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,16 +35,7 @@ export default function Connexion() {
 
   useEffect(() => {
     if (!loading && user) {
-      const role = getUserRole();
-      if (role === "teacher") {
-        router.push("/teacher");
-      } else if (role === "student") {
-        router.push("/student");
-      } else if (role === "establishment") {
-        router.push("/establishment");
-      } else if (role === "self-learner") {
-        router.push("/self-learner");
-      }
+      router.push(getPostLoginPath(getUserRole()));
     }
   }, [user, loading, getUserRole, router]);
 
@@ -77,24 +69,7 @@ export default function Connexion() {
 
       setIsSubmitting(false);
       if (user) {
-        const role = user.metadata?.role;
-        switch (role) {
-          case "teacher":
-            router.push("/teacher");
-            break;
-          case "student":
-            router.push("/student");
-            break;
-          case "establishment":
-            router.push("/establishment");
-            break;
-          case "self-learner":
-            router.push("/self-learner");
-            break;
-          default:
-            router.push("/");
-            break;
-        }
+        router.push(getPostLoginPath(user.metadata?.role));
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : lt.defaultError;

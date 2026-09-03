@@ -11,6 +11,7 @@ import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslations } from "@/lib/i18n/client";
 import { useAuth } from "@/contexts/auth-context";
+import { BackToHubButton } from "@/components/BackToHubButton";
 import { useEstablishment } from "../_contexts/establishment-context";
 
 export function EstablishmentHeader() {
@@ -30,15 +31,18 @@ export function EstablishmentHeader() {
     <>
       <header className="bg-background border-b sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-3 sm:gap-6">
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Building2 className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="font-bold text-lg" data-testid="text-establishment-name">
-                {establishment?.name || t.establishment.title}
-              </h1>
-              <p className="text-sm text-muted-foreground">{t.establishment.title}</p>
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <BackToHubButton divider="end" />
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <Building2 className="h-5 w-5 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="font-bold text-lg truncate" data-testid="text-establishment-name">
+                  {establishment?.name || t.establishment.title}
+                </h1>
+                <p className="text-sm text-muted-foreground">{t.establishment.title}</p>
+              </div>
             </div>
           </div>
 

@@ -1,4 +1,12 @@
-export type UserRole = "teacher" | "student" | "establishment" | "self-learner";
+export const USER_ROLE = {
+  teacher: "teacher",
+  student: "student",
+  establishment: "establishment",
+  selfLearner: "self-learner",
+  admin: "admin",
+} as const;
+
+export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
 
 export interface UserMetadata {
   role: UserRole;

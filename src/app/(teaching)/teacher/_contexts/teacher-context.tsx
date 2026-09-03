@@ -169,13 +169,18 @@ export function TeacherProvider({ children }: { children: ReactNode }) {
           : user.metadata?.firstname || "Professeur";
 
       const invitationToken = user.metadata?.invitationToken;
-
       const newTeacher = await handleCreateTeacher(name, user.email || "");
 
-      if (invitationToken && newTeacher) {
-        await handleInvitationValidation(invitationToken);
-        setTeacher(newTeacher);
+      if (!newTeacher) {
+        setLoading(false);
+        return;
       }
+
+      if (invitationToken) {
+        await handleInvitationValidation(invitationToken);
+      }
+
+      setTeacher(newTeacher);
     }
     setLoading(false);
   }, [user, handleFetchTeacher, handleInvitationValidation, handleCreateTeacher]);

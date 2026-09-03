@@ -17,6 +17,7 @@ import { SubscriptionSection } from "@/components/profile/SubscriptionSection";
 import { useTranslations } from "@/lib/i18n/client";
 import { useAuth } from "@/contexts/auth-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { getPostLoginPath, isAdmin, USER_ROLE } from "@/utils/functions/role.utils";
 
 const profileSchema = z.object({
   firstname: z.string().min(1, "First name is required"),
@@ -60,20 +61,7 @@ export default function Profile() {
     }
   }, [user, form]);
 
-  const getDashboardLink = () => {
-    switch (role) {
-      case "teacher":
-        return "/teacher";
-      case "student":
-        return "/student";
-      case "self-learner":
-        return "/self-learner";
-      case "establishment":
-        return "/establishment";
-      default:
-        return "/";
-    }
-  };
+  const getDashboardLink = () => getPostLoginPath(role);
 
   const onSubmit = async (data: ProfileFormValues) => {
     setIsSaving(true);
@@ -104,7 +92,7 @@ export default function Profile() {
     );
   }
 
-  const showSubscriptionSection = role !== "student";
+  const showSubscriptionSection = role !== USER_ROLE.student && !isAdmin(role);
 
   return (
     <div className="min-h-screen bg-muted/30 py-12 px-4">
