@@ -887,7 +887,8 @@
       "allocatedChatbotsHint": "Nombre de sessions/chatbots que ce professeur peut créer.",
       "create": "Créer l'invitation",
       "creating": "Création en cours...",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "emailAlreadyRegistered": "Cette adresse email est déjà associée à un compte professeur. Utilisez une autre adresse ou demandez au professeur de se connecter directement."
     },
     "token": {
       "used": "Utilisé",

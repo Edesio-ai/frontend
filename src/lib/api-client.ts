@@ -1,5 +1,6 @@
 import { getCookie } from "./cookies";
 import { authService } from "@/services/auth.service";
+import { ApiError } from "@/lib/api-error";
 
 let csrfInitPromise: Promise<unknown> | null = null;
 
@@ -46,15 +47,15 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
       (typeof err?.error === "string" && err.error) ||
       (typeof err?.error?.message === "string" && err.error.message) ||
       `HTTP ${response.status}`;
-    const code = err?.code;
+    const code = typeof err?.code === "string" ? err.code : undefined;
     if (code === "TOKEN_USER_NOT_FOUND") {
       await authService.logout();
       window.location.href = "/login";
     }
     if (code === "ESTABLISHMENT_NOT_FOUND") {
-      throw new Error("Establishment not found");
+      throw new ApiError("Establishment not found", code);
     }
-    throw new Error(message || `HTTP ${response.status}`);
+    throw new ApiError(message || `HTTP ${response.status}`, code);
   }
 
   return response.json() as Promise<T>;

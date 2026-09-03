@@ -21,6 +21,7 @@ import { studentSessionService } from "@/services/teaching/student-session.servi
 import { emailService } from "@/services/email.service";
 import { useAuth } from "@/contexts/auth-context";
 import { teacherService } from "@/services/teaching/teacher.service";
+import { ApiError } from "@/lib/api-error";
 
 interface EstablishmentContextType {
   establishment: Establishment | null;
@@ -151,8 +152,7 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
         const { success } = await invitationTokenService.createInvitationToken(body);
 
         if (!success) {
-          setError(t.hooks.establishment.invitationError);
-          throw new Error("Error while creating invitation token");
+          throw new ApiError(t.hooks.establishment.invitationError);
         }
 
         const sendInvitationBody = {
@@ -166,16 +166,17 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
         const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
 
         if (!response.success) {
-          setError(t.hooks.establishment.invitationError);
-          throw new Error("Error while sending invitation email");
+          throw new ApiError(t.hooks.establishment.invitationError);
         }
 
         await fetchInvitationTokens();
-        return response.success;
+        return true;
       } catch (err) {
         console.error("Unexpected error:", err);
-        setError(t.hooks.establishment.error);
-        return null;
+        if (err instanceof ApiError) {
+          throw err;
+        }
+        throw new ApiError(t.hooks.establishment.invitationError);
       }
     },
     [establishment, fetchInvitationTokens, locale, t],
