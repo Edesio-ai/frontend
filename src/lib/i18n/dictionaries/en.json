@@ -484,6 +484,20 @@
     "logout": "Log out",
     "loggingOut": "Logging out..."
   },
+  "hub": {
+    "loading": "Loading your spaces...",
+    "title": "Choose a space",
+    "subtitle": "Open the module you want to use.",
+    "teacher": "Teacher",
+    "teacherDesc": "Classes, lessons and questions",
+    "student": "Student",
+    "studentDesc": "Join a session and study",
+    "selfLearner": "Self-learner",
+    "selfLearnerDesc": "Create your own lessons",
+    "establishment": "Institution",
+    "establishmentDesc": "Teachers and invitations",
+    "backToHub": "Hub"
+  },
   "teacher": {
     "loading": "Loading your dashboard...",
     "dashboardTitle": "Dashboard",

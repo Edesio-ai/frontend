@@ -9,6 +9,7 @@ import { useTranslations } from "@/lib/i18n/client";
 import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
 import { StatsCard } from "@/components/establishment/StatsCard";
 import { useAuth } from "@/contexts/auth-context";
+import { canAccessModule, getPostLoginPath, USER_ROLE } from "@/utils/functions/role.utils";
 import { EstablishmentSkeleton } from "./_components/skeleton";
 import { ErrorModal } from "./_components/error-modal";
 import { EstablishmentHeader } from "./_components/establishment-header";
@@ -55,14 +56,8 @@ export default function Establishment() {
       return;
     }
 
-    if (role && role !== "establishment") {
-      if (role === "teacher") {
-        router.replace("/teacher");
-      } else if (role === "self-learner") {
-        router.replace("/self-learner");
-      } else {
-        router.replace("/student");
-      }
+    if (role && !canAccessModule(role, USER_ROLE.establishment)) {
+      router.replace(getPostLoginPath(role));
     }
   }, [authLoading, user, role, router]);
 
@@ -70,7 +65,7 @@ export default function Establishment() {
     return <EstablishmentSkeleton />;
   }
 
-  if (!user || (role && role !== "establishment")) {
+  if (!user || (role && !canAccessModule(role, USER_ROLE.establishment))) {
     return null;
   }
 

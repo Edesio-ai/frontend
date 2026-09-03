@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BillingService } from "@/services/billing.service";
 import { useAuth } from "@/contexts/auth-context";
+import { isAdmin, USER_ROLE } from "@/utils/functions/role.utils";
 
 interface SubscriptionStatus {
   hasActiveSubscription: boolean;
@@ -100,8 +101,8 @@ export function SubscriptionBlockModal({ children }: SubscriptionBlockModalProps
         return;
       }
 
-      if (role === "student") {
-        setSubscriptionStatus({ hasActiveSubscription: true, role: "eleve" });
+      if (role === USER_ROLE.student || isAdmin(role)) {
+        setSubscriptionStatus({ hasActiveSubscription: true, role: role });
         setIsLoading(false);
         return;
       }

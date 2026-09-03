@@ -484,6 +484,20 @@
     "logout": "Déconnexion",
     "loggingOut": "Déconnexion en cours..."
   },
+  "hub": {
+    "loading": "Chargement de vos espaces...",
+    "title": "Choisir un espace",
+    "subtitle": "Ouvrez le module que vous souhaitez utiliser.",
+    "teacher": "Professeur",
+    "teacherDesc": "Classes, leçons et questions",
+    "student": "Élève",
+    "studentDesc": "Rejoindre une session et réviser",
+    "selfLearner": "Autodidacte",
+    "selfLearnerDesc": "Créer vos propres leçons",
+    "establishment": "Établissement",
+    "establishmentDesc": "Professeurs et invitations",
+    "backToHub": "Hub"
+  },
   "teacher": {
     "loading": "Chargement du tableau de bord...",
     "dashboardTitle": "Tableau de bord",
