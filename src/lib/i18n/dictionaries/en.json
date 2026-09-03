@@ -1254,5 +1254,15 @@
     "sessionExpiredError": "Your session has expired. Please request a new reset link.",
     "defaultError": "An error occurred. Please try again.",
     "unexpectedError": "An unexpected error occurred. Please try again."
+  },
+  "featureFlags": {
+    "title": "Feature flags",
+    "description": "Toggle experimental features locally. Changes are saved in this browser only.",
+    "openPanel": "Open feature flags",
+    "empty": "No feature flags configured yet.",
+    "reset": "Reset to defaults",
+    "overriddenOn": "Manually enabled",
+    "overriddenOff": "Manually disabled",
+    "flags": {}
   }
 }

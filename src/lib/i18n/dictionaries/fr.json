@@ -1254,5 +1254,15 @@
     "sessionExpiredError": "Votre session a expiré. Veuillez demander un nouveau lien de réinitialisation.",
     "defaultError": "Une erreur s'est produite. Veuillez réessayer.",
     "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer."
+  },
+  "featureFlags": {
+    "title": "Feature flags",
+    "description": "Activez ou désactivez des fonctionnalités expérimentales localement. Les changements sont enregistrés uniquement dans ce navigateur.",
+    "openPanel": "Ouvrir les feature flags",
+    "empty": "Aucun feature flag configuré pour l'instant.",
+    "reset": "Réinitialiser",
+    "overriddenOn": "Activé manuellement",
+    "overriddenOff": "Désactivé manuellement",
+    "flags": {}
   }
 }
