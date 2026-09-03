@@ -887,7 +887,8 @@
       "allocatedChatbotsHint": "Number of sessions/chatbots this teacher can create.",
       "create": "Create invitation",
       "creating": "Creating...",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "emailAlreadyRegistered": "This email address is already associated with a teacher account. Use another address or ask the teacher to log in directly."
     },
     "token": {
       "used": "Used",

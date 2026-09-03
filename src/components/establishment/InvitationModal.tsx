@@ -7,6 +7,9 @@ import { Button } from "../ui/button";
 import { Loader2, Mail, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "@/lib/i18n/client";
+import { ApiError } from "@/lib/api-error";
+import { translateApiError } from "@/lib/i18n/api-errors";
+import { useToast } from "@/hooks/use-toast";
 
 type InvitationModalProps = {
   isOpen: boolean;
@@ -20,9 +23,11 @@ export default function InvitationModal({
   createInvitationToken,
 }: InvitationModalProps) {
   const t = useTranslations();
+  const { toast } = useToast();
   const [inviteEmail, setInviteEmail] = useState("");
   const [availableChatbots, setAvailableChatobots] = useState(0);
   const [isCreatingInvitation, setIsCreatingInvitation] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isValidEmail = inviteEmail.includes("@") && inviteEmail.includes(".");
 
@@ -30,16 +35,39 @@ export default function InvitationModal({
     setShowInvitationModal(false);
     setInviteEmail("");
     setAvailableChatobots(0);
+    setErrorMessage(null);
+  };
+
+  const handleEmailChange = (value: string) => {
+    setInviteEmail(value);
+    if (errorMessage) {
+      setErrorMessage(null);
+    }
   };
 
   const handleCreateInvitation = async () => {
     setIsCreatingInvitation(true);
-    const result = await createInvitationToken(inviteEmail, 7, availableChatbots);
-    setIsCreatingInvitation(false);
-    if (result) {
-      setShowInvitationModal(false);
-      setInviteEmail("");
-      setAvailableChatobots(0);
+    setErrorMessage(null);
+
+    try {
+      const result = await createInvitationToken(inviteEmail, 7, availableChatbots);
+      if (result) {
+        toast({
+          title: t.hooks.establishment.invitationCreated,
+        });
+        handleClose();
+      }
+    } catch (err) {
+      const fallback = t.hooks.establishment.invitationError;
+      const message =
+        err instanceof ApiError
+          ? translateApiError(err.code, err.message, {
+              invitationEmailAlreadyRegistered: t.establishment.invitationModal.emailAlreadyRegistered,
+            })
+          : fallback;
+      setErrorMessage(message);
+    } finally {
+      setIsCreatingInvitation(false);
     }
   };
 
@@ -61,12 +89,19 @@ export default function InvitationModal({
                 type="email"
                 placeholder={t.establishment.invitationModal.emailPlaceholder}
                 value={inviteEmail}
-                onChange={(e) => setInviteEmail(e.target.value)}
+                onChange={(e) => handleEmailChange(e.target.value)}
                 className="pl-10"
+                aria-invalid={!!errorMessage}
                 data-testid="input-invite-email"
               />
             </div>
-            <p className="text-xs text-muted-foreground">{t.establishment.invitationModal.emailHint}</p>
+            {errorMessage ? (
+              <p className="text-sm text-destructive" data-testid="text-invite-email-error">
+                {errorMessage}
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">{t.establishment.invitationModal.emailHint}</p>
+            )}
           </div>
 
           <div className="space-y-2">

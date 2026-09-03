@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
   if (!response.ok) {
     const error = await response.json();
-    return NextResponse.json({ error: error.message, code: response.status }, { status: response.status });
+    return NextResponse.json({ error: error.message, code: error.code }, { status: response.status });
   }
   const json = await response.json();
   return NextResponse.json(json);
