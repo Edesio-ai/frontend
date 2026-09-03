@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { getOgImageUrl, getSiteUrl } from "@/lib/metadata/site-url";
 
 interface SEOProps {
   title: string;
@@ -30,6 +31,8 @@ export function Helmet({
 }: SEOProps) {
   useEffect(() => {
     document.title = title;
+    const defaultOgImage = getOgImageUrl();
+    const resolvedOgImage = ogImage ?? defaultOgImage;
 
     const updateMeta = (name: string, content: string, isProperty = false) => {
       const attribute = isProperty ? "property" : "name";
@@ -52,15 +55,14 @@ export function Helmet({
     updateMeta("og:title", ogTitle || title, true);
     updateMeta("og:description", ogDescription || description, true);
     updateMeta("og:type", ogType, true);
-    if (ogImage) {
-      updateMeta("og:image", ogImage, true);
-    }
+    updateMeta("og:image", resolvedOgImage, true);
     updateMeta("og:locale", "fr_FR", true);
     updateMeta("og:site_name", "Edesio", true);
 
     updateMeta("twitter:card", "summary_large_image");
     updateMeta("twitter:title", ogTitle || title);
     updateMeta("twitter:description", ogDescription || description);
+    updateMeta("twitter:image", resolvedOgImage);
 
     if (canonicalUrl) {
       let canonical = document.querySelector('link[rel="canonical"]');
@@ -85,7 +87,7 @@ export function Helmet({
         "@type": "Article",
         headline: title,
         description: description,
-        image: "https://edesio.ai/favicon.png",
+        image: resolvedOgImage,
         author: {
           "@type": "Organization",
           name: articleData.author,
@@ -95,7 +97,7 @@ export function Helmet({
           name: "Edesio",
           logo: {
             "@type": "ImageObject",
-            url: "https://edesio.ai/favicon.png",
+            url: resolvedOgImage,
           },
         },
         datePublished: articleData.datePublished,
@@ -115,9 +117,6 @@ export function Helmet({
       document.head.appendChild(script);
     }
 
-    updateMeta("og:image", "https://edesio.ai/favicon.png", true);
-    updateMeta("twitter:image", "https://edesio.ai/favicon.png");
-
     return () => {
       const existingArticleScript = document.getElementById("article-schema");
       if (existingArticleScript) {
@@ -131,13 +130,16 @@ export function Helmet({
 
 export function OrganizationSchema() {
   useEffect(() => {
+    const siteUrl = getSiteUrl().toString().replace(/\/$/, "");
+    const logoUrl = getOgImageUrl();
+
     const jsonLd = {
       "@context": "https://schema.org",
       "@type": "Organization",
       name: "Edesio",
       alternateName: "Edesio",
-      url: "https://edesio.ai",
-      logo: "https://edesio.ai/favicon.png",
+      url: siteUrl,
+      logo: logoUrl,
       description:
         "Plateforme éducative IA pour établissements scolaires français. Les professeurs déposent leurs cours, l'IA génère des questions et entraîne les élèves.",
       sameAs: [],
