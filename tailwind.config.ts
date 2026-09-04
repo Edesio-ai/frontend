@@ -77,7 +77,17 @@ export default {
           from: "hsl(var(--hero-from) / <alpha-value>)",
           via: "hsl(var(--hero-via) / <alpha-value>)",
           to: "hsl(var(--hero-to) / <alpha-value>)",
-          cta: "hsl(var(--hero-cta) / <alpha-value>)",
+          foreground: "hsl(var(--hero-foreground) / <alpha-value>)",
+          eyebrow: "hsl(var(--hero-eyebrow) / <alpha-value>)",
+          subtitle: "hsl(var(--hero-subtitle) / <alpha-value>)",
+          trust: "hsl(var(--hero-trust) / <alpha-value>)",
+          "trust-icon": "hsl(var(--hero-trust-icon) / <alpha-value>)",
+        },
+        landing: {
+          nav: {
+            link: "hsl(var(--landing-nav-link) / <alpha-value>)",
+            divider: "hsl(var(--landing-nav-divider) / <alpha-value>)",
+          },
         },
         chart: {
           "1": "hsl(var(--chart-1) / <alpha-value>)",

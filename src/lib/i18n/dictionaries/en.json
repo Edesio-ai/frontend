@@ -42,6 +42,14 @@
     "institutions": "+20 institutions",
     "gdpr": "compliant"
   },
+  "heroNew": {
+    "eyebrow": "Middle schools, high schools and higher education",
+    "title": "The chatbot that trains and evaluates your students",
+    "subtitle": "Teachers upload their lessons, Edesio generates questions, chats with students and provides you with clear feedback on their progress.",
+    "ctaPrimary": "Create a free account",
+    "ctaSecondary": "Log in",
+    "trustItems": ["Powered by Mistral AI", "GDPR compliant"]
+  },
   "chatSimulation": {
     "title": "Edesio - Study",
     "messages": [

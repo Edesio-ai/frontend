@@ -67,16 +67,35 @@
   --radius-cta: 1.5rem; /* 24px = rounded-3xl */
   --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-modal: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --primary-hover: 239 84% 67%;
-  --primary-muted: 239 84% 67%;
+  --primary-hover: 243 75% 59%;
+  --primary-muted: 230 88% 96%;
   --success: 160 64% 52%;
   --success-foreground: 142 72% 29%;
   --warning: 43 96% 56%;
   --warning-foreground: 26 91% 37%;
-  --hero-from: 240 29% 6%;
-  --hero-via: 245 39% 12%;
-  --hero-to: 246 37% 17%;
-  --hero-cta: 244 41% 14%;
+  /* Hero landing — Landing Page.dc.html */
+  --hero-from: 240 29% 6%; /* #0B0B14 */
+  --hero-via: 245 39% 12%; /* #15132B */
+  --hero-to: 246 37% 17%; /* #1E1B3A */
+  --hero-foreground: 0 0% 100%;
+  --hero-eyebrow: 229 94% 82%; /* #A5B4FC */
+  --hero-subtitle: 236 42% 85%; /* #C7C9E8 */
+  --hero-trust-icon: 234 90% 74%; /* #818CF8 */
+  --hero-trust: 240 25% 70%; /* #A1A1C4 */
+  --hero-robot-body-top: #5ec8f2;
+  --hero-robot-body-mid: #6e8fe0;
+  --hero-robot-body-bottom: #a987e8;
+  --hero-robot-face: #1b2340;
+  --hero-robot-face-stroke: #ffffff;
+  --hero-robot-antenna: #6e8fe0;
+  --hero-robot-antenna-tip: #5ec8f2;
+  --hero-robot-ring: #9b87e8;
+  --hero-robot-particle: #c7d2fe;
+  --hero-robot-light-sky: #cbd5ff;
+  --hero-robot-light-ground: #0b0b14;
+  --hero-robot-light-rim: #9b87e8;
+  --landing-nav-link: 240 5% 26%; /* #3F3F46 */
+  --landing-nav-divider: 240 6% 94%; /* #F0F0F2 */
   --tertiary-foreground: 0 0% 45%;
 
   /* Fallback for older browsers */
@@ -205,6 +224,17 @@
  */
 html[data-homepage-new-design] {
   --font-sans: var(--font-inter), "Inter", sans-serif;
+  /* Landing navbar — Landing Page.dc.html */
+  --foreground: 240 6% 10%; /* #18181B */
+  --border: 240 6% 90%; /* #E4E4E7 */
+  --landing-nav-link: 240 5% 26%; /* #3F3F46 */
+  --landing-nav-divider: 240 6% 94%; /* #F0F0F2 */
+}
+
+@layer utilities {
+  .bg-hero-gradient {
+    background: linear-gradient(160deg, hsl(var(--hero-from)) 0%, hsl(var(--hero-via)) 50%, hsl(var(--hero-to)) 100%);
+  }
 }
 
 /*

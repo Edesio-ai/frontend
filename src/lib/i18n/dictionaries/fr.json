@@ -42,6 +42,14 @@
     "institutions": "+20 établissements",
     "gdpr": "conforme"
   },
+  "heroNew": {
+    "eyebrow": "Collèges, lycées et enseignement supérieur",
+    "title": "Le chatbot qui entraîne et évalue vos élèves",
+    "subtitle": "Les enseignants importent leurs cours, Edesio génère les questions, discute avec les élèves et vous fournit un retour clair sur leur progression.",
+    "ctaPrimary": "Créer un compte gratuit",
+    "ctaSecondary": "Se connecter",
+    "trustItems": ["Propulsé par Mistral AI", "Conforme RGPD"]
+  },
   "chatSimulation": {
     "title": "Edesio - Révision",
     "messages": [
