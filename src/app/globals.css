@@ -201,6 +201,13 @@
 }
 
 /*
+ * Landing refonte — Inter + base typography when `HomepageNewDesign` is on.
+ */
+html[data-homepage-new-design] {
+  --font-sans: var(--font-inter), "Inter", sans-serif;
+}
+
+/*
  * Graphic charter — applied only when html[data-brand-refresh] is set
  * (feature flag `brandRefresh`). Production stays on the tokens above.
  */

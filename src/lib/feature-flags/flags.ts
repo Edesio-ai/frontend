@@ -20,6 +20,11 @@ export const FEATURE_FLAGS = {
     envValue: process.env.NEXT_PUBLIC_FF_BRAND_REFRESH,
     htmlAttribute: "data-brand-refresh",
   },
+  HomepageNewDesign: {
+    defaultEnabled: false,
+    envValue: process.env.NEXT_PUBLIC_FF_HOMEPAGE_NEW_DESIGN,
+    htmlAttribute: "data-homepage-new-design",
+  },
 } as const satisfies Record<string, FeatureFlagDefinition>;
 
 export type FeatureFlagKey = keyof typeof FEATURE_FLAGS;

@@ -1267,6 +1267,10 @@
       "brandRefresh": {
         "label": "Charte graphique Edesio",
         "description": "Tokens, typographie Inter, rayons et logo de la refonte. Désactivé en production tant que le rollout n'est pas terminé."
+      },
+      "HomepageNewDesign": {
+        "label": "Nouveau design de la page d'accueil",
+        "description": "Design de la page d'accueil. Désactivé en production tant que le rollout n'est pas terminé."
       }
     }
   },

@@ -1267,6 +1267,10 @@
       "brandRefresh": {
         "label": "Edesio graphic charter",
         "description": "Tokens, Inter typeface, radii, and logo from the redesign. Off in production until rollout is complete."
+      },
+      "HomepageNewDesign": {
+        "label": "Homepage new design",
+        "description": "Homepage new design. Off in production until rollout is complete."
       }
     }
   },

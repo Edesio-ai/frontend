@@ -9,20 +9,65 @@ type LanguageSwitcherProps = {
   className?: string;
   /** Soft-refresh RSC after switch (needed for landing server sections) */
   refreshServer?: boolean;
+  variant?: "default" | "segmented";
 };
 
-export function LanguageSwitcher({ className, refreshServer = false }: LanguageSwitcherProps) {
+function segmentedPillClass(isActive: boolean) {
+  return cn(
+    "rounded-[5px] border-0 px-2.5 py-1 text-xs font-bold transition-colors",
+    isActive ? "bg-white text-[#18181B] shadow-[0_1px_2px_rgba(0,0,0,0.06)]" : "bg-transparent text-[#A1A1AA]",
+  );
+}
+
+export function LanguageSwitcher({ className, refreshServer = false, variant = "default" }: LanguageSwitcherProps) {
   const locale = useLocale();
   const { setLocale, isChangingLocale } = useSetLocale();
   const router = useRouter();
 
-  const toggle = async () => {
-    if (isChangingLocale) return;
-    const next: Locale = locale === "fr" ? "en" : "fr";
+  const switchTo = async (next: Locale) => {
+    if (isChangingLocale || locale === next) {
+      return;
+    }
+
     await setLocale(next);
     if (refreshServer) {
       router.refresh();
     }
+  };
+
+  if (variant === "segmented") {
+    return (
+      <div
+        className={cn("inline-flex items-center gap-0.5 rounded-[7px] bg-[#F4F4F5] p-0.5", className)}
+        data-testid="language-switcher"
+      >
+        <button
+          type="button"
+          disabled={isChangingLocale}
+          aria-label="Passer en français"
+          aria-pressed={locale === "fr"}
+          className={segmentedPillClass(locale === "fr")}
+          onClick={() => void switchTo("fr")}
+        >
+          FR
+        </button>
+        <button
+          type="button"
+          disabled={isChangingLocale}
+          aria-label="Switch to English"
+          aria-pressed={locale === "en"}
+          className={segmentedPillClass(locale === "en")}
+          onClick={() => void switchTo("en")}
+        >
+          EN
+        </button>
+      </div>
+    );
+  }
+
+  const toggle = async () => {
+    const next: Locale = locale === "fr" ? "en" : "fr";
+    await switchTo(next);
   };
 
   return (
@@ -41,7 +86,6 @@ export function LanguageSwitcher({ className, refreshServer = false }: LanguageS
         className,
       )}
     >
-      {/* Sliding pill — fixed size, no layout shift */}
       <span
         aria-hidden
         className={cn(
