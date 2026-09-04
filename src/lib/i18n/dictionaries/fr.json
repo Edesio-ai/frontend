@@ -1269,5 +1269,12 @@
         "description": "Tokens, typographie Inter, rayons et logo de la refonte. Désactivé en production tant que le rollout n'est pas terminé."
       }
     }
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Cette page n'existe pas",
+    "description": "La page que vous recherchez a été déplacée, supprimée, ou n'a jamais existé.",
+    "backHome": "Retour à l'accueil",
+    "copyright": "© {year} Edesio"
   }
 }
