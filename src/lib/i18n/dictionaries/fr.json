@@ -60,41 +60,75 @@
     ]
   },
   "functioning": {
-    "badge": "Comment ça marche",
-    "title": "Un processus simple en",
-    "titleHighlight": "3 étapes",
-    "subtitle": "Transformez vos cours en expériences d'apprentissage interactives en quelques clics.",
-    "steps": [
-      {
-        "number": "1",
-        "title": "Le professeur dépose ses cours",
-        "description": "Importez facilement vos supports de cours : PDF, documents Word, présentations. Edesio analyse et comprend le contenu pédagogique."
-      },
-      {
-        "number": "2",
-        "title": "L'IA génère des questions",
-        "description": "Notre intelligence artificielle analyse le contenu et crée automatiquement des questions pertinentes, adaptées au niveau de vos élèves."
-      },
-      {
-        "number": "3",
-        "title": "Le chatbot entraîne les élèves",
-        "description": "Les élèves révisent en discutant avec Edesio. Le chatbot pose des questions, corrige les erreurs et explique les concepts."
-      }
-    ],
-    "features": [
-      {
-        "title": "Contenu personnalisé",
-        "description": "Questions générées à partir de vos propres cours"
-      },
-      {
-        "title": "IA intelligente",
-        "description": "S'adapte au niveau de chaque élève"
-      },
-      {
-        "title": "Apprentissage ciblé",
-        "description": "Renforce les concepts clés de votre enseignement"
-      }
-    ]
+    "legacy": {
+      "badge": "Comment ça marche",
+      "title": "Un processus simple en",
+      "titleHighlight": "3 étapes",
+      "subtitle": "Transformez vos cours en expériences d'apprentissage interactives en quelques clics.",
+      "steps": [
+        {
+          "number": "1",
+          "title": "Le professeur dépose ses cours",
+          "description": "Importez facilement vos supports de cours : PDF, documents Word, présentations. Edesio analyse et comprend le contenu pédagogique."
+        },
+        {
+          "number": "2",
+          "title": "L'IA génère des questions",
+          "description": "Notre intelligence artificielle analyse le contenu et crée automatiquement des questions pertinentes, adaptées au niveau de vos élèves."
+        },
+        {
+          "number": "3",
+          "title": "Le chatbot entraîne les élèves",
+          "description": "Les élèves révisent en discutant avec Edesio. Le chatbot pose des questions, corrige les erreurs et explique les concepts."
+        }
+      ],
+      "features": [
+        {
+          "title": "Contenu personnalisé",
+          "description": "Questions générées à partir de vos propres cours"
+        },
+        {
+          "title": "IA intelligente",
+          "description": "S'adapte au niveau de chaque élève"
+        },
+        {
+          "title": "Apprentissage ciblé",
+          "description": "Renforce les concepts clés de votre enseignement"
+        }
+      ]
+    },
+    "new": {
+      "eyebrow": "Comment ça marche",
+      "title": "Un processus simple en 3 étapes",
+      "steps": [
+        {
+          "title": "L'enseignant importe ses cours",
+          "description": "PDF, documents Word, présentations : Edesio analyse et comprend le contenu pédagogique."
+        },
+        {
+          "title": "L'IA génère des questions",
+          "description": "L'intelligence artificielle analyse le contenu et crée automatiquement des questions adaptées au niveau des élèves."
+        },
+        {
+          "title": "Le chatbot entraîne les élèves",
+          "description": "Les élèves révisent en discutant avec Edesio, qui pose des questions, corrige les erreurs et explique les concepts."
+        }
+      ],
+      "highlights": [
+        {
+          "title": "Contenu personnalisé",
+          "description": "Questions générées à partir de vos propres cours."
+        },
+        {
+          "title": "IA intelligente",
+          "description": "S'adapte au niveau de chaque élève."
+        },
+        {
+          "title": "Apprentissage ciblé",
+          "description": "Renforce les notions clés de votre enseignement."
+        }
+      ]
+    }
   },
   "benefits": {
     "badge": "Avantages",

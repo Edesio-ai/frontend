@@ -88,6 +88,8 @@ export default {
             link: "hsl(var(--landing-nav-link) / <alpha-value>)",
             divider: "hsl(var(--landing-nav-divider) / <alpha-value>)",
           },
+          subtle: "hsl(var(--landing-subtle) / <alpha-value>)",
+          faint: "hsl(var(--landing-faint) / <alpha-value>)",
         },
         chart: {
           "1": "hsl(var(--chart-1) / <alpha-value>)",

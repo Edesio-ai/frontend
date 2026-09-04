@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ShieldCheck, Sparkles } from "lucide-react";
 import { useTranslations } from "@/lib/i18n/client";
 import { Button } from "@/components/ui/button";
-import { LandingHeroRobotVisual } from "./landing-hero-robot-visual";
+import { LandingHeroRobotVisual } from "./hero-robot-visual";
 
 const trustIcons = [Sparkles, ShieldCheck] as const;
 

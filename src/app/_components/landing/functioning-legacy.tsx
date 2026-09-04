@@ -1,6 +1,8 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
-import { Upload, Sparkles, MessageSquare, BookOpen, Brain, Target } from "lucide-react";
-import { getLocaleFromCookies, getDictionary } from "@/lib/i18n";
+import { BookOpen, Brain, MessageSquare, Sparkles, Target, Upload } from "lucide-react";
+import { useTranslations } from "@/lib/i18n/client";
 
 const stepIcons = [Upload, Sparkles, MessageSquare];
 const stepGradients = [
@@ -15,10 +17,8 @@ const stepGradients = [
 
 const featureIcons = [BookOpen, Brain, Target];
 
-export async function Functioning() {
-  const locale = await getLocaleFromCookies();
-  const dict = await getDictionary(locale);
-  const t = dict.functioning;
+export function FunctioningLegacy() {
+  const t = useTranslations().functioning.legacy;
 
   return (
     <section

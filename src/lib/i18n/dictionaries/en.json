@@ -60,41 +60,75 @@
     ]
   },
   "functioning": {
-    "badge": "How it works",
-    "title": "A simple process in",
-    "titleHighlight": "3 steps",
-    "subtitle": "Transform your lessons into interactive learning experiences in just a few clicks.",
-    "steps": [
-      {
-        "number": "1",
-        "title": "The teacher uploads their lessons",
-        "description": "Easily import your course materials: PDFs, Word documents, presentations. Edesio analyzes and understands the educational content."
-      },
-      {
-        "number": "2",
-        "title": "AI generates questions",
-        "description": "Our artificial intelligence analyzes the content and automatically creates relevant questions adapted to your students' level."
-      },
-      {
-        "number": "3",
-        "title": "The chatbot trains students",
-        "description": "Students study by chatting with Edesio. The chatbot asks questions, corrects mistakes and explains concepts."
-      }
-    ],
-    "features": [
-      {
-        "title": "Personalized content",
-        "description": "Questions generated from your own lessons"
-      },
-      {
-        "title": "Intelligent AI",
-        "description": "Adapts to each student's level"
-      },
-      {
-        "title": "Targeted learning",
-        "description": "Reinforces the key concepts of your teaching"
-      }
-    ]
+    "legacy": {
+      "badge": "How it works",
+      "title": "A simple process in",
+      "titleHighlight": "3 steps",
+      "subtitle": "Transform your lessons into interactive learning experiences in just a few clicks.",
+      "steps": [
+        {
+          "number": "1",
+          "title": "The teacher uploads their lessons",
+          "description": "Easily import your course materials: PDFs, Word documents, presentations. Edesio analyzes and understands the educational content."
+        },
+        {
+          "number": "2",
+          "title": "AI generates questions",
+          "description": "Our artificial intelligence analyzes the content and automatically creates relevant questions adapted to your students' level."
+        },
+        {
+          "number": "3",
+          "title": "The chatbot trains students",
+          "description": "Students study by chatting with Edesio. The chatbot asks questions, corrects mistakes and explains concepts."
+        }
+      ],
+      "features": [
+        {
+          "title": "Personalized content",
+          "description": "Questions generated from your own lessons"
+        },
+        {
+          "title": "Intelligent AI",
+          "description": "Adapts to each student's level"
+        },
+        {
+          "title": "Targeted learning",
+          "description": "Reinforces the key concepts of your teaching"
+        }
+      ]
+    },
+    "new": {
+      "eyebrow": "How it works",
+      "title": "A simple process in 3 steps",
+      "steps": [
+        {
+          "title": "The teacher uploads their lessons",
+          "description": "Easily import your course materials: PDFs, Word documents, presentations. Edesio analyzes and understands the educational content."
+        },
+        {
+          "title": "AI generates questions",
+          "description": "Our artificial intelligence analyzes the content and automatically creates relevant questions adapted to your students' level."
+        },
+        {
+          "title": "The chatbot trains students",
+          "description": "Students revise by chatting with Edesio. The chatbot asks questions, corrects mistakes and explains concepts."
+        }
+      ],
+      "highlights": [
+        {
+          "title": "Personalized content",
+          "description": "Questions generated from your own lessons."
+        },
+        {
+          "title": "Intelligent AI",
+          "description": "Adapts to each student's level."
+        },
+        {
+          "title": "Targeted learning",
+          "description": "Reinforces the key concepts of your teaching."
+        }
+      ]
+    }
   },
   "benefits": {
     "badge": "Advantages",

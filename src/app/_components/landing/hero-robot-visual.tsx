@@ -2,10 +2,9 @@
 
 import dynamic from "next/dynamic";
 
-const LandingHeroRobotScene = dynamic(
-  () => import("./landing-hero-robot-scene").then((mod) => mod.LandingHeroRobotScene),
-  { ssr: false },
-);
+const LandingHeroRobotScene = dynamic(() => import("./hero-robot-scene").then((mod) => mod.LandingHeroRobotScene), {
+  ssr: false,
+});
 
 export function LandingHeroRobotVisual() {
   return (

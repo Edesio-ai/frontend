@@ -1,8 +1,8 @@
 "use client";
 
 import { useFeatureFlag } from "@/contexts/feature-flags-context";
-import { LandingNavbarLegacy } from "../../app/_components/landing/_components/landing-navbar-legacy";
-import { LandingNavbarNew } from "../../app/_components/landing/_components/landing-navbar-new";
+import { LandingNavbarLegacy } from "./navbar-legacy";
+import { LandingNavbarNew } from "./navbar-new";
 
 export function Navbar() {
   const isNewHomepage = useFeatureFlag("HomepageNewDesign");

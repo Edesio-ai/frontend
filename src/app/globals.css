@@ -96,6 +96,8 @@
   --hero-robot-light-rim: #9b87e8;
   --landing-nav-link: 240 5% 26%; /* #3F3F46 */
   --landing-nav-divider: 240 6% 94%; /* #F0F0F2 */
+  --landing-subtle: 240 4% 65%; /* #A1A1AA */
+  --landing-faint: 240 5% 84%; /* #D4D4D8 */
   --tertiary-foreground: 0 0% 45%;
 
   /* Fallback for older browsers */
@@ -229,6 +231,7 @@ html[data-homepage-new-design] {
   --border: 240 6% 90%; /* #E4E4E7 */
   --landing-nav-link: 240 5% 26%; /* #3F3F46 */
   --landing-nav-divider: 240 6% 94%; /* #F0F0F2 */
+  --tertiary-foreground: 240 4% 46%; /* #71717A */
 }
 
 @layer utilities {
