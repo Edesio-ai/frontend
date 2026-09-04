@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0" +
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-control text-sm font-medium brand:font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0" +
     " hover-elevate active-elevate-2",
   {
     variants: {
@@ -21,14 +21,15 @@ const buttonVariants = cva(
           "border bg-secondary text-secondary-foreground border border-secondary-border focus-visible:ring-secondary/50",
         // Add a transparent border so that when someone toggles a border on later, it doesn't shift layout/size.
         ghost: "border border-transparent focus-visible:ring-foreground/20",
+        onDark: "bg-white text-zinc-900 border border-white hover:bg-zinc-100 focus-visible:ring-white/40",
       },
       // Heights are set as "min" heights, because sometimes Ai will place large amount of content
       // inside buttons. With a min-height they will look appropriate with small amounts of content,
       // but will expand to fit large amounts of content.
       size: {
         default: "min-h-9 px-4 py-2",
-        sm: "min-h-8 rounded-md px-3 text-xs",
-        lg: "min-h-10 rounded-md px-8",
+        sm: "min-h-8 px-3 text-xs",
+        lg: "min-h-10 px-8",
         icon: "h-9 w-9",
       },
     },
@@ -47,7 +48,15 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        data-slot="button"
+        data-variant={variant ?? "default"}
+        ref={ref}
+        {...props}
+      />
+    );
   },
 );
 Button.displayName = "Button";

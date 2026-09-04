@@ -1263,6 +1263,11 @@
     "reset": "Reset to defaults",
     "overriddenOn": "Manually enabled",
     "overriddenOff": "Manually disabled",
-    "flags": {}
+    "flags": {
+      "brandRefresh": {
+        "label": "Edesio graphic charter",
+        "description": "Tokens, Inter typeface, radii, and logo from the redesign. Off in production until rollout is complete."
+      }
+    }
   }
 }

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useFeatureFlagsContext } from "@/contexts/feature-flags-context";
-import { getFeatureFlagDefinition, type FeatureFlagKey } from "@/lib/feature-flags/flags";
+import { isFeatureFlagOnByDefault, type FeatureFlagKey } from "@/lib/feature-flags/flags";
 import { useTranslations } from "@/lib/i18n/client";
 import { cn } from "@/lib/utils";
 
@@ -118,12 +118,12 @@ export function FeatureFlagsPanel() {
                             </Label>
                             {description ? <p className="text-xs text-muted-foreground">{description}</p> : null}
                             <p className="font-mono text-[10px] text-muted-foreground">{key}</p>
-                            {!isEnabled(key) && getFeatureFlagDefinition(key)?.defaultEnabled ? (
+                            {!isEnabled(key) && isFeatureFlagOnByDefault(key) ? (
                               <p className="text-xs text-amber-600 dark:text-amber-400">
                                 {t.featureFlags.overriddenOff}
                               </p>
                             ) : null}
-                            {isEnabled(key) && !getFeatureFlagDefinition(key)?.defaultEnabled ? (
+                            {isEnabled(key) && !isFeatureFlagOnByDefault(key) ? (
                               <p className="text-xs text-emerald-600 dark:text-emerald-400">
                                 {t.featureFlags.overriddenOn}
                               </p>

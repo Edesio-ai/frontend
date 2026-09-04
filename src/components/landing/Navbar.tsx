@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useTranslations } from "@/lib/i18n/client";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Logo } from "@/components/brand/logo";
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -39,8 +40,7 @@ export function Navbar() {
             className="flex items-center gap-2 text-xl md:text-2xl font-bold text-foreground shrink-0"
             data-testid="link-logo"
           >
-            <img src="/edesio-logo-square.png" alt="Edesio" className="w-10 h-10 rounded-lg object-cover" />
-            <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+            <Logo wordmarkClassName="text-xl md:text-2xl" />
           </a>
 
           <div className="hidden lg:flex items-center gap-6 min-w-0">

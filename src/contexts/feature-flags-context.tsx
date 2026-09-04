@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { FEATURE_FLAG_KEYS, getFeatureFlagDefinition, type FeatureFlagKey } from "@/lib/feature-flags/flags";
+import { FEATURE_FLAG_KEYS, isFeatureFlagOnByDefault, type FeatureFlagKey } from "@/lib/feature-flags/flags";
+import { applyFeatureFlagHtmlAttributes } from "@/lib/feature-flags/html";
 import {
   readFeatureFlagOverrides,
   writeFeatureFlagOverrides,
@@ -23,15 +24,25 @@ function resolveEnabled(key: FeatureFlagKey, overrides: FeatureFlagOverrides): b
     return overrides[key] ?? false;
   }
 
-  return getFeatureFlagDefinition(key)?.defaultEnabled ?? false;
+  return isFeatureFlagOnByDefault(key);
 }
 
 export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
   const [overrides, setOverrides] = useState<FeatureFlagOverrides>({});
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     setOverrides(readFeatureFlagOverrides());
+    setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    applyFeatureFlagHtmlAttributes((key) => resolveEnabled(key, overrides));
+  }, [hydrated, overrides]);
 
   const persistOverrides = useCallback((next: FeatureFlagOverrides) => {
     setOverrides(next);

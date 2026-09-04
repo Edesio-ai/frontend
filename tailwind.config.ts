@@ -13,6 +13,10 @@ export default {
         lg: ".5625rem" /* 9px */,
         md: ".375rem" /* 6px */,
         sm: ".1875rem" /* 3px */,
+        control: "var(--radius-control)",
+        card: "var(--radius-card)",
+        modal: "var(--radius-modal)",
+        cta: "var(--radius-cta)",
       },
       colors: {
         // Flat / base colors (regular buttons)
@@ -34,6 +38,8 @@ export default {
           DEFAULT: "hsl(var(--primary) / <alpha-value>)",
           foreground: "hsl(var(--primary-foreground) / <alpha-value>)",
           border: "var(--primary-border)",
+          hover: "hsl(var(--primary-hover) / <alpha-value>)",
+          muted: "hsl(var(--primary-muted) / <alpha-value>)",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary) / <alpha-value>)",
@@ -56,6 +62,23 @@ export default {
           border: "var(--destructive-border)",
         },
         ring: "hsl(var(--ring) / <alpha-value>)",
+        success: {
+          DEFAULT: "hsl(var(--success) / <alpha-value>)",
+          foreground: "hsl(var(--success-foreground) / <alpha-value>)",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning) / <alpha-value>)",
+          foreground: "hsl(var(--warning-foreground) / <alpha-value>)",
+        },
+        tertiary: {
+          foreground: "hsl(var(--tertiary-foreground) / <alpha-value>)",
+        },
+        hero: {
+          from: "hsl(var(--hero-from) / <alpha-value>)",
+          via: "hsl(var(--hero-via) / <alpha-value>)",
+          to: "hsl(var(--hero-to) / <alpha-value>)",
+          cta: "hsl(var(--hero-cta) / <alpha-value>)",
+        },
         chart: {
           "1": "hsl(var(--chart-1) / <alpha-value>)",
           "2": "hsl(var(--chart-2) / <alpha-value>)",
@@ -90,6 +113,10 @@ export default {
         sans: ["var(--font-sans)"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
+      },
+      boxShadow: {
+        card: "var(--shadow-card)",
+        modal: "var(--shadow-modal)",
       },
       keyframes: {
         "accordion-down": {

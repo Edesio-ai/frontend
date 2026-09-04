@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MobileInstallModal } from "@/components/ui/mobile-install-modal";
 import Link from "next/link";
 import { useTranslations } from "@/lib/i18n/client";
+import { Logo } from "@/components/brand/logo";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -32,16 +33,15 @@ export function Footer() {
                 className="inline-flex items-center gap-3 text-2xl font-bold text-white mb-4"
                 data-testid="link-footer-logo"
               >
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-400 to-purple-500 p-0.5">
-                  <img
-                    src="/edesio-logo-square.png"
-                    alt="Edesio"
-                    className="w-full h-full rounded-[10px] object-cover bg-white"
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-400 to-purple-500 p-0.5 brand:bg-none brand:p-0 brand:rounded-none">
+                  <Logo
+                    wordmark={false}
+                    size="lg"
+                    alt=""
+                    markClassName="w-full h-full rounded-[10px] object-cover bg-white brand:rounded-none"
                   />
                 </div>
-                <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                  Edesio
-                </span>
+                <Logo mark={false} wordmarkClassName="text-2xl brand:text-white" />
               </a>
               <p className="text-slate-400 leading-relaxed max-w-md mb-6">{ft.tagline}</p>
               <div className="flex items-center gap-6 flex-wrap">

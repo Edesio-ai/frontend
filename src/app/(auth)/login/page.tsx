@@ -16,6 +16,7 @@ import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 import { useAuth } from "@/contexts/auth-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getPostLoginPath } from "@/utils/functions/role.utils";
+import { Logo } from "@/components/brand/logo";
 
 export default function Connexion() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -86,9 +87,7 @@ export default function Connexion() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-              Edesio
-            </span>
+            <Logo mark={false} wordmarkClassName="text-2xl" />
           </Link>
           <h1 className="text-3xl font-bold mb-2" data-testid="text-login-title">
             {lt.title}
