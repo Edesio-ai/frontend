@@ -1429,39 +1429,71 @@
       }
     },
     "faq": {
-      "title": "Frequently asked",
-      "titleHighlight": "questions",
-      "subtitle": "Everything you need to know about {brand}.",
-      "gdprCompliant": "GDPR Compliant",
-      "dataProtected": "Data protected",
-      "secureHosting": "Secure hosting",
-      "europeanServers": "European servers",
-      "items": [
-        {
-          "question": "How is my data and my students' data protected?",
-          "answer": "Edesio strictly complies with GDPR. All data is hosted in Europe, on secure servers. We never use student data for commercial purposes. Institutions remain the owners of their data and can delete it at any time."
-        },
-        {
-          "question": "What is the teacher's role with Edesio?",
-          "answer": "The teacher remains at the heart of the system. They upload their lessons, validate AI-generated questions if they wish, and consult student progress reports. Edesio is a support tool that frees up time for human guidance, without ever replacing the teacher."
-        },
-        {
-          "question": "How does the AI generate questions?",
-          "answer": "Our AI analyzes the content of your lessons (PDFs, documents) and generates questions directly linked to your teaching. Each question is based on the material you provided, ensuring relevant practice aligned with your curriculum."
-        },
-        {
-          "question": "What types of institutions is Edesio designed for?",
-          "answer": "Edesio is designed for middle schools, general, technological and vocational high schools, as well as higher education (vocational degrees, preparatory classes, schools). The platform adapts to all subjects and levels."
-        },
-        {
-          "question": "How does the technical setup work?",
-          "answer": "Edesio is a SaaS solution accessible via a simple web browser. No installation is required. We support institutions in getting started with training sessions for teaching teams. Integration with your existing LMS is available on request."
-        },
-        {
-          "question": "Can students cheat with the chatbot?",
-          "answer": "Edesio is designed for training, not summative assessment. The chatbot guides students toward the right answers rather than giving them directly. Teachers have access to conversation histories and can track each student's real progress."
-        }
-      ]
+      "legacy": {
+        "title": "Frequently asked",
+        "titleHighlight": "questions",
+        "subtitle": "Everything you need to know about {brand}.",
+        "gdprCompliant": "GDPR Compliant",
+        "dataProtected": "Data protected",
+        "secureHosting": "Secure hosting",
+        "europeanServers": "European servers",
+        "items": [
+          {
+            "question": "How is my data and my students' data protected?",
+            "answer": "Edesio strictly complies with GDPR. All data is hosted in Europe, on secure servers. We never use student data for commercial purposes. Institutions remain the owners of their data and can delete it at any time."
+          },
+          {
+            "question": "What is the teacher's role with Edesio?",
+            "answer": "The teacher remains at the heart of the system. They upload their lessons, validate AI-generated questions if they wish, and consult student progress reports. Edesio is a support tool that frees up time for human guidance, without ever replacing the teacher."
+          },
+          {
+            "question": "How does the AI generate questions?",
+            "answer": "Our AI analyzes the content of your lessons (PDFs, documents) and generates questions directly linked to your teaching. Each question is based on the material you provided, ensuring relevant practice aligned with your curriculum."
+          },
+          {
+            "question": "What types of institutions is Edesio designed for?",
+            "answer": "Edesio is designed for middle schools, general, technological and vocational high schools, as well as higher education (vocational degrees, preparatory classes, schools). The platform adapts to all subjects and levels."
+          },
+          {
+            "question": "How does the technical setup work?",
+            "answer": "Edesio is a SaaS solution accessible via a simple web browser. No installation is required. We support institutions in getting started with training sessions for teaching teams. Integration with your existing LMS is available on request."
+          },
+          {
+            "question": "Can students cheat with the chatbot?",
+            "answer": "No, students cannot cheat with the chatbot. Edesio is designed for training: the chatbot does not give away key answers, but checks understanding through guided dialogue. Built-in controls — conversation history, progress tracking, questions based on your course content — let teachers review each student's activity at any time."
+          }
+        ]
+      },
+      "new": {
+        "eyebrow": "FAQ",
+        "title": "Everything you need to know about Edesio",
+        "items": [
+          {
+            "question": "How is my data and my students' data protected?",
+            "answer": "Edesio is GDPR compliant, with secure European hosting. We use Mistral AI, a French artificial intelligence, to guarantee the sovereignty of your data."
+          },
+          {
+            "question": "What is the teacher's role with Edesio?",
+            "answer": "The teacher uploads their lessons (PDF, Word, presentations). Edesio analyzes this content and automatically generates adapted questions, which the teacher can adjust."
+          },
+          {
+            "question": "How does the AI generate questions?",
+            "answer": "The AI analyzes the uploaded educational content and creates questions adapted to students' level, directly from your own lessons."
+          },
+          {
+            "question": "What types of institutions is Edesio designed for?",
+            "answer": "Edesio is designed for middle schools, high schools and higher education, as well as self-taught learners."
+          },
+          {
+            "question": "How does the technical setup work?",
+            "answer": "No complex installation: you upload your lessons as PDF, Word or slides, and Edesio takes care of the rest."
+          },
+          {
+            "question": "Can students cheat with the chatbot?",
+            "answer": "No, students cannot cheat with the chatbot. Edesio is designed for training: the chatbot does not give away key answers, but checks understanding through guided dialogue. Built-in controls — conversation history, progress tracking, questions based on your course content — let teachers review each student's activity at any time."
+          }
+        ]
+      }
     },
     "footer": {
       "tagline": "The AI solution that transforms your lessons into interactive learning experiences for your students. Designed for middle schools, high schools and higher education.",
