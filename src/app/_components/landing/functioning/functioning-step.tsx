@@ -1,10 +1,10 @@
-type HowItWorkStepProps = {
+type FunctioningStepProps = {
   number: number;
   title: string;
   description: string;
 };
 
-export function HowItWorkStep({ number, title, description }: HowItWorkStepProps) {
+export function FunctioningStep({ number, title, description }: FunctioningStepProps) {
   return (
     <div>
       <p className="mb-4 text-4xl font-extrabold tracking-tight text-landing-faint">{number}</p>

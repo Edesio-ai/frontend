@@ -1,9 +1,9 @@
 "use client";
 
 import { useTranslations } from "@/lib/i18n/client";
-import { LandingSectionHeader } from "./section-header";
-import { HowItWorkStep } from "./how-it-work-step";
-import { HowItWorkHighlight } from "./how-it-work-highlight";
+import { LandingSectionHeader } from "../section-header";
+import { FunctioningStep } from "./functioning-step";
+import { FunctioningHighlight } from "./functioning-highlight";
 
 export function FunctioningNew() {
   const t = useTranslations().functioning.new;
@@ -17,7 +17,7 @@ export function FunctioningNew() {
       <LandingSectionHeader eyebrow={t.eyebrow} title={t.title} titleTestId="text-fonctionnement-title" />
       <div className="mb-14 grid grid-cols-1 gap-10 md:grid-cols-3">
         {t.steps.map((step, index) => (
-          <HowItWorkStep key={step.title} number={index + 1} title={step.title} description={step.description} />
+          <FunctioningStep key={step.title} number={index + 1} title={step.title} description={step.description} />
         ))}
       </div>
       <div
@@ -25,7 +25,7 @@ export function FunctioningNew() {
         data-testid="grid-fonctionnement-highlights"
       >
         {t.highlights.map((highlight, index) => (
-          <HowItWorkHighlight
+          <FunctioningHighlight
             key={highlight.title}
             title={highlight.title}
             description={highlight.description}

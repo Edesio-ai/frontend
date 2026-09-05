@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 
-type HowItWorkHighlightProps = {
+type FunctioningHighlightProps = {
   title: string;
   description: string;
   isLast?: boolean;
 };
 
-export function HowItWorkHighlight({ title, description, isLast = false }: HowItWorkHighlightProps) {
+export function FunctioningHighlight({ title, description, isLast = false }: FunctioningHighlightProps) {
   return (
     <div className={cn("px-6.5 py-5.5", !isLast && "border-b border-border md:border-r md:border-b-0")}>
       <p className="mb-1 text-sm font-bold text-foreground">{title}</p>
