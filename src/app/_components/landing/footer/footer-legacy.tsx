@@ -7,11 +7,11 @@ import Link from "next/link";
 import { useTranslations } from "@/lib/i18n/client";
 import { Logo } from "@/components/brand/logo";
 
-export function Footer() {
+export function FooterLegacy() {
   const currentYear = new Date().getFullYear();
   const [showInstallModal, setShowInstallModal] = useState(false);
   const t = useTranslations();
-  const ft = t.footer;
+  const ft = t.landing.footer.legacy;
 
   const footerLinks = [
     { label: ft.links.fonctionnement, href: "#fonctionnement" },

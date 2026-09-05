@@ -8,25 +8,18 @@ import { useTranslations } from "@/lib/i18n/client";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Logo } from "@/components/brand/logo";
 
-export function Navbar() {
+export function LandingNavbarLegacy() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const t = useTranslations();
+  const nav = t.landing.navbar;
 
   const navLinks = [
-    { label: t.navbar.links.fonctionnement, href: "#fonctionnement" },
-    { label: t.navbar.links.pourQui, href: "#pour-qui" },
-    { label: t.navbar.links.benefices, href: "#benefices" },
-    { label: t.navbar.links.tarifs, href: "#tarifs" },
-    { label: t.navbar.links.faq, href: "#faq" },
+    { label: nav.links.fonctionnement, href: "#fonctionnement" },
+    { label: nav.links.pourQui, href: "#pour-qui" },
+    { label: nav.links.benefices, href: "#benefices" },
+    { label: nav.links.tarifs, href: "#tarifs" },
+    { label: nav.links.faq, href: "#faq" },
   ];
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
 
   return (
     <nav
@@ -57,45 +50,34 @@ export function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-2 min-w-0">
+            <LanguageSwitcher refreshServer />
             <Button variant="ghost" size="sm" className="font-semibold" asChild>
               <Link href="/login" data-testid="button-connexion">
-                {t.navbar.login}
+                {nav.login}
               </Link>
             </Button>
-            <Button size="sm" className="shadow-lg shadow-primary/25" asChild>
+            <Button variant="default" size="sm" className="shadow-lg shadow-primary/25" asChild>
               <Link href="/register" data-testid="button-signup-nav">
-                {t.navbar.signup}
+                {nav.signup}
               </Link>
-            </Button>
-            <Button size="sm" variant="outline" asChild>
-              <a
-                href="https://cal.com/alexandre-seuzaret-g9g9me/30min"
-                target="_blank"
-                rel="noopener noreferrer"
-                data-testid="button-demo-nav"
-              >
-                {t.navbar.demo}
-              </a>
             </Button>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 lg:hidden">
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
-              onClick={toggleMobileMenu}
+              onClick={() => setIsMobileMenuOpen((open) => !open)}
               aria-label={isMobileMenuOpen ? t.common.closeMenu : t.common.openMenu}
               data-testid="button-mobile-menu"
             >
               {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
-            <LanguageSwitcher refreshServer />
           </div>
         </div>
       </div>
 
-      {isMobileMenuOpen && (
+      {isMobileMenuOpen ? (
         <div className="lg:hidden border-t border-border bg-background" data-testid="mobile-menu">
           <div className="px-4 py-4 space-y-3">
             {navLinks.map((link) => (
@@ -103,7 +85,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className="block py-2 text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
-                onClick={closeMobileMenu}
+                onClick={() => setIsMobileMenuOpen(false)}
                 data-testid={`link-mobile-${link.href.slice(1)}`}
               >
                 {link.label}
@@ -111,13 +93,13 @@ export function Navbar() {
             ))}
             <div className="pt-4 space-y-3 border-t border-border">
               <Button variant="outline" className="w-full font-semibold" asChild>
-                <Link href="/login" onClick={closeMobileMenu} data-testid="button-mobile-connexion">
-                  {t.navbar.login}
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} data-testid="button-mobile-connexion">
+                  {nav.login}
                 </Link>
               </Button>
               <Button className="w-full" asChild>
-                <Link href="/register" onClick={closeMobileMenu} data-testid="button-mobile-signup">
-                  {t.navbar.signup}
+                <Link href="/register" onClick={() => setIsMobileMenuOpen(false)} data-testid="button-mobile-signup">
+                  {nav.signup}
                 </Link>
               </Button>
               <Button variant="outline" className="w-full" asChild>
@@ -125,16 +107,16 @@ export function Navbar() {
                   href="https://cal.com/alexandre-seuzaret-g9g9me/30min"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={closeMobileMenu}
+                  onClick={() => setIsMobileMenuOpen(false)}
                   data-testid="button-mobile-demo"
                 >
-                  {t.navbar.demo}
+                  {nav.demo}
                 </a>
               </Button>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </nav>
   );
 }

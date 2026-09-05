@@ -1,6 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
-import { ArrowLeft, Calendar, Clock, User, ExternalLink, BookOpen, Link } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, Calendar, Clock, User, ExternalLink, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -179,21 +180,17 @@ export default function BlogArticle() {
       />
       <header className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-lg border-b border-slate-800">
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-          <Link href="/">
-            <a className="flex items-center gap-3" data-testid="link-article-home">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-violet-500 p-0.5">
-                <img
-                  src="/edesio-logo-square.png"
-                  alt="Edesio"
-                  className="w-full h-full rounded-[10px] object-cover bg-white"
-                />
-              </div>
-              <span className="text-xl font-bold text-white hidden sm:block">
-                <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                  Edesio
-                </span>
-              </span>
-            </a>
+          <Link href="/" className="flex items-center gap-3 no-underline" data-testid="link-article-home">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-violet-500 p-0.5">
+              <img
+                src="/edesio-logo-square.png"
+                alt="Edesio"
+                className="w-full h-full rounded-[10px] object-cover bg-white"
+              />
+            </div>
+            <span className="text-xl font-bold text-white hidden sm:block">
+              <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Edesio</span>
+            </span>
           </Link>
           <div className="flex items-center gap-2">
             <Link href="/blog">
@@ -283,23 +280,19 @@ export default function BlogArticle() {
           <h3 className="text-xl font-bold text-white mb-3">{t.blog.ctaTitle}</h3>
           <p className="text-slate-400 mb-4">{t.blog.ctaDesc}</p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/#demo">
-              <Button
-                className="bg-gradient-to-r from-primary to-violet-500 hover:from-primary/90 hover:to-violet-500/90"
-                data-testid="button-article-demo"
-              >
+            <Button
+              asChild
+              className="bg-gradient-to-r from-primary to-violet-500 hover:from-primary/90 hover:to-violet-500/90"
+            >
+              <Link href="/#demo" data-testid="button-article-demo">
                 {t.common.demo}
-              </Button>
-            </Link>
-            <Link href="/#tarifs">
-              <Button
-                variant="outline"
-                className="border-slate-600 text-white hover:bg-slate-800"
-                data-testid="button-article-pricing"
-              >
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="cursor-pointer border-slate-600 text-white hover:bg-slate-800">
+              <Link href="/#tarifs" data-testid="button-article-pricing">
                 {t.blog.viewPricing}
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </Card>
 

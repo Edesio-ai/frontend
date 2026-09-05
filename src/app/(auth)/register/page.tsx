@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Users, ArrowLeft, Loader2, Building2, Sparkles, GraduationCap, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { UserRole } from "@/types";
+import { USER_ROLE, UserRole } from "@/types";
 import { useTranslations } from "@/lib/i18n/client";
 import { translateSupabaseError } from "@/lib/i18n/supabase-errors";
 import { useAuth } from "@/contexts/auth-context";
@@ -31,8 +31,16 @@ type FormValues = {
   acceptTerms: boolean;
 };
 
+const REGISTER_PRICING_ROLES = [USER_ROLE.selfLearner, USER_ROLE.teacher, USER_ROLE.establishment] as const;
+
+function parseRegisterRoleFromQuery(role: string | null): UserRole | null {
+  if (!role) return null;
+  return REGISTER_PRICING_ROLES.includes(role as (typeof REGISTER_PRICING_ROLES)[number]) ? (role as UserRole) : null;
+}
+
 export default function Register() {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
+  const [roleInitialized, setRoleInitialized] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -83,6 +91,15 @@ export default function Register() {
 
   const password = useWatch({ control: form.control, name: "password", defaultValue: "" });
   const confirmPassword = useWatch({ control: form.control, name: "confirmPassword", defaultValue: "" });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const roleFromQuery = parseRegisterRoleFromQuery(params.get("role"));
+    if (roleFromQuery) {
+      setSelectedRole(roleFromQuery);
+    }
+    setRoleInitialized(true);
+  }, []);
 
   const handleSignUp = async (data: FormValues) => {
     try {
@@ -159,6 +176,10 @@ export default function Register() {
         return rt.roleEstablishment;
     }
   };
+
+  if (!roleInitialized) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-muted/30 relative">

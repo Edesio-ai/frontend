@@ -12,8 +12,8 @@ interface Message {
 const messageRoles: Message["role"][] = ["ai", "ai", "student", "ai"];
 
 export function ChatSimulation() {
-  const t = useTranslations();
-  const messages: Message[] = t.chatSimulation.messages.map((content: string, index: number) => ({
+  const chatSimulation = useTranslations().landing.hero.legacy.chatSimulation;
+  const messages: Message[] = chatSimulation.messages.map((content: string, index: number) => ({
     role: messageRoles[index],
     content,
   }));
@@ -32,7 +32,7 @@ export function ChatSimulation() {
           </div>
           <div className="flex items-center gap-2 ml-2">
             <img src="/edesio-logo-square.png" alt="Edesio" className="w-6 h-6 rounded-md object-cover" />
-            <span className="text-sm text-muted-foreground font-medium">{t.chatSimulation.title}</span>
+            <span className="text-sm text-muted-foreground font-medium">{chatSimulation.title}</span>
           </div>
         </div>
 

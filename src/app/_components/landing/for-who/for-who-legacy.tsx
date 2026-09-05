@@ -1,6 +1,8 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import { GraduationCap, Building2, Users, CheckCircle2, Sparkles } from "lucide-react";
-import { getLocaleFromCookies, getDictionary } from "@/lib/i18n";
+import { useTranslations } from "@/lib/i18n/client";
 
 const personaIcons = [GraduationCap, Building2, Users, Sparkles];
 const personaStyles = [
@@ -30,10 +32,8 @@ const personaStyles = [
   },
 ];
 
-export async function ForWho() {
-  const locale = await getLocaleFromCookies();
-  const dict = await getDictionary(locale);
-  const t = dict.forWho;
+export function ForWhoLegacy() {
+  const t = useTranslations().landing.forWho.legacy;
 
   return (
     <section
@@ -58,40 +58,49 @@ export async function ForWho() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {t.personas.map((persona: { title: string; description: string; benefits: string[] }, index: number) => {
-            const Icon = personaIcons[index];
-            const style = personaStyles[index];
-            return (
-              <Card
-                key={index}
-                className={`relative p-8 border-none shadow-lg hover:shadow-2xl transition-all duration-300 ${style.bgLight} group`}
-                data-testid={`card-persona-${index + 1}`}
-              >
-                <div className="relative z-10">
-                  <div
-                    className={`w-16 h-16 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <Icon className="h-8 w-8 text-white" />
+          {t.personas.map(
+            (
+              persona: {
+                title: string;
+                description: string;
+                benefits: string[];
+              },
+              index: number,
+            ) => {
+              const Icon = personaIcons[index];
+              const style = personaStyles[index];
+              return (
+                <Card
+                  key={index}
+                  className={`relative p-8 border-none shadow-lg hover:shadow-2xl transition-all duration-300 ${style.bgLight} group`}
+                  data-testid={`card-persona-${index + 1}`}
+                >
+                  <div className="relative z-10">
+                    <div
+                      className={`w-16 h-16 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                    >
+                      <Icon className="h-8 w-8 text-white" />
+                    </div>
+
+                    <h3 className="text-2xl font-bold mb-2" data-testid={`text-persona-${index + 1}-title`}>
+                      {persona.title}
+                    </h3>
+
+                    <p className="text-muted-foreground mb-6 font-medium">{persona.description}</p>
+
+                    <ul className="space-y-3">
+                      {persona.benefits.map((benefit, benefitIndex) => (
+                        <li key={benefitIndex} className="flex items-start gap-3 text-sm">
+                          <CheckCircle2 className={`w-5 h-5 ${style.checkColor} shrink-0 mt-0.5`} />
+                          <span>{benefit}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-
-                  <h3 className="text-2xl font-bold mb-2" data-testid={`text-persona-${index + 1}-title`}>
-                    {persona.title}
-                  </h3>
-
-                  <p className="text-muted-foreground mb-6 font-medium">{persona.description}</p>
-
-                  <ul className="space-y-3">
-                    {persona.benefits.map((benefit, benefitIndex) => (
-                      <li key={benefitIndex} className="flex items-start gap-3 text-sm">
-                        <CheckCircle2 className={`w-5 h-5 ${style.checkColor} shrink-0 mt-0.5`} />
-                        <span>{benefit}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Card>
-            );
-          })}
+                </Card>
+              );
+            },
+          )}
         </div>
       </div>
     </section>
