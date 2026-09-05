@@ -1546,11 +1546,20 @@
       "sendError": "Error while sending"
     },
     "blogPreview": {
-      "badge": "Our blog",
-      "title": "Latest articles",
-      "subtitle": "Discover our analyses, tips and news about AI in education",
-      "readArticle": "Read the article",
-      "viewAll": "View all articles"
+      "legacy": {
+        "badge": "Our blog",
+        "title": "Latest articles",
+        "subtitle": "Discover our analyses, tips and news about AI in education",
+        "readArticle": "Read the article",
+        "viewAll": "View all articles"
+      },
+      "new": {
+        "eyebrow": "Our blog",
+        "title": "Latest articles",
+        "subtitle": "Discover our analyses, tips and news on AI in education",
+        "readArticle": "Read article",
+        "viewAll": "View all articles"
+      }
     }
   }
 }

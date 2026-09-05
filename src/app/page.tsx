@@ -5,7 +5,7 @@ import { ForWho } from "@/app/_components/landing/for-who/for-who";
 import { Benefits } from "@/app/_components/landing/benefits/benefits";
 import { Pricing } from "@/app/_components/landing/pricing/pricing";
 import { FAQ } from "@/app/_components/landing/faq/faq";
-import { BlogPreview } from "@/components/landing/BlogPreview";
+import { BlogPreview } from "@/app/_components/landing/blog-preview/blog-preview";
 import { DemoForm } from "@/components/landing/DemoForm";
 import { Functioning } from "./_components/landing/functioning/Functioning";
 

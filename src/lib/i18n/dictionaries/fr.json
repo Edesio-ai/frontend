@@ -1546,11 +1546,20 @@
       "sendError": "Erreur lors de l'envoi"
     },
     "blogPreview": {
-      "badge": "Notre blog",
-      "title": "Les derniers articles",
-      "subtitle": "Découvrez nos analyses, conseils et actualités sur l'IA dans l'éducation",
-      "readArticle": "Lire l'article",
-      "viewAll": "Voir tous les articles"
+      "legacy": {
+        "badge": "Notre blog",
+        "title": "Les derniers articles",
+        "subtitle": "Découvrez nos analyses, conseils et actualités sur l'IA dans l'éducation",
+        "readArticle": "Lire l'article",
+        "viewAll": "Voir tous les articles"
+      },
+      "new": {
+        "eyebrow": "Notre blog",
+        "title": "Derniers articles",
+        "subtitle": "Découvrez nos analyses, conseils et actualités sur l'IA dans l'éducation",
+        "readArticle": "Lire l'article",
+        "viewAll": "Voir tous les articles"
+      }
     }
   }
 }

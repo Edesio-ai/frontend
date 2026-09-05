@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { FeatureFlagBootstrapScript } from "@/components/feature-flags/feature-flag-bootstrap-script";
 import { getLocaleFromCookies, getDictionary } from "@/lib/i18n";
 import { getSiteUrl, OG_IMAGE_PATH } from "@/lib/metadata/site-url";
-import { isFeatureFlagsPanelEnabled } from "@/lib/feature-flags/env";
 import { isFeatureFlagOnByDefault } from "@/lib/feature-flags/flags";
-import { getEnabledHtmlAttributeProps, getFeatureFlagDomBootstrapScript } from "@/lib/feature-flags/html";
+import { getEnabledHtmlAttributeProps } from "@/lib/feature-flags/html";
 import "./globals.css";
 
 const inter = Inter({
@@ -60,14 +60,11 @@ export default async function RootLayout({
   const locale = await getLocaleFromCookies();
   const dictionary = await getDictionary(locale);
   const featureFlagHtmlProps = getEnabledHtmlAttributeProps(isFeatureFlagOnByDefault);
-  const featureFlagBootstrapScript = isFeatureFlagsPanelEnabled() ? getFeatureFlagDomBootstrapScript() : "";
 
   return (
     <html lang={locale} className={`${inter.variable} h-full antialiased`} {...featureFlagHtmlProps}>
       <body className="min-h-full flex flex-col">
-        {featureFlagBootstrapScript ? (
-          <script dangerouslySetInnerHTML={{ __html: featureFlagBootstrapScript }} />
-        ) : null}
+        <FeatureFlagBootstrapScript />
         <Providers locale={locale} dictionary={dictionary}>
           {children}
         </Providers>
