@@ -1000,7 +1000,8 @@
         "subtitle": "Teachers upload their lessons, Edesio generates questions, chats with students and provides you with clear feedback on their progress.",
         "ctaPrimary": "Create a free account",
         "ctaSecondary": "Log in",
-        "trustItems": ["Powered by Mistral AI", "GDPR compliant"]
+        "trustItems": ["Powered by Mistral AI", "GDPR compliant"],
+        "speechBubble": "Hi, I'm Edesio"
       }
     },
     "functioning": {

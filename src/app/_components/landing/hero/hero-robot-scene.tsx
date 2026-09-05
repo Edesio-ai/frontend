@@ -4,7 +4,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { CanvasTexture, SRGBColorSpace } from "three";
 import { HERO_ROBOT_COLOR_DEFAULTS, readHeroRobotColors, type HeroRobotColors } from "@/lib/theme/hero-theme";
-import type { Group, Mesh, MeshStandardMaterial, Points } from "three";
+import type { HeroRobotLayout } from "./hero-robot-layout";
+import type { RefObject } from "react";
+import type { Group, Mesh, MeshStandardMaterial, PerspectiveCamera, Points } from "three";
 
 const PARTICLE_COUNT = 40;
 
@@ -30,13 +32,6 @@ function useHeroRobotColors() {
   }, []);
 
   return colors;
-}
-
-function useRobotOffsetX() {
-  const width = useThree((state) => state.size.width);
-  if (width < 768) return 0;
-  if (width < 1024) return 1.7;
-  return 3.1;
 }
 
 function useBodyTexture(colors: HeroRobotColors) {
@@ -107,11 +102,16 @@ function useFaceTexture(colors: HeroRobotColors) {
   }, [colors.face, colors.faceStroke]);
 }
 
-function usePointerTilt() {
+function usePointerTilt(enabled: boolean) {
   const domElement = useThree((state) => state.gl.domElement);
   const tilt = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
+    if (!enabled) {
+      tilt.current = { x: 0, y: 0 };
+      return;
+    }
+
     const handlePointerMove = (event: PointerEvent) => {
       const rect = domElement.getBoundingClientRect();
       const inside =
@@ -127,27 +127,50 @@ function usePointerTilt() {
 
     window.addEventListener("pointermove", handlePointerMove);
     return () => window.removeEventListener("pointermove", handlePointerMove);
-  }, [domElement]);
+  }, [domElement, enabled]);
 
   return tilt;
 }
 
-function Robot({ colors }: { colors: HeroRobotColors }) {
+function Robot({
+  colors,
+  layout,
+  headRotationY,
+  enablePointerTilt,
+  floatOffsetRef,
+}: {
+  colors: HeroRobotColors;
+  layout: HeroRobotLayout;
+  headRotationY: number;
+  enablePointerTilt: boolean;
+  floatOffsetRef?: RefObject<number>;
+}) {
   const botRef = useRef<Group>(null);
   const antennaTipRef = useRef<Mesh>(null);
   const bodyTexture = useBodyTexture(colors);
   const faceTexture = useFaceTexture(colors);
-  const tilt = usePointerTilt();
-  const offsetX = useRobotOffsetX();
+  const tilt = usePointerTilt(enablePointerTilt);
+  const { offsetX, offsetY, scale } = layout;
 
   useFrame((state) => {
     const bot = botRef.current;
     if (!bot) return;
 
     const clock = state.clock.elapsedTime;
-    bot.rotation.y += (tilt.current.y - bot.rotation.y) * 0.06;
-    bot.rotation.x += (tilt.current.x - bot.rotation.x) * 0.06;
-    bot.position.y = Math.sin(clock * 1.1) * 0.12;
+    const targetRotationY = enablePointerTilt ? tilt.current.y : headRotationY;
+    const targetRotationX = enablePointerTilt ? tilt.current.x : 0;
+    const float = Math.sin(clock * 1.1) * 0.12;
+
+    bot.rotation.y += (targetRotationY - bot.rotation.y) * 0.1;
+    bot.rotation.x += (targetRotationX - bot.rotation.x) * 0.06;
+    bot.position.x = offsetX;
+    bot.position.y = float + offsetY;
+
+    if (floatOffsetRef) {
+      const camera = state.camera as PerspectiveCamera;
+      const visibleHeight = 2 * camera.position.z * Math.tan((camera.fov * Math.PI) / 360);
+      floatOffsetRef.current = (float / visibleHeight) * state.size.height;
+    }
 
     const tipMaterial = antennaTipRef.current?.material as MeshStandardMaterial | undefined;
     if (tipMaterial) {
@@ -156,7 +179,7 @@ function Robot({ colors }: { colors: HeroRobotColors }) {
   });
 
   return (
-    <group ref={botRef} position={[offsetX, 0, 0]}>
+    <group ref={botRef} scale={scale}>
       <mesh scale={[0.95, 0.7, 0.65]}>
         <sphereGeometry args={[1.5, 48, 48]} />
         <meshStandardMaterial map={bodyTexture} roughness={0.45} metalness={0.05} />
@@ -207,7 +230,17 @@ function Particles({ color }: { color: string }) {
   );
 }
 
-function HeroRobotSceneContent() {
+function HeroRobotSceneContent({
+  layout,
+  headRotationY,
+  enablePointerTilt,
+  floatOffsetRef,
+}: {
+  layout: HeroRobotLayout;
+  headRotationY: number;
+  enablePointerTilt: boolean;
+  floatOffsetRef?: RefObject<number>;
+}) {
   const colors = useHeroRobotColors();
 
   return (
@@ -217,22 +250,43 @@ function HeroRobotSceneContent() {
       <pointLight position={[-3, 1, 3]} args={[colors.lightRim, 1.8, 14]} />
 
       <Particles color={colors.particle} />
-      <Robot colors={colors} />
+      <Robot
+        colors={colors}
+        layout={layout}
+        headRotationY={headRotationY}
+        enablePointerTilt={enablePointerTilt}
+        floatOffsetRef={floatOffsetRef}
+      />
     </>
   );
 }
 
-export function LandingHeroRobotScene() {
+export function LandingHeroRobotScene({
+  layout,
+  headRotationY = 0,
+  enablePointerTilt = true,
+  floatOffsetRef,
+}: {
+  layout: HeroRobotLayout;
+  headRotationY?: number;
+  enablePointerTilt?: boolean;
+  floatOffsetRef?: RefObject<number>;
+}) {
   return (
     <Canvas
       className="size-full"
-      camera={{ fov: 32, position: [0, 0, 11.5], near: 0.1, far: 100 }}
+      camera={{ fov: 32, position: [0, 0, layout.cameraZ], near: 0.1, far: 100 }}
       dpr={[1, 2]}
       gl={{ alpha: true, antialias: true, preserveDrawingBuffer: true }}
       flat
       aria-hidden="true"
     >
-      <HeroRobotSceneContent />
+      <HeroRobotSceneContent
+        layout={layout}
+        headRotationY={headRotationY}
+        enablePointerTilt={enablePointerTilt}
+        floatOffsetRef={floatOffsetRef}
+      />
     </Canvas>
   );
 }
