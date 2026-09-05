@@ -1496,24 +1496,43 @@
       }
     },
     "footer": {
-      "tagline": "La solution IA qui transforme vos cours en expériences d'apprentissage interactives pour vos élèves. Conçue pour les collèges, lycées et écoles supérieures.",
-      "gdpr": "RGPD conforme",
-      "hostedInEurope": "Hébergé en Europe",
-      "navigation": "Navigation",
-      "mobileApp": "Application mobile",
-      "mobileAppDesc": "Installez Edesio sur votre téléphone pour un accès rapide.",
-      "howToInstall": "Comment installer",
-      "contact": "Contact",
-      "allRightsReserved": "Tous droits réservés",
-      "legalNotice": "Mentions légales",
-      "terms": "CGU",
-      "privacyPolicy": "Politique de confidentialité",
-      "links": {
-        "fonctionnement": "Fonctionnement",
-        "benefices": "Bénéfices",
-        "tarifs": "Tarifs",
-        "faq": "FAQ",
-        "blog": "Blog"
+      "legacy": {
+        "tagline": "La solution IA qui transforme vos cours en expériences d'apprentissage interactives pour vos élèves. Conçue pour les collèges, lycées et écoles supérieures.",
+        "gdpr": "RGPD conforme",
+        "hostedInEurope": "Hébergé en Europe",
+        "navigation": "Navigation",
+        "mobileApp": "Application mobile",
+        "mobileAppDesc": "Installez Edesio sur votre téléphone pour un accès rapide.",
+        "howToInstall": "Comment installer",
+        "contact": "Contact",
+        "allRightsReserved": "Tous droits réservés",
+        "legalNotice": "Mentions légales",
+        "terms": "CGU",
+        "privacyPolicy": "Politique de confidentialité",
+        "links": {
+          "fonctionnement": "Fonctionnement",
+          "benefices": "Bénéfices",
+          "tarifs": "Tarifs",
+          "faq": "FAQ",
+          "blog": "Blog"
+        }
+      },
+      "new": {
+        "tagline": "La solution IA qui transforme vos cours en expériences d'apprentissage interactives, pour les collèges, lycées et l'enseignement supérieur.",
+        "badges": ["Conforme RGPD", "Hébergé en Europe"],
+        "navigation": "Navigation",
+        "contact": "Contact",
+        "allRightsReserved": "Tous droits réservés",
+        "legalNotice": "Mentions légales",
+        "terms": "CGU",
+        "privacyPolicy": "Politique de confidentialité",
+        "links": {
+          "fonctionnement": "Comment ça marche",
+          "pourQui": "Pour qui",
+          "benefices": "Bénéfices",
+          "tarifs": "Tarifs",
+          "faq": "FAQ"
+        }
       }
     },
     "demoForm": {
@@ -1559,6 +1578,14 @@
         "subtitle": "Découvrez nos analyses, conseils et actualités sur l'IA dans l'éducation",
         "readArticle": "Lire l'article",
         "viewAll": "Voir tous les articles"
+      }
+    },
+    "finalCta": {
+      "new": {
+        "title": "Planifiez une démo ou créez un compte gratuit",
+        "subtitle": "Sans engagement. Application mobile incluse.",
+        "ctaPrimary": "Créer un compte gratuit",
+        "ctaSecondary": "Réserver une démo"
       }
     }
   }

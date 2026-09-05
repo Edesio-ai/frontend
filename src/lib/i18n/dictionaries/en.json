@@ -1496,24 +1496,43 @@
       }
     },
     "footer": {
-      "tagline": "The AI solution that transforms your lessons into interactive learning experiences for your students. Designed for middle schools, high schools and higher education.",
-      "gdpr": "GDPR compliant",
-      "hostedInEurope": "Hosted in Europe",
-      "navigation": "Navigation",
-      "mobileApp": "Mobile app",
-      "mobileAppDesc": "Install Edesio on your phone for quick access.",
-      "howToInstall": "How to install",
-      "contact": "Contact",
-      "allRightsReserved": "All rights reserved",
-      "legalNotice": "Legal notice",
-      "terms": "Terms of Service",
-      "privacyPolicy": "Privacy Policy",
-      "links": {
-        "fonctionnement": "How it works",
-        "benefices": "Benefits",
-        "tarifs": "Pricing",
-        "faq": "FAQ",
-        "blog": "Blog"
+      "legacy": {
+        "tagline": "The AI solution that transforms your lessons into interactive learning experiences for your students. Designed for middle schools, high schools and higher education.",
+        "gdpr": "GDPR compliant",
+        "hostedInEurope": "Hosted in Europe",
+        "navigation": "Navigation",
+        "mobileApp": "Mobile app",
+        "mobileAppDesc": "Install Edesio on your phone for quick access.",
+        "howToInstall": "How to install",
+        "contact": "Contact",
+        "allRightsReserved": "All rights reserved",
+        "legalNotice": "Legal notice",
+        "terms": "Terms of Service",
+        "privacyPolicy": "Privacy Policy",
+        "links": {
+          "fonctionnement": "How it works",
+          "benefices": "Benefits",
+          "tarifs": "Pricing",
+          "faq": "FAQ",
+          "blog": "Blog"
+        }
+      },
+      "new": {
+        "tagline": "The AI solution that transforms your lessons into interactive learning experiences for your students. Designed for middle schools, high schools and higher education.",
+        "badges": ["GDPR compliant", "Hosted in Europe"],
+        "navigation": "Navigation",
+        "contact": "Contact",
+        "allRightsReserved": "All rights reserved",
+        "legalNotice": "Legal notice",
+        "terms": "Terms of Service",
+        "privacyPolicy": "Privacy Policy",
+        "links": {
+          "fonctionnement": "How it works",
+          "pourQui": "For who?",
+          "benefices": "Advantages",
+          "tarifs": "Pricing",
+          "faq": "FAQ"
+        }
       }
     },
     "demoForm": {
@@ -1559,6 +1578,14 @@
         "subtitle": "Discover our analyses, tips and news on AI in education",
         "readArticle": "Read article",
         "viewAll": "View all articles"
+      }
+    },
+    "finalCta": {
+      "new": {
+        "title": "Schedule a demo or create a free account",
+        "subtitle": "No commitment. Mobile app included.",
+        "ctaPrimary": "Create a free account",
+        "ctaSecondary": "Book a demo"
       }
     }
   }

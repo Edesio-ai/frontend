@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { useTranslations } from "@/lib/i18n/client";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
+import { LANDING_DEMO_BOOKING_URL } from "../landing-links";
 
 const navLinkClassName =
   "whitespace-nowrap text-[14px] font-medium leading-none tracking-normal text-landing-nav-link no-underline transition-colors hover:text-foreground";
@@ -110,7 +111,7 @@ export function LandingNavbarNew() {
               </Button>
               <Button variant="outline" className="w-full rounded-control" asChild>
                 <a
-                  href="https://cal.com/alexandre-seuzaret-g9g9me/30min"
+                  href={LANDING_DEMO_BOOKING_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={closeMobileMenu}
