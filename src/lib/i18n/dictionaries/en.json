@@ -1171,37 +1171,75 @@
       }
     },
     "benefits": {
-      "badge": "Advantages",
-      "title": "Why choose",
-      "titleHighlight": "Edesio",
-      "titleSuffix": "?",
-      "subtitle": "Concrete benefits for teachers, students and your institution.",
-      "items": [
-        {
-          "title": "Automated exercise creation",
-          "description": "Transform your lessons into interactive exercises in a few clicks, with no extra effort."
-        },
-        {
-          "title": "Detailed progress tracking",
-          "description": "Visualize individual and collective performance through intuitive dashboards."
-        },
-        {
-          "title": "Engaging conversational format",
-          "description": "Students learn through conversation, a natural format that encourages engagement."
-        },
-        {
-          "title": "100% secure and GDPR compliant",
-          "description": "Your data is protected and GDPR compliant, with European hosting."
-        },
-        {
-          "title": "Significant time savings",
-          "description": "Free up precious time by automating the creation and grading of exercises."
-        },
-        {
-          "title": "Personalized learning",
-          "description": "AI adapts to each student's level for tailored support."
-        }
-      ]
+      "legacy": {
+        "badge": "Advantages",
+        "title": "Why choose",
+        "titleHighlight": "Edesio",
+        "titleSuffix": "?",
+        "subtitle": "Concrete benefits for teachers, students and your institution.",
+        "items": [
+          {
+            "title": "Automated exercise creation",
+            "description": "Transform your lessons into interactive exercises in a few clicks, with no extra effort."
+          },
+          {
+            "title": "Detailed progress tracking",
+            "description": "Visualize individual and collective performance through intuitive dashboards."
+          },
+          {
+            "title": "Engaging conversational format",
+            "description": "Students learn through conversation, a natural format that encourages engagement."
+          },
+          {
+            "title": "100% secure and GDPR compliant",
+            "description": "Your data is protected and GDPR compliant, with European hosting."
+          },
+          {
+            "title": "Significant time savings",
+            "description": "Free up precious time by automating the creation and grading of exercises."
+          },
+          {
+            "title": "Personalized learning",
+            "description": "AI adapts to each student's level for tailored support."
+          }
+        ]
+      },
+      "new": {
+        "eyebrow": "Advantages",
+        "title": "Why choose Edesio?",
+        "items": [
+          {
+            "icon": "zap",
+            "title": "Automated exercise creation",
+            "description": "Transform your lessons into interactive exercises in a few clicks, with no extra effort."
+          },
+          {
+            "icon": "bar-chart-3",
+            "title": "Detailed progress tracking",
+            "description": "Visualize individual and collective performance through intuitive dashboards."
+          },
+          {
+            "icon": "message-circle",
+            "title": "Engaging conversational format",
+            "description": "Students learn through conversation, a natural format that encourages engagement."
+          },
+          {
+            "icon": "shield-check",
+            "title": "100% secure and GDPR compliant",
+            "description": "Your data is protected and GDPR compliant, with European hosting."
+          },
+          {
+            "icon": "clock",
+            "title": "Significant time savings",
+            "description": "Free up precious time by automating the creation and grading of exercises."
+          },
+          {
+            "icon": "sparkles",
+            "title": "Personalized learning",
+            "description": "AI adapts to each student's level for tailored support."
+          }
+        ]
+      }
     },
     "pricing": {
       "badge": "Simple pricing",

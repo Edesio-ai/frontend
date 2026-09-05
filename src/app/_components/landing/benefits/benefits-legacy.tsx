@@ -1,6 +1,7 @@
+"use client";
 import { Card } from "@/components/ui/card";
 import { Zap, BarChart3, MessageCircle, Shield, Clock, Target } from "lucide-react";
-import { getLocaleFromCookies, getDictionary } from "@/lib/i18n";
+import { useTranslations } from "@/lib/i18n/client";
 
 const benefitIcons = [Zap, BarChart3, MessageCircle, Shield, Clock, Target];
 const benefitStyles = [
@@ -12,10 +13,8 @@ const benefitStyles = [
   { gradient: "from-cyan-500 to-teal-500", bgLight: "bg-cyan-50 dark:bg-cyan-950/20" },
 ];
 
-export async function Benefits() {
-  const locale = await getLocaleFromCookies();
-  const dict = await getDictionary(locale);
-  const t = dict.landing.benefits;
+export function BenefitsLegacy() {
+  const t = useTranslations().landing.benefits.legacy;
 
   return (
     <section

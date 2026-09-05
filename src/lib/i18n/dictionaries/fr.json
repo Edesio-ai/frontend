@@ -1171,37 +1171,75 @@
       }
     },
     "benefits": {
-      "badge": "Avantages",
-      "title": "Pourquoi choisir",
-      "titleHighlight": "Edesio",
-      "titleSuffix": "?",
-      "subtitle": "Des avantages concrets pour les enseignants, les élèves et votre établissement.",
-      "items": [
-        {
-          "title": "Création d'exercices automatisée",
-          "description": "Transformez vos cours en exercices interactifs en quelques clics, sans effort supplémentaire."
-        },
-        {
-          "title": "Suivi des progrès détaillé",
-          "description": "Visualisez les performances individuelles et collectives grâce à des tableaux de bord intuitifs."
-        },
-        {
-          "title": "Format conversationnel engageant",
-          "description": "Les élèves apprennent en discutant, un format naturel qui favorise l'engagement."
-        },
-        {
-          "title": "100% sécurisé et RGPD",
-          "description": "Vos données sont protégées et conformes au RGPD, avec un hébergement européen."
-        },
-        {
-          "title": "Gain de temps considérable",
-          "description": "Libérez du temps précieux en automatisant la création et la correction d'exercices."
-        },
-        {
-          "title": "Apprentissage personnalisé",
-          "description": "L'IA s'adapte au niveau de chaque élève pour un accompagnement sur mesure."
-        }
-      ]
+      "legacy": {
+        "badge": "Avantages",
+        "title": "Pourquoi choisir",
+        "titleHighlight": "Edesio",
+        "titleSuffix": "?",
+        "subtitle": "Des avantages concrets pour les enseignants, les élèves et votre établissement.",
+        "items": [
+          {
+            "title": "Création d'exercices automatisée",
+            "description": "Transformez vos cours en exercices interactifs en quelques clics, sans effort supplémentaire."
+          },
+          {
+            "title": "Suivi des progrès détaillé",
+            "description": "Visualisez les performances individuelles et collectives grâce à des tableaux de bord intuitifs."
+          },
+          {
+            "title": "Format conversationnel engageant",
+            "description": "Les élèves apprennent en discutant, un format naturel qui favorise l'engagement."
+          },
+          {
+            "title": "100% sécurisé et RGPD",
+            "description": "Vos données sont protégées et conformes au RGPD, avec un hébergement européen."
+          },
+          {
+            "title": "Gain de temps considérable",
+            "description": "Libérez du temps précieux en automatisant la création et la correction d'exercices."
+          },
+          {
+            "title": "Apprentissage personnalisé",
+            "description": "L'IA s'adapte au niveau de chaque élève pour un accompagnement sur mesure."
+          }
+        ]
+      },
+      "new": {
+        "eyebrow": "Bénéfices",
+        "title": "Pourquoi choisir Edesio ?",
+        "items": [
+          {
+            "icon": "zap",
+            "title": "Création d'exercices automatisée",
+            "description": "Transformez vos cours en exercices interactifs en quelques clics, sans effort supplémentaire."
+          },
+          {
+            "icon": "bar-chart-3",
+            "title": "Suivi détaillé de la progression",
+            "description": "Visualisez les performances individuelles et collectives via des tableaux de bord intuitifs."
+          },
+          {
+            "icon": "message-circle",
+            "title": "Format conversationnel engageant",
+            "description": "Les élèves apprennent par la conversation, un format naturel qui favorise l'engagement."
+          },
+          {
+            "icon": "shield-check",
+            "title": "100% sécurisé et conforme RGPD",
+            "description": "Vos données sont protégées et conformes au RGPD, avec un hébergement européen."
+          },
+          {
+            "icon": "clock",
+            "title": "Un gain de temps important",
+            "description": "Libérez du temps précieux en automatisant la création et la correction d'exercices."
+          },
+          {
+            "icon": "sparkles",
+            "title": "Apprentissage personnalisé",
+            "description": "L'IA s'adapte au niveau de chaque élève pour un accompagnement sur mesure."
+          }
+        ]
+      }
     },
     "pricing": {
       "badge": "Tarification simple",
