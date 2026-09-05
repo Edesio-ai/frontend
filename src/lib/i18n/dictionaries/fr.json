@@ -1241,6 +1241,27 @@
         ]
       }
     },
+    "stats": {
+      "new": {
+        "items": [
+          {
+            "icon": "shield-check",
+            "value": "RGPD",
+            "label": "conforme"
+          },
+          {
+            "icon": "map-pin",
+            "value": "Europe",
+            "label": "hébergement des données"
+          },
+          {
+            "icon": "cpu",
+            "value": "Mistral AI",
+            "label": "IA française"
+          }
+        ]
+      }
+    },
     "pricing": {
       "badge": "Tarification simple",
       "title": "Un prix clair,",

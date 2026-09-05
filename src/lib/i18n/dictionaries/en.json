@@ -1241,6 +1241,27 @@
         ]
       }
     },
+    "stats": {
+      "new": {
+        "items": [
+          {
+            "icon": "shield-check",
+            "value": "GDPR",
+            "label": "compliant"
+          },
+          {
+            "icon": "map-pin",
+            "value": "Europe",
+            "label": "data hosting"
+          },
+          {
+            "icon": "cpu",
+            "value": "Mistral AI",
+            "label": "French AI"
+          }
+        ]
+      }
+    },
     "pricing": {
       "badge": "Simple pricing",
       "title": "Clear pricing,",

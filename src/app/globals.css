@@ -98,6 +98,9 @@
   --landing-nav-divider: 240 6% 94%; /* #F0F0F2 */
   --landing-subtle: 240 4% 65%; /* #A1A1AA */
   --landing-faint: 240 5% 84%; /* #D4D4D8 */
+  --landing-stats-from: 243 75% 52%; /* #4338CA */
+  --landing-stats-via: 239 84% 67%; /* #6366F1 */
+  --landing-stats-to: 234 90% 74%; /* #818CF8 */
   --tertiary-foreground: 0 0% 45%;
 
   /* Fallback for older browsers */
@@ -237,6 +240,15 @@ html[data-homepage-new-design] {
 @layer utilities {
   .bg-hero-gradient {
     background: linear-gradient(160deg, hsl(var(--hero-from)) 0%, hsl(var(--hero-via)) 50%, hsl(var(--hero-to)) 100%);
+  }
+
+  .bg-landing-stats-gradient {
+    background: linear-gradient(
+      120deg,
+      hsl(var(--landing-stats-from)) 0%,
+      hsl(var(--landing-stats-via)) 55%,
+      hsl(var(--landing-stats-to)) 100%
+    );
   }
 }
 
