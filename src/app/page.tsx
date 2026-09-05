@@ -3,7 +3,7 @@ import { Hero } from "@/app/_components/landing/hero/Hero";
 import { Footer } from "@/components/landing/Footer";
 import { ForWho } from "@/app/_components/landing/for-who/for-who";
 import { Benefits } from "@/app/_components/landing/benefits/benefits";
-import { Pricing } from "@/components/landing/Pricing";
+import { Pricing } from "@/app/_components/landing/pricing/pricing";
 import { FAQ } from "@/components/landing/FAQ";
 import { BlogPreview } from "@/components/landing/BlogPreview";
 import { DemoForm } from "@/components/landing/DemoForm";

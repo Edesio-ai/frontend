@@ -1263,83 +1263,170 @@
       }
     },
     "pricing": {
-      "badge": "Simple pricing",
-      "title": "Clear pricing,",
-      "titleHighlight": "no surprises",
-      "subtitle": "Choose the plan suited to your institution. All plans include integrated AI and updates.",
-      "monthly": "Monthly",
-      "annual": "Annual",
-      "popular": "Popular",
-      "perMonth": "/mo",
-      "perYear": "/yr",
-      "totalPerYear": "i.e. {price}/year",
-      "onQuote": "Custom quote",
-      "classInfo": "1 class = 1 complete educational module with AI",
-      "classTooltipTitle": "What is a class?",
-      "classTooltipDesc": "A class is a complete educational module: multiple courses allowed, full integrated test, and unlimited number of students.",
-      "noCommitment": "No commitment",
-      "mobileIncluded": "Mobile app included",
-      "statsIncluded": "Statistics included",
-      "reactiveSupport": "Reactive support",
-      "plans": [
-        {
-          "name": "Edesio Solo",
-          "description": "For individual learners and self-taught students.",
-          "target": "Students, exam candidates, self-learners",
-          "cta": "Get started",
-          "features": [
-            "1 class included",
-            "Up to 50 lessons",
-            "AI question generation",
-            "Personal AI chatbot",
-            "Progress tracking",
-            "Mobile app"
-          ]
-        },
-        {
-          "name": "Edesio Teacher",
-          "description": "For a teacher with several classes.",
-          "target": "Teachers, trainers, small centers",
-          "cta": "Get started",
-          "features": [
-            "10 classes included",
-            "Up to 50 lessons per class",
-            "Unlimited students",
-            "Detailed statistics",
-            "Mobile app"
-          ]
-        },
-        {
-          "name": "Edesio Institution",
-          "description": "Cover your entire institution.",
-          "target": "Private high schools, higher education, vocational training",
-          "cta": "Get started",
-          "features": [
-            "150 classes included",
-            "Up to 50 lessons per class",
-            "Unlimited teachers",
-            "Unlimited students",
-            "Priority support",
-            "Institution statistics",
-            "Mobile app"
-          ]
-        },
-        {
-          "name": "Custom Plan",
-          "description": "Personalized solution for large organizations.",
-          "target": "Universities, grandes écoles, national organizations",
-          "cta": "Request a quote",
-          "features": [
-            "Classes as needed",
-            "Up to 50 lessons per class",
-            "Unlimited teachers",
-            "Unlimited students",
-            "Dedicated account manager",
-            "LMS/SIS integration available",
-            "Guaranteed SLA"
-          ]
-        }
-      ]
+      "legacy": {
+        "badge": "Simple pricing",
+        "title": "Clear pricing,",
+        "titleHighlight": "no surprises",
+        "subtitle": "Choose the plan suited to your institution. All plans include integrated AI and updates.",
+        "monthly": "Monthly",
+        "annual": "Annual",
+        "popular": "Popular",
+        "perMonth": "/mo",
+        "perYear": "/yr",
+        "totalPerYear": "i.e. {price}/year",
+        "onQuote": "Custom quote",
+        "classInfo": "1 class = 1 complete educational module with AI",
+        "classTooltipTitle": "What is a class?",
+        "classTooltipDesc": "A class is a complete educational module: multiple courses allowed, full integrated test, and unlimited number of students.",
+        "noCommitment": "No commitment",
+        "mobileIncluded": "Mobile app included",
+        "statsIncluded": "Statistics included",
+        "reactiveSupport": "Reactive support",
+        "plans": [
+          {
+            "name": "Edesio Solo",
+            "description": "For individual learners and self-taught students.",
+            "target": "Students, exam candidates, self-learners",
+            "cta": "Get started",
+            "features": [
+              "1 class included",
+              "Up to 50 lessons",
+              "AI question generation",
+              "Personal AI chatbot",
+              "Progress tracking",
+              "Mobile app"
+            ]
+          },
+          {
+            "name": "Edesio Teacher",
+            "description": "For a teacher with several classes.",
+            "target": "Teachers, trainers, small centers",
+            "cta": "Get started",
+            "features": [
+              "10 classes included",
+              "Up to 50 lessons per class",
+              "Unlimited students",
+              "Detailed statistics",
+              "Mobile app"
+            ]
+          },
+          {
+            "name": "Edesio Institution",
+            "description": "Cover your entire institution.",
+            "target": "Private high schools, higher education, vocational training",
+            "cta": "Get started",
+            "features": [
+              "150 classes included",
+              "Up to 50 lessons per class",
+              "Unlimited teachers",
+              "Unlimited students",
+              "Priority support",
+              "Institution statistics",
+              "Mobile app"
+            ]
+          },
+          {
+            "name": "Custom Plan",
+            "description": "Personalized solution for large organizations.",
+            "target": "Universities, grandes écoles, national organizations",
+            "cta": "Request a quote",
+            "features": [
+              "Classes as needed",
+              "Up to 50 lessons per class",
+              "Unlimited teachers",
+              "Unlimited students",
+              "Dedicated account manager",
+              "LMS/SIS integration available",
+              "Guaranteed SLA"
+            ]
+          }
+        ],
+        "quoteMailSubject": "Edesio quote request"
+      },
+      "new": {
+        "eyebrow": "Simple pricing",
+        "title": "Clear pricing, no surprises",
+        "subtitle": "Choose the plan suited to your institution. All plans include integrated AI and updates.",
+        "subtitleSecondary": "1 class = 1 complete educational module with AI.",
+        "monthly": "Monthly",
+        "annual": "Annual",
+        "discount": "-15%",
+        "popular": "Popular",
+        "perMonth": "/mo",
+        "perYear": "/yr",
+        "annualNoteBefore": "i.e. ",
+        "annualNoteMiddle": ", instead of ",
+        "customQuote": "Custom quote",
+        "quoteMailSubject": "Edesio quote request",
+        "notes": ["No commitment", "Statistics included", "Reactive support"],
+        "plans": [
+          {
+            "id": "solo",
+            "name": "Edesio Solo",
+            "description": "For individual learners and self-taught students.",
+            "monthlyPrice": 4.9,
+            "cta": "Get started",
+            "popular": false,
+            "features": [
+              "1 class included",
+              "Up to 50 lessons",
+              "AI question generation",
+              "Personal AI chatbot",
+              "Progress tracking",
+              "Mobile app"
+            ]
+          },
+          {
+            "id": "teacher",
+            "name": "Edesio Teacher",
+            "description": "For a teacher with several classes.",
+            "monthlyPrice": 24.9,
+            "cta": "Get started",
+            "popular": false,
+            "features": [
+              "10 classes included",
+              "Up to 50 lessons per class",
+              "Unlimited students",
+              "Detailed statistics",
+              "Mobile app"
+            ]
+          },
+          {
+            "id": "establishment",
+            "name": "Edesio Institution",
+            "description": "Cover your entire institution.",
+            "monthlyPrice": 299.9,
+            "cta": "Get started",
+            "popular": true,
+            "features": [
+              "150 classes included",
+              "Up to 50 lessons per class",
+              "Unlimited teachers",
+              "Unlimited students",
+              "Priority support",
+              "Institution statistics",
+              "Mobile app"
+            ]
+          },
+          {
+            "id": "custom",
+            "name": "Custom",
+            "description": "Personalized solution for large organizations.",
+            "monthlyPrice": null,
+            "cta": "Request a quote",
+            "popular": false,
+            "features": [
+              "Classes as needed",
+              "Up to 50 lessons per class",
+              "Unlimited teachers",
+              "Unlimited students",
+              "Dedicated account manager",
+              "LMS/SIS integration available",
+              "Guaranteed SLA"
+            ]
+          }
+        ]
+      }
     },
     "faq": {
       "title": "Frequently asked",

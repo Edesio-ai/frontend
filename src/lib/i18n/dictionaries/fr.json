@@ -1263,83 +1263,170 @@
       }
     },
     "pricing": {
-      "badge": "Tarification simple",
-      "title": "Un prix clair,",
-      "titleHighlight": "sans surprise",
-      "subtitle": "Choisissez le pack adapté à votre structure. Tous les packs incluent l'IA intégrée et les mises à jour.",
-      "monthly": "Mensuel",
-      "annual": "Annuel",
-      "popular": "Populaire",
-      "perMonth": "/mois",
-      "perYear": "/an",
-      "totalPerYear": "soit {price}/an",
-      "onQuote": "Sur devis",
-      "classInfo": "1 classe = 1 module pédagogique complet avec IA",
-      "classTooltipTitle": "Qu'est-ce qu'une classe ?",
-      "classTooltipDesc": "Une classe correspond à un module pédagogique complet : multi-cours autorisés, test complet intégré, et nombre d'élèves illimité.",
-      "noCommitment": "Sans engagement",
-      "mobileIncluded": "App mobile incluse",
-      "statsIncluded": "Statistiques incluses",
-      "reactiveSupport": "Support réactif",
-      "plans": [
-        {
-          "name": "Edesio Solo",
-          "description": "Pour les apprenants individuels et autodidactes.",
-          "target": "Étudiants, candidats concours, autodidactes",
-          "cta": "Commencer",
-          "features": [
-            "1 classe incluse",
-            "Jusqu'à 50 cours",
-            "Génération de questions IA",
-            "Chatbot IA personnel",
-            "Suivi de progression",
-            "Application mobile"
-          ]
-        },
-        {
-          "name": "Edesio Professeur",
-          "description": "Pour un professeur avec plusieurs classes.",
-          "target": "Professeurs, formateurs, petits centres",
-          "cta": "Commencer",
-          "features": [
-            "10 classes incluses",
-            "Jusqu'à 50 cours par classe",
-            "Élèves illimités",
-            "Statistiques détaillées",
-            "Application mobile"
-          ]
-        },
-        {
-          "name": "Edesio Établissement",
-          "description": "Couvrez l'ensemble de votre établissement.",
-          "target": "Lycées privés, écoles supérieures, CFA",
-          "cta": "Commencer",
-          "features": [
-            "150 classes incluses",
-            "Jusqu'à 50 cours par classe",
-            "Professeurs illimités",
-            "Élèves illimités",
-            "Support prioritaire",
-            "Statistiques établissement",
-            "Application mobile"
-          ]
-        },
-        {
-          "name": "Pack Sur Mesure",
-          "description": "Solution personnalisée pour les grandes structures.",
-          "target": "Universités, grandes écoles, organismes nationaux",
-          "cta": "Demander un devis",
-          "features": [
-            "Classes selon vos besoins",
-            "Jusqu'à 50 cours par classe",
-            "Professeurs illimités",
-            "Élèves illimités",
-            "Account manager dédié",
-            "Intégration ENT possible",
-            "SLA garanti"
-          ]
-        }
-      ]
+      "legacy": {
+        "badge": "Tarification simple",
+        "title": "Un prix clair,",
+        "titleHighlight": "sans surprise",
+        "subtitle": "Choisissez le pack adapté à votre structure. Tous les packs incluent l'IA intégrée et les mises à jour.",
+        "monthly": "Mensuel",
+        "annual": "Annuel",
+        "popular": "Populaire",
+        "perMonth": "/mois",
+        "perYear": "/an",
+        "totalPerYear": "soit {price}/an",
+        "onQuote": "Sur devis",
+        "classInfo": "1 classe = 1 module pédagogique complet avec IA",
+        "classTooltipTitle": "Qu'est-ce qu'une classe ?",
+        "classTooltipDesc": "Une classe correspond à un module pédagogique complet : multi-cours autorisés, test complet intégré, et nombre d'élèves illimité.",
+        "noCommitment": "Sans engagement",
+        "mobileIncluded": "App mobile incluse",
+        "statsIncluded": "Statistiques incluses",
+        "reactiveSupport": "Support réactif",
+        "plans": [
+          {
+            "name": "Edesio Solo",
+            "description": "Pour les apprenants individuels et autodidactes.",
+            "target": "Étudiants, candidats concours, autodidactes",
+            "cta": "Commencer",
+            "features": [
+              "1 classe incluse",
+              "Jusqu'à 50 cours",
+              "Génération de questions IA",
+              "Chatbot IA personnel",
+              "Suivi de progression",
+              "Application mobile"
+            ]
+          },
+          {
+            "name": "Edesio Professeur",
+            "description": "Pour un professeur avec plusieurs classes.",
+            "target": "Professeurs, formateurs, petits centres",
+            "cta": "Commencer",
+            "features": [
+              "10 classes incluses",
+              "Jusqu'à 50 cours par classe",
+              "Élèves illimités",
+              "Statistiques détaillées",
+              "Application mobile"
+            ]
+          },
+          {
+            "name": "Edesio Établissement",
+            "description": "Couvrez l'ensemble de votre établissement.",
+            "target": "Lycées privés, écoles supérieures, CFA",
+            "cta": "Commencer",
+            "features": [
+              "150 classes incluses",
+              "Jusqu'à 50 cours par classe",
+              "Professeurs illimités",
+              "Élèves illimités",
+              "Support prioritaire",
+              "Statistiques établissement",
+              "Application mobile"
+            ]
+          },
+          {
+            "name": "Pack Sur Mesure",
+            "description": "Solution personnalisée pour les grandes structures.",
+            "target": "Universités, grandes écoles, organismes nationaux",
+            "cta": "Demander un devis",
+            "features": [
+              "Classes selon vos besoins",
+              "Jusqu'à 50 cours par classe",
+              "Professeurs illimités",
+              "Élèves illimités",
+              "Account manager dédié",
+              "Intégration ENT possible",
+              "SLA garanti"
+            ]
+          }
+        ],
+        "quoteMailSubject": "Demande de devis Edesio"
+      },
+      "new": {
+        "eyebrow": "Tarifs simples",
+        "title": "Une tarification claire, sans surprise",
+        "subtitle": "Choisissez le plan adapté à votre établissement. Facturation mensuelle — IA et mises à jour incluses.",
+        "subtitleSecondary": "1 classe = 1 module pédagogique complet avec IA.",
+        "monthly": "Mensuel",
+        "annual": "Annuel",
+        "discount": "-15%",
+        "popular": "Populaire",
+        "perMonth": "/mois",
+        "perYear": "/an",
+        "annualNoteBefore": "soit ",
+        "annualNoteMiddle": ", au lieu de ",
+        "customQuote": "Devis personnalisé",
+        "quoteMailSubject": "Demande de devis Edesio",
+        "notes": ["Sans engagement", "Statistiques incluses", "Support réactif"],
+        "plans": [
+          {
+            "id": "solo",
+            "name": "Edesio Solo",
+            "description": "Pour les apprenants individuels et autodidactes.",
+            "monthlyPrice": 4.9,
+            "cta": "Commencer",
+            "popular": false,
+            "features": [
+              "1 classe incluse",
+              "Jusqu'à 50 leçons",
+              "Génération de questions par IA",
+              "Chatbot IA personnel",
+              "Suivi de progression",
+              "Application mobile"
+            ]
+          },
+          {
+            "id": "teacher",
+            "name": "Edesio Enseignant",
+            "description": "Pour un enseignant avec plusieurs classes.",
+            "monthlyPrice": 24.9,
+            "cta": "Commencer",
+            "popular": false,
+            "features": [
+              "10 classes incluses",
+              "Jusqu'à 50 leçons par classe",
+              "Élèves illimités",
+              "Statistiques détaillées",
+              "Application mobile"
+            ]
+          },
+          {
+            "id": "establishment",
+            "name": "Edesio Établissement",
+            "description": "Couvrez tout votre établissement.",
+            "monthlyPrice": 299.9,
+            "cta": "Commencer",
+            "popular": true,
+            "features": [
+              "150 classes incluses",
+              "Jusqu'à 50 leçons par classe",
+              "Enseignants illimités",
+              "Élèves illimités",
+              "Support prioritaire",
+              "Statistiques d'établissement",
+              "Application mobile"
+            ]
+          },
+          {
+            "id": "custom",
+            "name": "Sur mesure",
+            "description": "Solution personnalisée pour les grandes organisations.",
+            "monthlyPrice": null,
+            "cta": "Demander un devis",
+            "popular": false,
+            "features": [
+              "Classes selon besoin",
+              "Jusqu'à 50 leçons par classe",
+              "Enseignants illimités",
+              "Élèves illimités",
+              "Gestionnaire de compte dédié",
+              "Intégration LMS/SIS disponible",
+              "SLA garanti"
+            ]
+          }
+        ]
+      }
     },
     "faq": {
       "title": "Questions",
