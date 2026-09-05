@@ -13,13 +13,14 @@ const navLinkClassName =
 export function LandingNavbarNew() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const t = useTranslations();
+  const nav = t.landing.navbar;
 
   const navLinks = [
-    { label: t.navbar.links.fonctionnement, href: "#fonctionnement" },
-    { label: t.navbar.links.pourQui, href: "#pour-qui" },
-    { label: t.navbar.links.benefices, href: "#benefices" },
-    { label: t.navbar.links.tarifs, href: "#tarifs" },
-    { label: t.navbar.links.faq, href: "#faq" },
+    { label: nav.links.fonctionnement, href: "#fonctionnement" },
+    { label: nav.links.pourQui, href: "#pour-qui" },
+    { label: nav.links.benefices, href: "#benefices" },
+    { label: nav.links.tarifs, href: "#tarifs" },
+    { label: nav.links.faq, href: "#faq" },
   ];
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -56,14 +57,14 @@ export function LandingNavbarNew() {
         <div className="hidden shrink-0 items-center gap-4 lg:flex">
           <LanguageSwitcher variant="segmented" refreshServer />
           <Link href="/login" className={navLinkClassName} data-testid="button-connexion">
-            {t.navbar.login}
+            {nav.login}
           </Link>
           <Button
             className="rounded-control bg-foreground px-4 py-[9px] text-[14px] font-semibold leading-none text-background hover:opacity-90"
             asChild
           >
             <Link href="/register" data-testid="button-signup-nav">
-              {t.navbar.signup}
+              {nav.signup}
             </Link>
           </Button>
         </div>
@@ -99,12 +100,12 @@ export function LandingNavbarNew() {
               </div>
               <Button variant="outline" className="w-full rounded-control" asChild>
                 <Link href="/login" onClick={closeMobileMenu} data-testid="button-mobile-connexion">
-                  {t.navbar.login}
+                  {nav.login}
                 </Link>
               </Button>
               <Button className="w-full rounded-control bg-foreground text-background hover:opacity-90" asChild>
                 <Link href="/register" onClick={closeMobileMenu} data-testid="button-mobile-signup">
-                  {t.navbar.signup}
+                  {nav.signup}
                 </Link>
               </Button>
               <Button variant="outline" className="w-full rounded-control" asChild>
@@ -115,7 +116,7 @@ export function LandingNavbarNew() {
                   onClick={closeMobileMenu}
                   data-testid="button-mobile-demo"
                 >
-                  {t.navbar.demo}
+                  {nav.demo}
                 </a>
               </Button>
             </div>

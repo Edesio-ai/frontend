@@ -18,7 +18,7 @@ const stepGradients = [
 const featureIcons = [BookOpen, Brain, Target];
 
 export function FunctioningLegacy() {
-  const t = useTranslations().functioning.legacy;
+  const t = useTranslations().landing.functioning.legacy;
 
   return (
     <section

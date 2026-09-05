@@ -8,7 +8,7 @@ import { ChatSimulation } from "@/components/landing/ChatSimulation";
 import { useTranslations } from "@/lib/i18n/client";
 
 export function LandingHeroLegacy() {
-  const t = useTranslations();
+  const t = useTranslations().landing.hero.legacy;
 
   return (
     <section
@@ -39,7 +39,7 @@ export function LandingHeroLegacy() {
               data-testid="badge-hero"
             >
               <GraduationCap className="h-4 w-4" />
-              {t.hero.badge}
+              {t.badge}
             </Badge>
 
             <h1
@@ -49,14 +49,14 @@ export function LandingHeroLegacy() {
               <span className="bg-gradient-to-r from-sky-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
                 Edesio
               </span>{" "}
-              : {t.hero.title}
+              : {t.title}
             </h1>
 
             <p
               className="text-base leading-relaxed text-slate-300 sm:text-lg md:text-xl"
               data-testid="text-hero-subtitle"
             >
-              {t.hero.subtitle.replace("{brand}", "Edesio")}
+              {t.subtitle.replace("{brand}", "Edesio")}
             </p>
 
             <div className="flex flex-col gap-4 pt-2 sm:flex-row">
@@ -67,7 +67,7 @@ export function LandingHeroLegacy() {
               >
                 <Link href="/register" data-testid="button-hero-signup">
                   <Sparkles className="h-4 w-4" />
-                  {t.hero.ctaSignup}
+                  {t.ctaSignup}
                 </Link>
               </Button>
               <Button
@@ -77,7 +77,7 @@ export function LandingHeroLegacy() {
                 asChild
               >
                 <Link href="/login" data-testid="button-hero-connexion">
-                  {t.hero.ctaLogin}
+                  {t.ctaLogin}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -91,13 +91,13 @@ export function LandingHeroLegacy() {
                 className="flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/10 px-3 py-2 backdrop-blur-sm transition-colors hover:bg-white/15"
                 data-testid="badge-mistral"
               >
-                <span className="text-[10px] text-slate-400">{t.hero.poweredBy}</span>
+                <span className="text-[10px] text-slate-400">{t.poweredBy}</span>
                 <img src="/mistral.png" alt="Mistral AI" className="h-8 w-auto" />
                 <Badge
                   variant="secondary"
                   className="ml-1 border-indigo-400/30 bg-indigo-500/20 px-1.5 py-0.5 text-[10px] text-indigo-300"
                 >
-                  {t.hero.frenchAI}
+                  {t.frenchAI}
                 </Badge>
               </a>
               <div className="hidden h-8 w-px bg-slate-700 sm:block" />
@@ -116,11 +116,11 @@ export function LandingHeroLegacy() {
                     <div className="h-1.5 w-3 rounded-full bg-white" />
                   </div>
                 </div>
-                <span className="text-sm text-slate-400">{t.hero.institutions}</span>
+                <span className="text-sm text-slate-400">{t.institutions}</span>
               </div>
               <div className="hidden h-8 w-px bg-slate-700 sm:block" />
               <div className="text-sm text-slate-400">
-                <span className="font-semibold text-sky-400">RGPD</span> {t.hero.gdpr}
+                <span className="font-semibold text-sky-400">RGPD</span> {t.gdpr}
               </div>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import { Navbar } from "@/app/_components/landing/navbar/navbar";
 import { Hero } from "@/app/_components/landing/hero/Hero";
 import { Footer } from "@/components/landing/Footer";
-import { ForWho } from "@/app/_components/landing/for-who";
+import { ForWho } from "@/app/_components/landing/for-who/for-who";
 import { Benefits } from "@/components/landing/Benefits";
 import { Pricing } from "@/components/landing/Pricing";
 import { FAQ } from "@/components/landing/FAQ";

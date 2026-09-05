@@ -6,7 +6,7 @@ import { FunctioningStep } from "./functioning-step";
 import { FunctioningHighlight } from "./functioning-highlight";
 
 export function FunctioningNew() {
-  const t = useTranslations().functioning.new;
+  const t = useTranslations().landing.functioning.new;
 
   return (
     <section

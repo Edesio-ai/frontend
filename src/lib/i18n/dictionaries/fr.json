@@ -19,369 +19,6 @@
     "title": "Edesio - Le chatbot qui entraîne et évalue vos élèves | Solution éducative IA",
     "description": "Edesio : solution IA pour établissements scolaires. Les professeurs déposent leurs cours, l'IA génère des questions basées sur le contenu et entraîne les élèves. Découvrez notre plateforme éducative innovante."
   },
-  "navbar": {
-    "links": {
-      "fonctionnement": "Fonctionnement",
-      "pourQui": "Pour qui ?",
-      "benefices": "Bénéfices",
-      "tarifs": "Tarifs",
-      "faq": "FAQ"
-    },
-    "login": "Connexion",
-    "signup": "Créer un compte",
-    "demo": "Demander une démo"
-  },
-  "hero": {
-    "badge": "Collèges, lycées et études supérieures",
-    "title": "le chatbot qui entraîne et évalue",
-    "subtitle": "Les professeurs déposent leurs cours, {brand} génère des questions, discute avec les élèves et vous fournit des retours clairs sur leurs progrès.",
-    "ctaSignup": "Créer un compte gratuitement",
-    "ctaLogin": "Connexion",
-    "poweredBy": "Propulsé par",
-    "frenchAI": "IA Française",
-    "institutions": "+20 établissements",
-    "gdpr": "conforme"
-  },
-  "heroNew": {
-    "eyebrow": "Collèges, lycées et enseignement supérieur",
-    "title": "Le chatbot qui entraîne et évalue vos élèves",
-    "subtitle": "Les enseignants importent leurs cours, Edesio génère les questions, discute avec les élèves et vous fournit un retour clair sur leur progression.",
-    "ctaPrimary": "Créer un compte gratuit",
-    "ctaSecondary": "Se connecter",
-    "trustItems": ["Propulsé par Mistral AI", "Conforme RGPD"]
-  },
-  "chatSimulation": {
-    "title": "Edesio - Révision",
-    "messages": [
-      "Bonjour ! Je suis Edesio. Je vais t'aider à réviser ton cours sur le système solaire. C'est parti !",
-      "Question 1 : Quelle est la plus grande planète du système solaire ?\n\nA. Saturne\nB. Jupiter\nC. Neptune",
-      "Je pense que c'est Jupiter, donc la réponse B !",
-      "Bravo ! C'est la bonne réponse ! Jupiter est la plus grande planète du système solaire, avec un diamètre 11 fois supérieur à celui de la Terre."
-    ]
-  },
-  "functioning": {
-    "legacy": {
-      "badge": "Comment ça marche",
-      "title": "Un processus simple en",
-      "titleHighlight": "3 étapes",
-      "subtitle": "Transformez vos cours en expériences d'apprentissage interactives en quelques clics.",
-      "steps": [
-        {
-          "number": "1",
-          "title": "Le professeur dépose ses cours",
-          "description": "Importez facilement vos supports de cours : PDF, documents Word, présentations. Edesio analyse et comprend le contenu pédagogique."
-        },
-        {
-          "number": "2",
-          "title": "L'IA génère des questions",
-          "description": "Notre intelligence artificielle analyse le contenu et crée automatiquement des questions pertinentes, adaptées au niveau de vos élèves."
-        },
-        {
-          "number": "3",
-          "title": "Le chatbot entraîne les élèves",
-          "description": "Les élèves révisent en discutant avec Edesio. Le chatbot pose des questions, corrige les erreurs et explique les concepts."
-        }
-      ],
-      "features": [
-        {
-          "title": "Contenu personnalisé",
-          "description": "Questions générées à partir de vos propres cours"
-        },
-        {
-          "title": "IA intelligente",
-          "description": "S'adapte au niveau de chaque élève"
-        },
-        {
-          "title": "Apprentissage ciblé",
-          "description": "Renforce les concepts clés de votre enseignement"
-        }
-      ]
-    },
-    "new": {
-      "eyebrow": "Comment ça marche",
-      "title": "Un processus simple en 3 étapes",
-      "steps": [
-        {
-          "title": "L'enseignant importe ses cours",
-          "description": "PDF, documents Word, présentations : Edesio analyse et comprend le contenu pédagogique."
-        },
-        {
-          "title": "L'IA génère des questions",
-          "description": "L'intelligence artificielle analyse le contenu et crée automatiquement des questions adaptées au niveau des élèves."
-        },
-        {
-          "title": "Le chatbot entraîne les élèves",
-          "description": "Les élèves révisent en discutant avec Edesio, qui pose des questions, corrige les erreurs et explique les concepts."
-        }
-      ],
-      "highlights": [
-        {
-          "title": "Contenu personnalisé",
-          "description": "Questions générées à partir de vos propres cours."
-        },
-        {
-          "title": "IA intelligente",
-          "description": "S'adapte au niveau de chaque élève."
-        },
-        {
-          "title": "Apprentissage ciblé",
-          "description": "Renforce les notions clés de votre enseignement."
-        }
-      ]
-    }
-  },
-  "benefits": {
-    "badge": "Avantages",
-    "title": "Pourquoi choisir",
-    "titleHighlight": "Edesio",
-    "titleSuffix": "?",
-    "subtitle": "Des avantages concrets pour les enseignants, les élèves et votre établissement.",
-    "items": [
-      {
-        "title": "Création d'exercices automatisée",
-        "description": "Transformez vos cours en exercices interactifs en quelques clics, sans effort supplémentaire."
-      },
-      {
-        "title": "Suivi des progrès détaillé",
-        "description": "Visualisez les performances individuelles et collectives grâce à des tableaux de bord intuitifs."
-      },
-      {
-        "title": "Format conversationnel engageant",
-        "description": "Les élèves apprennent en discutant, un format naturel qui favorise l'engagement."
-      },
-      {
-        "title": "100% sécurisé et RGPD",
-        "description": "Vos données sont protégées et conformes au RGPD, avec un hébergement européen."
-      },
-      {
-        "title": "Gain de temps considérable",
-        "description": "Libérez du temps précieux en automatisant la création et la correction d'exercices."
-      },
-      {
-        "title": "Apprentissage personnalisé",
-        "description": "L'IA s'adapte au niveau de chaque élève pour un accompagnement sur mesure."
-      }
-    ]
-  },
-  "forWho": {
-    "badge": "Pour qui ?",
-    "title": "Une solution pour",
-    "titleHighlight": "tous",
-    "subtitle": "{brand} s'adresse à tous les acteurs de l'éducation, chacun y trouvant des bénéfices concrets.",
-    "personas": [
-      {
-        "title": "Professeurs",
-        "description": "Gagnez du temps sur la création d'exercices",
-        "benefits": [
-          "Génération automatique de questions à partir de vos cours",
-          "Suivi individuel des progrès de chaque élève",
-          "Plus de temps pour l'accompagnement personnalisé",
-          "Rapports détaillés sur les difficultés récurrentes"
-        ]
-      },
-      {
-        "title": "Responsables d'établissement",
-        "description": "Pilotez la réussite de vos élèves",
-        "benefits": [
-          "Vue d'ensemble sur les performances par classe",
-          "Image moderne et innovante pour l'établissement",
-          "Outil différenciant pour attirer les familles",
-          "Conformité RGPD et hébergement en Europe"
-        ]
-      },
-      {
-        "title": "Élèves",
-        "description": "Révisez de manière interactive et efficace",
-        "benefits": [
-          "Révision guidée en mode conversation naturelle",
-          "Explications personnalisées selon votre niveau",
-          "Disponible 24h/24 pour s'entraîner",
-          "Feedback immédiat sur vos réponses"
-        ]
-      },
-      {
-        "title": "Apprenants autonomes",
-        "description": "Apprenez à votre rythme, sans contrainte",
-        "benefits": [
-          "Créez vos propres cours et supports",
-          "Générez des questions avec l'IA",
-          "Entraînez-vous avec le chatbot intelligent",
-          "Progressez en totale autonomie"
-        ]
-      }
-    ]
-  },
-  "pricing": {
-    "badge": "Tarification simple",
-    "title": "Un prix clair,",
-    "titleHighlight": "sans surprise",
-    "subtitle": "Choisissez le pack adapté à votre structure. Tous les packs incluent l'IA intégrée et les mises à jour.",
-    "monthly": "Mensuel",
-    "annual": "Annuel",
-    "popular": "Populaire",
-    "perMonth": "/mois",
-    "perYear": "/an",
-    "totalPerYear": "soit {price}/an",
-    "onQuote": "Sur devis",
-    "classInfo": "1 classe = 1 module pédagogique complet avec IA",
-    "classTooltipTitle": "Qu'est-ce qu'une classe ?",
-    "classTooltipDesc": "Une classe correspond à un module pédagogique complet : multi-cours autorisés, test complet intégré, et nombre d'élèves illimité.",
-    "noCommitment": "Sans engagement",
-    "mobileIncluded": "App mobile incluse",
-    "statsIncluded": "Statistiques incluses",
-    "reactiveSupport": "Support réactif",
-    "plans": [
-      {
-        "name": "Edesio Solo",
-        "description": "Pour les apprenants individuels et autodidactes.",
-        "target": "Étudiants, candidats concours, autodidactes",
-        "cta": "Commencer",
-        "features": [
-          "1 classe incluse",
-          "Jusqu'à 50 cours",
-          "Génération de questions IA",
-          "Chatbot IA personnel",
-          "Suivi de progression",
-          "Application mobile"
-        ]
-      },
-      {
-        "name": "Edesio Professeur",
-        "description": "Pour un professeur avec plusieurs classes.",
-        "target": "Professeurs, formateurs, petits centres",
-        "cta": "Commencer",
-        "features": [
-          "10 classes incluses",
-          "Jusqu'à 50 cours par classe",
-          "Élèves illimités",
-          "Statistiques détaillées",
-          "Application mobile"
-        ]
-      },
-      {
-        "name": "Edesio Établissement",
-        "description": "Couvrez l'ensemble de votre établissement.",
-        "target": "Lycées privés, écoles supérieures, CFA",
-        "cta": "Commencer",
-        "features": [
-          "150 classes incluses",
-          "Jusqu'à 50 cours par classe",
-          "Professeurs illimités",
-          "Élèves illimités",
-          "Support prioritaire",
-          "Statistiques établissement",
-          "Application mobile"
-        ]
-      },
-      {
-        "name": "Pack Sur Mesure",
-        "description": "Solution personnalisée pour les grandes structures.",
-        "target": "Universités, grandes écoles, organismes nationaux",
-        "cta": "Demander un devis",
-        "features": [
-          "Classes selon vos besoins",
-          "Jusqu'à 50 cours par classe",
-          "Professeurs illimités",
-          "Élèves illimités",
-          "Account manager dédié",
-          "Intégration ENT possible",
-          "SLA garanti"
-        ]
-      }
-    ]
-  },
-  "faq": {
-    "title": "Questions",
-    "titleHighlight": "fréquentes",
-    "subtitle": "Tout ce que vous devez savoir sur {brand}.",
-    "gdprCompliant": "Conforme RGPD",
-    "dataProtected": "Données protégées",
-    "secureHosting": "Hébergement sécurisé",
-    "europeanServers": "Serveurs européens",
-    "items": [
-      {
-        "question": "Comment mes données et celles de mes élèves sont-elles protégées ?",
-        "answer": "Edesio respecte strictement le RGPD. Toutes les données sont hébergées en Europe, sur des serveurs sécurisés. Nous n'utilisons jamais les données des élèves à des fins commerciales. Les établissements restent propriétaires de leurs données et peuvent les supprimer à tout moment."
-      },
-      {
-        "question": "Quel est le rôle du professeur avec Edesio ?",
-        "answer": "Le professeur reste au cœur du dispositif. Il dépose ses cours, valide les questions générées par l'IA s'il le souhaite, et consulte les rapports de progression des élèves. Edesio est un outil d'aide qui libère du temps pour l'accompagnement humain, sans jamais remplacer l'enseignant."
-      },
-      {
-        "question": "Comment l'IA génère-t-elle les questions ?",
-        "answer": "Notre IA analyse le contenu de vos cours (PDF, documents) et génère des questions directement liées à votre enseignement. Chaque question est basée sur la matière que vous avez transmise, garantissant ainsi une révision pertinente et alignée avec votre programme."
-      },
-      {
-        "question": "À quels types d'établissements s'adresse Edesio ?",
-        "answer": "Edesio est conçu pour les collèges, lycées généraux, technologiques et professionnels, ainsi que pour l'enseignement supérieur (BTS, classes préparatoires, écoles). La plateforme s'adapte à toutes les matières et niveaux."
-      },
-      {
-        "question": "Comment se passe la mise en place technique ?",
-        "answer": "Edesio est une solution SaaS accessible via un simple navigateur web. Aucune installation n'est nécessaire. Nous accompagnons les établissements dans la prise en main avec des sessions de formation pour les équipes pédagogiques. L'intégration avec votre ENT existant est possible sur demande."
-      },
-      {
-        "question": "Les élèves peuvent-ils tricher avec le chatbot ?",
-        "answer": "Edesio est conçu pour l'entraînement, pas pour l'évaluation sommative. Le chatbot guide les élèves vers les bonnes réponses plutôt que de les donner directement. Les professeurs ont accès aux historiques de conversation et peuvent suivre la progression réelle de chaque élève."
-      }
-    ]
-  },
-  "footer": {
-    "tagline": "La solution IA qui transforme vos cours en expériences d'apprentissage interactives pour vos élèves. Conçue pour les collèges, lycées et écoles supérieures.",
-    "gdpr": "RGPD conforme",
-    "hostedInEurope": "Hébergé en Europe",
-    "navigation": "Navigation",
-    "mobileApp": "Application mobile",
-    "mobileAppDesc": "Installez Edesio sur votre téléphone pour un accès rapide.",
-    "howToInstall": "Comment installer",
-    "contact": "Contact",
-    "allRightsReserved": "Tous droits réservés",
-    "legalNotice": "Mentions légales",
-    "terms": "CGU",
-    "privacyPolicy": "Politique de confidentialité",
-    "links": {
-      "fonctionnement": "Fonctionnement",
-      "benefices": "Bénéfices",
-      "tarifs": "Tarifs",
-      "faq": "FAQ",
-      "blog": "Blog"
-    }
-  },
-  "demoForm": {
-    "title": "Planifier une démo ou créer un compte gratuit",
-    "subtitle": "Remplissez ce formulaire et nous vous recontacterons rapidement.",
-    "firstName": "Prénom",
-    "firstNamePlaceholder": "Jean",
-    "lastName": "Nom",
-    "lastNamePlaceholder": "Dupont",
-    "establishment": "Établissement",
-    "establishmentPlaceholder": "Lycée Victor Hugo",
-    "email": "E-mail professionnel",
-    "emailPlaceholder": "jean.dupont@education.fr",
-    "establishmentType": "Type d'établissement",
-    "selectType": "Sélectionnez un type",
-    "typeCollege": "Collège",
-    "typeLycee": "Lycée",
-    "typeSuperieur": "Enseignement supérieur",
-    "typeAutre": "Autre",
-    "message": "Message (optionnel)",
-    "messagePlaceholder": "Décrivez votre projet ou posez-nous vos questions...",
-    "wantsFreeAccount": "Je souhaite créer un compte de test gratuit",
-    "wantsDemo": "Je souhaite d'abord une démonstration",
-    "submit": "Envoyer ma demande",
-    "submitting": "Envoi en cours...",
-    "successTitle": "Merci pour votre demande !",
-    "successMessage": "Un email de confirmation vous a été envoyé. Notre équipe vous répondra dans un délai de 24 heures maximum, hors week-ends.",
-    "toastErrorTitle": "Erreur",
-    "toastErrorDefault": "Une erreur est survenue. Veuillez réessayer.",
-    "sendError": "Erreur lors de l'envoi"
-  },
-  "blogPreview": {
-    "badge": "Notre blog",
-    "title": "Les derniers articles",
-    "subtitle": "Découvrez nos analyses, conseils et actualités sur l'IA dans l'éducation",
-    "readArticle": "Lire l'article",
-    "viewAll": "Voir tous les articles"
-  },
   "supabaseErrors": {
     "invalidCredentials": "Identifiants de connexion invalides",
     "genericError": "Une erreur est survenue. Veuillez réessayer.",
@@ -1322,5 +959,420 @@
     "description": "La page que vous recherchez a été déplacée, supprimée, ou n'a jamais existé.",
     "backHome": "Retour à l'accueil",
     "copyright": "© {year} Edesio"
+  },
+  "landing": {
+    "navbar": {
+      "links": {
+        "fonctionnement": "Fonctionnement",
+        "pourQui": "Pour qui ?",
+        "benefices": "Bénéfices",
+        "tarifs": "Tarifs",
+        "faq": "FAQ"
+      },
+      "login": "Connexion",
+      "signup": "Créer un compte",
+      "demo": "Demander une démo"
+    },
+    "hero": {
+      "legacy": {
+        "badge": "Collèges, lycées et études supérieures",
+        "title": "le chatbot qui entraîne et évalue",
+        "subtitle": "Les professeurs déposent leurs cours, {brand} génère des questions, discute avec les élèves et vous fournit des retours clairs sur leurs progrès.",
+        "ctaSignup": "Créer un compte gratuitement",
+        "ctaLogin": "Connexion",
+        "poweredBy": "Propulsé par",
+        "frenchAI": "IA Française",
+        "institutions": "+20 établissements",
+        "gdpr": "conforme",
+        "chatSimulation": {
+          "title": "Edesio - Révision",
+          "messages": [
+            "Bonjour ! Je suis Edesio. Je vais t'aider à réviser ton cours sur le système solaire. C'est parti !",
+            "Question 1 : Quelle est la plus grande planète du système solaire ?\n\nA. Saturne\nB. Jupiter\nC. Neptune",
+            "Je pense que c'est Jupiter, donc la réponse B !",
+            "Bravo ! C'est la bonne réponse ! Jupiter est la plus grande planète du système solaire, avec un diamètre 11 fois supérieur à celui de la Terre."
+          ]
+        }
+      },
+      "new": {
+        "eyebrow": "Collèges, lycées et enseignement supérieur",
+        "title": "Le chatbot qui entraîne et évalue vos élèves",
+        "subtitle": "Les enseignants importent leurs cours, Edesio génère les questions, discute avec les élèves et vous fournit un retour clair sur leur progression.",
+        "ctaPrimary": "Créer un compte gratuit",
+        "ctaSecondary": "Se connecter",
+        "trustItems": ["Propulsé par Mistral AI", "Conforme RGPD"]
+      }
+    },
+    "functioning": {
+      "legacy": {
+        "badge": "Comment ça marche",
+        "title": "Un processus simple en",
+        "titleHighlight": "3 étapes",
+        "subtitle": "Transformez vos cours en expériences d'apprentissage interactives en quelques clics.",
+        "steps": [
+          {
+            "number": "1",
+            "title": "Le professeur dépose ses cours",
+            "description": "Importez facilement vos supports de cours : PDF, documents Word, présentations. Edesio analyse et comprend le contenu pédagogique."
+          },
+          {
+            "number": "2",
+            "title": "L'IA génère des questions",
+            "description": "Notre intelligence artificielle analyse le contenu et crée automatiquement des questions pertinentes, adaptées au niveau de vos élèves."
+          },
+          {
+            "number": "3",
+            "title": "Le chatbot entraîne les élèves",
+            "description": "Les élèves révisent en discutant avec Edesio. Le chatbot pose des questions, corrige les erreurs et explique les concepts."
+          }
+        ],
+        "features": [
+          {
+            "title": "Contenu personnalisé",
+            "description": "Questions générées à partir de vos propres cours"
+          },
+          {
+            "title": "IA intelligente",
+            "description": "S'adapte au niveau de chaque élève"
+          },
+          {
+            "title": "Apprentissage ciblé",
+            "description": "Renforce les concepts clés de votre enseignement"
+          }
+        ]
+      },
+      "new": {
+        "eyebrow": "Comment ça marche",
+        "title": "Un processus simple en 3 étapes",
+        "steps": [
+          {
+            "title": "L'enseignant importe ses cours",
+            "description": "PDF, documents Word, présentations : Edesio analyse et comprend le contenu pédagogique."
+          },
+          {
+            "title": "L'IA génère des questions",
+            "description": "L'intelligence artificielle analyse le contenu et crée automatiquement des questions adaptées au niveau des élèves."
+          },
+          {
+            "title": "Le chatbot entraîne les élèves",
+            "description": "Les élèves révisent en discutant avec Edesio, qui pose des questions, corrige les erreurs et explique les concepts."
+          }
+        ],
+        "highlights": [
+          {
+            "title": "Contenu personnalisé",
+            "description": "Questions générées à partir de vos propres cours."
+          },
+          {
+            "title": "IA intelligente",
+            "description": "S'adapte au niveau de chaque élève."
+          },
+          {
+            "title": "Apprentissage ciblé",
+            "description": "Renforce les notions clés de votre enseignement."
+          }
+        ]
+      }
+    },
+    "forWho": {
+      "legacy": {
+        "badge": "Pour qui ?",
+        "title": "Une solution pour",
+        "titleHighlight": "tous",
+        "subtitle": "{brand} s'adresse à tous les acteurs de l'éducation, chacun y trouvant des bénéfices concrets.",
+        "personas": [
+          {
+            "title": "Professeurs",
+            "description": "Gagnez du temps sur la création d'exercices",
+            "benefits": [
+              "Génération automatique de questions à partir de vos cours",
+              "Suivi individuel des progrès de chaque élève",
+              "Plus de temps pour l'accompagnement personnalisé",
+              "Rapports détaillés sur les difficultés récurrentes"
+            ]
+          },
+          {
+            "title": "Responsables d'établissement",
+            "description": "Pilotez la réussite de vos élèves",
+            "benefits": [
+              "Vue d'ensemble sur les performances par classe",
+              "Image moderne et innovante pour l'établissement",
+              "Outil différenciant pour attirer les familles",
+              "Conformité RGPD et hébergement en Europe"
+            ]
+          },
+          {
+            "title": "Élèves",
+            "description": "Révisez de manière interactive et efficace",
+            "benefits": [
+              "Révision guidée en mode conversation naturelle",
+              "Explications personnalisées selon votre niveau",
+              "Disponible 24h/24 pour s'entraîner",
+              "Feedback immédiat sur vos réponses"
+            ]
+          },
+          {
+            "title": "Apprenants autonomes",
+            "description": "Apprenez à votre rythme, sans contrainte",
+            "benefits": [
+              "Créez vos propres cours et supports",
+              "Générez des questions avec l'IA",
+              "Entraînez-vous avec le chatbot intelligent",
+              "Progressez en totale autonomie"
+            ]
+          }
+        ]
+      },
+      "new": {
+        "eyebrow": "Pour qui",
+        "title": "Une solution pour chaque acteur de l'éducation",
+        "segments": [
+          {
+            "title": "Enseignants",
+            "subtitle": "Gagnez du temps sur la création d'exercices",
+            "bullets": [
+              "Génération automatique de questions à partir de vos cours",
+              "Suivi individuel de la progression de chaque élève",
+              "Plus de temps pour un accompagnement personnalisé",
+              "Rapports détaillés sur les difficultés récurrentes"
+            ]
+          },
+          {
+            "title": "Administration",
+            "subtitle": "Pilotez la réussite des élèves",
+            "bullets": [
+              "Vue globale des performances par classe",
+              "Une image moderne et innovante pour votre établissement",
+              "Un outil différenciant pour attirer les familles",
+              "Conformité RGPD et hébergement européen"
+            ]
+          },
+          {
+            "title": "Élèves",
+            "subtitle": "Révisez de façon interactive et efficace",
+            "bullets": [
+              "Révision guidée en mode conversationnel naturel",
+              "Explications personnalisées selon votre niveau",
+              "Disponible 24/7 pour s'entraîner",
+              "Retour immédiat sur vos réponses"
+            ]
+          },
+          {
+            "title": "Autodidactes",
+            "subtitle": "Apprenez à votre rythme, sans contraintes",
+            "bullets": [
+              "Créez vos propres cours et supports",
+              "Générez des questions avec l'IA",
+              "Entraînez-vous avec le chatbot intelligent",
+              "Progressez en totale autonomie"
+            ]
+          }
+        ]
+      }
+    },
+    "benefits": {
+      "badge": "Avantages",
+      "title": "Pourquoi choisir",
+      "titleHighlight": "Edesio",
+      "titleSuffix": "?",
+      "subtitle": "Des avantages concrets pour les enseignants, les élèves et votre établissement.",
+      "items": [
+        {
+          "title": "Création d'exercices automatisée",
+          "description": "Transformez vos cours en exercices interactifs en quelques clics, sans effort supplémentaire."
+        },
+        {
+          "title": "Suivi des progrès détaillé",
+          "description": "Visualisez les performances individuelles et collectives grâce à des tableaux de bord intuitifs."
+        },
+        {
+          "title": "Format conversationnel engageant",
+          "description": "Les élèves apprennent en discutant, un format naturel qui favorise l'engagement."
+        },
+        {
+          "title": "100% sécurisé et RGPD",
+          "description": "Vos données sont protégées et conformes au RGPD, avec un hébergement européen."
+        },
+        {
+          "title": "Gain de temps considérable",
+          "description": "Libérez du temps précieux en automatisant la création et la correction d'exercices."
+        },
+        {
+          "title": "Apprentissage personnalisé",
+          "description": "L'IA s'adapte au niveau de chaque élève pour un accompagnement sur mesure."
+        }
+      ]
+    },
+    "pricing": {
+      "badge": "Tarification simple",
+      "title": "Un prix clair,",
+      "titleHighlight": "sans surprise",
+      "subtitle": "Choisissez le pack adapté à votre structure. Tous les packs incluent l'IA intégrée et les mises à jour.",
+      "monthly": "Mensuel",
+      "annual": "Annuel",
+      "popular": "Populaire",
+      "perMonth": "/mois",
+      "perYear": "/an",
+      "totalPerYear": "soit {price}/an",
+      "onQuote": "Sur devis",
+      "classInfo": "1 classe = 1 module pédagogique complet avec IA",
+      "classTooltipTitle": "Qu'est-ce qu'une classe ?",
+      "classTooltipDesc": "Une classe correspond à un module pédagogique complet : multi-cours autorisés, test complet intégré, et nombre d'élèves illimité.",
+      "noCommitment": "Sans engagement",
+      "mobileIncluded": "App mobile incluse",
+      "statsIncluded": "Statistiques incluses",
+      "reactiveSupport": "Support réactif",
+      "plans": [
+        {
+          "name": "Edesio Solo",
+          "description": "Pour les apprenants individuels et autodidactes.",
+          "target": "Étudiants, candidats concours, autodidactes",
+          "cta": "Commencer",
+          "features": [
+            "1 classe incluse",
+            "Jusqu'à 50 cours",
+            "Génération de questions IA",
+            "Chatbot IA personnel",
+            "Suivi de progression",
+            "Application mobile"
+          ]
+        },
+        {
+          "name": "Edesio Professeur",
+          "description": "Pour un professeur avec plusieurs classes.",
+          "target": "Professeurs, formateurs, petits centres",
+          "cta": "Commencer",
+          "features": [
+            "10 classes incluses",
+            "Jusqu'à 50 cours par classe",
+            "Élèves illimités",
+            "Statistiques détaillées",
+            "Application mobile"
+          ]
+        },
+        {
+          "name": "Edesio Établissement",
+          "description": "Couvrez l'ensemble de votre établissement.",
+          "target": "Lycées privés, écoles supérieures, CFA",
+          "cta": "Commencer",
+          "features": [
+            "150 classes incluses",
+            "Jusqu'à 50 cours par classe",
+            "Professeurs illimités",
+            "Élèves illimités",
+            "Support prioritaire",
+            "Statistiques établissement",
+            "Application mobile"
+          ]
+        },
+        {
+          "name": "Pack Sur Mesure",
+          "description": "Solution personnalisée pour les grandes structures.",
+          "target": "Universités, grandes écoles, organismes nationaux",
+          "cta": "Demander un devis",
+          "features": [
+            "Classes selon vos besoins",
+            "Jusqu'à 50 cours par classe",
+            "Professeurs illimités",
+            "Élèves illimités",
+            "Account manager dédié",
+            "Intégration ENT possible",
+            "SLA garanti"
+          ]
+        }
+      ]
+    },
+    "faq": {
+      "title": "Questions",
+      "titleHighlight": "fréquentes",
+      "subtitle": "Tout ce que vous devez savoir sur {brand}.",
+      "gdprCompliant": "Conforme RGPD",
+      "dataProtected": "Données protégées",
+      "secureHosting": "Hébergement sécurisé",
+      "europeanServers": "Serveurs européens",
+      "items": [
+        {
+          "question": "Comment mes données et celles de mes élèves sont-elles protégées ?",
+          "answer": "Edesio respecte strictement le RGPD. Toutes les données sont hébergées en Europe, sur des serveurs sécurisés. Nous n'utilisons jamais les données des élèves à des fins commerciales. Les établissements restent propriétaires de leurs données et peuvent les supprimer à tout moment."
+        },
+        {
+          "question": "Quel est le rôle du professeur avec Edesio ?",
+          "answer": "Le professeur reste au cœur du dispositif. Il dépose ses cours, valide les questions générées par l'IA s'il le souhaite, et consulte les rapports de progression des élèves. Edesio est un outil d'aide qui libère du temps pour l'accompagnement humain, sans jamais remplacer l'enseignant."
+        },
+        {
+          "question": "Comment l'IA génère-t-elle les questions ?",
+          "answer": "Notre IA analyse le contenu de vos cours (PDF, documents) et génère des questions directement liées à votre enseignement. Chaque question est basée sur la matière que vous avez transmise, garantissant ainsi une révision pertinente et alignée avec votre programme."
+        },
+        {
+          "question": "À quels types d'établissements s'adresse Edesio ?",
+          "answer": "Edesio est conçu pour les collèges, lycées généraux, technologiques et professionnels, ainsi que pour l'enseignement supérieur (BTS, classes préparatoires, écoles). La plateforme s'adapte à toutes les matières et niveaux."
+        },
+        {
+          "question": "Comment se passe la mise en place technique ?",
+          "answer": "Edesio est une solution SaaS accessible via un simple navigateur web. Aucune installation n'est nécessaire. Nous accompagnons les établissements dans la prise en main avec des sessions de formation pour les équipes pédagogiques. L'intégration avec votre ENT existant est possible sur demande."
+        },
+        {
+          "question": "Les élèves peuvent-ils tricher avec le chatbot ?",
+          "answer": "Edesio est conçu pour l'entraînement, pas pour l'évaluation sommative. Le chatbot guide les élèves vers les bonnes réponses plutôt que de les donner directement. Les professeurs ont accès aux historiques de conversation et peuvent suivre la progression réelle de chaque élève."
+        }
+      ]
+    },
+    "footer": {
+      "tagline": "La solution IA qui transforme vos cours en expériences d'apprentissage interactives pour vos élèves. Conçue pour les collèges, lycées et écoles supérieures.",
+      "gdpr": "RGPD conforme",
+      "hostedInEurope": "Hébergé en Europe",
+      "navigation": "Navigation",
+      "mobileApp": "Application mobile",
+      "mobileAppDesc": "Installez Edesio sur votre téléphone pour un accès rapide.",
+      "howToInstall": "Comment installer",
+      "contact": "Contact",
+      "allRightsReserved": "Tous droits réservés",
+      "legalNotice": "Mentions légales",
+      "terms": "CGU",
+      "privacyPolicy": "Politique de confidentialité",
+      "links": {
+        "fonctionnement": "Fonctionnement",
+        "benefices": "Bénéfices",
+        "tarifs": "Tarifs",
+        "faq": "FAQ",
+        "blog": "Blog"
+      }
+    },
+    "demoForm": {
+      "title": "Planifier une démo ou créer un compte gratuit",
+      "subtitle": "Remplissez ce formulaire et nous vous recontacterons rapidement.",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Jean",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Dupont",
+      "establishment": "Établissement",
+      "establishmentPlaceholder": "Lycée Victor Hugo",
+      "email": "E-mail professionnel",
+      "emailPlaceholder": "jean.dupont@education.fr",
+      "establishmentType": "Type d'établissement",
+      "selectType": "Sélectionnez un type",
+      "typeCollege": "Collège",
+      "typeLycee": "Lycée",
+      "typeSuperieur": "Enseignement supérieur",
+      "typeAutre": "Autre",
+      "message": "Message (optionnel)",
+      "messagePlaceholder": "Décrivez votre projet ou posez-nous vos questions...",
+      "wantsFreeAccount": "Je souhaite créer un compte de test gratuit",
+      "wantsDemo": "Je souhaite d'abord une démonstration",
+      "submit": "Envoyer ma demande",
+      "submitting": "Envoi en cours...",
+      "successTitle": "Merci pour votre demande !",
+      "successMessage": "Un email de confirmation vous a été envoyé. Notre équipe vous répondra dans un délai de 24 heures maximum, hors week-ends.",
+      "toastErrorTitle": "Erreur",
+      "toastErrorDefault": "Une erreur est survenue. Veuillez réessayer.",
+      "sendError": "Erreur lors de l'envoi"
+    },
+    "blogPreview": {
+      "badge": "Notre blog",
+      "title": "Les derniers articles",
+      "subtitle": "Découvrez nos analyses, conseils et actualités sur l'IA dans l'éducation",
+      "readArticle": "Lire l'article",
+      "viewAll": "Voir tous les articles"
+    }
   }
 }

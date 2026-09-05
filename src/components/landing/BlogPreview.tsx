@@ -28,7 +28,7 @@ const categoryColorsLight: Record<string, string> = {
 export async function BlogPreview() {
   const locale = await getLocaleFromCookies();
   const dict = await getDictionary(locale);
-  const bt = dict.blogPreview;
+  const bt = dict.landing.blogPreview;
 
   const latestArticles = getBlogArticles(locale).slice(0, 3);
 

@@ -11,13 +11,14 @@ import { Logo } from "@/components/brand/logo";
 export function LandingNavbarLegacy() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const t = useTranslations();
+  const nav = t.landing.navbar;
 
   const navLinks = [
-    { label: t.navbar.links.fonctionnement, href: "#fonctionnement" },
-    { label: t.navbar.links.pourQui, href: "#pour-qui" },
-    { label: t.navbar.links.benefices, href: "#benefices" },
-    { label: t.navbar.links.tarifs, href: "#tarifs" },
-    { label: t.navbar.links.faq, href: "#faq" },
+    { label: nav.links.fonctionnement, href: "#fonctionnement" },
+    { label: nav.links.pourQui, href: "#pour-qui" },
+    { label: nav.links.benefices, href: "#benefices" },
+    { label: nav.links.tarifs, href: "#tarifs" },
+    { label: nav.links.faq, href: "#faq" },
   ];
 
   return (
@@ -52,12 +53,12 @@ export function LandingNavbarLegacy() {
             <LanguageSwitcher refreshServer />
             <Button variant="ghost" size="sm" className="font-semibold" asChild>
               <Link href="/login" data-testid="button-connexion">
-                {t.navbar.login}
+                {nav.login}
               </Link>
             </Button>
             <Button variant="default" size="sm" className="shadow-lg shadow-primary/25" asChild>
               <Link href="/register" data-testid="button-signup-nav">
-                {t.navbar.signup}
+                {nav.signup}
               </Link>
             </Button>
           </div>
@@ -93,12 +94,12 @@ export function LandingNavbarLegacy() {
             <div className="pt-4 space-y-3 border-t border-border">
               <Button variant="outline" className="w-full font-semibold" asChild>
                 <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} data-testid="button-mobile-connexion">
-                  {t.navbar.login}
+                  {nav.login}
                 </Link>
               </Button>
               <Button className="w-full" asChild>
                 <Link href="/register" onClick={() => setIsMobileMenuOpen(false)} data-testid="button-mobile-signup">
-                  {t.navbar.signup}
+                  {nav.signup}
                 </Link>
               </Button>
               <Button variant="outline" className="w-full" asChild>
@@ -109,7 +110,7 @@ export function LandingNavbarLegacy() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   data-testid="button-mobile-demo"
                 >
-                  {t.navbar.demo}
+                  {nav.demo}
                 </a>
               </Button>
             </div>

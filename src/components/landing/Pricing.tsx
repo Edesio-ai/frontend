@@ -71,7 +71,7 @@ export function Pricing() {
   const [isAnnual, setIsAnnual] = useState(false);
   const t = useTranslations();
   const locale = useLocale();
-  const pt = t.pricing;
+  const pt = t.landing.pricing;
   const discountPercent = 15;
 
   const getPrice = (monthlyPrice: number | null) => {

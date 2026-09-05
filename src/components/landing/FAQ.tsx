@@ -5,7 +5,7 @@ import { getLocaleFromCookies, getDictionary } from "@/lib/i18n";
 export async function FAQ() {
   const locale = await getLocaleFromCookies();
   const dict = await getDictionary(locale);
-  const t = dict.faq;
+  const t = dict.landing.faq;
 
   return (
     <section

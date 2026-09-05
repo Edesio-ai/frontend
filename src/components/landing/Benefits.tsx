@@ -15,7 +15,7 @@ const benefitStyles = [
 export async function Benefits() {
   const locale = await getLocaleFromCookies();
   const dict = await getDictionary(locale);
-  const t = dict.benefits;
+  const t = dict.landing.benefits;
 
   return (
     <section

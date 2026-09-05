@@ -20,7 +20,7 @@ export function DemoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const t = useTranslations();
-  const dt = t.demoForm;
+  const dt = t.landing.demoForm;
 
   const formSchema = z
     .object({

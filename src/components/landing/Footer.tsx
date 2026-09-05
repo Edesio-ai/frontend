@@ -11,7 +11,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   const [showInstallModal, setShowInstallModal] = useState(false);
   const t = useTranslations();
-  const ft = t.footer;
+  const ft = t.landing.footer;
 
   const footerLinks = [
     { label: ft.links.fonctionnement, href: "#fonctionnement" },
