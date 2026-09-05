@@ -102,6 +102,16 @@ function useFaceTexture(colors: HeroRobotColors) {
   }, [colors.face, colors.faceStroke]);
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+/**
+ * Tracks the cursor anywhere on the page, not just over the canvas, so the
+ * robot keeps looking at it once the pointer leaves the scene. Angles are
+ * measured from the robot's own position on screen and normalised against the
+ * viewport, so it reaches its widest turn near the screen edges.
+ */
 function usePointerTilt(enabled: boolean) {
   const domElement = useThree((state) => state.gl.domElement);
   const tilt = useRef({ x: 0, y: 0 });
@@ -114,15 +124,13 @@ function usePointerTilt(enabled: boolean) {
 
     const handlePointerMove = (event: PointerEvent) => {
       const rect = domElement.getBoundingClientRect();
-      const inside =
-        event.clientX >= rect.left &&
-        event.clientX <= rect.right &&
-        event.clientY >= rect.top &&
-        event.clientY <= rect.bottom;
+      if (rect.width === 0 || rect.height === 0) return;
 
-      const fx = inside ? (event.clientX - rect.left) / rect.width : 0.5;
-      tilt.current.y = (fx - 0.5) * 1.5;
-      tilt.current.x = inside ? ((event.clientY - rect.top) / rect.height - 0.5) * 0.3 : 0;
+      const dx = (event.clientX - (rect.left + rect.width / 2)) / Math.max(window.innerWidth, 1);
+      const dy = (event.clientY - (rect.top + rect.height / 2)) / Math.max(window.innerHeight, 1);
+
+      tilt.current.y = clamp(dx * 1.15, -0.85, 0.85);
+      tilt.current.x = clamp(dy * 0.45, -0.2, 0.2);
     };
 
     window.addEventListener("pointermove", handlePointerMove);
