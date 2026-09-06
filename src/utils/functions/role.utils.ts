@@ -1,21 +1,28 @@
-import { USER_ROLE, type UserRole } from "@/types";
+import { PUBLIC_ROLES, USER_ROLE, type PublicRole, type UserRole } from "@/types";
 
 export { USER_ROLE };
 
-export const MODULE_ROLES = [
-  USER_ROLE.teacher,
-  USER_ROLE.student,
-  USER_ROLE.establishment,
-  USER_ROLE.selfLearner,
-] as const;
+export function isPublicRole(role: string | null | undefined): role is PublicRole {
+  return PUBLIC_ROLES.includes(role as PublicRole);
+}
 
-export type ModuleRole = (typeof MODULE_ROLES)[number];
+export function getRegisterRolePath(role: PublicRole): string {
+  return `/register/${role}`;
+}
+
+export function getRegisterInvitationPath(token: string): string {
+  return `/register/invitation/${token}`;
+}
+
+export function getLegacyRegisterInvitationPath(token: string): string {
+  return `/register/teacher-invitation/${token}`;
+}
 
 export function isAdmin(role: string | null | undefined): role is typeof USER_ROLE.admin {
   return role === USER_ROLE.admin;
 }
 
-export function canAccessModule(role: string | null | undefined, module: ModuleRole): boolean {
+export function canAccessModule(role: string | null | undefined, module: PublicRole): boolean {
   return isAdmin(role) || role === module;
 }
 

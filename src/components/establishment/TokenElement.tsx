@@ -3,7 +3,9 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { InvitationToken } from "@/types";
 import { useState } from "react";
+import { useFeatureFlag } from "@/contexts/feature-flags-context";
 import { useLocale, useTranslations } from "@/lib/i18n/client";
+import { getLegacyRegisterInvitationPath, getRegisterInvitationPath } from "@/utils/functions/role.utils";
 
 type TokenElementProps = {
   token: InvitationToken;
@@ -12,6 +14,7 @@ type TokenElementProps = {
 export function TokenElement({ token, handleDeleteToken }: TokenElementProps) {
   const t = useTranslations();
   const locale = useLocale();
+  const isAuthNewDesign = useFeatureFlag("AuthNewDesign");
   const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
@@ -20,7 +23,8 @@ export function TokenElement({ token, handleDeleteToken }: TokenElementProps) {
   };
 
   const handleCopyToken = (token: string) => {
-    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_URL}/register/teacher-invitation/${token}`);
+    const path = isAuthNewDesign ? getRegisterInvitationPath(token) : getLegacyRegisterInvitationPath(token);
+    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_URL}${path}`);
     setCopiedToken(token);
     setTimeout(() => setCopiedToken(null), 2000);
   };

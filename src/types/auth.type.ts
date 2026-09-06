@@ -10,6 +10,15 @@ export const USER_ROLE = {
 
 export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
 
+export const PUBLIC_ROLES = [
+  USER_ROLE.teacher,
+  USER_ROLE.student,
+  USER_ROLE.establishment,
+  USER_ROLE.selfLearner,
+] as const;
+
+export type PublicRole = (typeof PUBLIC_ROLES)[number];
+
 export interface UserMetadata {
   role: UserRole;
   firstName?: string;
