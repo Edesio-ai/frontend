@@ -33,18 +33,54 @@
     "invalidEmail": "The email address provided is not valid",
     "invalidPassword": "The password provided is not valid"
   },
-  "login": {
-    "title": "Log in to Edesio",
-    "subtitle": "Access your personal space",
-    "email": "Email address",
-    "emailPlaceholder": "john.doe@school.com",
-    "password": "Password",
-    "forgotPassword": "Forgot your password?",
-    "submit": "Log in",
-    "submitting": "Logging in...",
-    "noAccount": "Don't have an account?",
-    "signup": "Sign up",
-    "defaultError": "Login failed. Please check your credentials."
+  "auth": {
+    "layout": {
+      "aside": {
+        "panelStatement": "Teachers upload their lessons, Edesio generates questions, chats with students and provides you with clear feedback on their progress.",
+        "panelBullets": [
+          "Automatic question generation from your lessons",
+          "Individual progress tracking for each student",
+          "GDPR compliant, hosted in Europe"
+        ],
+        "trustItems": ["Powered by Mistral AI", "GDPR compliant"]
+      }
+    },
+    "login": {
+      "legacy": {
+        "title": "Log in to Edesio",
+        "subtitle": "Access your personal space",
+        "email": "Email address",
+        "emailPlaceholder": "john.doe@school.com",
+        "emailInvalid": "Invalid email address",
+        "password": "Password",
+        "passwordRequired": "Password is required",
+        "forgotPassword": "Forgot your password?",
+        "submit": "Log in",
+        "submitting": "Logging in...",
+        "noAccount": "Don't have an account?",
+        "signup": "Sign up",
+        "defaultError": "Login failed. Please check your credentials."
+      },
+      "new": {
+        "title": "Log in to Edesio",
+        "subtitle": "Access your personal space",
+        "email": "Email address",
+        "emailPlaceholder": "john.doe@school.com",
+        "emailInvalid": "Invalid email address",
+        "emailRequired": "Email address is required",
+        "password": "Password",
+        "passwordPlaceholder": "••••••••",
+        "passwordRequired": "Password is required",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
+        "forgotPassword": "Forgot your password?",
+        "submit": "Log in",
+        "submitting": "Logging in...",
+        "noAccount": "Don't have an account?",
+        "signup": "Sign up",
+        "defaultError": "Login failed. Please check your credentials."
+      }
+    }
   },
   "register": {
     "title": "Create an account",
@@ -950,6 +986,10 @@
       "HomepageNewDesign": {
         "label": "Homepage new design",
         "description": "Homepage new design. Off in production until rollout is complete."
+      },
+      "AuthNewDesign": {
+        "label": "New authentication page design",
+        "description": "New authentication page design. Off in production until rollout is complete."
       }
     }
   },

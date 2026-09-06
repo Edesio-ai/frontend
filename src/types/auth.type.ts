@@ -1,3 +1,5 @@
+import { User } from "./user.type";
+
 export const USER_ROLE = {
   teacher: "teacher",
   student: "student",
@@ -15,3 +17,5 @@ export interface UserMetadata {
   establishment?: string;
   invitationToken?: string;
 }
+
+export type LoginResult = { ok: true; user: User } | { ok: false; code: string; message: string };
