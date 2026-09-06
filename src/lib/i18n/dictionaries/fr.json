@@ -33,18 +33,54 @@
     "invalidEmail": "L'adresse e-mail fournie n'est pas valide",
     "invalidPassword": "Le mot de passe fourni n'est pas valide"
   },
-  "login": {
-    "title": "Connexion à Edesio",
-    "subtitle": "Accédez à votre espace personnel",
-    "email": "Adresse e-mail",
-    "emailPlaceholder": "jean.dupont@education.fr",
-    "password": "Mot de passe",
-    "forgotPassword": "Mot de passe oublié ?",
-    "submit": "Se connecter",
-    "submitting": "Connexion en cours...",
-    "noAccount": "Vous n'avez pas de compte ?",
-    "signup": "Créer un compte",
-    "defaultError": "Échec de la connexion. Vérifiez vos identifiants."
+  "auth": {
+    "layout": {
+      "aside": {
+        "panelStatement": "Les professeurs déposent leurs cours, Edesio génère des questions, discute avec les élèves et vous fournit des retours clairs sur leurs progrès.",
+        "panelBullets": [
+          "Génération automatique de questions à partir de vos cours",
+          "Suivi individuel de la progression de chaque élève",
+          "Conforme RGPD, hébergement en Europe"
+        ],
+        "trustItems": ["Propulsé par Mistral AI", "Conforme RGPD"]
+      }
+    },
+    "login": {
+      "legacy": {
+        "title": "Connexion à Edesio",
+        "subtitle": "Accédez à votre espace personnel",
+        "email": "Adresse e-mail",
+        "emailPlaceholder": "jean.dupont@education.fr",
+        "emailInvalid": "Adresse e-mail invalide",
+        "password": "Mot de passe",
+        "passwordRequired": "Le mot de passe est requis",
+        "forgotPassword": "Mot de passe oublié ?",
+        "submit": "Se connecter",
+        "submitting": "Connexion en cours...",
+        "noAccount": "Vous n'avez pas de compte ?",
+        "signup": "Créer un compte",
+        "defaultError": "Échec de la connexion. Vérifiez vos identifiants."
+      },
+      "new": {
+        "title": "Connexion à Edesio",
+        "subtitle": "Accédez à votre espace personnel",
+        "email": "Adresse e-mail",
+        "emailPlaceholder": "jean.dupont@education.fr",
+        "emailInvalid": "Adresse e-mail invalide",
+        "emailRequired": "L'adresse e-mail est requise",
+        "password": "Mot de passe",
+        "passwordPlaceholder": "••••••••",
+        "passwordRequired": "Le mot de passe est requis",
+        "showPassword": "Afficher le mot de passe",
+        "hidePassword": "Masquer le mot de passe",
+        "forgotPassword": "Mot de passe oublié ?",
+        "submit": "Se connecter",
+        "submitting": "Connexion en cours...",
+        "noAccount": "Vous n'avez pas de compte ?",
+        "signup": "Créer un compte",
+        "defaultError": "Échec de la connexion. Vérifiez vos identifiants."
+      }
+    }
   },
   "register": {
     "title": "Créer un compte",
@@ -950,6 +986,10 @@
       "HomepageNewDesign": {
         "label": "Nouveau design de la page d'accueil",
         "description": "Design de la page d'accueil. Désactivé en production tant que le rollout n'est pas terminé."
+      },
+      "AuthNewDesign": {
+        "label": "Nouveau design des pages d'authentification",
+        "description": "Design des pages d'authentification. Désactivé en production tant que le rollout n'est pas terminé."
       }
     }
   },
