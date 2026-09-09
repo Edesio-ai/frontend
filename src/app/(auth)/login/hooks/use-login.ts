@@ -32,6 +32,7 @@ export function useLogin() {
   return {
     action,
     pending: pending || Boolean(state.redirectTo),
+    values: state.values,
     error: state.error ? t.defaultError : null,
     emailError: fieldMessage(state.fieldErrors.email),
     passwordError: fieldMessage(state.fieldErrors.password),

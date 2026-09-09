@@ -4,19 +4,26 @@ import { z } from "zod";
 import { login } from "@/server/auth/login";
 import { loginInputSchema } from "@/server/auth/schema";
 import { getPostLoginPath } from "@/utils/functions/role.utils";
-import { LoginState } from "./state";
+import { type LoginFormValues, type LoginState } from "./state";
+
+function parseFormValues(formData: FormData): LoginFormValues {
+  return {
+    email: String(formData.get("email") ?? ""),
+    password: String(formData.get("password") ?? ""),
+  };
+}
 
 export const loginAction = async (_prev: LoginState, formData: FormData): Promise<LoginState> => {
-  const parsed = loginInputSchema.safeParse({
-    email: formData.get("email"),
-    password: formData.get("password"),
-  });
+  const values = parseFormValues(formData);
+
+  const parsed = loginInputSchema.safeParse(values);
 
   if (!parsed.success) {
     return {
       error: null,
       fieldErrors: z.flattenError(parsed.error).fieldErrors,
       redirectTo: null,
+      values,
     };
   }
 
@@ -27,6 +34,7 @@ export const loginAction = async (_prev: LoginState, formData: FormData): Promis
       error: result.code === "UNKNOWN_ERROR" ? "defaultError" : result.code,
       fieldErrors: {},
       redirectTo: null,
+      values,
     };
   }
 
@@ -34,5 +42,6 @@ export const loginAction = async (_prev: LoginState, formData: FormData): Promis
     error: null,
     fieldErrors: {},
     redirectTo: getPostLoginPath(result.user.metadata.role),
+    values,
   };
 };

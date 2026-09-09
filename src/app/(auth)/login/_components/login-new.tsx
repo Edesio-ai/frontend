@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,12 +8,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTranslations } from "@/lib/i18n/client";
 import { useLogin } from "../hooks/use-login";
+import { emptyLoginFormValues } from "../state";
 import AuthTitle from "../../_components/auth-title";
 
 export default function LoginNew() {
-  const { action, pending, error, emailError, passwordError } = useLogin();
+  const { action, pending, values: serverValues, error, emailError, passwordError } = useLogin();
   const t = useTranslations().auth.login.new;
+  const [values, setValues] = useState(emptyLoginFormValues);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    setValues(serverValues);
+  }, [serverValues]);
 
   return (
     <div className="w-full max-w-[400px]">
@@ -24,7 +30,14 @@ export default function LoginNew() {
           <Label htmlFor="email" className="mb-1.5 block text-[13px] font-semibold">
             {t.email}
           </Label>
-          <Input id="email" type="email" placeholder={t.emailPlaceholder} name="email" />
+          <Input
+            id="email"
+            type="email"
+            placeholder={t.emailPlaceholder}
+            name="email"
+            value={values.email}
+            onChange={(event) => setValues((current) => ({ ...current, email: event.target.value }))}
+          />
           {emailError ? (
             <p role="alert" className="mt-1 text-sm text-destructive">
               {emailError}
@@ -48,13 +61,9 @@ export default function LoginNew() {
               placeholder={t.passwordPlaceholder}
               className="pr-10"
               name="password"
+              value={values.password}
+              onChange={(event) => setValues((current) => ({ ...current, password: event.target.value }))}
             />
-            {passwordError ? (
-              <p role="alert" className="mt-1 text-sm text-destructive">
-                {passwordError}
-              </p>
-            ) : null}
-
             <button
               type="button"
               className="absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer text-landing-subtle hover:text-primary"
@@ -64,6 +73,11 @@ export default function LoginNew() {
               {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>
           </div>
+          {passwordError ? (
+            <p role="alert" className="mt-1 text-sm text-destructive">
+              {passwordError}
+            </p>
+          ) : null}
         </div>
 
         {error ? (
@@ -71,7 +85,7 @@ export default function LoginNew() {
             {error}
           </p>
         ) : null}
-        <Button type="submit" className="mb-6 h-auto w-full py-3 text-sm font-bold">
+        <Button type="submit" className="mb-6 h-auto w-full py-3 text-sm font-bold" disabled={pending}>
           {pending ? <Loader2 className="size-4 animate-spin" /> : t.submit}
         </Button>
       </form>
