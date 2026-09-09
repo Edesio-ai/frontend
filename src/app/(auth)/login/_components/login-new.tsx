@@ -57,7 +57,7 @@ export default function LoginNew() {
 
             <button
               type="button"
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-landing-subtle"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer text-landing-subtle hover:text-primary"
               aria-label={showPassword ? t.hidePassword : t.showPassword}
               onClick={() => setShowPassword((visible) => !visible)}
             >

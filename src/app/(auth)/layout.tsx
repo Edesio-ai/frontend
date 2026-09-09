@@ -14,8 +14,10 @@ export default function LoginLayout({ children }: { children: React.ReactNode })
           <div className="flex shrink-0 justify-end px-5 pt-5 sm:px-10">
             <LanguageSwitcher variant="segmented" refreshServer />
           </div>
-          <div className="flex min-h-0 flex-1 items-center justify-center px-5 pb-10 pt-6 sm:px-10 sm:pb-[60px]">
-            {children}
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center px-5 py-6 sm:px-10 sm:pb-[60px]">
+              {children}
+            </div>
           </div>
         </div>
       </div>

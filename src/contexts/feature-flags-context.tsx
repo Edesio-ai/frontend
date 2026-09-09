@@ -15,6 +15,7 @@ type FeatureFlagsContextValue = {
   resetOverrides: () => void;
   overrides: FeatureFlagOverrides;
   flagKeys: FeatureFlagKey[];
+  hydrated: boolean;
 };
 
 const FeatureFlagsContext = createContext<FeatureFlagsContextValue | null>(null);
@@ -69,8 +70,9 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
       resetOverrides,
       overrides,
       flagKeys: FEATURE_FLAG_KEYS,
+      hydrated,
     }),
-    [isEnabled, setEnabled, resetOverrides, overrides],
+    [isEnabled, setEnabled, resetOverrides, overrides, hydrated],
   );
 
   return <FeatureFlagsContext.Provider value={value}>{children}</FeatureFlagsContext.Provider>;
@@ -87,4 +89,8 @@ export function useFeatureFlagsContext(): FeatureFlagsContextValue {
 export function useFeatureFlag(key: FeatureFlagKey): boolean {
   const { isEnabled } = useFeatureFlagsContext();
   return isEnabled(key);
+}
+
+export function useFeatureFlagsHydrated(): boolean {
+  return useFeatureFlagsContext().hydrated;
 }
