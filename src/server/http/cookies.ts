@@ -36,3 +36,11 @@ export async function applyBackendSetCookies(response: Response): Promise<void> 
     });
   }
 }
+
+export async function getOutgoingCookieHeader(): Promise<string> {
+  const jar = await cookies();
+  return jar
+    .getAll()
+    .map(({ name, value }) => `${name}=${value}`)
+    .join("; ");
+}

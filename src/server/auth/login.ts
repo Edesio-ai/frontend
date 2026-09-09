@@ -16,5 +16,5 @@ export const login = async (input: LoginInput): Promise<LoginResult> => {
 
   const data = await response.json();
   await applyBackendSetCookies(response);
-  return { ok: true, user: data };
+  return { ok: true, data };
 };

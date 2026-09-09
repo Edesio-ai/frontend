@@ -1,3 +1,4 @@
+import { ApiResponse } from "./teaching/global.type";
 import { User } from "./user.type";
 
 export const USER_ROLE = {
@@ -27,4 +28,4 @@ export interface UserMetadata {
   invitationToken?: string;
 }
 
-export type LoginResult = { ok: true; user: User } | { ok: false; code: string; message: string };
+export type LoginResult = ApiResponse<User>;

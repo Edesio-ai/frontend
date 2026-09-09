@@ -1,3 +1,5 @@
+import { getOutgoingCookieHeader } from "./cookies";
+
 const getBackendUrl = () => {
   const url = process.env.BACKEND_URL;
   if (!url) {
@@ -14,5 +16,12 @@ export const backendFetch = async (url: string, init: RequestInit) => {
       ...init.headers,
     },
     cache: "no-store",
+  });
+};
+
+export const authenticatedBackendFetch = async (url: string, init: RequestInit = {}) => {
+  return backendFetch(url, {
+    ...init,
+    headers: { ...init.headers, cookie: await getOutgoingCookieHeader() },
   });
 };
