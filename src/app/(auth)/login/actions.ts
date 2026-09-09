@@ -41,7 +41,7 @@ export const loginAction = async (_prev: LoginState, formData: FormData): Promis
   return {
     error: null,
     fieldErrors: {},
-    redirectTo: getPostLoginPath(result.user.metadata.role),
+    redirectTo: getPostLoginPath(result.data.metadata.role),
     values,
   };
 };
