@@ -814,7 +814,24 @@
       "paymentPendingDesc": "Your payment is being processed or requires action. If you just subscribed, please wait a moment and refresh the page.",
       "bankHint": "If the issue persists, check that your bank hasn't blocked the payment, or contact us.",
       "managePayment": "Manage payment",
-      "refreshPage": "Refresh page"
+      "refreshPage": "Refresh page",
+      "new": {
+        "kickerSubscription": "Subscription",
+        "kickerPayment": "Payment",
+        "requiredTitle": "Activate your subscription",
+        "requiredDesc": "Choose a plan to access your Edesio workspace.",
+        "inactiveTitle": "Inactive subscription",
+        "inactiveDesc": "Your subscription has been suspended. Reactivate it to continue.",
+        "paymentPendingTitle": "Payment pending",
+        "paymentPendingDesc": "Your bank still needs to validate the transaction. This may take a few minutes.",
+        "bankHint": "Check your banking app to confirm the payment.",
+        "subscribe": "Subscribe",
+        "reactivate": "Reactivate my subscription",
+        "managePayment": "Manage payment",
+        "refreshPage": "Refresh page",
+        "contactQuestion": "Have a question?",
+        "contactStuck": "Still stuck?"
+      }
     },
     "planDetails": {
       "self-learner": {
@@ -1064,6 +1081,10 @@
       "AuthNewDesign": {
         "label": "New authentication page design",
         "description": "New authentication page design. Off in production until rollout is complete."
+      },
+      "EstablishmentDashboardNewDesign": {
+        "label": "Establishment dashboard new design",
+        "description": "Establishment dashboard new design. Off in production until rollout is complete."
       }
     }
   },

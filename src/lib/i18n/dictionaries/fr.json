@@ -814,7 +814,24 @@
       "paymentPendingDesc": "Votre paiement est en cours de traitement ou nécessite une action. Si vous venez de vous abonner, patientez un instant puis actualisez la page.",
       "bankHint": "Si le problème persiste, vérifiez que votre banque n'a pas bloqué le paiement, ou contactez-nous.",
       "managePayment": "Gérer le paiement",
-      "refreshPage": "Actualiser la page"
+      "refreshPage": "Actualiser la page",
+      "new": {
+        "kickerSubscription": "Abonnement",
+        "kickerPayment": "Paiement",
+        "requiredTitle": "Activez votre abonnement",
+        "requiredDesc": "Un abonnement actif est nécessaire pour accéder à votre espace Edesio.",
+        "inactiveTitle": "Abonnement inactif",
+        "inactiveDesc": "Votre abonnement a été suspendu. Réactivez-le pour continuer.",
+        "paymentPendingTitle": "Paiement en attente",
+        "paymentPendingDesc": "Votre banque doit encore valider la transaction, cela peut prendre quelques minutes.",
+        "bankHint": "Vérifiez votre application bancaire pour confirmer le paiement.",
+        "subscribe": "S'abonner",
+        "reactivate": "Réactiver mon abonnement",
+        "managePayment": "Gérer le paiement",
+        "refreshPage": "Actualiser la page",
+        "contactQuestion": "Une question ?",
+        "contactStuck": "Toujours bloqué ?"
+      }
     },
     "planDetails": {
       "self-learner": {
@@ -1064,6 +1081,10 @@
       "AuthNewDesign": {
         "label": "Nouveau design des pages d'authentification",
         "description": "Design des pages d'authentification. Désactivé en production tant que le rollout n'est pas terminé."
+      },
+      "EstablishmentDashboardNewDesign": {
+        "label": "Nouveau design du dashboard établissement",
+        "description": "Design du dashboard établissement. Désactivé en production tant que le rollout n'est pas terminé."
       }
     }
   },

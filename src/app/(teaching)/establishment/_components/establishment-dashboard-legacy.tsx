@@ -1,0 +1,101 @@
+"use client";
+
+import { useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { BookOpen, GraduationCap, Users } from "lucide-react";
+import { SubscriptionBlockModal } from "@/components/SubscriptionBlockModal";
+import { StatsCard } from "@/components/establishment/StatsCard";
+import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/lib/i18n/client";
+import { canAccessModule, getPostLoginPath, USER_ROLE } from "@/utils/functions/role.utils";
+import { useEstablishment } from "../_contexts/establishment-context";
+import { EstablishmentSkeleton } from "./skeleton";
+import { ErrorModal } from "./error-modal";
+import { EstablishmentHeader } from "./establishment-header";
+import { InvitationSection } from "./invitation-section";
+import { TeacherSection } from "./teacher-section";
+
+export default function EstablishmentDashboardLegacy() {
+  const t = useTranslations();
+  const router = useRouter();
+  const { getUserRole, loading: authLoading, user } = useAuth();
+  const { stats, loading, error } = useEstablishment();
+
+  const statsDashboard = useMemo(() => {
+    const pluralLabel = (count: number, one: string, other: string) => (count === 1 ? one : other);
+
+    return [
+      {
+        title: pluralLabel(stats.totalTeachers, t.establishment.teachers_one, t.establishment.teachers_other),
+        value: stats.totalTeachers,
+        icon: GraduationCap,
+        loading,
+      },
+      {
+        title: pluralLabel(stats.totalSessions, t.establishment.classes_one, t.establishment.classes_other),
+        value: stats.totalSessions,
+        icon: BookOpen,
+        loading,
+      },
+      {
+        title: pluralLabel(stats.totalStudents, t.establishment.students_one, t.establishment.students_other),
+        value: stats.totalStudents,
+        icon: Users,
+        loading,
+      },
+    ];
+  }, [stats, t, loading]);
+
+  const role = getUserRole();
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+
+    if (role && !canAccessModule(role, USER_ROLE.establishment)) {
+      router.replace(getPostLoginPath(role));
+    }
+  }, [authLoading, user, role, router]);
+
+  if (authLoading) {
+    return <EstablishmentSkeleton />;
+  }
+
+  if (!user || (role && !canAccessModule(role, USER_ROLE.establishment))) {
+    return null;
+  }
+
+  if (loading) {
+    return <EstablishmentSkeleton />;
+  }
+
+  if (error) {
+    return <ErrorModal error={error} />;
+  }
+
+  return (
+    <SubscriptionBlockModal>
+      <div className="min-h-screen bg-muted/30">
+        <EstablishmentHeader />
+        <main className="mx-auto max-w-6xl space-y-8 px-6 py-8">
+          <div className="grid gap-4 md:grid-cols-3">
+            {statsDashboard.map((stat) => (
+              <StatsCard
+                key={stat.title}
+                title={stat.title}
+                value={stat.value}
+                icon={stat.icon}
+                loading={stat.loading}
+              />
+            ))}
+          </div>
+          <InvitationSection />
+          <TeacherSection />
+        </main>
+      </div>
+    </SubscriptionBlockModal>
+  );
+}
