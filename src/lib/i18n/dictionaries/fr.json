@@ -149,22 +149,67 @@
         "alreadyHaveAccount": "Vous avez déjà un compte ?",
         "login": "Se connecter",
         "changeProfile": "Changer de profil",
+        "firstName": "Prénom",
+        "firstNamePlaceholder": "Jean",
+        "lastName": "Nom",
+        "lastNamePlaceholder": "Dupont",
+        "email": "Adresse e-mail",
+        "emailPlaceholder": "jean.dupont@education.fr",
+        "password": "Mot de passe",
+        "passwordPlaceholder": "••••••••",
+        "confirmPassword": "Confirmer le mot de passe",
+        "showPassword": "Afficher le mot de passe",
+        "hidePassword": "Masquer le mot de passe",
+        "establishment": "Établissement",
+        "establishmentOptional": "(optionnel)",
+        "establishmentPlaceholder": "Lycée Victor Hugo",
+        "establishmentNameLabel": "Nom de l'établissement",
+        "acceptTerms": "J'accepte les",
+        "termsLink": "conditions générales d'utilisation",
+        "and": "et la",
+        "privacyLink": "politique de confidentialité",
+        "submit": "Créer mon compte",
+        "submitting": "Création en cours...",
+        "defaultError": "Échec de l'inscription.",
+        "signInError": "Compte créé mais impossible de vous connecter. Essayez de vous connecter manuellement.",
+        "firstNameRequired": "Le prénom est requis",
+        "lastNameRequired": "Le nom est requis",
+        "emailRequired": "L'adresse e-mail est requise",
+        "emailInvalid": "Adresse e-mail invalide",
+        "passwordRequired": "Le mot de passe est requis",
+        "passwordWeak": "Le mot de passe ne respecte pas tous les critères",
+        "confirmPasswordRequired": "Veuillez confirmer votre mot de passe",
+        "passwordMismatch": "Les mots de passe ne correspondent pas",
+        "acceptRequired": "Vous devez accepter les conditions générales",
+        "establishmentRequired": "Le nom de l'établissement est requis",
+        "passwordCriteria": {
+          "minLength": "Au moins 12 caractères",
+          "uppercase": "Une lettre majuscule",
+          "lowercase": "Une lettre minuscule",
+          "number": "Un chiffre",
+          "special": "Un caractère spécial",
+          "match": "Les deux mots de passe sont identiques"
+        },
         "roles": {
           "solo": {
             "title": "Edesio Solo",
-            "description": "Créez vos propres révisions et entraînez-vous avec l'IA"
+            "description": "Créez vos propres révisions et entraînez-vous avec l'IA",
+            "chip": "Edesio Solo"
           },
           "student": {
             "title": "Je suis élève",
-            "description": "Rejoignez une session de votre professeur"
+            "description": "Rejoignez une session de votre professeur",
+            "chip": "Compte Élève"
           },
           "teacher": {
             "title": "Je suis professeur",
-            "description": "Créez une classe et faites réviser vos élèves"
+            "description": "Créez une classe et faites réviser vos élèves",
+            "chip": "Compte Professeur"
           },
           "establishment": {
             "title": "Je suis un établissement",
-            "description": "Gérez vos professeurs et suivez l'activité"
+            "description": "Gérez vos professeurs et suivez l'activité",
+            "chip": "Compte Établissement"
           }
         }
       }

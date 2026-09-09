@@ -149,22 +149,67 @@
         "alreadyHaveAccount": "Already have an account?",
         "login": "Log in",
         "changeProfile": "Change profile",
+        "firstName": "First name",
+        "firstNamePlaceholder": "John",
+        "lastName": "Last name",
+        "lastNamePlaceholder": "Doe",
+        "email": "Email address",
+        "emailPlaceholder": "john.doe@school.com",
+        "password": "Password",
+        "passwordPlaceholder": "••••••••",
+        "confirmPassword": "Confirm password",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
+        "establishment": "Institution",
+        "establishmentOptional": "(optional)",
+        "establishmentPlaceholder": "Victor Hugo High School",
+        "establishmentNameLabel": "Institution name",
+        "acceptTerms": "I accept the",
+        "termsLink": "terms of service",
+        "and": "and the",
+        "privacyLink": "privacy policy",
+        "submit": "Create my account",
+        "submitting": "Creating account...",
+        "defaultError": "Registration failed.",
+        "signInError": "Account created but we couldn't sign you in. Please try logging in manually.",
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "emailRequired": "Email address is required",
+        "emailInvalid": "Invalid email address",
+        "passwordRequired": "Password is required",
+        "passwordWeak": "Password does not meet all requirements",
+        "confirmPasswordRequired": "Please confirm your password",
+        "passwordMismatch": "Passwords do not match",
+        "acceptRequired": "You must accept the terms and conditions",
+        "establishmentRequired": "Institution name is required",
+        "passwordCriteria": {
+          "minLength": "At least 12 characters",
+          "uppercase": "One uppercase letter",
+          "lowercase": "One lowercase letter",
+          "number": "One number",
+          "special": "One special character",
+          "match": "Both passwords match"
+        },
         "roles": {
           "solo": {
             "title": "Edesio Solo",
-            "description": "Create your own revision materials and train with AI"
+            "description": "Create your own revision materials and train with AI",
+            "chip": "Edesio Solo"
           },
           "student": {
             "title": "I am a student",
-            "description": "Join your teacher's session"
+            "description": "Join your teacher's session",
+            "chip": "Student Account"
           },
           "teacher": {
             "title": "I am a teacher",
-            "description": "Create a class and help your students revise"
+            "description": "Create a class and help your students revise",
+            "chip": "Teacher Account"
           },
           "establishment": {
             "title": "I am an institution",
-            "description": "Manage your teachers and track activity"
+            "description": "Manage your teachers and track activity",
+            "chip": "Institution Account"
           }
         }
       }
