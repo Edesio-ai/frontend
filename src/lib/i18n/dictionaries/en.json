@@ -1095,6 +1095,14 @@
     "backHome": "Back to home",
     "copyright": "© {year} Edesio"
   },
+  "errorPage": {
+    "codeLabel": "Error {status}",
+    "defaultTitle": "Something went wrong",
+    "detailsLabel": "Technical details",
+    "retry": "Try again",
+    "contactHint": "Still having issues?",
+    "contactEmail": "edesio.founders@gmail.com"
+  },
   "landing": {
     "navbar": {
       "links": {

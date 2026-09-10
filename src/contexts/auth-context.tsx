@@ -4,6 +4,7 @@ import { UserRole } from "@/types";
 import { User } from "@/types/user.type";
 import { useLocale } from "@/lib/i18n/client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { logoutAction } from "@/app/(auth)/_actions/logout-action";
 
 interface AuthContextType {
   user: User | null;
@@ -73,7 +74,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   const logout = useCallback(async () => {
-    await authService.logout();
+    const result = await logoutAction();
+    if (!result.ok) {
+      console.warn("Logout failed:", result.message);
+    }
+
     setUser(null);
     setRole(null);
     await ensureCsrf();

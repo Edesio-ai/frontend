@@ -1,6 +1,7 @@
 import { getCookie } from "./cookies";
 import { authService } from "@/services/auth.service";
 import { ApiError } from "@/lib/api-error";
+import { logoutAction } from "@/app/(auth)/_actions/logout-action";
 
 let csrfInitPromise: Promise<unknown> | null = null;
 
@@ -49,7 +50,7 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
       `HTTP ${response.status}`;
     const code = typeof err?.code === "string" ? err.code : undefined;
     if (code === "TOKEN_USER_NOT_FOUND") {
-      await authService.logout();
+      await logoutAction();
       window.location.href = "/login";
     }
     if (code === "ESTABLISHMENT_NOT_FOUND") {

@@ -93,11 +93,6 @@ export const authService = {
         : { method: "GET" },
     );
   },
-  async logout(): Promise<Record<string, unknown>> {
-    return await apiFetch<Record<string, unknown>>("/api/auth/logout", {
-      method: "POST",
-    });
-  },
   async signupTeacherByInvitation(body: TeacherInvitationSignupBody): Promise<Record<string, unknown>> {
     return await apiFetch<Record<string, unknown>>("/api/auth/register/teacher", {
       method: "POST",

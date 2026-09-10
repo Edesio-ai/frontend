@@ -44,3 +44,7 @@ export async function getOutgoingCookieHeader(): Promise<string> {
     .map(({ name, value }) => `${name}=${value}`)
     .join("; ");
 }
+
+export async function getCsrfToken(): Promise<string> {
+  return (await cookies()).get("csrf_token")?.value ?? "";
+}

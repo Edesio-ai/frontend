@@ -1095,6 +1095,14 @@
     "backHome": "Retour à l'accueil",
     "copyright": "© {year} Edesio"
   },
+  "errorPage": {
+    "codeLabel": "Erreur {status}",
+    "defaultTitle": "Quelque chose s'est mal passé",
+    "detailsLabel": "Détail technique",
+    "retry": "Réessayer",
+    "contactHint": "Le problème persiste ?",
+    "contactEmail": "edesio.founders@gmail.com"
+  },
   "landing": {
     "navbar": {
       "links": {

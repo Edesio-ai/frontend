@@ -20,7 +20,7 @@ export const register = async (body: RegisterBody) => {
 
   if (!response.ok) {
     const error = await response.json();
-    return { ok: false, code: error.code, message: error.message };
+    return { ok: false, code: error.code, message: error.message, status: response.status };
   }
 
   return { ok: true };
