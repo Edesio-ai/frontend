@@ -719,7 +719,18 @@
     "email": "Email",
     "classesCount": "{count} class(es)",
     "inviteTeachersHint": "Share an invitation code so teachers can join",
-    "createCodeHint": "Create a code to allow teachers to join your institution"
+    "createCodeHint": "Create a code to allow teachers to join your institution",
+    "sidebar": {
+      "backToHub": "Back to hub",
+      "establishmentRole": "Institution",
+      "direction": "Management",
+      "administrator": "Administrator",
+      "nav": {
+        "overview": "Overview",
+        "teachers": "Teachers",
+        "invitations": "Invitations"
+      }
+    }
   },
   "dashboard": {
     "sessionCard": {

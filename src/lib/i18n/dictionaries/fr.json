@@ -719,7 +719,18 @@
     "email": "Email",
     "classesCount": "{count} classe(s)",
     "inviteTeachersHint": "Partagez un code d'invitation pour que les professeurs puissent rejoindre",
-    "createCodeHint": "Créez un code pour permettre aux professeurs de rejoindre votre établissement"
+    "createCodeHint": "Créez un code pour permettre aux professeurs de rejoindre votre établissement",
+    "sidebar": {
+      "backToHub": "Retour au hub",
+      "establishmentRole": "Établissement",
+      "direction": "Direction",
+      "administrator": "Administrateur",
+      "nav": {
+        "overview": "Vue d'ensemble",
+        "teachers": "Enseignants",
+        "invitations": "Invitations"
+      }
+    }
   },
   "dashboard": {
     "sessionCard": {
