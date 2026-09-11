@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Building2, GraduationCap, LayoutDashboard, LayoutGrid, LogOut, Mail } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Building2, GraduationCap, LayoutDashboard, LayoutGrid, LogOut, Mail, X } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "@/lib/i18n/client";
@@ -10,26 +10,37 @@ import { cn } from "@/lib/utils";
 import { isAdmin } from "@/utils/functions/role.utils";
 import { getNameParts, getUserDisplayName, getUserInitials } from "@/utils/functions/user.utils";
 import { useEstablishment } from "../_contexts/establishment-context";
+import type { EstablishmentNavTab } from "../_utils/establishment-nav";
 
-export type EstablishmentNavTab = "overview" | "teachers" | "invitations";
-
-const NAV_ITEMS: { id: EstablishmentNavTab; icon: typeof LayoutDashboard }[] = [
-  { id: "overview", icon: LayoutDashboard },
-  { id: "teachers", icon: GraduationCap },
-  { id: "invitations", icon: Mail },
+const NAV_ITEMS: {
+  id: EstablishmentNavTab;
+  icon: typeof LayoutDashboard;
+  href: string;
+}[] = [
+  { id: "overview", icon: LayoutDashboard, href: "/establishment/overview" },
+  { id: "teachers", icon: GraduationCap, href: "/establishment/teachers" },
+  { id: "invitations", icon: Mail, href: "/establishment/invitations" },
 ];
 
+function getActiveTab(pathname: string): EstablishmentNavTab {
+  if (pathname.startsWith("/establishment/teachers")) return "teachers";
+  if (pathname.startsWith("/establishment/invitations")) return "invitations";
+  return "overview";
+}
+
 type EstablishmentAsideProps = {
-  activeTab?: EstablishmentNavTab;
-  onTabChange?: (tab: EstablishmentNavTab) => void;
+  mobileOpen: boolean;
+  onClose: () => void;
 };
 
-export function EstablishmentAside({ activeTab = "overview", onTabChange }: EstablishmentAsideProps) {
+export function EstablishmentAside({ mobileOpen, onClose }: EstablishmentAsideProps) {
   const translations = useTranslations();
   const t = translations.establishment.sidebar;
   const { establishment } = useEstablishment();
   const { user, logout, getUserRole } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const activeTab = getActiveTab(pathname);
 
   const { firstname, lastname } = getNameParts(user?.metadata);
   const establishmentName = establishment?.name ?? "—";
@@ -41,7 +52,13 @@ export function EstablishmentAside({ activeTab = "overview", onTabChange }: Esta
   };
 
   return (
-    <aside className="sticky top-0 flex h-screen w-[236px] shrink-0 flex-col border-r border-border bg-background">
+    <aside
+      className={cn(
+        "fixed top-0 left-0 z-30 flex h-screen w-[236px] shrink-0 flex-col border-r border-border bg-background transition-transform duration-200 ease-out",
+        mobileOpen ? "translate-x-0" : "-translate-x-full",
+        "min-[860px]:sticky min-[860px]:translate-x-0",
+      )}
+    >
       <div className="flex items-center justify-between gap-2 px-4 pt-4">
         {showHubLink ? (
           <Link
@@ -62,22 +79,31 @@ export function EstablishmentAside({ activeTab = "overview", onTabChange }: Esta
         <div className="flex size-8 shrink-0 items-center justify-center rounded-[9px] bg-primary">
           <Building2 className="size-[17px] text-primary-foreground" />
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-bold leading-tight text-foreground">{establishmentName}</p>
           <p className="text-[11px] text-landing-subtle">{t.establishmentRole}</p>
         </div>
+        <button
+          type="button"
+          className="ml-auto inline-flex shrink-0 border-none bg-transparent p-1 text-zinc-500 min-[860px]:hidden"
+          onClick={onClose}
+          aria-label="Fermer le menu"
+          data-testid="button-close-establishment-nav"
+        >
+          <X className="size-[18px]" />
+        </button>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-0.5 p-3">
-        {NAV_ITEMS.map(({ id, icon: Icon }) => {
+      <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto p-3">
+        {NAV_ITEMS.map(({ id, icon: Icon, href }) => {
           const isActive = activeTab === id;
           return (
-            <button
+            <Link
               key={id}
-              type="button"
-              onClick={() => onTabChange?.(id)}
+              href={href}
+              onClick={onClose}
               className={cn(
-                "flex w-full items-center gap-2.5 rounded-lg border-none px-3 py-2.5 text-left text-sm transition-colors",
+                "flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm no-underline transition-colors",
                 isActive
                   ? "bg-primary-muted font-semibold text-primary"
                   : "bg-transparent font-medium text-zinc-700 hover:bg-zinc-50",
@@ -86,7 +112,7 @@ export function EstablishmentAside({ activeTab = "overview", onTabChange }: Esta
             >
               <Icon className="size-[17px] shrink-0" />
               <span>{t.nav[id]}</span>
-            </button>
+            </Link>
           );
         })}
       </nav>
