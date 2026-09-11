@@ -1,9 +1,9 @@
 "use client";
 
-import { EstablishmentNavProvider, useEstablishmentNav } from "../_contexts/establishment-nav-context";
+import { useEstablishmentNav } from "../_contexts/establishment-nav-context";
 import { EstablishmentAside } from "./establishment-aside";
 
-function EstablishmentShellContent({ children }: { children: React.ReactNode }) {
+export function EstablishmentShell({ children }: { children: React.ReactNode }) {
   const { mobileNavOpen, closeMobileNav } = useEstablishmentNav();
 
   return (
@@ -20,13 +20,5 @@ function EstablishmentShellContent({ children }: { children: React.ReactNode }) 
       <EstablishmentAside mobileOpen={mobileNavOpen} onClose={closeMobileNav} />
       <main className="flex min-w-0 flex-1 flex-col">{children}</main>
     </div>
-  );
-}
-
-export function EstablishmentShell({ children }: { children: React.ReactNode }) {
-  return (
-    <EstablishmentNavProvider>
-      <EstablishmentShellContent>{children}</EstablishmentShellContent>
-    </EstablishmentNavProvider>
   );
 }

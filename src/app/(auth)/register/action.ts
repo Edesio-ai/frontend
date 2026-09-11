@@ -31,13 +31,13 @@ function getRegisterRedirectPath(role: PublicRole): string {
     return "/student";
   }
 
-  const planByRole = {
+  const routeByRole = {
     [USER_ROLE.selfLearner]: "self-learner",
     [USER_ROLE.teacher]: "teacher",
-    [USER_ROLE.establishment]: "establishment",
+    [USER_ROLE.establishment]: "/establishment/overview",
   } as const;
 
-  return `/billing/choose-plan?plan=${planByRole[role]}`;
+  return routeByRole[role];
 }
 
 const REGISTER_SCHEMAS = {

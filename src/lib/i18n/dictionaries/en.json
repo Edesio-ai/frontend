@@ -806,6 +806,7 @@
     "perMonth": "/mo",
     "perYear": "/yr",
     "orPerYear": "or {price}/yr",
+    "orPerMonth": "or {price}/mo",
     "noCommitment": "No commitment",
     "easyCancel": "Easy cancellation",
     "classInfo": "1 class = 1 complete educational module with AI",
@@ -841,7 +842,14 @@
         "managePayment": "Manage payment",
         "refreshPage": "Refresh page",
         "contactQuestion": "Have a question?",
-        "contactStuck": "Still stuck?"
+        "contactStuck": "Still stuck?",
+        "periodLabel": "Choose your billing period",
+        "errors": {
+          "checkoutUnavailable": "Unable to start checkout. Please try again.",
+          "checkoutFailed": "Something went wrong during checkout. Please try again.",
+          "validationError": "The billing information is invalid.",
+          "subscriptionCheckFailed": "Unable to verify subscription status."
+        }
       }
     },
     "planDetails": {

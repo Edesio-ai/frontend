@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/lib/i18n/client";
 import { runAuthenticatedAction } from "@/lib/auth/run-authenticated-action";
 import { getSubscriptionStatusAction } from "../../_actions/subscription-actions";
 
@@ -11,6 +12,7 @@ export type EstablishmentSubscriptionError = {
 };
 
 export function useEstablishmentSubscription() {
+  const errors = useTranslations().billing.blockModal.new.errors;
   const { logout } = useAuth();
   const [loading, setLoading] = useState(true);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(true);
@@ -29,13 +31,13 @@ export function useEstablishmentSubscription() {
 
         setError({
           status: response.status,
-          message: response.message ?? "error",
+          message: errors.subscriptionCheckFailed,
         });
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [logout]);
+  }, [errors.subscriptionCheckFailed, logout]);
 
   return { loading, hasActiveSubscription, error };
 }

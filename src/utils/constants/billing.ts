@@ -1,6 +1,7 @@
 import { User, Users, Building2 } from "lucide-react";
 import { Plan } from "@/types";
 import type { Locale } from "@/lib/i18n/config";
+import { ANNUAL_DISCOUNT_PERCENT } from "@/utils/functions/price.utils";
 
 type StripeLang = "FR" | "EN";
 
@@ -134,4 +135,4 @@ export function getPlans(locale: Locale): Plan[] {
 /** @deprecated Prefer getPlans(locale) so Stripe IDs follow the active language. */
 export const plans: Plan[] = getPlans("fr");
 
-export const annualDiscountPercent = 15;
+export const annualDiscountPercent = ANNUAL_DISCOUNT_PERCENT;
