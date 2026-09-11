@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatPlanPrice, getDiscountedMonthly } from "./pricing-format";
+import { formatPlanPrice, getDiscountedMonthly } from "@/utils/functions/price.utils";
 import { getPricingPlanHref } from "./pricing-plan-links";
 
 type PricingPlanCardProps = {

@@ -1,9 +1,9 @@
 "use server";
 
 import { getSubscriptionStatus } from "@/server/billing/subscription";
-import { ApiResponse } from "@/types/teaching/global.type";
-import { SubscriptionStatus } from "@/types";
+import type { SubscriptionStatus } from "@/types";
+import type { ApiResponse } from "@/types/teaching/global.type";
 
 export async function getSubscriptionStatusAction(): Promise<ApiResponse<SubscriptionStatus>> {
-  return await getSubscriptionStatus();
+  return getSubscriptionStatus();
 }

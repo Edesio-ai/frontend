@@ -11,3 +11,7 @@ export function formatPlanPrice(price: number, locale: string): string {
 export function getDiscountedMonthly(monthlyPrice: number): number {
   return monthlyPrice * (1 - ANNUAL_DISCOUNT_PERCENT / 100);
 }
+
+export function getDiscountedAnnual(monthlyPrice: number): number {
+  return getDiscountedMonthly(monthlyPrice) * 12;
+}

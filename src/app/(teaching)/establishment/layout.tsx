@@ -1,10 +1,10 @@
-import { EstablishmentShell } from "./_components/establishment-shell";
+import { EstablishmentLayoutGate } from "./_components/establishment-layout-gate";
 import { EstablishmentProvider } from "./_contexts/establishment-context";
 
 export default function EstablishmentLayout({ children }: { children: React.ReactNode }) {
   return (
     <EstablishmentProvider>
-      <EstablishmentShell>{children}</EstablishmentShell>
+      <EstablishmentLayoutGate>{children}</EstablishmentLayoutGate>
     </EstablishmentProvider>
   );
 }

@@ -806,6 +806,7 @@
     "perMonth": "/mois",
     "perYear": "/an",
     "orPerYear": "soit {price}/an",
+    "orPerMonth": "soit {price}/mois",
     "noCommitment": "Sans engagement",
     "easyCancel": "Résiliation facile",
     "classInfo": "1 classe = 1 module pédagogique complet avec IA",
@@ -841,7 +842,14 @@
         "managePayment": "Gérer le paiement",
         "refreshPage": "Actualiser la page",
         "contactQuestion": "Une question ?",
-        "contactStuck": "Toujours bloqué ?"
+        "contactStuck": "Toujours bloqué ?",
+        "periodLabel": "Choisissez votre facturation",
+        "errors": {
+          "checkoutUnavailable": "Impossible de démarrer le paiement. Veuillez réessayer.",
+          "checkoutFailed": "Une erreur est survenue lors du paiement. Veuillez réessayer.",
+          "validationError": "Les informations de facturation sont invalides.",
+          "subscriptionCheckFailed": "Impossible de vérifier le statut de l'abonnement."
+        }
       }
     },
     "planDetails": {
