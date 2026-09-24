@@ -1,8 +1,23 @@
 import { apiFetch } from "@/lib/api-client";
 import { getCookie } from "@/lib/cookies";
 import { defaultLocale, type Locale } from "@/lib/i18n/config";
-import { UserRole } from "@/types";
+import { EstablishmentAddress, EstablishmentType, UserRole } from "@/types";
 import { User } from "@/types/user.type";
+
+export type RegisterEstablishmentBody = {
+  role: "establishment";
+  type: EstablishmentType;
+  name: string;
+  address: EstablishmentAddress;
+  contact: {
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+    acceptTerms: boolean;
+  };
+  locale?: Locale;
+};
 
 type AuthSessionResponse = {
   user: User | null;
@@ -65,6 +80,12 @@ export const authService = {
       locale,
     };
 
+    return await apiFetch<{ success: boolean }>("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  },
+  async registerEstablishment(body: RegisterEstablishmentBody): Promise<{ success: boolean }> {
     return await apiFetch<{ success: boolean }>("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(body),

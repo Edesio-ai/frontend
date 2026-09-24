@@ -8,15 +8,15 @@ export default function LoginLayout({ children }: { children: React.ReactNode })
 
   if (newAuthDesign) {
     return (
-      <div className="flex h-dvh min-h-0 overflow-hidden font-sans">
+      <div className="relative flex h-dvh overflow-hidden font-sans">
         <AuthAside />
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background">
           <div className="flex shrink-0 justify-end px-5 pt-5 sm:px-10">
             <LanguageSwitcher variant="segmented" refreshServer />
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center px-5 py-6 sm:px-10 sm:pb-[60px]">
-              {children}
+          <div className="relative min-h-0 flex-1 overflow-y-auto">
+            <div className="flex min-h-full flex-col px-5 py-6 sm:px-10 sm:pb-[60px]">
+              <div className="mx-auto my-auto flex w-full justify-center">{children}</div>
             </div>
           </div>
         </div>

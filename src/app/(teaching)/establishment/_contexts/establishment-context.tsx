@@ -60,23 +60,6 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
     totalStudents: 0,
   });
 
-  const insertEstablishment = useCallback(
-    async (name: string) => {
-      try {
-        const created = await establishmentService.createEstablishment(user?.id || "", name, user?.email || "");
-        setEstablishment(created);
-        setStats({ totalTeachers: 0, totalSessions: 0, totalStudents: 0 });
-        setTeachers([]);
-        return created;
-      } catch (err) {
-        const message = err instanceof Error ? err.message : t.hooks.establishment.error;
-        console.error("Error creating establishment:", message);
-        setError(t.hooks.establishment.profileError);
-      }
-    },
-    [user, t],
-  );
-
   const getEstablishmentStats = useCallback(async () => {
     try {
       const response = await establishmentService.getEstablishmentStats();
@@ -86,23 +69,11 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
       return response;
     } catch (err) {
       const message = err instanceof Error ? err.message : t.hooks.establishment.error;
-      if (message.includes("Establishment not found")) {
-        if (user) {
-          const name =
-            user.metadata?.establishment ||
-            (user.metadata?.firstname && user.metadata?.lastname
-              ? `${user.metadata.firstname} ${user.metadata.lastname}`
-              : "Établissement");
-
-          await insertEstablishment(name);
-          return;
-        }
-      }
       setError(message || t.hooks.establishment.error);
     } finally {
       setLoading(false);
     }
-  }, [user, t, insertEstablishment]);
+  }, [t]);
 
   const fetchEtablissementData = useCallback(async () => {
     if (!user) {

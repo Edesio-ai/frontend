@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PASSWORD_COMPLEXITY_REGEX, PASSWORD_MIN_LENGTH } from "@/lib/password-criteria";
+import { ESTABLISHMENT_COUNTRIES, ESTABLISHMENT_TYPES } from "@/types";
 
 export const loginInputSchema = z.object({
   email: z.email({
@@ -34,14 +35,23 @@ function withPasswordMatch<T extends z.ZodType<{ password: string; confirmPasswo
 
 export const registerSelfLearnerInputSchema = withPasswordMatch(registerBaseSchema);
 
-export const registerTeacherInputSchema = withPasswordMatch(
-  registerBaseSchema.extend({ establishment: z.string().optional() }),
-);
+export const registerTeacherInputSchema = withPasswordMatch(registerBaseSchema);
 
 export const registerStudentInputSchema = registerTeacherInputSchema;
 
+const establishmentTypeSchema = z.string().trim().min(1, "establishmentTypeRequired").pipe(z.enum(ESTABLISHMENT_TYPES));
+
+const establishmentCountrySchema = z.string().trim().min(1, "countryRequired").pipe(z.enum(ESTABLISHMENT_COUNTRIES));
+
 export const registerEstablishmentInputSchema = withPasswordMatch(
-  registerBaseSchema.extend({ establishment: z.string().min(1, "establishmentRequired") }),
+  registerBaseSchema.extend({
+    establishmentName: z.string().trim().min(1, "establishmentRequired"),
+    establishmentType: establishmentTypeSchema,
+    addressStreet: z.string().trim().min(1, "streetRequired"),
+    addressZipCode: z.string().trim().min(1, "zipCodeRequired"),
+    addressCity: z.string().trim().min(1, "cityRequired"),
+    addressCountry: establishmentCountrySchema,
+  }),
 );
 
 export type LoginInput = z.infer<typeof loginInputSchema>;

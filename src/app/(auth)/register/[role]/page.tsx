@@ -38,7 +38,6 @@ export default function RegisterRolePage() {
 
   const chip = ROLE_CHIP[role];
   const ChipIcon = chip.icon;
-  const showEstablishmentOptional = role === USER_ROLE.student || role === USER_ROLE.teacher;
   const showEstablishmentRequired = role === USER_ROLE.establishment;
 
   return (
@@ -56,11 +55,7 @@ export default function RegisterRolePage() {
         <span className="text-[13.5px] font-semibold text-indigo-800">{t.roles[chip.key].chip}</span>
       </div>
 
-      <RegisterForm
-        role={role}
-        showEstablishmentOptional={showEstablishmentOptional}
-        showEstablishmentRequired={showEstablishmentRequired}
-      />
+      <RegisterForm role={role} showEstablishmentRequired={showEstablishmentRequired} />
 
       <p className="text-center text-[13.5px] text-tertiary-foreground">
         {t.alreadyHaveAccount}{" "}

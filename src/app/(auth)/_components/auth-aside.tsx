@@ -8,7 +8,7 @@ export default function AuthAside() {
 
   const t = useTranslations().auth.layout.aside;
   return (
-    <aside className="hidden w-[42%] flex-col justify-between bg-foreground p-12 text-background lg:flex">
+    <aside className="hidden h-dvh w-[42%] shrink-0 flex-col justify-between overflow-hidden bg-foreground p-12 text-background lg:flex">
       <Logo
         size="sm"
         markClassName="size-[26px] rounded-md"
