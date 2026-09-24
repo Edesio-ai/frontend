@@ -1,3 +1,5 @@
+import type { EstablishmentCountry, EstablishmentType } from "@/types";
+
 export type RegisterFormValues = {
   firstname: string;
   lastname: string;
@@ -5,7 +7,12 @@ export type RegisterFormValues = {
   password: string;
   confirmPassword: string;
   acceptTerms: boolean;
-  establishment: string;
+  establishmentName: string;
+  establishmentType: EstablishmentType | "";
+  addressStreet: string;
+  addressZipCode: string;
+  addressCity: string;
+  addressCountry: EstablishmentCountry | "";
 };
 
 export type RegisterState = {
@@ -17,7 +24,12 @@ export type RegisterState = {
     password?: string[];
     confirmPassword?: string[];
     acceptTerms?: string[];
-    establishment?: string[];
+    establishmentName?: string[];
+    establishmentType?: string[];
+    addressStreet?: string[];
+    addressZipCode?: string[];
+    addressCity?: string[];
+    addressCountry?: string[];
   };
   redirectTo: string | null;
   values: RegisterFormValues;
@@ -30,7 +42,12 @@ export const emptyRegisterFormValues: RegisterFormValues = {
   password: "",
   confirmPassword: "",
   acceptTerms: false,
-  establishment: "",
+  establishmentName: "",
+  establishmentType: "",
+  addressStreet: "",
+  addressZipCode: "",
+  addressCity: "",
+  addressCountry: "",
 };
 
 export const initialRegisterState: RegisterState = {

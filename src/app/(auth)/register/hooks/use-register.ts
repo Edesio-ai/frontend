@@ -9,6 +9,7 @@ import { initialRegisterState } from "../state";
 
 export function useRegister() {
   const t = useTranslations().auth.register.new;
+  const establishmentLabels = useTranslations().auth.register.legacy.establishment;
   const supabaseErrors = useTranslations().supabaseErrors;
   const router = useRouter();
   const { refreshUserSession } = useAuth();
@@ -34,6 +35,11 @@ export function useRegister() {
     if (code === "passwordMismatch") return t.passwordMismatch;
     if (code === "acceptRequired") return t.acceptRequired;
     if (code === "establishmentRequired") return t.establishmentRequired;
+    if (code === "establishmentTypeRequired") return establishmentLabels.type.required;
+    if (code === "streetRequired") return establishmentLabels.address.street.required;
+    if (code === "zipCodeRequired") return establishmentLabels.address.zipCode.required;
+    if (code === "cityRequired") return establishmentLabels.address.city.required;
+    if (code === "countryRequired") return establishmentLabels.address.country.required;
     return code ? t.defaultError : undefined;
   };
 
@@ -58,6 +64,11 @@ export function useRegister() {
     passwordError: fieldMessage(state.fieldErrors.password),
     confirmPasswordError: fieldMessage(state.fieldErrors.confirmPassword),
     acceptTermsError: fieldMessage(state.fieldErrors.acceptTerms),
-    establishmentError: fieldMessage(state.fieldErrors.establishment),
+    establishmentNameError: fieldMessage(state.fieldErrors.establishmentName),
+    establishmentTypeError: fieldMessage(state.fieldErrors.establishmentType),
+    addressStreetError: fieldMessage(state.fieldErrors.addressStreet),
+    addressZipCodeError: fieldMessage(state.fieldErrors.addressZipCode),
+    addressCityError: fieldMessage(state.fieldErrors.addressCity),
+    addressCountryError: fieldMessage(state.fieldErrors.addressCountry),
   };
 }

@@ -32,7 +32,8 @@ export default function TeacherInvitation() {
   const { signIn, signUp } = useAuth();
   const t = useTranslations();
   const ti = t.teacherInvitation;
-  const passwordCriteria = t.auth.register.legacy.passwordCriteria;
+  const contact = t.auth.register.legacy.common.contact;
+  const passwordCriteria = contact.passwordCriteria;
   const [isValidating, setIsValidating] = useState(true);
   const [invitationData, setInvitationData] = useState<InvitationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -51,7 +52,7 @@ export default function TeacherInvitation() {
           password: z
             .string()
             .min(PASSWORD_MIN_LENGTH, passwordCriteria.minLength)
-            .regex(PASSWORD_COMPLEXITY_REGEX, t.auth.register.legacy.passwordWeak),
+            .regex(PASSWORD_COMPLEXITY_REGEX, contact.passwordWeak),
           confirmPassword: z.string().min(1, ti.confirmRequired),
           acceptTerms: z.boolean().refine((val) => val === true, {
             message: ti.acceptRequired,
@@ -61,7 +62,7 @@ export default function TeacherInvitation() {
           message: ti.passwordMismatch,
           path: ["confirmPassword"],
         }),
-    [ti, passwordCriteria, t.auth.register.legacy.passwordWeak],
+    [contact.passwordWeak, passwordCriteria, ti],
   );
 
   type FormValues = z.infer<typeof formSchema>;

@@ -30,7 +30,8 @@ export default function ResetPassword() {
   const router = useRouter();
   const t = useTranslations();
   const rpt = t.resetPassword;
-  const passwordCriteria = t.auth.register.legacy.passwordCriteria;
+  const contact = t.auth.register.legacy.common.contact;
+  const passwordCriteria = contact.passwordCriteria;
 
   const formSchema = useMemo(
     () =>
@@ -39,14 +40,14 @@ export default function ResetPassword() {
           password: z
             .string()
             .min(PASSWORD_MIN_LENGTH, passwordCriteria.minLength)
-            .regex(PASSWORD_COMPLEXITY_REGEX, t.auth.register.legacy.passwordWeak),
-          confirmPassword: z.string().min(1, t.auth.register.legacy.confirmRequired),
+            .regex(PASSWORD_COMPLEXITY_REGEX, contact.passwordWeak),
+          confirmPassword: z.string().min(1, contact.confirmRequired),
         })
         .refine((data) => data.password === data.confirmPassword, {
-          message: t.auth.register.legacy.passwordMismatch,
+          message: contact.passwordMismatch,
           path: ["confirmPassword"],
         }),
-    [passwordCriteria, t.auth.register.legacy],
+    [contact, passwordCriteria],
   );
 
   const form = useForm<FormValues>({

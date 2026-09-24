@@ -6,13 +6,14 @@ import { isPublicRole } from "@/utils/functions/role.utils";
 import { login } from "@/server/auth/login";
 import {
   registerEstablishmentInputSchema,
+  type EstablishmentInput,
   registerSelfLearnerInputSchema,
   registerStudentInputSchema,
   registerTeacherInputSchema,
 } from "@/server/auth/schema";
 import { getLocaleFromCookies } from "@/lib/i18n";
 import { type RegisterFormValues, type RegisterState } from "./state";
-import { register } from "@/server/auth/register";
+import { register, registerEstablishment } from "@/server/auth/register";
 
 function parseFormValues(formData: FormData): RegisterFormValues {
   return {
@@ -22,7 +23,12 @@ function parseFormValues(formData: FormData): RegisterFormValues {
     password: String(formData.get("password") ?? ""),
     confirmPassword: String(formData.get("confirmPassword") ?? ""),
     acceptTerms: formData.get("acceptTerms") === "on",
-    establishment: String(formData.get("establishment") ?? ""),
+    establishmentName: String(formData.get("establishmentName") ?? ""),
+    establishmentType: String(formData.get("establishmentType") ?? "") as RegisterFormValues["establishmentType"],
+    addressStreet: String(formData.get("addressStreet") ?? ""),
+    addressZipCode: String(formData.get("addressZipCode") ?? ""),
+    addressCity: String(formData.get("addressCity") ?? ""),
+    addressCountry: String(formData.get("addressCountry") ?? "") as RegisterFormValues["addressCountry"],
   };
 }
 
@@ -47,6 +53,31 @@ const REGISTER_SCHEMAS = {
   [USER_ROLE.establishment]: registerEstablishmentInputSchema,
 } as const;
 
+function buildParsedPayload(role: PublicRole, values: RegisterFormValues) {
+  const base = {
+    firstname: values.firstname,
+    lastname: values.lastname,
+    email: values.email,
+    password: values.password,
+    confirmPassword: values.confirmPassword,
+    acceptTerms: values.acceptTerms,
+  };
+
+  if (role === USER_ROLE.establishment) {
+    return {
+      ...base,
+      establishmentName: values.establishmentName,
+      establishmentType: values.establishmentType,
+      addressStreet: values.addressStreet,
+      addressZipCode: values.addressZipCode,
+      addressCity: values.addressCity,
+      addressCountry: values.addressCountry,
+    };
+  }
+
+  return base;
+}
+
 export const registerAction = async (_prev: RegisterState, formData: FormData): Promise<RegisterState> => {
   const values = parseFormValues(formData);
   const role = formData.get("role");
@@ -60,15 +91,7 @@ export const registerAction = async (_prev: RegisterState, formData: FormData): 
     };
   }
 
-  const parsed = REGISTER_SCHEMAS[role].safeParse({
-    firstname: values.firstname,
-    lastname: values.lastname,
-    email: values.email,
-    password: values.password,
-    confirmPassword: values.confirmPassword,
-    acceptTerms: values.acceptTerms,
-    establishment: values.establishment || undefined,
-  });
+  const parsed = REGISTER_SCHEMAS[role].safeParse(buildParsedPayload(role, values));
 
   if (!parsed.success) {
     return {
@@ -81,19 +104,36 @@ export const registerAction = async (_prev: RegisterState, formData: FormData): 
 
   const locale = await getLocaleFromCookies();
 
-  const result = await register({
-    role,
-    firstname: parsed.data.firstname,
-    lastname: parsed.data.lastname,
-    email: parsed.data.email,
-    password: parsed.data.password,
-    acceptTerms: parsed.data.acceptTerms,
-    locale,
-    establishment:
-      "establishment" in parsed.data && typeof parsed.data.establishment === "string"
-        ? parsed.data.establishment
-        : undefined,
-  });
+  const result =
+    role === USER_ROLE.establishment
+      ? await registerEstablishment({
+          role: "establishment",
+          type: (parsed.data as EstablishmentInput).establishmentType,
+          name: (parsed.data as EstablishmentInput).establishmentName,
+          address: {
+            street: (parsed.data as EstablishmentInput).addressStreet,
+            zipCode: (parsed.data as EstablishmentInput).addressZipCode,
+            city: (parsed.data as EstablishmentInput).addressCity,
+            country: (parsed.data as EstablishmentInput).addressCountry,
+          },
+          contact: {
+            firstname: parsed.data.firstname,
+            lastname: parsed.data.lastname,
+            email: parsed.data.email,
+            password: parsed.data.password,
+            acceptTerms: parsed.data.acceptTerms,
+          },
+          locale,
+        })
+      : await register({
+          role,
+          firstname: parsed.data.firstname,
+          lastname: parsed.data.lastname,
+          email: parsed.data.email,
+          password: parsed.data.password,
+          acceptTerms: parsed.data.acceptTerms,
+          locale,
+        });
 
   if (!result.ok) {
     return {
