@@ -62,7 +62,13 @@ export default async function RootLayout({
   const featureFlagHtmlProps = getEnabledHtmlAttributeProps(isFeatureFlagOnByDefault);
 
   return (
-    <html lang={locale} className={`${inter.variable} h-full antialiased`} {...featureFlagHtmlProps}>
+    <html
+      lang={locale}
+      className={`${inter.variable} h-full antialiased`}
+      {...featureFlagHtmlProps}
+      // Feature flag overrides are applied to <html> by a blocking script before hydration.
+      suppressHydrationWarning
+    >
       <body className="min-h-full flex flex-col">
         <FeatureFlagBootstrapScript />
         <Providers locale={locale} dictionary={dictionary}>
