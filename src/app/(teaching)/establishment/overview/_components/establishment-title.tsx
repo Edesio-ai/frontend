@@ -14,7 +14,7 @@ export default function EstablishmentTitle({ establishment }: { establishment: E
       </div>
       <div>
         <p className="text-[12px] mb-[2px] text-landing-subtle">{date}</p>
-        <p className="text-[22px] m-0 font-semibold tracking-[-0.01em]">{establishment?.name ?? "N/A"}</p>
+        <p className="text-[22px] m-0 font-bold tracking-[-0.01em]">{establishment?.name ?? "N/A"}</p>
         <p className="text-[13px] mt-[2px] font-semibold text-tertiary-foreground">
           Académie de {establishment?.address?.city ?? "N/A"}
         </p>
