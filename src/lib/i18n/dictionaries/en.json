@@ -525,7 +525,9 @@
     "questionCard": {
       "answer": "Answer:",
       "mcq": "MCQ",
-      "open": "Open"
+      "open": "Open",
+      "antiCheat": "Anti-cheat",
+      "antiCheatHint": "Detects when the student pastes the exact answer"
     },
     "courseList": {
       "addCourse": "Add lesson",

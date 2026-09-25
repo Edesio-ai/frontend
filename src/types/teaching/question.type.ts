@@ -10,6 +10,7 @@ export interface Question {
   explanation: string | null;
   createdAt?: string;
   positionOrder?: number | null;
+  cheatingDetectionEnabled?: boolean;
 }
 
 export interface CreateQuestionRequest {
@@ -28,4 +29,5 @@ export interface UpdateQuestionRequest {
   correctAnswers?: string[];
   explanation?: string | null;
   positionOrder?: number | null;
+  cheatingDetectionEnabled?: boolean;
 }
