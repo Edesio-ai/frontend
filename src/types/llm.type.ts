@@ -21,4 +21,5 @@ export interface EvaluateAnswerRequest {
   answer: string;
   explanation: string;
   language?: Language;
+  cheatingDetectionEnabled?: boolean;
 }

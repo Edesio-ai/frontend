@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useTranslations } from "@/lib/i18n/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { CheckCircle2, Pencil } from "lucide-react";
 import { EditQuestionModal } from "./edeit-question-modal";
 
@@ -28,6 +29,7 @@ export function QuestionCard({
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isTogglingAntiCheat, setIsTogglingAntiCheat] = useState(false);
   const [editedType, setEditedType] = useState<"single" | "multiple" | "open">(
     question.type === "multiple" ? "single" : (question.type as "single" | "multiple" | "open"),
   );
@@ -78,12 +80,20 @@ export function QuestionCard({
     };
 
     const result = await updateQuestion(question.id, updates);
-    console.log("🚀 ~ handleSave ~ result:", result);
     if (result) {
       onQuestionUpdated(result);
       setIsEditing(false);
     }
     setIsSaving(false);
+  };
+
+  const handleAntiCheatToggle = async (enabled: boolean) => {
+    setIsTogglingAntiCheat(true);
+    const result = await updateQuestion(question.id, { cheatingDetectionEnabled: enabled });
+    if (result) {
+      onQuestionUpdated(result);
+    }
+    setIsTogglingAntiCheat(false);
   };
 
   const handleDelete = async () => {
@@ -137,6 +147,8 @@ export function QuestionCard({
       />
     );
   }
+
+  const antiCheatEnabled = question.cheatingDetectionEnabled !== false;
 
   return (
     <Card className="p-3 bg-muted/30 group" data-testid={`card-question-${question.id}`}>
@@ -194,6 +206,20 @@ export function QuestionCard({
               <span className="font-medium">{t.teacher.questionCard.answer}</span>{" "}
               {correctAnswerDisplay(question.proposals, question.correctAnswers)}
             </p>
+          )}
+          {question.type === "open" && (
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <div className="min-w-0">
+                <p className="text-xs font-medium">{t.teacher.questionCard.antiCheat}</p>
+                <p className="text-[10px] text-muted-foreground">{t.teacher.questionCard.antiCheatHint}</p>
+              </div>
+              <Switch
+                checked={antiCheatEnabled}
+                disabled={isTogglingAntiCheat}
+                onCheckedChange={handleAntiCheatToggle}
+                data-testid={`switch-anti-cheat-${question.id}`}
+              />
+            </div>
           )}
         </div>
       </div>

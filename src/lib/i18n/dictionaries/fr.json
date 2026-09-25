@@ -525,7 +525,9 @@
     "questionCard": {
       "answer": "Réponse :",
       "mcq": "QCM",
-      "open": "Ouverte"
+      "open": "Ouverte",
+      "antiCheat": "Anti-triche",
+      "antiCheatHint": "Détecte si l'élève colle la réponse exacte"
     },
     "courseList": {
       "addCourse": "Ajouter un cours",

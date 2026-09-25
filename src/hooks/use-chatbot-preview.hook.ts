@@ -261,6 +261,7 @@ export function useChatbotPreview(language: Language = "francais") {
         answer: answer,
         explanation: question.explanation || "",
         language,
+        cheatingDetectionEnabled: question.cheatingDetectionEnabled !== false,
       };
       let isCheating = false;
       let isCorrect = false;
@@ -281,22 +282,24 @@ export function useChatbotPreview(language: Language = "francais") {
             isCheating = evaluation.isCheating || false;
             isReflectionValid = evaluation.score >= 0.3;
           }
+
+          // Align with student chatbot: cheat message only, stay on question, leave retry.
+          if (isCheating) {
+            addBotMessage(pickRandom(cheatMessages), "feedback", { isCorrect: false });
+            dispatch({ type: "EXIT_RETRY_MODE" });
+            return;
+          }
+
           if (isReflectionValid || isCorrect) {
             const feedback = pickRandom(afterRetryMessages);
-            const cheatMessage = pickRandom(cheatMessages);
-            addBotMessage(
-              isCheating ? cheatMessage : `${feedback}${question.explanation ? `\n\n${question.explanation}` : ""}`,
-              "feedback",
-              { isCorrect: false },
-            );
+            addBotMessage(`${feedback}${question.explanation ? `\n\n${question.explanation}` : ""}`, "feedback", {
+              isCorrect: false,
+            });
           } else {
-            const cheatMessage = pickRandom(cheatMessages);
             const answer = correctAnswerDisplay(question.proposals, question.correctAnswers || []);
             const explanation = question.explanation ? `\n\n${question.explanation}` : "";
             addBotMessage(
-              isCheating
-                ? cheatMessage
-                : t.chatbot.reflectionWrong.replace("{answer}", answer).replace("{explanation}", explanation),
+              t.chatbot.reflectionWrong.replace("{answer}", answer).replace("{explanation}", explanation),
               "feedback",
               { isCorrect: false },
             );
@@ -329,6 +332,14 @@ export function useChatbotPreview(language: Language = "francais") {
         isCheating = evaluation.isCheating || false;
       }
 
+      // Align with student chatbot: cheat message only, do not score / retry / advance.
+      if (isCheating) {
+        setTimeout(() => {
+          addBotMessage(pickRandom(cheatMessages), "feedback", { isCorrect: false });
+        }, 500);
+        return;
+      }
+
       dispatch({ type: "ANSWER_QUESTION", isCorrect });
 
       setTimeout(() => {
@@ -356,7 +367,7 @@ export function useChatbotPreview(language: Language = "francais") {
               .replace("{answer}", wrongAnswer)
               .replace("{retry}", retryPrompt);
 
-            addBotMessage(isCheating ? `${pickRandom(cheatMessages)}\n\n${openFeedback}` : openFeedback, "feedback", {
+            addBotMessage(openFeedback, "feedback", {
               isCorrect: false,
             });
           }

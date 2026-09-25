@@ -382,6 +382,7 @@ export function StudentChatbotModal({
   const t = useTranslations();
   const correctFeedbackMessages: string[] = t.chatbot.correctAnswers;
   const incorrectFeedbackMessages: string[] = t.chatbot.encouragementsAfterWrong;
+  const cheatMessages: string[] = t.chatbot.cheatMessages;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -676,11 +677,17 @@ export function StudentChatbotModal({
         answer: answer,
         explanation: question.explanation || "",
         language,
+        cheatingDetectionEnabled: question.cheatingDetectionEnabled !== false,
       };
 
       const evaluation = await llmService.evaluateAnswer(body);
 
-      processOpenAnswer(evaluation.score, evaluation.feedback, question.correctAnswers?.[0] || "");
+      processOpenAnswer(
+        evaluation.score,
+        evaluation.feedback,
+        question.correctAnswers?.[0] || "",
+        evaluation.isCheating || false,
+      );
     } catch (error) {
       console.error("Error evaluating answer:", error);
       setShowTyping(false);
@@ -689,9 +696,24 @@ export function StudentChatbotModal({
     }
   };
 
-  const processOpenAnswer = (scorePoints: number, feedback: string, correctAnswer: string) => {
+  const processOpenAnswer = (scorePoints: number, feedback: string, correctAnswer: string, isCheating = false) => {
     setShowTyping(false);
     setWaitingForRetry(false);
+
+    if (isCheating) {
+      setTimeout(() => {
+        addMessage({
+          sender: "bot",
+          text: getRandomMessage(cheatMessages),
+          type: "feedback",
+          isCorrect: false,
+        });
+        setIsRetryAttempt(false);
+        setWaitingForRetry(false);
+        setIsProcessing(false);
+      }, 500);
+      return;
+    }
 
     const isFullyCorrect = scorePoints >= 0.7;
 
