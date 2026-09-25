@@ -27,7 +27,7 @@ export function EstablishmentLayoutGate({ children }: { children: React.ReactNod
   const isNewDesign = useFeatureFlag("EstablishmentDashboardNewDesign");
 
   if (!hydrated) {
-    return null;
+    return <LoadingSpinner />;
   }
 
   if (!isNewDesign) {

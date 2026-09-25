@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { useFeatureFlag, useFeatureFlagsHydrated } from "@/contexts/feature-flags-context";
 import EstablishmentDashboardLegacy from "./_components/establishment-dashboard-legacy";
 
@@ -17,8 +18,12 @@ export default function Establishment() {
     }
   }, [shouldRedirect, router]);
 
-  if (!hydrated || shouldRedirect) {
+  if (!hydrated) {
     return null;
+  }
+
+  if (shouldRedirect) {
+    return <LoadingSpinner />;
   }
 
   return <EstablishmentDashboardLegacy />;
