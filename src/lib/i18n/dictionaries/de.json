@@ -864,6 +864,13 @@
         "titleOne": "{count} ausstehende Einladung",
         "titleOther": "{count} ausstehende Einladungen",
         "view": "Ansehen"
+      },
+      "recentActivity": {
+        "title": "Letzte Aktivität",
+        "joined": "{name} ist der Einrichtung beigetreten",
+        "invited": "Einladung an {name} gesendet",
+        "emptyTitle": "Keine letzte Aktivität",
+        "emptyDescription": "Einladungen und Zugänge von Lehrkräften erscheinen hier."
       }
     },
     "teachersPage": {
