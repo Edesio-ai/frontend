@@ -10,7 +10,7 @@ export function EstablishmentStatsBanner() {
   const { stats } = useEstablishment();
 
   return (
-    <div className="mb-[44px] grid grid-cols-1 overflow-hidden rounded-[14px] border border-border bg-background min-[860px]:grid-cols-[1.3fr_1fr_1fr]">
+    <div className="mb-[20px] grid grid-cols-1 overflow-hidden rounded-[14px] border border-border bg-background min-[860px]:grid-cols-[1.3fr_1fr_1fr]">
       <div className="border-b border-zinc-100 px-[28px] py-[26px] min-[860px]:border-b-0 min-[860px]:border-r">
         <p className={`${STAT_LABEL_CLASS} mb-[12px]`}>{t.activeStudents}</p>
         <p className="m-0 text-[42px] font-extrabold leading-none tracking-[-0.02em] text-foreground">

@@ -838,6 +838,11 @@
         "spreadAcrossClasses": "across {count} classes",
         "teachers": "Teachers",
         "classes": "Classes"
+      },
+      "pendingInvitations": {
+        "titleOne": "{count} pending invitation",
+        "titleOther": "{count} pending invitations",
+        "view": "View"
       }
     },
     "teachersPage": {
