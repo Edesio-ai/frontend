@@ -306,6 +306,27 @@
             "description": "Gestiona a tus profesores y sigue la actividad",
             "chip": "Cuenta de centro"
           }
+        },
+        "invitation": {
+          "invitedBy": "Has sido invitado por",
+          "title": "Finaliza tu cuenta",
+          "subtitle": "Elige una contraseña para acceder a tu espacio de profesor.",
+          "role": "Profesor",
+          "submit": "Activar mi cuenta",
+          "submitting": "Activando...",
+          "expiredTitle": "Esta invitación ya no es válida",
+          "expiredText": "Este enlace ha caducado o ya se ha utilizado. Pide a tu centro que te envíe una nueva invitación.",
+          "expiredCta": "Volver al inicio de sesión",
+          "needHelp": "¿Necesitas ayuda?",
+          "validating": "Validando tu invitación...",
+          "contactEmail": "contact@edesio.ai",
+          "errors": {
+            "invitationInvalid": "Este enlace de invitación no es válido. Comprueba el enlace recibido por correo electrónico.",
+            "invitationExpired": "Esta invitación ha caducado. Pide a tu centro que te envíe una nueva.",
+            "invitationAlreadyUsed": "Esta invitación ya se ha utilizado. Inicia sesión con tu cuenta existente.",
+            "invitationEmailMismatch": "Esta invitación no corresponde a la dirección de correo electrónico esperada.",
+            "userAlreadyRegistered": "Ya existe una cuenta con esta dirección de correo electrónico. Inicia sesión para acceder a tu espacio."
+          }
         }
       }
     }

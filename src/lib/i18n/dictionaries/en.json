@@ -306,6 +306,27 @@
             "description": "Manage your teachers and track activity",
             "chip": "Institution Account"
           }
+        },
+        "invitation": {
+          "invitedBy": "You have been invited by",
+          "title": "Finalize your account",
+          "subtitle": "Choose a password to access your teacher space.",
+          "role": "Teacher",
+          "submit": "Activate my account",
+          "submitting": "Activating...",
+          "expiredTitle": "Invitation no longer valid",
+          "expiredText": "This link has expired or has already been used. Ask your institution to send you a new invitation.",
+          "expiredCta": "Back to login",
+          "needHelp": "Need help?",
+          "validating": "Validating your invitation...",
+          "contactEmail": "contact@edesio.ai",
+          "errors": {
+            "invitationInvalid": "This invitation link is invalid. Please check the link you received by email.",
+            "invitationExpired": "This invitation has expired. Ask your school to send you a new one.",
+            "invitationAlreadyUsed": "This invitation has already been used. Log in with your existing account.",
+            "invitationEmailMismatch": "This invitation does not match the expected email address.",
+            "userAlreadyRegistered": "An account already exists with this email address. Log in to access your space."
+          }
         }
       }
     }

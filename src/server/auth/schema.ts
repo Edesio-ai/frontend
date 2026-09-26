@@ -39,6 +39,12 @@ export const registerTeacherInputSchema = withPasswordMatch(registerBaseSchema);
 
 export const registerStudentInputSchema = registerTeacherInputSchema;
 
+export const registerInvitationInputSchema = withPasswordMatch(
+  registerBaseSchema.pick({ password: true, confirmPassword: true, acceptTerms: true }).extend({
+    token: z.string().trim().min(1, "invitationInvalid"),
+  }),
+);
+
 const establishmentTypeSchema = z.string().trim().min(1, "establishmentTypeRequired").pipe(z.enum(ESTABLISHMENT_TYPES));
 
 const establishmentCountrySchema = z.string().trim().min(1, "countryRequired").pipe(z.enum(ESTABLISHMENT_COUNTRIES));
@@ -60,4 +66,5 @@ export type SelfLearnerInput = z.infer<typeof registerSelfLearnerInputSchema>;
 export type TeacherInput = z.infer<typeof registerTeacherInputSchema>;
 export type StudentInput = z.infer<typeof registerStudentInputSchema>;
 export type EstablishmentInput = z.infer<typeof registerEstablishmentInputSchema>;
+export type InvitationInput = z.infer<typeof registerInvitationInputSchema>;
 export type RegisterInput = SelfLearnerInput | TeacherInput | StudentInput | EstablishmentInput;

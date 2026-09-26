@@ -9,11 +9,12 @@ type LogoutResult = { success: true };
 
 export type RegisterBody = {
   role: UserRole;
-  firstname: string;
-  lastname: string;
-  email: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
   password: string;
   acceptTerms: boolean;
+  invitationToken?: string;
   locale?: BackendLocale;
 };
 

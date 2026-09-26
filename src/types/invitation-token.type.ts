@@ -22,6 +22,9 @@ export type EstablishmentInvitation = Pick<
 >;
 
 export interface InvitationTokenPreview {
+  firstname: string;
+  lastname: string;
+  invitedEmail: string;
   maskedEmail: string;
   establishmentName: string;
   assignedChatbots?: number;
