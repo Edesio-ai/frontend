@@ -1,25 +1,24 @@
-"use client";
-
-import { useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { useFeatureFlag } from "@/contexts/feature-flags-context";
-import { getRegisterInvitationPath } from "@/utils/functions/role.utils";
+import { Suspense } from "react";
+import { getInvitationPreview } from "@/server/invitation-token";
+import { InvitationValidating } from "../../_components/invitation-validating";
 import TeacherInvitation from "../../_components/teacher-invitation";
 
-export default function LegacyTeacherInvitationPage() {
-  const isAuthNewDesign = useFeatureFlag("AuthNewDesign");
-  const token = useParams<{ token: string }>().token;
-  const router = useRouter();
+type LegacyTeacherInvitationRouteProps = {
+  params: Promise<{ token: string }>;
+};
 
-  useEffect(() => {
-    if (isAuthNewDesign && token) {
-      router.replace(getRegisterInvitationPath(token));
-    }
-  }, [isAuthNewDesign, router, token]);
+async function LegacyTeacherInvitationContent({ token }: { token: string }) {
+  const preview = await getInvitationPreview(token);
 
-  if (isAuthNewDesign) {
-    return null;
-  }
+  return <TeacherInvitation token={token} preview={preview.ok ? preview.data : null} />;
+}
 
-  return <TeacherInvitation />;
+export default async function LegacyTeacherInvitationRoute({ params }: LegacyTeacherInvitationRouteProps) {
+  const { token } = await params;
+
+  return (
+    <Suspense fallback={<InvitationValidating />}>
+      <LegacyTeacherInvitationContent token={token} />
+    </Suspense>
+  );
 }

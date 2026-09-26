@@ -306,6 +306,27 @@
             "description": "Verwalten Sie Ihre Lehrkräfte und verfolgen Sie die Aktivität",
             "chip": "Einrichtungskonto"
           }
+        },
+        "invitation": {
+          "invitedBy": "Sie wurden eingeladen von",
+          "title": "Schließen Sie Ihr Konto ab",
+          "subtitle": "Wählen Sie ein Passwort, um auf Ihren Lehrkräftebereich zuzugreifen.",
+          "role": "Lehrkraft",
+          "submit": "Mein Konto aktivieren",
+          "submitting": "Wird aktiviert...",
+          "expiredTitle": "Diese Einladung ist nicht mehr gültig",
+          "expiredText": "Dieser Link ist abgelaufen oder wurde bereits verwendet. Bitten Sie Ihre Einrichtung, Ihnen eine neue Einladung zu senden.",
+          "expiredCta": "Zurück zur Anmeldung",
+          "needHelp": "Brauchen Sie Hilfe?",
+          "validating": "Ihre Einladung wird geprüft...",
+          "contactEmail": "contact@edesio.ai",
+          "errors": {
+            "invitationInvalid": "Dieser Einladungslink ist ungültig. Bitte prüfen Sie den Link aus der E-Mail.",
+            "invitationExpired": "Diese Einladung ist abgelaufen. Bitten Sie Ihre Schule, Ihnen eine neue zu senden.",
+            "invitationAlreadyUsed": "Diese Einladung wurde bereits verwendet. Melden Sie sich mit Ihrem bestehenden Konto an.",
+            "invitationEmailMismatch": "Diese Einladung stimmt nicht mit der erwarteten E-Mail-Adresse überein.",
+            "userAlreadyRegistered": "Mit dieser E-Mail-Adresse existiert bereits ein Konto. Melden Sie sich an, um auf Ihren Bereich zuzugreifen."
+          }
         }
       }
     }

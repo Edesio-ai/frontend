@@ -306,6 +306,27 @@
             "description": "Gérez vos professeurs et suivez l'activité",
             "chip": "Compte Établissement"
           }
+        },
+        "invitation": {
+          "invitedBy": "Vous avez été invité par",
+          "title": "Finalisez votre compte",
+          "subtitle": "Choisissez un mot de passe pour accéder à votre espace professeur.",
+          "role": "Professeur",
+          "submit": "Activer mon compte",
+          "submitting": "Activation en cours...",
+          "expiredTitle": "Cette invitation n'est plus valide",
+          "expiredText": "Ce lien a expiré ou a déjà été utilisé. Demandez à votre établissement de vous envoyer une nouvelle invitation.",
+          "expiredCta": "Retour à la connexion",
+          "needHelp": "Besoin d'aide ?",
+          "validating": "Validation de votre invitation...",
+          "contactEmail": "contact@edesio.ai",
+          "errors": {
+            "invitationInvalid": "Ce lien d'invitation est invalide. Vérifiez le lien reçu par e-mail.",
+            "invitationExpired": "Cette invitation a expiré. Demandez à votre établissement de vous en envoyer une nouvelle.",
+            "invitationAlreadyUsed": "Cette invitation a déjà été utilisée. Connectez-vous avec votre compte existant.",
+            "invitationEmailMismatch": "Cette invitation ne correspond pas à l'adresse e-mail attendue.",
+            "userAlreadyRegistered": "Un compte existe déjà avec cette adresse e-mail. Connectez-vous pour accéder à votre espace."
+          }
         }
       }
     }

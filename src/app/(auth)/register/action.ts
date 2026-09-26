@@ -138,7 +138,12 @@ export const registerAction = async (_prev: RegisterState, formData: FormData): 
 
   if (!result.ok) {
     return {
-      error: result.code === "UNKNOWN_ERROR" ? "defaultError" : result.code,
+      error:
+        result.code === "USER_ALREADY_EXISTS"
+          ? "userAlreadyRegistered"
+          : result.code === "UNKNOWN_ERROR"
+            ? "defaultError"
+            : result.code,
       fieldErrors: {},
       redirectTo: null,
       values,
