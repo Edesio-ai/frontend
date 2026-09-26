@@ -835,6 +835,36 @@
         "teachers": "Enseignants",
         "classes": "Classes"
       }
+    },
+    "teachersPage": {
+      "countLabel": "{count} enseignants dans l'établissement",
+      "columns": {
+        "teacher": "Enseignant",
+        "classes": "Classes",
+        "students": "Élèves",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Actif",
+        "invited": "Invité"
+      },
+      "empty": {
+        "title": "Aucun enseignant pour le moment",
+        "description": "Invitez vos enseignants à rejoindre l'établissement pour qu'ils puissent créer leurs classes.",
+        "cta": "Inviter un enseignant"
+      },
+      "removeLabel": "Supprimer l'enseignant",
+      "removeDialog": {
+        "title": "Supprimer {name} ?",
+        "description": "L'enseignant n'aura plus accès à l'établissement. Ses classes et les résultats de ses élèves seront détachés de l'établissement.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer",
+        "successTitle": "Enseignant supprimé",
+        "success": "{name} a bien été supprimé de l'établissement.",
+        "errorTitle": "Impossible de supprimer {name}",
+        "error": "Une erreur est survenue lors de la suppression de l'enseignant. Veuillez réessayer."
+      }
     }
   },
   "dashboard": {

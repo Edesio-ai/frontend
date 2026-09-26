@@ -11,7 +11,8 @@ export async function authenticatedRequest<T>(url: string, init: RequestInit = {
   const response = await authenticatedBackendFetch(url, init);
 
   if (response.ok) {
-    const data = (await response.json()) as T;
+    const text = await response.text();
+    const data = (text ? JSON.parse(text) : undefined) as T;
     return { ok: true, data };
   }
 

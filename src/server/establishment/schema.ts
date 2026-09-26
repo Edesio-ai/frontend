@@ -30,3 +30,7 @@ export const establishmentDashboardSchema = z.object({
   stats: establishmentStatsSchema,
   teachers: z.array(teacherWithStatsSchema),
 });
+
+export const deleteTeacherSchema = z.object({
+  teacherId: z.uuid(),
+});

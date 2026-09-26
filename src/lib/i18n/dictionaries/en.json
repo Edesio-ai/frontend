@@ -835,6 +835,36 @@
         "teachers": "Teachers",
         "classes": "Classes"
       }
+    },
+    "teachersPage": {
+      "countLabel": "{count} teachers in the institution",
+      "columns": {
+        "teacher": "Teacher",
+        "classes": "Classes",
+        "students": "Students",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active",
+        "invited": "Invited"
+      },
+      "empty": {
+        "title": "No teachers yet",
+        "description": "Invite your teachers to join the institution so they can create their classes.",
+        "cta": "Invite a teacher"
+      },
+      "removeLabel": "Delete teacher",
+      "removeDialog": {
+        "title": "Delete {name}?",
+        "description": "The teacher will no longer have access to the institution. Their classes and their students' results will be detached from the institution.",
+        "cancel": "Cancel",
+        "confirm": "Delete",
+        "successTitle": "Teacher deleted",
+        "success": "{name} has been deleted from the institution.",
+        "errorTitle": "Unable to delete {name}",
+        "error": "An error occurred while deleting the teacher. Please try again."
+      }
     }
   },
   "dashboard": {

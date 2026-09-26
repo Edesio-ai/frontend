@@ -19,10 +19,9 @@ import { courseService } from "@/services/teaching/course.service";
 import { studentSessionService } from "@/services/teaching/student-session.service";
 import { emailService } from "@/services/email.service";
 import { useAuth } from "@/contexts/auth-context";
-import { teacherService } from "@/services/teaching/teacher.service";
 import { ApiError } from "@/lib/api-error";
 import { runAuthenticatedAction } from "@/lib/auth/run-authenticated-action";
-import { getEstablishmentDashboardAction } from "../../_actions/establishment-actions";
+import { deleteTeacherAction, getEstablishmentDashboardAction } from "../../_actions/establishment-actions";
 
 interface EstablishmentContextType {
   establishment: Establishment | null;
@@ -41,7 +40,7 @@ interface EstablishmentContextType {
   getStudentSessions: (sessionId: string) => Promise<Student[]>;
   getSessionCourse: (sessionId: string) => Promise<CourseBasic[]>;
   getSessionDetails: (courseId: string) => Promise<SessionDetails | null>;
-  deleteTeacher: (teacherId: string) => Promise<void>;
+  deleteTeacher: (teacherId: string) => Promise<boolean>;
 }
 
 const EstablishmentContext = createContext<EstablishmentContextType | null>(null);
@@ -197,10 +196,19 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
     return data || null;
   }, []);
 
-  const deleteTeacher = useCallback(async (teacherId: string): Promise<void> => {
-    await teacherService.deleteTeacher(teacherId);
-    setTeachers((state) => state.filter((teacher) => teacher.id !== teacherId));
-  }, []);
+  const deleteTeacher = useCallback(
+    async (teacherId: string): Promise<boolean> => {
+      try {
+        const response = await runAuthenticatedAction(() => deleteTeacherAction({ teacherId }), logout);
+        if (!response?.ok) return false;
+        setTeachers((state) => state.filter((teacher) => teacher.id !== teacherId));
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [logout],
+  );
 
   const refreshData = useCallback(async () => {
     await fetchEtablissementData();

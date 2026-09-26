@@ -19,6 +19,8 @@ export interface TeacherWithStats {
   sessions: SessionWithStudentCount[];
 }
 
+export type TeacherStatus = "active" | "invited";
+
 export interface TeacherWithEstablishment extends Teacher {
   establishmentId?: string | null;
 }

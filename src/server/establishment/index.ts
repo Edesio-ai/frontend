@@ -2,6 +2,7 @@ import type { EstablishmentDashboard } from "@/types/teaching/establishment.type
 import type { ApiResponse } from "@/types/teaching/global.type";
 import { authenticatedRequest } from "../http/authenticated-request";
 import { establishmentDashboardSchema } from "./schema";
+import { getCsrfToken } from "../http/cookies";
 
 export const getEstablishmentDashboard = async (): Promise<ApiResponse<EstablishmentDashboard>> => {
   const response = await authenticatedRequest<unknown>("/establishment/stats", {
@@ -22,4 +23,13 @@ export const getEstablishmentDashboard = async (): Promise<ApiResponse<Establish
   }
 
   return { ok: true, data: parsed.data };
+};
+
+export const deleteTeacher = async (teacherId: string): Promise<ApiResponse<void>> => {
+  return authenticatedRequest<void>(`/teacher/${teacherId}`, {
+    method: "DELETE",
+    headers: {
+      "x-csrf-token": await getCsrfToken(),
+    },
+  });
 };
