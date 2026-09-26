@@ -12,7 +12,9 @@ export interface Session {
   createdAt: string;
 }
 
-export type Language = "francais" | "anglais" | "espagnol" | "allemand";
+export const LANGUAGES = ["francais", "anglais", "espagnol", "allemand"] as const;
+
+export type Language = (typeof LANGUAGES)[number];
 
 export interface SessionWithStudentCount extends Session {
   studentsCount: number;

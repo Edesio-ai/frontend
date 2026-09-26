@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PASSWORD_COMPLEXITY_REGEX, PASSWORD_MIN_LENGTH } from "@/lib/password-criteria";
-import { ESTABLISHMENT_COUNTRIES, ESTABLISHMENT_TYPES } from "@/types";
+import { ESTABLISHMENT_COUNTRIES, ESTABLISHMENT_TYPES } from "@/utils/constants/establishment";
 
 export const loginInputSchema = z.object({
   email: z.email({

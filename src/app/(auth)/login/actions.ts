@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { login } from "@/server/auth/login";
+import { login } from "@/server/auth";
 import { loginInputSchema } from "@/server/auth/schema";
 import { getPostLoginPath } from "@/utils/functions/role.utils";
 import { type LoginFormValues, type LoginState } from "./state";
