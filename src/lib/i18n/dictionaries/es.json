@@ -838,6 +838,11 @@
         "spreadAcrossClasses": "repartidos en {count} clases",
         "teachers": "Profesores",
         "classes": "Clases"
+      },
+      "pendingInvitations": {
+        "titleOne": "{count} invitación pendiente",
+        "titleOther": "{count} invitaciones pendientes",
+        "view": "Ver"
       }
     },
     "teachersPage": {

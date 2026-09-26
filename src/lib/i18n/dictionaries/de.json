@@ -838,6 +838,11 @@
         "spreadAcrossClasses": "verteilt auf {count} Klassen",
         "teachers": "Lehrkräfte",
         "classes": "Klassen"
+      },
+      "pendingInvitations": {
+        "titleOne": "{count} ausstehende Einladung",
+        "titleOther": "{count} ausstehende Einladungen",
+        "view": "Ansehen"
       }
     },
     "teachersPage": {
