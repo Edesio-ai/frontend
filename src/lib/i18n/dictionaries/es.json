@@ -864,6 +864,13 @@
         "titleOne": "{count} invitación pendiente",
         "titleOther": "{count} invitaciones pendientes",
         "view": "Ver"
+      },
+      "recentActivity": {
+        "title": "Actividad reciente",
+        "joined": "{name} se ha unido al centro",
+        "invited": "Invitación enviada a {name}",
+        "emptyTitle": "No hay actividad reciente",
+        "emptyDescription": "Aquí aparecerán las invitaciones y las llegadas de profesores."
       }
     },
     "teachersPage": {

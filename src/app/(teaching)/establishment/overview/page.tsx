@@ -7,6 +7,7 @@ import { EstablishmentPageHeader } from "../_components/establishment-page-heade
 import EstablishmentTitle from "./_components/establishment-title";
 import { EstablishmentStatsBanner } from "./_components/establishment-stats-banner";
 import { PendingInvitationsBanner } from "./_components/pending-invitations-banner";
+import { RecentActivity } from "./_components/recent-activity";
 import { useEstablishment } from "../_contexts/establishment-context";
 
 export default function EstablishmentOverview() {
@@ -30,6 +31,7 @@ export default function EstablishmentOverview() {
         <EstablishmentTitle establishment={establishment} />
         <EstablishmentStatsBanner />
         <PendingInvitationsBanner />
+        <RecentActivity />
       </main>
     </>
   );

@@ -864,6 +864,13 @@
         "titleOne": "{count} pending invitation",
         "titleOther": "{count} pending invitations",
         "view": "View"
+      },
+      "recentActivity": {
+        "title": "Recent activity",
+        "joined": "{name} joined the institution",
+        "invited": "Invitation sent to {name}",
+        "emptyTitle": "No recent activity",
+        "emptyDescription": "Teacher invitations and arrivals will show up here."
       }
     },
     "teachersPage": {
