@@ -12,6 +12,7 @@ import {
   registerTeacherInputSchema,
 } from "@/server/auth/schema";
 import { getLocaleFromCookies } from "@/lib/i18n";
+import { toBackendLocale } from "@/lib/i18n/config";
 import { type RegisterFormValues, type RegisterState } from "./state";
 import { register, registerEstablishment } from "@/server/auth";
 
@@ -102,7 +103,7 @@ export const registerAction = async (_prev: RegisterState, formData: FormData): 
     };
   }
 
-  const locale = await getLocaleFromCookies();
+  const locale = toBackendLocale(await getLocaleFromCookies());
 
   const result =
     role === USER_ROLE.establishment

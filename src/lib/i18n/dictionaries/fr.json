@@ -384,6 +384,10 @@
   },
   "teacher": {
     "loading": "Chargement du tableau de bord...",
+    "chatbotTester": {
+      "title": "Tester le chatbot - {name}",
+      "description": "Simulez l'expérience élève pour ce cours"
+    },
     "dashboardTitle": "Tableau de bord",
     "emptyTitle": "Aucune classe créée",
     "emptySubtitle": "Créez vos classes et gérez vos cours avec Edesio.",
@@ -604,8 +608,6 @@
     "completionGood": "Excellent travail ! Tu maîtrises bien ce sujet.",
     "completionMedium": "Bon effort ! Un peu plus de pratique et tu seras au top.",
     "completionLow": "Continue comme ça ! La révision prend du temps — tu y arriveras.",
-    "testChatbot": "Test du chatbot - {name}",
-    "simulateExperience": "Simulez l'expérience élève pour ce cours",
     "clickAnswer": "Clique sur ta réponse",
     "selectAllCorrect": "Sélectionne toutes les bonnes réponses",
     "validateSelection": "Valider ({count} sélectionnée{plural})",
@@ -625,6 +627,7 @@
     "preview": "Prévisualisation",
     "chatbotStarting": "Le chatbot démarre...",
     "selectCourseToRevise": "Choisis le cours à réviser",
+    "chooseCourse": "Choisis un cours...",
     "evaluationError": "Erreur lors de l'évaluation",
     "addCoursesToTest": "Ajoutez des cours pour tester",
     "answerPrefix": "Réponse : {answer}"
@@ -632,6 +635,8 @@
   "student": {
     "loading": "Chargement...",
     "loadingCourses": "Chargement des cours...",
+    "preparingChatbot": "Préparation du chatbot",
+    "loadingQuestions": "Chargement des questions...",
     "greeting": "Salut, {name} !",
     "emptyTitle": "Aucune classe rejointe",
     "emptySubtitle": "Prêt à réviser avec Edesio ?",
@@ -742,11 +747,6 @@
       "anglais": "Anglais",
       "espagnol": "Espagnol",
       "allemand": "Allemand"
-    },
-    "chatbot": {
-      "noQuestionsYet": "Génère d'abord des questions pour lancer le chatbot.",
-      "loadingQuestions": "Chargement des questions...",
-      "generatingQuestions": "Génération de nouvelles questions..."
     }
   },
   "establishment": {

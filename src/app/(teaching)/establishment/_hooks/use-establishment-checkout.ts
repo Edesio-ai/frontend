@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "@/hooks/use-toast";
 import { useLocale, useTranslations } from "@/lib/i18n/client";
+import { toBackendLocale } from "@/lib/i18n/config";
 import { getBillingErrorMessage } from "../_utils/billing-error-message";
 import { runAuthenticatedAction } from "@/lib/auth/run-authenticated-action";
 import type { Plan } from "@/types";
@@ -35,7 +36,7 @@ export function useEstablishmentCheckout(establishmentPlan: Plan | undefined, pe
           getStripeUrlAction({
             priceId,
             planType: USER_ROLE.establishment,
-            locale,
+            locale: toBackendLocale(locale),
           }),
         logout,
       );

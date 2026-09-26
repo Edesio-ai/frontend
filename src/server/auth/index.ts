@@ -3,6 +3,7 @@ import type { LoginInput } from "./schema";
 import { authenticatedBackendFetch, backendFetch } from "../http/backend";
 import { applyBackendSetCookies, getCsrfToken } from "../http/cookies";
 import { ApiResponse } from "@/types/teaching/global.type";
+import type { BackendLocale } from "@/lib/i18n/config";
 
 type LogoutResult = { success: true };
 
@@ -13,7 +14,7 @@ export type RegisterBody = {
   email: string;
   password: string;
   acceptTerms: boolean;
-  locale?: "fr" | "en";
+  locale?: BackendLocale;
 };
 
 export type RegisterEstablishmentBody = {
@@ -28,7 +29,7 @@ export type RegisterEstablishmentBody = {
     password: string;
     acceptTerms: boolean;
   };
-  locale?: "fr" | "en";
+  locale?: BackendLocale;
 };
 
 export const login = async (input: LoginInput): Promise<LoginResult> => {

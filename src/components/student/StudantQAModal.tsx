@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageCircle, Send, Check, Clock, HelpCircle } from "lucide-react";
 import { Course, CourseQuestion } from "@/types";
 import { useTranslations, useLocale } from "@/lib/i18n/client";
+import { localeToDateLocale } from "@/utils/functions/date.utils";
 
 interface StudentQAModalProps {
   open: boolean;
@@ -30,7 +31,7 @@ export function StudentQAModal({
 }: StudentQAModalProps) {
   const t = useTranslations();
   const locale = useLocale();
-  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+  const dateLocale = localeToDateLocale(locale);
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<CourseQuestion[]>([]);
   const [newQuestion, setNewQuestion] = useState("");

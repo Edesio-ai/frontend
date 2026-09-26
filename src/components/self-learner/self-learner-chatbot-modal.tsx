@@ -30,7 +30,8 @@ import {
 import { selfLearnerQuestionService } from "@/services/teaching/self-learner-question.service";
 import { llmService } from "@/services/llm.service";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/lib/i18n/client";
+import { useTranslations, type Dictionary } from "@/lib/i18n/client";
+import { SESSION_LANGUAGE_LOCALES } from "@/lib/i18n/config";
 
 interface SelfLearnerChatbotModalProps {
   open: boolean;
@@ -121,7 +122,7 @@ function TypingIndicator() {
   );
 }
 
-function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typeof useTranslations> }) {
+function MessageBubble({ message, tc }: { message: ChatMessage; tc: Dictionary["chatbot"] }) {
   const isBot = message.sender === "bot";
 
   return (
@@ -217,7 +218,7 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
                     : "text-red-700 dark:text-red-300"
               }`}
             >
-              {t.chatbot.sessionEnded}
+              {tc.sessionEnded}
             </span>
           </div>
         )}
@@ -229,21 +230,21 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
                 <div className="p-1 rounded-full bg-emerald-500/20">
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">{t.chatbot.goodAnswer}</span>
+                <span className="text-sm font-semibold">{tc.goodAnswer}</span>
               </div>
             ) : message.isPartial ? (
               <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                 <div className="p-1 rounded-full bg-orange-500/20">
                   <Star className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">{t.chatbot.partialAnswer}</span>
+                <span className="text-sm font-semibold">{tc.partialAnswer}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
                 <div className="p-1 rounded-full bg-red-500/20">
                   <XCircle className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">{t.chatbot.wrongAnswer}</span>
+                <span className="text-sm font-semibold">{tc.wrongAnswer}</span>
               </div>
             )}
           </div>
@@ -257,18 +258,18 @@ function QCMOptions({
   propositions,
   onSelect,
   disabled,
-  t,
+  tc,
 }: {
   propositions: string[];
   onSelect: (index: number) => void;
   disabled?: boolean;
-  t: ReturnType<typeof useTranslations>;
+  tc: Dictionary["chatbot"];
 }) {
   return (
     <div className="py-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="qcm-options-container">
       <div className="flex items-center justify-center gap-2 mb-4 text-xs text-muted-foreground">
         <Zap className="h-3.5 w-3.5 text-amber-500" />
-        <span>{t.chatbot.clickAnswer}</span>
+        <span>{tc.clickAnswer}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {propositions.map((prop, i) => (
@@ -296,14 +297,14 @@ function MultiOptions({
   onToggle,
   onValidate,
   disabled,
-  t,
+  tc,
 }: {
   propositions: string[];
   selectedIndices: number[];
   onToggle: (index: number) => void;
   onValidate: () => void;
   disabled?: boolean;
-  t: ReturnType<typeof useTranslations>;
+  tc: Dictionary["chatbot"];
 }) {
   return (
     <div
@@ -312,7 +313,7 @@ function MultiOptions({
     >
       <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
         <Star className="h-3.5 w-3.5 text-amber-500" />
-        <span>{t.chatbot.selectAllCorrect}</span>
+        <span>{tc.selectAllCorrect}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {propositions.map((prop, i) => {
@@ -352,7 +353,7 @@ function MultiOptions({
           data-testid="button-validate-multi"
         >
           <Check className="h-4 w-4 mr-2" />
-          {t.chatbot.validateSelection
+          {tc.validateSelection
             .replace("{count}", String(selectedIndices.length))
             .replace("{plural}", selectedIndices.length > 1 ? "s" : "")}
         </Button>
@@ -368,8 +369,9 @@ export function SelfLearnerChatbotModal({
   generateQuestions,
 }: SelfLearnerChatbotModalProps) {
   const t = useTranslations();
-  const correctFeedbackMessages: string[] = t.chatbot.correctAnswers;
-  const incorrectFeedbackMessages: string[] = t.chatbot.encouragementsAfterWrong;
+  const tc = useTranslations(SESSION_LANGUAGE_LOCALES[course.language]).chatbot;
+  const correctFeedbackMessages: string[] = tc.correctAnswers;
+  const incorrectFeedbackMessages: string[] = tc.encouragementsAfterWrong;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -404,7 +406,7 @@ export function SelfLearnerChatbotModal({
       let questionText = `Question ${index + 1}/${questions.length}\n\n${question.questionText}`;
 
       if (question.type === "multiple") {
-        questionText += `\n\n${t.chatbot.multipleAnswersHint}`;
+        questionText += `\n\n${tc.multipleAnswersHint}`;
       }
 
       addMessage({
@@ -415,7 +417,7 @@ export function SelfLearnerChatbotModal({
       setSelectedMultiIndices([]);
       setChatState("asking");
     },
-    [addMessage, t],
+    [addMessage, tc],
   );
 
   const showCompletion = useCallback(
@@ -432,27 +434,27 @@ export function SelfLearnerChatbotModal({
           language: course.language || "francais",
         };
         const feedback = await llmService.generateCompletionFeedback(body);
-        const aiFeedback = feedback.feedback || t.chatbot.completionDefault;
+        const aiFeedback = feedback.feedback || tc.completionDefault;
 
-        const scoreText = t.chatbot.completionScore
+        const scoreText = tc.completionScore
           .replace("{score}", String(scoreDisplay))
           .replace("{total}", String(finalTotal))
           .replace("{percent}", String(Math.round(ratio * 100)));
         addMessage({
           sender: "bot",
-          text: `${t.chatbot.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
+          text: `${tc.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
           type: "completion",
           scoreRatio: ratio,
         });
       } catch (error) {
         console.error("Error fetching completion feedback:", error);
-        const scoreText = t.chatbot.completionScore
+        const scoreText = tc.completionScore
           .replace("{score}", String(scoreDisplay))
           .replace("{total}", String(finalTotal))
           .replace("{percent}", String(Math.round(ratio * 100)));
         addMessage({
           sender: "bot",
-          text: `${t.chatbot.completionTitle}\n\n${scoreText}`,
+          text: `${tc.completionTitle}\n\n${scoreText}`,
           type: "completion",
           scoreRatio: ratio,
         });
@@ -460,7 +462,7 @@ export function SelfLearnerChatbotModal({
 
       setChatState("completed");
     },
-    [addMessage, course.title, course.language, user, t],
+    [addMessage, course.title, course.language, user, t, tc],
   );
 
   const loadAndStartQuiz = useCallback(async () => {
@@ -481,13 +483,13 @@ export function SelfLearnerChatbotModal({
       setTimeout(() => {
         addMessage({
           sender: "bot",
-          text: getRandomMessage(t.chatbot.greetings),
+          text: getRandomMessage(tc.greetings),
           type: "greeting",
         });
         setTimeout(() => {
           addMessage({
             sender: "bot",
-            text: t.selfLearner.chatbot.noQuestionsYet,
+            text: tc.noQuestionsYet,
             type: "no_questions",
           });
           setChatState("completed");
@@ -517,14 +519,14 @@ export function SelfLearnerChatbotModal({
     setTimeout(() => {
       addMessage({
         sender: "bot",
-        text: getRandomMessage(t.chatbot.greetings),
+        text: getRandomMessage(tc.greetings),
         type: "greeting",
       });
 
       setTimeout(() => {
         addMessage({
           sender: "bot",
-          text: getRandomMessage(t.chatbot.startQuiz).replace("{count}", String(processedQuestions.length)),
+          text: getRandomMessage(tc.startQuiz).replace("{count}", String(processedQuestions.length)),
           type: "greeting",
         });
         setTimeout(() => {
@@ -532,7 +534,7 @@ export function SelfLearnerChatbotModal({
         }, 1000);
       }, 1500);
     }, 500);
-  }, [addMessage, askQuestion, course.id, t]);
+  }, [addMessage, askQuestion, course.id, tc]);
 
   useEffect(() => {
     if (!open) {
@@ -652,7 +654,7 @@ export function SelfLearnerChatbotModal({
     try {
       const context = [
         contextQuestion.question,
-        contextQuestion.bonne_reponse ? t.chatbot.answerPrefix.replace("{answer}", contextQuestion.bonne_reponse) : "",
+        contextQuestion.bonne_reponse ? tc.answerPrefix.replace("{answer}", contextQuestion.bonne_reponse) : "",
         contextQuestion.explication ? contextQuestion.explication : "",
       ]
         .filter(Boolean)
@@ -664,7 +666,7 @@ export function SelfLearnerChatbotModal({
         body: JSON.stringify({
           studentQuestion,
           questionContext: context,
-          language: course.language || "français",
+          language: course.language || "francais",
         }),
       });
       const data = await response.json();
@@ -734,7 +736,7 @@ export function SelfLearnerChatbotModal({
 
     setTimeout(() => {
       if (isFullyCorrect) {
-        const successMessage = isRetryAttempt ? t.chatbot.goodContinue : feedback;
+        const successMessage = isRetryAttempt ? tc.goodContinue : feedback;
 
         addMessage({
           sender: "bot",
@@ -751,7 +753,7 @@ export function SelfLearnerChatbotModal({
         if (!isRetryAttempt) {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\n${t.chatbot.expectedAnswer.replace("{answer}", correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
+            text: `${feedback}\n\n${tc.expectedAnswer.replace("{answer}", correctAnswer)}\n\n${tc.keyElementPrompt}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -761,7 +763,7 @@ export function SelfLearnerChatbotModal({
         } else {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\n${t.chatbot.reviewLater}`,
+            text: `${feedback}\n\n${tc.reviewLater}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -799,7 +801,7 @@ export function SelfLearnerChatbotModal({
     setTimeout(() => {
       if (isCorrect) {
         const successMessage = isRetryAttempt
-          ? `${t.chatbot.bravoExact}${explication ? `\n\n${explication}` : ""}`
+          ? `${tc.bravoExact}${explication ? `\n\n${explication}` : ""}`
           : `${getRandomMessage(correctFeedbackMessages)}${explication ? `\n\n${explication}` : ""}`;
 
         addMessage({
@@ -815,7 +817,7 @@ export function SelfLearnerChatbotModal({
       } else if (!isRetryAttempt) {
         addMessage({
           sender: "bot",
-          text: `${getRandomMessage(incorrectFeedbackMessages)} ${t.chatbot.correctIs.replace("{answer}", correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
+          text: `${getRandomMessage(incorrectFeedbackMessages)} ${tc.correctIs.replace("{answer}", correctAnswer)}\n\n${tc.keyElementPrompt}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -825,7 +827,7 @@ export function SelfLearnerChatbotModal({
       } else {
         addMessage({
           sender: "bot",
-          text: `${t.chatbot.correctWas.replace("{answer}", correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
+          text: `${tc.correctWas.replace("{answer}", correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -987,15 +989,11 @@ export function SelfLearnerChatbotModal({
           {chatState === "loading" ? (
             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
               <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
-              <p className="text-sm font-medium">
-                {isGeneratingNew ? t.selfLearner.chatbot.generatingQuestions : t.selfLearner.chatbot.loadingQuestions}
-              </p>
-              {isGeneratingNew && (
-                <p className="text-xs text-muted-foreground/70 mt-1">{t.chatbot.preparingQuestions}</p>
-              )}
+              <p className="text-sm font-medium">{isGeneratingNew ? tc.generatingQuestions : tc.loadingQuestions}</p>
+              {isGeneratingNew && <p className="text-xs text-muted-foreground/70 mt-1">{tc.preparingQuestions}</p>}
             </div>
           ) : (
-            messages.map((message) => <MessageBubble key={message.id} message={message} t={t} />)
+            messages.map((message) => <MessageBubble key={message.id} message={message} tc={tc} />)
           )}
           {(isProcessing || showTyping) && <TypingIndicator />}
         </div>
@@ -1005,7 +1003,7 @@ export function SelfLearnerChatbotModal({
             className="flex-shrink-0 px-2 border-t bg-muted/30 backdrop-blur-sm"
             style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
           >
-            <QCMOptions propositions={currentPropositions} onSelect={handleQCMAnswer} disabled={isProcessing} t={t} />
+            <QCMOptions propositions={currentPropositions} onSelect={handleQCMAnswer} disabled={isProcessing} tc={tc} />
           </div>
         )}
 
@@ -1020,7 +1018,7 @@ export function SelfLearnerChatbotModal({
               onToggle={toggleMultiOption}
               onValidate={handleMultiAnswer}
               disabled={isProcessing}
-              t={t}
+              tc={tc}
             />
           </div>
         )}
@@ -1053,12 +1051,12 @@ export function SelfLearnerChatbotModal({
                 {currentQuestionIndex + 1 >= shuffledQuestions.length ? (
                   <>
                     <Sparkles className="h-5 w-5 mr-2" />
-                    {t.chatbot.viewResults}
+                    {tc.viewResults}
                   </>
                 ) : (
                   <>
                     <ArrowRight className="h-5 w-5 mr-2" />
-                    {t.chatbot.nextQuestion}
+                    {tc.nextQuestion}
                   </>
                 )}
               </Button>
@@ -1077,7 +1075,7 @@ export function SelfLearnerChatbotModal({
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder={t.chatbot.inputPlaceholder}
+                  placeholder={tc.inputPlaceholder}
                   className="min-h-[48px] max-h-[120px] py-3 px-4 rounded-xl bg-background/80 border-border/50 focus-visible:ring-amber-500/30 text-base resize-none overflow-y-auto"
                   data-testid="input-open-answer"
                   disabled={isProcessing}
@@ -1100,7 +1098,7 @@ export function SelfLearnerChatbotModal({
                 <Send className="h-5 w-5" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">{t.chatbot.pressEnter}</p>
+            <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">{tc.pressEnter}</p>
           </div>
         )}
 
@@ -1119,12 +1117,12 @@ export function SelfLearnerChatbotModal({
                 {isGeneratingNew ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {t.chatbot.generating}
+                    {tc.generating}
                   </>
                 ) : (
                   <>
                     <RefreshCw className="h-4 w-4 mr-2" />
-                    {t.selfLearner.chatbot.generatingQuestions}
+                    {tc.generatingQuestions}
                   </>
                 )}
               </Button>

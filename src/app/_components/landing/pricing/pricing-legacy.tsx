@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import Link from "next/link";
 import { useTranslations, useLocale } from "@/lib/i18n/client";
 import { getPricingPlanHref } from "./pricing-plan-links";
+import { formatPlanPrice } from "@/utils/functions/price.utils";
 
 const planIcons = [User, Users, Building2, Crown];
 
@@ -82,10 +83,7 @@ export function PricingLegacy() {
 
   const formatPrice = (price: number | null) => {
     if (price === null) return pt.onQuote;
-    if (locale === "fr") {
-      return price.toFixed(2).replace(".", ",") + "€";
-    }
-    return "$" + price.toFixed(2);
+    return formatPlanPrice(price, locale);
   };
 
   return (

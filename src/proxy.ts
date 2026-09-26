@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import Negotiator from "negotiator";
 import { match } from "@formatjs/intl-localematcher";
-import { locales, defaultLocale, LOCALE_COOKIE, type Locale } from "./lib/i18n/config";
+import { uiLocales, defaultLocale, isUiLocale, LOCALE_COOKIE, type Locale } from "./lib/i18n/config";
 
 const PREPROD_AUTH_COOKIE = "preprod_auth";
 
@@ -93,7 +93,7 @@ function getLocale(request: NextRequest): Locale {
   const languages = new Negotiator({ headers }).languages();
 
   try {
-    const matched = match(languages, [...locales], defaultLocale);
+    const matched = match(languages, [...uiLocales], defaultLocale);
     return matched as Locale;
   } catch {
     return defaultLocale;
@@ -113,7 +113,7 @@ export async function proxy(request: NextRequest) {
   } else {
     const existingLocale = request.cookies.get(LOCALE_COOKIE)?.value;
 
-    if (existingLocale && locales.includes(existingLocale as Locale)) {
+    if (existingLocale && isUiLocale(existingLocale)) {
       response = NextResponse.next({
         request: {
           headers: new Headers({

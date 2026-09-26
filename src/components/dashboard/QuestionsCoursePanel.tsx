@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageCircle, Send, Check, Clock, Trash2 } from "lucide-react";
 import type { CourseQuestion } from "@/types";
 import { useTranslations, useLocale } from "@/lib/i18n/client";
+import { localeToDateLocale } from "@/utils/functions/date.utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,7 +34,7 @@ type FilterTab = "pending" | "answered";
 export function QuestionsCoursePanel({ sessionId, onPendingCountChange }: QuestionsCoursPanelProps) {
   const t = useTranslations();
   const locale = useLocale();
-  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+  const dateLocale = localeToDateLocale(locale);
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<QuestionsCoursWithCourse[]>([]);
   const [filter, setFilter] = useState<FilterTab>("pending");

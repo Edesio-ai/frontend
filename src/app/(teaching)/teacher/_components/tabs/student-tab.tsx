@@ -5,6 +5,7 @@ import { Session, StudentSessionWithStudent } from "@/types";
 import { Loader2, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLocale, useTranslations } from "@/lib/i18n/client";
+import { localeToDateLocale } from "@/utils/functions/date.utils";
 
 interface StudentTabProps {
   loadingSessionStudents: boolean;
@@ -15,7 +16,7 @@ interface StudentTabProps {
 export function StudentTab({ loadingSessionStudents, sessionStudents, selectedSession }: StudentTabProps) {
   const t = useTranslations();
   const locale = useLocale();
-  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+  const dateLocale = localeToDateLocale(locale);
   return (
     <TabsContent value="students" className="flex-1 overflow-y-auto m-0 mt-0">
       <div className="p-6">

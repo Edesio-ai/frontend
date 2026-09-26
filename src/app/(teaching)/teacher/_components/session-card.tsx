@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocale, useTranslations } from "@/lib/i18n/client";
+import { localeToDateLocale } from "@/utils/functions/date.utils";
 import type { Session } from "@/types";
 import { Calendar, Copy, BookOpen, Check, Trash2, Users, Pencil } from "lucide-react";
 import { useState } from "react";
@@ -29,7 +30,7 @@ export function SessionCard({
 }: SessionCardProps) {
   const t = useTranslations();
   const locale = useLocale();
-  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+  const dateLocale = localeToDateLocale(locale);
   const [copied, setCopied] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);

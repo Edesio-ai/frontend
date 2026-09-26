@@ -1,11 +1,12 @@
 export const ANNUAL_DISCOUNT_PERCENT = 15;
 
+// Matches the Stripe price IDs: only the English locale is billed in USD, every other locale in EUR.
 export function formatPlanPrice(price: number, locale: string): string {
-  if (locale === "fr") {
-    return `${price.toFixed(2).replace(".", ",")}€`;
+  if (locale === "en") {
+    return `$${price.toFixed(2)}`;
   }
 
-  return `$${price.toFixed(2)}`;
+  return `${price.toFixed(2).replace(".", ",")}€`;
 }
 
 export function getDiscountedMonthly(monthlyPrice: number): number {

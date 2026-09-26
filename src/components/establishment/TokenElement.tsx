@@ -5,6 +5,7 @@ import { InvitationToken } from "@/types";
 import { useState } from "react";
 import { useFeatureFlag } from "@/contexts/feature-flags-context";
 import { useLocale, useTranslations } from "@/lib/i18n/client";
+import { localeToDateLocale } from "@/utils/functions/date.utils";
 import { getLegacyRegisterInvitationPath, getRegisterInvitationPath } from "@/utils/functions/role.utils";
 
 type TokenElementProps = {
@@ -15,7 +16,7 @@ export function TokenElement({ token, handleDeleteToken }: TokenElementProps) {
   const t = useTranslations();
   const locale = useLocale();
   const isAuthNewDesign = useFeatureFlag("AuthNewDesign");
-  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+  const dateLocale = localeToDateLocale(locale);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
   const isTokenExpired = (expiresAt: string) => {

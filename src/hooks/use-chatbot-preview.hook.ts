@@ -1,6 +1,7 @@
 import { useReducer, useCallback } from "react";
 import type { Course, Question, EvaluateAnswerRequest, Language } from "@/types";
 import { useTranslations } from "@/lib/i18n/client";
+import { SESSION_LANGUAGE_LOCALES } from "@/lib/i18n/config";
 import { propositionLabels, correctAnswerDisplay, letterAnswerIsCorrect } from "@/lib/proposition-labels";
 import { llmService } from "@/services/llm.service";
 
@@ -157,15 +158,15 @@ function reducer(state: State, action: Action): State {
 
 export function useChatbotPreview(language: Language = "francais") {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const t = useTranslations();
+  const tc = useTranslations(SESSION_LANGUAGE_LOCALES[language]).chatbot;
 
-  const greetings: string[] = t.chatbot.greetings;
-  const correctAnswers: string[] = t.chatbot.correctAnswers;
-  const encouragementsAfterWrong: string[] = t.chatbot.encouragementsAfterWrong;
-  const retryEncouragements: string[] = t.chatbot.retryEncouragements;
-  const afterRetryMessages: string[] = t.chatbot.afterRetryMessages;
-  const startQuizMessages: string[] = t.chatbot.startQuiz;
-  const cheatMessages: string[] = t.chatbot.cheatMessages;
+  const greetings: string[] = tc.greetings;
+  const correctAnswers: string[] = tc.correctAnswers;
+  const encouragementsAfterWrong: string[] = tc.encouragementsAfterWrong;
+  const retryEncouragements: string[] = tc.retryEncouragements;
+  const afterRetryMessages: string[] = tc.afterRetryMessages;
+  const startQuizMessages: string[] = tc.startQuiz;
+  const cheatMessages: string[] = tc.cheatMessages;
 
   const reset = useCallback(() => {
     dispatch({ type: "RESET" });
@@ -210,31 +211,31 @@ export function useChatbotPreview(language: Language = "francais") {
 
   const proceedToCoursSelection = useCallback(() => {
     if (state.availableCours.length === 0) {
-      addBotMessage(t.chatbot.welcomeToClass.replace("{session}", state.sessionName), "course_selection");
+      addBotMessage(tc.welcomeToClass.replace("{session}", state.sessionName), "course_selection");
       return;
     }
 
-    addBotMessage(t.chatbot.selectCourse.replace("{session}", state.sessionName), "course_selection");
-  }, [state.availableCours, state.sessionName, addBotMessage, t.chatbot]);
+    addBotMessage(tc.selectCourse.replace("{session}", state.sessionName), "course_selection");
+  }, [state.availableCours, state.sessionName, addBotMessage, tc]);
 
   const selectCourse = useCallback(
     (cours: Course, questions: Question[]) => {
-      addStudentMessage(t.chatbot.studentAnswers.replace("{course}", cours.title), "answer");
+      addStudentMessage(tc.studentAnswers.replace("{course}", cours.title), "answer");
       const shuffledQuestions = shuffleArray(questions);
       dispatch({ type: "SELECT_COURS", cours, questions: shuffledQuestions });
 
       if (questions.length === 0) {
         setTimeout(() => {
-          addBotMessage(t.chatbot.noQuestions.replace("{course}", cours.title), "completion");
+          addBotMessage(tc.noQuestions.replace("{course}", cours.title), "completion");
         }, 500);
       } else {
         setTimeout(() => {
           const startMsg = pickRandom(startQuizMessages).replace("{count}", String(questions.length));
-          addBotMessage(t.chatbot.startingCourse.replace("{course}", cours.title) + startMsg, "question");
+          addBotMessage(tc.startingCourse.replace("{course}", cours.title) + startMsg, "question");
         }, 500);
       }
     },
-    [addStudentMessage, addBotMessage, t.chatbot, startQuizMessages],
+    [addStudentMessage, addBotMessage, tc, startQuizMessages],
   );
 
   const askCurrentQuestion = useCallback(() => {
@@ -299,7 +300,7 @@ export function useChatbotPreview(language: Language = "francais") {
             const answer = correctAnswerDisplay(question.proposals, question.correctAnswers || []);
             const explanation = question.explanation ? `\n\n${question.explanation}` : "";
             addBotMessage(
-              t.chatbot.reflectionWrong.replace("{answer}", answer).replace("{explanation}", explanation),
+              tc.reflectionWrong.replace("{answer}", answer).replace("{explanation}", explanation),
               "feedback",
               { isCorrect: false },
             );
@@ -309,7 +310,7 @@ export function useChatbotPreview(language: Language = "francais") {
           const answer = correctAnswerDisplay(question.proposals, question.correctAnswers || []);
           const explanation = question.explanation ? `\n\n${question.explanation}` : "";
           addBotMessage(
-            t.chatbot.reflectionNext.replace("{answer}", answer).replace("{explanation}", explanation),
+            tc.reflectionNext.replace("{answer}", answer).replace("{explanation}", explanation),
             "feedback",
             { isCorrect: false },
           );
@@ -355,14 +356,14 @@ export function useChatbotPreview(language: Language = "francais") {
           if (question.type === "single" || question.type === "multiple") {
             const wrongAnswer = correctAnswerDisplay(question.proposals, question.correctAnswers || []);
             addBotMessage(
-              t.chatbot.wrongQCM.replace("{encouragement}", encouragement).replace("{answer}", wrongAnswer),
+              tc.wrongQCM.replace("{encouragement}", encouragement).replace("{answer}", wrongAnswer),
               "feedback",
               { isCorrect: false },
             );
           } else {
             const retryPrompt = pickRandom(retryEncouragements);
             const wrongAnswer = correctAnswerDisplay(question.proposals, question.correctAnswers || []);
-            const openFeedback = t.chatbot.wrongOpen
+            const openFeedback = tc.wrongOpen
               .replace("{encouragement}", encouragement)
               .replace("{answer}", wrongAnswer)
               .replace("{retry}", retryPrompt);
@@ -381,7 +382,7 @@ export function useChatbotPreview(language: Language = "francais") {
       state.retryMode,
       addStudentMessage,
       addBotMessage,
-      t.chatbot,
+      tc,
       correctAnswers,
       encouragementsAfterWrong,
       afterRetryMessages,

@@ -7,6 +7,8 @@ import { annualDiscountPercent } from "@/utils/constants/billing";
 import { BillingService } from "@/services/billing.service";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "@/lib/i18n/client";
+import { toBackendLocale } from "@/lib/i18n/config";
+import { formatPlanPrice } from "@/utils/functions/price.utils";
 
 type PlanCardProps = {
   plan: Plan;
@@ -22,12 +24,7 @@ export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
   const planDetails = (
     t.billing.planDetails as Record<string, { name?: string; description: string; features: string[] }>
   )[plan.id];
-  const formatPrice = (price: number) => {
-    if (locale === "fr") {
-      return price.toFixed(2).replace(".", ",") + "€";
-    }
-    return "$" + price.toFixed(2);
-  };
+  const formatPrice = (price: number) => formatPlanPrice(price, locale);
 
   const getPrice = (monthlyPrice: number) => {
     if (isAnnual) {
@@ -41,7 +38,7 @@ export function PlanCard({ plan, recommendedPlan, isAnnual }: PlanCardProps) {
     const priceId = isAnnual ? plan.priceAnnualId : plan.priceMonthlyId;
 
     const planType = plan.id;
-    const { url } = await BillingService.getStripeUrl(priceId, planType, locale === "en" ? "en" : "fr");
+    const { url } = await BillingService.getStripeUrl(priceId, planType, toBackendLocale(locale));
     router.push(url);
     setIsLoading(false);
   };

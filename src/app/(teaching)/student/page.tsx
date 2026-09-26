@@ -36,6 +36,7 @@ import {
 import { MobileInstallBanner, MobileInstallModal } from "@/components/ui/mobile-install-modal";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLocale, useTranslations } from "@/lib/i18n/client";
+import { localeToDateLocale } from "@/utils/functions/date.utils";
 import { StudentChatbotModal } from "@/components/student/StudentChatboModal";
 import { StudentQAModal } from "@/components/student/StudantQAModal";
 import { Course, CourseRanking, Question, Session } from "@/types";
@@ -51,7 +52,7 @@ interface JoinedSession extends Session {
 export default function Student() {
   const t = useTranslations();
   const locale = useLocale();
-  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+  const dateLocale = localeToDateLocale(locale);
   const { user, loading: authLoading, logout, getUserRole } = useAuth();
   const {
     student,
@@ -891,8 +892,8 @@ export default function Student() {
         <Dialog open={loadingQuestions} onOpenChange={() => {}}>
           <DialogContent className="max-w-xs [&>button]:hidden">
             <DialogHeader className="text-center pb-2">
-              <DialogTitle className="text-base">Preparing chatbot</DialogTitle>
-              <DialogDescription>{t.chatbot.loadingQuestions}</DialogDescription>
+              <DialogTitle className="text-base">{t.student.preparingChatbot}</DialogTitle>
+              <DialogDescription>{t.student.loadingQuestions}</DialogDescription>
             </DialogHeader>
             <div className="flex flex-col items-center pb-4">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">

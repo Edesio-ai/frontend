@@ -384,6 +384,10 @@
   },
   "teacher": {
     "loading": "Loading your dashboard...",
+    "chatbotTester": {
+      "title": "Test chatbot - {name}",
+      "description": "Simulate the student experience for this lesson"
+    },
     "dashboardTitle": "Dashboard",
     "emptyTitle": "No classes yet",
     "emptySubtitle": "Create your classes and manage your lessons with Edesio.",
@@ -604,8 +608,6 @@
     "completionGood": "Excellent work! You've mastered this topic.",
     "completionMedium": "Good effort! A little more practice and you'll have it.",
     "completionLow": "Keep it up! Studying takes time — you'll get there.",
-    "testChatbot": "Test chatbot - {name}",
-    "simulateExperience": "Simulate the student experience for this lesson",
     "clickAnswer": "Click your answer",
     "selectAllCorrect": "Select all correct answers",
     "validateSelection": "Validate ({count} selected)",
@@ -625,6 +627,7 @@
     "preview": "Preview",
     "chatbotStarting": "The chatbot is starting...",
     "selectCourseToRevise": "Choose the lesson to study",
+    "chooseCourse": "Choose a lesson...",
     "evaluationError": "Error during evaluation",
     "addCoursesToTest": "Add lessons to test",
     "answerPrefix": "Answer: {answer}"
@@ -632,6 +635,8 @@
   "student": {
     "loading": "Loading...",
     "loadingCourses": "Loading lessons...",
+    "preparingChatbot": "Preparing chatbot",
+    "loadingQuestions": "Loading questions...",
     "greeting": "Hi, {name}!",
     "emptyTitle": "No classes joined",
     "emptySubtitle": "Ready to study with Edesio?",
@@ -742,11 +747,6 @@
       "anglais": "English",
       "espagnol": "Spanish",
       "allemand": "German"
-    },
-    "chatbot": {
-      "noQuestionsYet": "Generate questions first to start the chatbot.",
-      "loadingQuestions": "Loading questions...",
-      "generatingQuestions": "Generating new questions..."
     }
   },
   "establishment": {

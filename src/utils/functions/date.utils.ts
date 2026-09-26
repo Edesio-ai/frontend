@@ -1,7 +1,7 @@
-import type { Locale } from "@/lib/i18n/config";
+import { LOCALE_REGIONS, type Locale } from "@/lib/i18n/config";
 
 export function localeToDateLocale(locale: Locale): string {
-  return locale === "fr" ? "fr-FR" : "en-US";
+  return LOCALE_REGIONS[locale];
 }
 
 export const formatDate = (timestamp: number, locale: string = "fr-FR") => {

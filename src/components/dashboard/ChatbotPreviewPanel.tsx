@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useChatbotPreview, type ChatMessage } from "@/hooks/use-chatbot-preview.hook";
 import type { Course, Question, Language } from "@/types";
 import { propositionLabels } from "@/lib/proposition-labels";
-import { useTranslations } from "@/lib/i18n/client";
+import { useTranslations, type Dictionary } from "@/lib/i18n/client";
+import { SESSION_LANGUAGE_LOCALES } from "@/lib/i18n/config";
 import {
   Send,
   User,
@@ -49,7 +50,7 @@ function TypingIndicator() {
   );
 }
 
-function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typeof useTranslations> }) {
+function MessageBubble({ message, tc }: { message: ChatMessage; tc: Dictionary["chatbot"] }) {
   const isBot = message.sender === "bot";
 
   return (
@@ -145,7 +146,7 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
                     : "text-red-700 dark:text-red-300"
               }`}
             >
-              {t.chatbot.sessionEnded}
+              {tc.sessionEnded}
             </span>
           </div>
         )}
@@ -157,21 +158,21 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
                 <div className="p-1 rounded-full bg-emerald-500/20">
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">{t.chatbot.goodAnswer}</span>
+                <span className="text-sm font-semibold">{tc.goodAnswer}</span>
               </div>
             ) : message.isPartial ? (
               <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                 <div className="p-1 rounded-full bg-orange-500/20">
                   <Star className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">{t.chatbot.partialAnswer}</span>
+                <span className="text-sm font-semibold">{tc.partialAnswer}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
                 <div className="p-1 rounded-full bg-red-500/20">
                   <XCircle className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">{t.chatbot.wrongAnswer}</span>
+                <span className="text-sm font-semibold">{tc.wrongAnswer}</span>
               </div>
             )}
           </div>
@@ -184,11 +185,11 @@ function MessageBubble({ message, t }: { message: ChatMessage; t: ReturnType<typ
 function CourseSelectionDropdown({
   course,
   onSelect,
-  t,
+  tc,
 }: {
   course: Course[];
   onSelect: (c: Course) => void;
-  t: ReturnType<typeof useTranslations>;
+  tc: Dictionary["chatbot"];
 }) {
   const handleValueChange = (courseId: string) => {
     const selected = course.find((c) => c.id === courseId);
@@ -201,14 +202,14 @@ function CourseSelectionDropdown({
     <div className="bg-gradient-to-br from-primary/20 to-violet-500/20 rounded-xl p-5 border-2 border-primary/30 shadow-md space-y-3 animate-in fade-in slide-in-from-bottom-3 duration-300">
       <div className="flex items-center justify-center gap-2 text-base font-semibold text-foreground">
         <BookOpen className="h-5 w-5 text-primary" />
-        <span>{t.chatbot.selectCourseToRevise}</span>
+        <span>{tc.selectCourseToRevise}</span>
       </div>
       <Select onValueChange={handleValueChange}>
         <SelectTrigger
           className="w-full h-12 text-base bg-background border-2 border-primary/40 focus:ring-primary/50 focus:border-primary font-medium"
           data-testid="select-course-dropdown"
         >
-          <SelectValue placeholder={t.student.chooseCourse} />
+          <SelectValue placeholder={tc.chooseCourse} />
         </SelectTrigger>
         <SelectContent>
           {course.map((c) => (
@@ -225,11 +226,11 @@ function CourseSelectionDropdown({
 function QCMOptions({
   question,
   onSelect,
-  t,
+  tc,
 }: {
   question: Question;
   onSelect: (answer: string) => void;
-  t: ReturnType<typeof useTranslations>;
+  tc: Dictionary["chatbot"];
 }) {
   const labels = propositionLabels(question.proposals);
   if (labels.length === 0) return null;
@@ -238,7 +239,7 @@ function QCMOptions({
     <div className="py-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="qcm-options-container">
       <div className="flex items-center justify-center gap-2 mb-4 text-xs text-muted-foreground">
         <Zap className="h-3.5 w-3.5 text-primary" />
-        <span>{t.chatbot.clickAnswer}</span>
+        <span>{tc.clickAnswer}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {labels.map((prop, i) => (
@@ -266,7 +267,7 @@ export function ChatbotPreviewPanel({
   refreshKey,
   language = "francais",
 }: ChatbotPreviewPanelProps) {
-  const t = useTranslations();
+  const tc = useTranslations(SESSION_LANGUAGE_LOCALES[language]).chatbot;
   const {
     chatbotState,
     messages,
@@ -346,11 +347,11 @@ export function ChatbotPreviewPanel({
       const timer = setTimeout(() => {
         const totalQuestions = questions.length;
         const scoreRatio = totalQuestions > 0 ? score / totalQuestions : 0;
-        const scoreText = t.chatbot.completionScore
+        const scoreText = tc.completionScore
           .replace("{score}", String(score))
           .replace("{total}", String(totalQuestions))
           .replace("{percent}", String(Math.round(scoreRatio * 100)));
-        addBotMessage(`${t.chatbot.completionTitle}\n\n${scoreText}`, "completion", { scoreRatio });
+        addBotMessage(`${tc.completionTitle}\n\n${scoreText}`, "completion", { scoreRatio });
         setHasShownCompletion(true);
       }, 1000);
       return () => clearTimeout(timer);
@@ -362,8 +363,8 @@ export function ChatbotPreviewPanel({
     score,
     hasShownCompletion,
     addBotMessage,
-    t.chatbot.completionScore,
-    t.chatbot.completionTitle,
+    tc.completionScore,
+    tc.completionTitle,
   ]);
 
   useEffect(() => {
@@ -438,7 +439,7 @@ export function ChatbotPreviewPanel({
             <h3 className="font-bold text-sm">Edesio</h3>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-xs text-muted-foreground">{t.chatbot.preview}</p>
+              <p className="text-xs text-muted-foreground">{tc.preview}</p>
             </div>
           </div>
         </div>
@@ -464,13 +465,13 @@ export function ChatbotPreviewPanel({
                 <Sparkles className="h-3 w-3 text-primary" />
               </div>
             </div>
-            <p className="text-sm text-muted-foreground mb-1">{t.chatbot.chatbotStarting}</p>
-            {course.length === 0 && <p className="text-xs text-muted-foreground/70">{t.chatbot.addCoursesToTest}</p>}
+            <p className="text-sm text-muted-foreground mb-1">{tc.chatbotStarting}</p>
+            {course.length === 0 && <p className="text-xs text-muted-foreground/70">{tc.addCoursesToTest}</p>}
           </div>
         ) : (
           <>
             {messages.map((message: ChatMessage) => (
-              <MessageBubble key={message.id} message={message} t={t} />
+              <MessageBubble key={message.id} message={message} tc={tc} />
             ))}
 
             {isLoadingQuestions && <TypingIndicator />}
@@ -480,7 +481,7 @@ export function ChatbotPreviewPanel({
 
       {showCourseSelection && !isLoadingQuestions && (
         <div className="px-4 pb-4">
-          <CourseSelectionDropdown course={course} onSelect={handleCourseSelect} t={t} />
+          <CourseSelectionDropdown course={course} onSelect={handleCourseSelect} tc={tc} />
         </div>
       )}
 
@@ -491,7 +492,7 @@ export function ChatbotPreviewPanel({
             onSelect={(answer) => {
               submitAnswer(answer);
             }}
-            t={t}
+            tc={tc}
           />
         </div>
       )}
@@ -504,7 +505,7 @@ export function ChatbotPreviewPanel({
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder={t.chatbot.inputPlaceholder}
+                placeholder={tc.inputPlaceholder}
                 className="h-11 pr-12 rounded-xl bg-background/80 border-border/50 focus-visible:ring-primary/30"
                 data-testid="input-chatbot-answer"
               />
@@ -531,7 +532,7 @@ export function ChatbotPreviewPanel({
             data-testid="button-restart-chatbot"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
-            {t.chatbot.restart}
+            {tc.restart}
           </Button>
         </div>
       )}

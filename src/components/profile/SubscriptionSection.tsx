@@ -11,14 +11,15 @@ import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
 import { CreditCard } from "lucide-react";
-import { formatDate } from "@/utils/functions/date.utils";
+import { formatDate, localeToDateLocale } from "@/utils/functions/date.utils";
+import { toBackendLocale } from "@/lib/i18n/config";
 import { CancelSubscriptionModal } from "./CancelSubscriptionModal";
 
 export function SubscriptionSection() {
   const { toast } = useToast();
   const t = useTranslations();
   const locale = useLocale();
-  const dateLocale = locale === "fr" ? "fr-FR" : "en-US";
+  const dateLocale = localeToDateLocale(locale);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
@@ -49,7 +50,7 @@ export function SubscriptionSection() {
   const handleCancelSubscription = async () => {
     setIsCanceling(true);
     try {
-      await BillingService.cancelSubscription(locale);
+      await BillingService.cancelSubscription(toBackendLocale(locale));
 
       toast({
         title: s.cancelled,

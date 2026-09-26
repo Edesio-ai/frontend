@@ -42,7 +42,7 @@ export function ChatbotModal({
           <div className="flex items-center justify-between gap-2">
             <DialogTitle className="flex items-center gap-2 flex-1 min-w-0">
               <MessageSquare className="h-5 w-5 text-primary shrink-0" />
-              <span className="truncate">{t.chatbot.testChatbot.replace("{name}", course.title)}</span>
+              <span className="truncate">{t.teacher.chatbotTester.title.replace("{name}", course.title)}</span>
             </DialogTitle>
             <div className="flex items-center gap-2 shrink-0">
               <Button
@@ -64,7 +64,7 @@ export function ChatbotModal({
               </Button>
             </div>
           </div>
-          <DialogDescription>{t.chatbot.simulateExperience}</DialogDescription>
+          <DialogDescription>{t.teacher.chatbotTester.description}</DialogDescription>
         </DialogHeader>
         <div className="flex-1 min-h-0 overflow-hidden">
           <ChatbotPreviewPanel

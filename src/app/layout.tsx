@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { FeatureFlagBootstrapScript } from "@/components/feature-flags/feature-flag-bootstrap-script";
 import { getLocaleFromCookies, getDictionary } from "@/lib/i18n";
+import { LOCALE_REGIONS } from "@/lib/i18n/config";
 import { getSiteUrl, OG_IMAGE_PATH } from "@/lib/metadata/site-url";
 import { isFeatureFlagOnByDefault } from "@/lib/feature-flags/flags";
 import { getEnabledHtmlAttributeProps } from "@/lib/feature-flags/html";
@@ -32,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: dict.metadata.description,
       url: siteUrl,
       siteName: "Edesio",
-      locale: locale === "fr" ? "fr_FR" : "en_US",
+      locale: LOCALE_REGIONS[locale].replace("-", "_"),
       type: "website",
       images: [
         {

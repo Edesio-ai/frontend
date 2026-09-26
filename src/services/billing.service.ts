@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n/config";
+import type { BackendLocale } from "@/lib/i18n/config";
 import type { CheckoutUrlResponse, SubscriptionResponse, SubscriptionStatus } from "@/types";
 
 export const BillingService = {
@@ -7,7 +7,7 @@ export const BillingService = {
     const response = await apiFetch<SubscriptionStatus>("/api/billing/subscription-status");
     return response;
   },
-  async getStripeUrl(priceId: string, planType: string, locale: Locale = "fr"): Promise<CheckoutUrlResponse> {
+  async getStripeUrl(priceId: string, planType: string, locale: BackendLocale = "fr"): Promise<CheckoutUrlResponse> {
     const response = await apiFetch<CheckoutUrlResponse>("/api/billing/checkout-url", {
       method: "POST",
       body: JSON.stringify({ priceId, planType, locale }),
@@ -20,7 +20,7 @@ export const BillingService = {
     });
     return response;
   },
-  async cancelSubscription(locale: Locale): Promise<Record<string, unknown> | null> {
+  async cancelSubscription(locale: BackendLocale): Promise<Record<string, unknown> | null> {
     const response = await apiFetch<Record<string, unknown> | null>("/api/billing/subscription/cancel", {
       method: "POST",
       body: JSON.stringify({ locale }),

@@ -1,22 +1,17 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useState, useTransition, type ReactNode } from "react";
 import { LOCALE_COOKIE, type Locale } from "./config";
 
 export type Dictionary = typeof import("./dictionaries/en.json");
 
+type Dictionaries = Partial<Record<Locale, Dictionary>>;
+
 interface LocaleContextValue {
   locale: Locale;
   dictionary: Dictionary;
+  dictionaries: Dictionaries;
+  loadDictionary: (locale: Locale) => Promise<Dictionary>;
   setLocale: (locale: Locale) => Promise<void>;
   isChangingLocale: boolean;
 }
@@ -26,6 +21,8 @@ const LocaleContext = createContext<LocaleContextValue | null>(null);
 const dictionaryLoaders: Record<Locale, () => Promise<Dictionary>> = {
   en: () => import("./dictionaries/en.json").then((m) => m.default),
   fr: () => import("./dictionaries/fr.json").then((m) => m.default),
+  es: () => import("./dictionaries/es.json").then((m) => m.default),
+  de: () => import("./dictionaries/de.json").then((m) => m.default),
 };
 
 function persistLocaleCookie(locale: Locale) {
@@ -43,46 +40,41 @@ export function LocaleProvider({
   children: ReactNode;
 }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
-  const [dictionary, setDictionary] = useState<Dictionary>(initialDictionary);
+  const [dictionaries, setDictionaries] = useState<Dictionaries>({ [initialLocale]: initialDictionary });
   const [isPending, startTransition] = useTransition();
-  const cacheRef = useRef<Partial<Record<Locale, Dictionary>>>({
-    [initialLocale]: initialDictionary,
-  });
 
   useEffect(() => {
     setLocaleState(initialLocale);
-    setDictionary(initialDictionary);
-    cacheRef.current[initialLocale] = initialDictionary;
+    setDictionaries((prev) => ({ ...prev, [initialLocale]: initialDictionary }));
   }, [initialLocale, initialDictionary]);
 
-  // Warm the other locale dictionary so switches feel instant.
-  // Always (re)load so HMR / updated JSON keys are not stuck behind a stale cache.
-  useEffect(() => {
-    const other: Locale = initialLocale === "fr" ? "en" : "fr";
-    void dictionaryLoaders[other]().then((dict) => {
-      cacheRef.current[other] = dict;
-    });
-  }, [initialLocale]);
+  const loadDictionary = useCallback(async (target: Locale) => {
+    const loaded = await dictionaryLoaders[target]();
+    setDictionaries((prev) => (prev[target] === loaded ? prev : { ...prev, [target]: loaded }));
+    return loaded;
+  }, []);
 
   const setLocale = useCallback(
     async (next: Locale) => {
       if (next === locale) return;
 
       // Always reload to pick up dictionary updates (avoids empty labels after i18n changes).
-      const nextDictionary = await dictionaryLoaders[next]();
-      cacheRef.current[next] = nextDictionary;
+      await loadDictionary(next);
 
       persistLocaleCookie(next);
       startTransition(() => {
         setLocaleState(next);
-        setDictionary(nextDictionary);
       });
     },
-    [locale],
+    [locale, loadDictionary],
   );
 
+  const dictionary = dictionaries[locale] ?? initialDictionary;
+
   return (
-    <LocaleContext.Provider value={{ locale, dictionary, setLocale, isChangingLocale: isPending }}>
+    <LocaleContext.Provider
+      value={{ locale, dictionary, dictionaries, loadDictionary, setLocale, isChangingLocale: isPending }}
+    >
       {children}
     </LocaleContext.Provider>
   );
@@ -101,10 +93,24 @@ export function useSetLocale() {
   return { setLocale: ctx.setLocale, isChangingLocale: ctx.isChangingLocale };
 }
 
-export function useTranslations(): Dictionary {
+/**
+ * Without argument, returns the UI dictionary. With a locale (e.g. the session language for the
+ * chatbot), returns that dictionary once loaded, falling back to the UI dictionary meanwhile.
+ */
+export function useTranslations(locale?: Locale): Dictionary {
   const ctx = useContext(LocaleContext);
+  const target = locale ?? ctx?.locale;
+  const requested = target ? ctx?.dictionaries[target] : undefined;
+  const loadDictionary = ctx?.loadDictionary;
+
+  useEffect(() => {
+    if (target && !requested && loadDictionary) {
+      void loadDictionary(target);
+    }
+  }, [target, requested, loadDictionary]);
+
   if (!ctx) {
     throw new Error("useTranslations must be used inside LocaleProvider");
   }
-  return ctx.dictionary;
+  return requested ?? ctx.dictionary;
 }

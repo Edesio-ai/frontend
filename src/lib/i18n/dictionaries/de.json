@@ -1,0 +1,1890 @@
+{
+  "common": {
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "demo": "Demo anfragen",
+    "loading": "Wird geladen...",
+    "error": "Ein Fehler ist aufgetreten",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "submit": "Absenden",
+    "close": "Schließen",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen"
+  },
+  "metadata": {
+    "title": "Edesio – Der Chatbot, der Ihre Schülerinnen und Schüler trainiert und bewertet | KI-Lösung für die Bildung",
+    "description": "Edesio: die KI-Lösung für Bildungseinrichtungen. Lehrkräfte laden ihre Unterrichtsinhalte hoch, die KI erstellt daraus passende Fragen und trainiert die Lernenden. Entdecken Sie unsere innovative Lernplattform."
+  },
+  "supabaseErrors": {
+    "invalidCredentials": "Ungültige Anmeldedaten",
+    "genericError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "emailNotConfirmed": "E-Mail-Adresse nicht bestätigt",
+    "userAlreadyRegistered": "Mit dieser E-Mail-Adresse existiert bereits ein Konto",
+    "passwordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "invalidEmailFormat": "Ungültiges E-Mail-Format",
+    "validPasswordRequired": "Ein gültiges Passwort ist erforderlich",
+    "emailRequired": "Bitte geben Sie eine E-Mail-Adresse an",
+    "rateLimitExceeded": "Zu viele Versuche. Bitte versuchen Sie es später erneut",
+    "securityWait": "Aus Sicherheitsgründen warten Sie bitte 60 Sekunden, bevor Sie es erneut versuchen",
+    "invalidEmail": "Die angegebene E-Mail-Adresse ist ungültig",
+    "invalidPassword": "Das angegebene Passwort ist ungültig"
+  },
+  "auth": {
+    "layout": {
+      "aside": {
+        "panelStatement": "Lehrkräfte laden ihre Unterrichtsinhalte hoch, Edesio erstellt Fragen, chattet mit den Lernenden und gibt Ihnen eine klare Rückmeldung zu ihren Fortschritten.",
+        "panelBullets": [
+          "Automatische Fragenerstellung aus Ihren Unterrichtsinhalten",
+          "Individuelle Fortschrittsverfolgung für jede Schülerin und jeden Schüler",
+          "DSGVO-konform, in Europa gehostet"
+        ],
+        "trustItems": ["Powered by Mistral AI", "DSGVO-konform"]
+      }
+    },
+    "login": {
+      "legacy": {
+        "title": "Bei Edesio anmelden",
+        "subtitle": "Zugang zu Ihrem persönlichen Bereich",
+        "email": "E-Mail-Adresse",
+        "emailPlaceholder": "max.mustermann@schule.de",
+        "emailInvalid": "Ungültige E-Mail-Adresse",
+        "password": "Passwort",
+        "passwordRequired": "Passwort ist erforderlich",
+        "forgotPassword": "Passwort vergessen?",
+        "submit": "Anmelden",
+        "submitting": "Anmeldung läuft...",
+        "noAccount": "Noch kein Konto?",
+        "signup": "Registrieren",
+        "defaultError": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten."
+      },
+      "new": {
+        "title": "Bei Edesio anmelden",
+        "subtitle": "Zugang zu Ihrem persönlichen Bereich",
+        "email": "E-Mail-Adresse",
+        "emailPlaceholder": "max.mustermann@schule.de",
+        "emailInvalid": "Ungültige E-Mail-Adresse",
+        "emailRequired": "E-Mail-Adresse ist erforderlich",
+        "password": "Passwort",
+        "passwordPlaceholder": "••••••••",
+        "passwordRequired": "Passwort ist erforderlich",
+        "showPassword": "Passwort anzeigen",
+        "hidePassword": "Passwort verbergen",
+        "forgotPassword": "Passwort vergessen?",
+        "submit": "Anmelden",
+        "submitting": "Anmeldung läuft...",
+        "noAccount": "Noch kein Konto?",
+        "signup": "Registrieren",
+        "defaultError": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten."
+      }
+    },
+    "register": {
+      "legacy": {
+        "common": {
+          "title": "Konto erstellen",
+          "subtitle": "Wählen Sie Ihr Profil, um Ihren Edesio-Bereich anzupassen.",
+          "forIndividuals": "Für Privatpersonen",
+          "forSchools": "Für Bildungseinrichtungen",
+          "alreadyHaveAccount": "Sie haben bereits ein Konto?",
+          "login": "Anmelden",
+          "changeProfile": "Profil ändern",
+          "submit": "Mein Konto erstellen",
+          "submitting": "Konto wird erstellt...",
+          "defaultError": "Registrierung fehlgeschlagen.",
+          "errorPrefix": "Fehler beim Erstellen des Kontos: ",
+          "signInErrorPrefix": "Konto erstellt, aber die Anmeldung ist fehlgeschlagen: ",
+          "terms": {
+            "accept": "Ich akzeptiere die",
+            "termsLink": "Nutzungsbedingungen",
+            "and": "und die",
+            "privacyLink": "Datenschutzerklärung",
+            "required": "Sie müssen die Nutzungsbedingungen akzeptieren"
+          },
+          "contact": {
+            "firstName": "Vorname",
+            "firstNamePlaceholder": "Max",
+            "lastName": "Nachname",
+            "lastNamePlaceholder": "Mustermann",
+            "email": "E-Mail-Adresse",
+            "emailPlaceholder": "max.mustermann@schule.de",
+            "password": "Passwort",
+            "confirmPassword": "Passwort bestätigen",
+            "firstNameRequired": "Vorname ist erforderlich",
+            "lastNameRequired": "Nachname ist erforderlich",
+            "emailInvalid": "Ungültige E-Mail-Adresse",
+            "confirmRequired": "Bitte bestätigen Sie Ihr Passwort",
+            "passwordWeak": "Das Passwort erfüllt nicht alle Anforderungen",
+            "passwordMismatch": "Die Passwörter stimmen nicht überein",
+            "passwordCriteria": {
+              "minLength": "Mindestens 12 Zeichen",
+              "uppercase": "Ein Großbuchstabe",
+              "lowercase": "Ein Kleinbuchstabe",
+              "number": "Eine Ziffer",
+              "special": "Ein Sonderzeichen",
+              "match": "Beide Passwörter stimmen überein"
+            }
+          }
+        },
+        "solo": {
+          "desc": "Erstellen Sie eigene Lerneinheiten und trainieren Sie mit KI",
+          "roleLabel": "Edesio Solo"
+        },
+        "student": {
+          "title": "Ich bin Schüler/in",
+          "desc": "Treten Sie der Session Ihrer Lehrkraft bei",
+          "roleLabel": "Schülerkonto"
+        },
+        "teacher": {
+          "title": "Ich bin Lehrkraft",
+          "desc": "Erstellen Sie eine Klasse und lassen Sie Ihre Schülerinnen und Schüler üben",
+          "roleLabel": "Lehrkraftkonto"
+        },
+        "establishment": {
+          "title": "Ich bin eine Bildungseinrichtung",
+          "desc": "Verwalten Sie Ihre Lehrkräfte und behalten Sie die Aktivität im Blick",
+          "roleLabel": "Einrichtungskonto",
+          "sectionTitle": "Ihre Einrichtung",
+          "contactSectionTitle": "Ihr Ansprechpartner-Konto",
+          "type": {
+            "label": "Art der Einrichtung",
+            "placeholder": "Art auswählen",
+            "required": "Die Art der Einrichtung ist erforderlich",
+            "options": {
+              "primary_school": "Grundschule",
+              "middle_school": "Sekundarstufe I",
+              "high_school": "Gymnasium / Sekundarstufe II",
+              "higher_education": "Hochschulbildung",
+              "university": "Universität",
+              "graduate_school": "Hochschule / Business School",
+              "vocational_training": "Berufsausbildung",
+              "other": "Sonstige"
+            }
+          },
+          "name": {
+            "label": "Name der Einrichtung",
+            "placeholder": "Goethe-Gymnasium",
+            "required": "Der Name der Einrichtung ist erforderlich"
+          },
+          "address": {
+            "street": {
+              "label": "Straße und Hausnummer",
+              "placeholder": "z. B. Hauptstraße 12",
+              "required": "Straße und Hausnummer sind erforderlich",
+              "hint": "Wählen Sie einen Vorschlag aus, um Postleitzahl, Ort und Land automatisch auszufüllen."
+            },
+            "zipCode": {
+              "label": "Postleitzahl",
+              "placeholder": "10115",
+              "required": "Postleitzahl ist erforderlich"
+            },
+            "city": {
+              "label": "Ort",
+              "placeholder": "Berlin",
+              "required": "Ort ist erforderlich"
+            },
+            "country": {
+              "label": "Land",
+              "placeholder": "Land auswählen",
+              "required": "Land ist erforderlich",
+              "invalid": "Dieses Land wird nicht unterstützt",
+              "options": {
+                "AD": "Andorra",
+                "AT": "Österreich",
+                "BE": "Belgien",
+                "BG": "Bulgarien",
+                "CA": "Kanada",
+                "CH": "Schweiz",
+                "CY": "Zypern",
+                "CZ": "Tschechien",
+                "DE": "Deutschland",
+                "DK": "Dänemark",
+                "EE": "Estland",
+                "ES": "Spanien",
+                "FI": "Finnland",
+                "FR": "Frankreich",
+                "GB": "Vereinigtes Königreich",
+                "GR": "Griechenland",
+                "HR": "Kroatien",
+                "HU": "Ungarn",
+                "IE": "Irland",
+                "IS": "Island",
+                "IT": "Italien",
+                "LI": "Liechtenstein",
+                "LT": "Litauen",
+                "LU": "Luxemburg",
+                "LV": "Lettland",
+                "MC": "Monaco",
+                "MT": "Malta",
+                "NL": "Niederlande",
+                "NO": "Norwegen",
+                "PL": "Polen",
+                "PT": "Portugal",
+                "RO": "Rumänien",
+                "SE": "Schweden",
+                "SI": "Slowenien",
+                "SK": "Slowakei",
+                "SM": "San Marino",
+                "US": "Vereinigte Staaten",
+                "VA": "Vatikanstadt"
+              }
+            }
+          }
+        }
+      },
+      "new": {
+        "title": "Konto erstellen",
+        "subtitle": "Wählen Sie Ihr Profil, um Ihren Edesio-Arbeitsbereich einzurichten.",
+        "forIndividuals": "Für Privatpersonen",
+        "forSchools": "Für Schulen",
+        "alreadyHaveAccount": "Sie haben bereits ein Konto?",
+        "login": "Anmelden",
+        "changeProfile": "Profil ändern",
+        "firstName": "Vorname",
+        "firstNamePlaceholder": "Max",
+        "lastName": "Nachname",
+        "lastNamePlaceholder": "Mustermann",
+        "email": "E-Mail-Adresse",
+        "emailPlaceholder": "max.mustermann@schule.de",
+        "password": "Passwort",
+        "passwordPlaceholder": "••••••••",
+        "confirmPassword": "Passwort bestätigen",
+        "showPassword": "Passwort anzeigen",
+        "hidePassword": "Passwort verbergen",
+        "establishment": "Einrichtung",
+        "establishmentOptional": "(optional)",
+        "establishmentPlaceholder": "Goethe-Gymnasium",
+        "establishmentNameLabel": "Name der Einrichtung",
+        "schoolSection": "Einrichtung",
+        "addressSection": "Adresse",
+        "acceptTerms": "Ich akzeptiere die",
+        "termsLink": "Nutzungsbedingungen",
+        "and": "und die",
+        "privacyLink": "Datenschutzerklärung",
+        "submit": "Mein Konto erstellen",
+        "submitting": "Konto wird erstellt...",
+        "defaultError": "Registrierung fehlgeschlagen.",
+        "signInError": "Ihr Konto wurde erstellt, aber wir konnten Sie nicht anmelden. Bitte melden Sie sich manuell an.",
+        "firstNameRequired": "Vorname ist erforderlich",
+        "lastNameRequired": "Nachname ist erforderlich",
+        "emailRequired": "E-Mail-Adresse ist erforderlich",
+        "emailInvalid": "Ungültige E-Mail-Adresse",
+        "passwordRequired": "Passwort ist erforderlich",
+        "passwordWeak": "Das Passwort erfüllt nicht alle Anforderungen",
+        "confirmPasswordRequired": "Bitte bestätigen Sie Ihr Passwort",
+        "passwordMismatch": "Die Passwörter stimmen nicht überein",
+        "acceptRequired": "Sie müssen die Nutzungsbedingungen akzeptieren",
+        "establishmentRequired": "Der Name der Einrichtung ist erforderlich",
+        "passwordCriteria": {
+          "minLength": "Mindestens 12 Zeichen",
+          "uppercase": "Ein Großbuchstabe",
+          "lowercase": "Ein Kleinbuchstabe",
+          "number": "Eine Ziffer",
+          "special": "Ein Sonderzeichen",
+          "match": "Beide Passwörter stimmen überein"
+        },
+        "roles": {
+          "solo": {
+            "title": "Edesio Solo",
+            "description": "Erstellen Sie eigene Lernmaterialien und trainieren Sie mit KI",
+            "chip": "Edesio Solo"
+          },
+          "student": {
+            "title": "Ich bin Schüler/in",
+            "description": "Treten Sie der Session Ihrer Lehrkraft bei",
+            "chip": "Schülerkonto"
+          },
+          "teacher": {
+            "title": "Ich bin Lehrkraft",
+            "description": "Erstellen Sie eine Klasse und lassen Sie Ihre Schülerinnen und Schüler wiederholen",
+            "chip": "Lehrkraftkonto"
+          },
+          "establishment": {
+            "title": "Ich bin eine Bildungseinrichtung",
+            "description": "Verwalten Sie Ihre Lehrkräfte und verfolgen Sie die Aktivität",
+            "chip": "Einrichtungskonto"
+          }
+        }
+      }
+    }
+  },
+  "teacherInvitation": {
+    "createAccount": "Erstellen Sie Ihr Lehrkraftkonto",
+    "invited": "Sie wurden eingeladen, Edesio beizutreten",
+    "invitedBy": "Eingeladen von",
+    "teacherAccount": "Lehrkraftkonto",
+    "forEmail": "Für:",
+    "validInvitation": "Gültige Einladung",
+    "chatbotSingular": "Chatbot",
+    "chatbotPlural": "Chatbots",
+    "chatbotsAllocated": " werden Ihnen von Ihrer Einrichtung zugewiesen",
+    "firstname": "Vorname",
+    "lastname": "Nachname",
+    "email": "E-Mail",
+    "emailHint": "Muss mit der Adresse übereinstimmen, an die die Einladung gesendet wurde",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "acceptTerms": "Ich akzeptiere die Nutzungsbedingungen",
+    "creating": "Wird erstellt...",
+    "create": "Mein Konto erstellen",
+    "hasAccount": "Sie haben bereits ein Konto?",
+    "login": "Anmelden",
+    "backHome": "Zurück zur Startseite",
+    "validating": "Ihre Einladung wird überprüft...",
+    "invalidInvitation": "Ungültige Einladung",
+    "invalidLink": "Ungültiger Einladungslink",
+    "validationError": "Fehler bei der Überprüfung der Einladung",
+    "unknownError": "Unbekannter Fehler",
+    "firstnameRequired": "Vorname ist erforderlich",
+    "lastnameRequired": "Nachname ist erforderlich",
+    "emailInvalid": "Ungültige E-Mail-Adresse",
+    "passwordMin": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "confirmRequired": "Bitte bestätigen Sie Ihr Passwort",
+    "acceptRequired": "Sie müssen die Nutzungsbedingungen akzeptieren",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein",
+    "firstnamePlaceholder": "Max",
+    "lastnamePlaceholder": "Mustermann",
+    "emailPlaceholder": "max.mustermann@schule.de"
+  },
+  "forgotPassword": {
+    "title": "Passwort vergessen?",
+    "subtitle": "Geben Sie Ihre E-Mail-Adresse ein, um einen Link zum Zurücksetzen zu erhalten",
+    "email": "E-Mail-Adresse",
+    "emailPlaceholder": "max.mustermann@schule.de",
+    "submit": "Link zum Zurücksetzen senden",
+    "submitting": "Wird gesendet...",
+    "backToLogin": "Zurück zur Anmeldung",
+    "successTitle": "E-Mail gesendet",
+    "successMessage": "Falls ein Konto mit der Adresse {email} existiert, erhalten Sie eine E-Mail mit einem Link zum Zurücksetzen Ihres Passworts.",
+    "successSpamNote": "Bitte prüfen Sie auch Ihren Spam-Ordner, falls die E-Mail nicht in Ihrem Posteingang erscheint.",
+    "rateLimitError": "Zu viele Versuche. Bitte warten Sie einige Minuten, bevor Sie es erneut versuchen.",
+    "defaultError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+  },
+  "nav": {
+    "profile": "Profil",
+    "suggestions": "Vorschläge",
+    "logout": "Abmelden",
+    "loggingOut": "Abmeldung läuft..."
+  },
+  "hub": {
+    "loading": "Ihre Bereiche werden geladen...",
+    "title": "Bereich auswählen",
+    "subtitle": "Öffnen Sie das Modul, das Sie nutzen möchten.",
+    "teacher": "Lehrkraft",
+    "teacherDesc": "Klassen, Lektionen und Fragen",
+    "student": "Schüler/in",
+    "studentDesc": "Einer Session beitreten und lernen",
+    "selfLearner": "Selbstlernende",
+    "selfLearnerDesc": "Eigene Lektionen erstellen",
+    "establishment": "Einrichtung",
+    "establishmentDesc": "Lehrkräfte und Einladungen",
+    "backToHub": "Übersicht"
+  },
+  "teacher": {
+    "loading": "Ihr Dashboard wird geladen...",
+    "chatbotTester": {
+      "title": "Chatbot testen – {name}",
+      "description": "Simulieren Sie die Schüleransicht für diese Lektion"
+    },
+    "dashboardTitle": "Dashboard",
+    "emptyTitle": "Noch keine Klassen",
+    "emptySubtitle": "Erstellen Sie Ihre Klassen und verwalten Sie Ihre Lektionen mit Edesio.",
+    "emptyCardHint": "Erstellen Sie Ihre erste Klasse, um Lektionen hinzuzufügen und KI-Fragen zu generieren.",
+    "createFirst": "Meine erste Klasse erstellen",
+    "renameModalDesc": "Bearbeiten Sie den Namen der Session. Diese Änderung ist für Ihre Schülerinnen und Schüler sichtbar.",
+    "editPropositionsHint": "Antwortoptionen (klicken Sie auf die Schaltfläche, um die richtige Antwort zu markieren)",
+    "questionGeneratorHint": "Die KI analysiert den Inhalt der Lektion und die PDFs, um Fragen zu erstellen.",
+    "newClass": "Neue Klasse",
+    "searchPlaceholder": "Klasse suchen...",
+    "noClassFound": "Keine Klasse gefunden",
+    "renameSession": "Umbenennen",
+    "deleteSession": "Löschen",
+    "sessionCode": "Session-Code zum Teilen mit Ihren Schülerinnen und Schülern",
+    "manageCourses": "Lektionen verwalten",
+    "classCount_one": "{{count}} Klasse",
+    "classCount_other": "{{count}} Klassen",
+    "myClasses": "Meine Klassen",
+    "renameModal": {
+      "title": "Session umbenennen",
+      "placeholder": "Namen der Session bearbeiten...",
+      "confirm": "Umbenennen",
+      "cancel": "Abbrechen"
+    },
+    "deleteSessionModal": {
+      "title": "Session löschen?",
+      "description": "Diese Aktion kann nicht rückgängig gemacht werden. Alle mit dieser Session verknüpften Schülerinnen und Schüler, Lektionen und Fragen werden endgültig gelöscht.",
+      "confirm": "Löschen",
+      "cancel": "Abbrechen"
+    },
+    "deleteCourseModal": {
+      "title": "Diese Lektion löschen?",
+      "description": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Dateien und Fragen werden gelöscht.",
+      "confirm": "Löschen",
+      "cancel": "Abbrechen"
+    },
+    "deleteQuestionModal": {
+      "title": "Diese Frage löschen?",
+      "description": "Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirm": "Löschen",
+      "cancel": "Abbrechen"
+    },
+    "tabs": {
+      "courses": "Lektionen",
+      "students": "Schüler/innen ({{count}})",
+      "questions": "F&A",
+      "noStudents": "Noch keine Schülerinnen und Schüler angemeldet",
+      "enrolledOn": "Angemeldet am",
+      "shareCode": "Teilen Sie den Code {{code}} mit Ihren Schülerinnen und Schülern, damit sie beitreten können.",
+      "copyCode": "Code kopieren",
+      "codeCopied": "Code kopiert!"
+    },
+    "addCourse": {
+      "title": "Neue Lektion hinzufügen",
+      "subtitle": "Fügen Sie einen Titel, Dokumente und Inhalte für diese Lektion hinzu.",
+      "name": "Titel der Lektion",
+      "namePlaceholder": "z. B. Die Französische Revolution",
+      "description": "Beschreibung (optional)",
+      "descriptionPlaceholder": "Kurze Beschreibung der Lektion...",
+      "content": "Inhalt (optional)",
+      "contentPlaceholder": "Geben Sie den Inhalt der Lektion ein...",
+      "pdfs": "PDF-Dateien (optional)",
+      "pdfHint": "Fügen Sie eine oder mehrere PDF-Dateien mit dem Inhalt der Lektion hinzu",
+      "selectPdfs": "PDFs auswählen",
+      "addMorePdfs": "Weitere PDFs hinzufügen",
+      "create": "Lektion erstellen",
+      "creating": "Wird erstellt...",
+      "titleRequired": "Der Titel der Lektion ist erforderlich",
+      "titleTooLong": "Der Titel der Lektion ist zu lang",
+      "descriptionTooLong": "Die Beschreibung ist zu lang"
+    },
+    "createModal": {
+      "title": "Neue Klasse erstellen",
+      "subtitle": "Richten Sie Ihre Klasse und die erste Lektion ein",
+      "sessionName": "Name der Klasse",
+      "sessionNamePlaceholder": "z. B. 8. Klasse – Mathematik",
+      "language": "Sprache",
+      "courseName": "Titel der Lektion",
+      "courseNamePlaceholder": "z. B. Brüche",
+      "courseDescription": "Beschreibung (optional)",
+      "courseDescriptionPlaceholder": "Kurze Beschreibung...",
+      "courseContent": "Inhalt der Lektion (optional)",
+      "courseContentPlaceholder": "Fügen Sie hier den Text Ihrer Lektion ein...",
+      "pdfs": "PDF-Dokumente (optional)",
+      "pdfHint": "Fügen Sie eine oder mehrere PDF-Dateien mit dem Inhalt der Lektion hinzu",
+      "selectPdfs": "PDFs auswählen",
+      "addMorePdfs": "Weitere PDFs hinzufügen",
+      "sectionClass": "Klasse",
+      "sectionFirstCourse": "Erste Lektion",
+      "selectedFiles": "{{count}} Datei(en) ausgewählt",
+      "create": "Klasse erstellen",
+      "creating": "Wird erstellt...",
+      "successTitle": "Erfolg",
+      "successDesc": "Klasse und Lektion wurden erfolgreich erstellt!",
+      "warningTitle": "Achtung",
+      "warningDesc": "Die Klasse wurde erstellt, aber die Lektion konnte nicht hinzugefügt werden. Sie können sie manuell hinzufügen.",
+      "errorTitle": "Fehler",
+      "errorDesc": "Die Klasse konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+      "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+    },
+    "questionGenerator": {
+      "title": "Fragen generieren",
+      "mcqLabel": "Multiple-Choice-Fragen",
+      "openLabel": "Offene Fragen",
+      "generate": "Generieren",
+      "regenerate": "Neu generieren",
+      "generating": "Wird generiert...",
+      "noQuestions": "Noch keine Fragen generiert.",
+      "addManually": "Manuell hinzufügen",
+      "validate": "Fragen bestätigen und Chatbot öffnen",
+      "validating": "Wird bestätigt...",
+      "successTitle": "Erfolg",
+      "successDesc": "{{count}} Frage(n) erfolgreich generiert!",
+      "validateSuccess": "Fragen bestätigt!",
+      "errorTitle": "Fehler",
+      "errorDesc": "Die Fragen konnten nicht generiert werden. Bitte versuchen Sie es erneut.",
+      "chooseCounts": "Legen Sie fest, wie viele Fragen jedes Typs erstellt werden sollen.",
+      "willReplace": " Bestehende Fragen werden ersetzt.",
+      "singleChoice": "Single Choice",
+      "singleChoiceHint": "Die Schülerin oder der Schüler wählt 1 von 4 Antworten",
+      "writtenAnswer": "Freitextantwort",
+      "writtenAnswerHint": "Die Schülerin oder der Schüler formuliert die Antwort in eigenen Worten",
+      "totalToGenerate": "Anzahl zu generierender Fragen",
+      "maxHint": "(max. {max})",
+      "atLeastOne": "Geben Sie mindestens 1 zu generierende Frage an",
+      "noDocuments": "Keine Dokumente angehängt",
+      "pdfDocuments": "PDF-Dokumente ({count})",
+      "refresh": "Aktualisieren",
+      "countsSummary": "({mcq} Multiple Choice, {open} offen)"
+    },
+    "editQuestion": {
+      "title": "Frage bearbeiten",
+      "question": "Frage",
+      "answer": "Erwartete Antwort...",
+      "explanation": "Erklärung zur Antwort...",
+      "save": "Speichern",
+      "cancel": "Abbrechen"
+    },
+    "questionCard": {
+      "answer": "Antwort:",
+      "mcq": "MC",
+      "open": "Offen",
+      "antiCheat": "Schummelschutz",
+      "antiCheatHint": "Erkennt, wenn die Schülerin oder der Schüler die exakte Antwort einfügt"
+    },
+    "courseList": {
+      "addCourse": "Lektion hinzufügen",
+      "empty": "Keine Lektionen für diese Klasse",
+      "emptyHint": "Klicken Sie auf „Lektion hinzufügen“, um zu beginnen."
+    }
+  },
+  "chatbot": {
+    "greetings": [
+      "Hallo! Ich bin Edesio, dein Lernassistent. Bereit, gemeinsam zu lernen?",
+      "Hallo! Hier ist Edesio. Ich helfe dir, spielerisch zu lernen!",
+      "Willkommen! Ich bin Edesio und begleite dich beim Lernen.",
+      "Hey! Ich bin Edesio. Lernen wir heute zusammen?"
+    ],
+    "correctAnswers": [
+      "Super! Genau das ist es!",
+      "Bravo, du hast alles verstanden!",
+      "Perfekt! Du beherrschst dieses Thema gut!",
+      "Ausgezeichnet! Mach weiter so!",
+      "Klasse! Das ist die richtige Antwort!",
+      "Top! Du machst das super!",
+      "Gut gemacht! Du bist auf dem richtigen Weg!"
+    ],
+    "encouragementsAfterWrong": [
+      "Keine Sorge, aus Fehlern lernt man!",
+      "Nicht schlimm! Wichtig ist, dass du es verstehst.",
+      "Das passiert! Schauen wir uns die richtige Antwort gemeinsam an.",
+      "Hmm, nicht ganz. Aber so macht man Fortschritte!",
+      "Fast! Schauen wir, was die richtige Antwort war."
+    ],
+    "retryEncouragements": [
+      "Was glaubst du, war das entscheidende Element, das du nicht erwähnt hast?",
+      "Kannst du mir dieses Konzept mit deinen eigenen Worten erklären?",
+      "Was hast du jetzt von diesem Begriff verstanden?",
+      "Wie würdest du diese Idee umformulieren?"
+    ],
+    "afterRetryMessages": [
+      "Sehr gut! Jetzt wirst du es dir merken. Weiter geht's!",
+      "Perfekt! Diesmal sitzt es. Weiter zur nächsten!",
+      "Super! Siehst du, du schaffst das. Nächste Frage!"
+    ],
+    "startQuiz": [
+      "Los geht's! Ich habe {count} Fragen für dich vorbereitet.",
+      "Gute Wahl! Wir starten mit {count} Fragen. Bist du bereit?",
+      "Auf geht's! {count} Fragen warten auf dich.",
+      "Perfekt! Hier sind {count} Fragen, um dein Wissen zu testen."
+    ],
+    "cheatMessages": ["Netter Versuch, aber durch Schummeln lernt man nichts!"],
+    "noQuestions": "Ich habe noch keine Fragen zu \"{course}\". Bitte deine Lehrkraft, welche zu erstellen!",
+    "welcomeToClass": "Willkommen in der Klasse {session}.\n\nEs sind noch keine Lektionen verfügbar. Bitte deine Lehrkraft, welche hinzuzufügen!",
+    "selectCourse": "Willkommen in der Klasse {session}. Welche Lektion möchtest du heute lernen?",
+    "studentAnswers": "Ich möchte \"{course}\" lernen",
+    "startingCourse": "Super, wir lernen \"{course}\"! ",
+    "reflectionWrong": "Hmm, deine Antwort passt nicht wirklich zum Begriff.\n\nDie richtige Antwort war: {answer}{explanation}\n\nKeine Sorge, machen wir weiter!",
+    "reflectionNext": "Okay, machen wir weiter.\n\nZur Erinnerung, die richtige Antwort war: {answer}{explanation}",
+    "wrongQCM": "{encouragement}\n\nDie richtige Antwort ist: {answer}\n\nVersuche diesmal, die richtige Antwort auszuwählen!",
+    "wrongOpen": "{encouragement}\n\nDie richtige Antwort ist: {answer}\n\n{retry}",
+    "sessionEnded": "Sitzung beendet!",
+    "goodAnswer": "Richtige Antwort! +1 Punkt",
+    "partialAnswer": "Teilweise richtig +0,5 Punkte",
+    "wrongAnswer": "Falsche Antwort",
+    "nextQuestion": "Nächste Frage",
+    "viewResults": "Meine Ergebnisse ansehen",
+    "restart": "Neu starten",
+    "finish": "Beenden",
+    "inputPlaceholder": "Gib hier deine Antwort ein...",
+    "pressEnter": "Drücke Enter zum Senden",
+    "loadingQuestions": "Fragen werden geladen...",
+    "generatingQuestions": "Neue Fragen werden erstellt...",
+    "noQuestionsYet": "Erstelle zuerst Fragen, um den Chatbot zu starten.",
+    "questionLabel": "Frage {current}/{total}",
+    "completionTitle": "🎉 Sitzung beendet!",
+    "completionScore": "Du hast {score}/{total} ({percent}%) erreicht",
+    "completionGood": "Ausgezeichnete Arbeit! Du beherrschst dieses Thema.",
+    "completionMedium": "Gute Leistung! Mit etwas mehr Übung schaffst du es.",
+    "completionLow": "Mach weiter so! Lernen braucht Zeit — du schaffst das.",
+    "clickAnswer": "Klicke auf deine Antwort",
+    "selectAllCorrect": "Wähle alle richtigen Antworten aus",
+    "validateSelection": "Bestätigen ({count} ausgewählt)",
+    "multipleAnswersHint": "(Mehrere Antworten möglich)",
+    "completionDefault": "Bravo, du hast diese Lerneinheit abgeschlossen!",
+    "goodContinue": "Bravo! Das ist die richtige Antwort! Mach weiter so.",
+    "expectedAnswer": "Erwartete Antwort: {answer}",
+    "keyElementPrompt": "Was ist deiner Meinung nach das entscheidende Element dieser Antwort?",
+    "reviewLater": "Keine Sorge, du kannst diesen Begriff später wiederholen. Machen wir weiter!",
+    "correctWas": "Die richtige Antwort war: {answer}. Keine Sorge, machen wir weiter!",
+    "correctIs": "Die richtige Antwort ist: {answer}",
+    "bravoExact": "Bravo! Genau so!",
+    "missingElements": "Fehlende Elemente: {elements}",
+    "completeAnswer": "Vollständige Antwort: {answer}",
+    "preparingQuestions": "Die KI bereitet neue Fragen für dich vor",
+    "generating": "Wird erstellt...",
+    "preview": "Vorschau",
+    "chatbotStarting": "Der Chatbot startet...",
+    "selectCourseToRevise": "Wähle die Lektion zum Lernen",
+    "chooseCourse": "Wähle eine Lektion...",
+    "evaluationError": "Fehler bei der Bewertung",
+    "addCoursesToTest": "Füge Lektionen zum Testen hinzu",
+    "answerPrefix": "Antwort: {answer}"
+  },
+  "student": {
+    "loading": "Wird geladen...",
+    "loadingCourses": "Lektionen werden geladen...",
+    "preparingChatbot": "Chatbot wird vorbereitet",
+    "loadingQuestions": "Fragen werden geladen...",
+    "greeting": "Hallo, {name}!",
+    "emptyTitle": "Noch keiner Klasse beigetreten",
+    "emptySubtitle": "Bereit, mit Edesio zu lernen?",
+    "joinClass": "Einer Klasse beitreten",
+    "myClasses": "Meine Klassen",
+    "classLabel_one": "Klasse",
+    "classLabel_other": "Klassen",
+    "courseLabel": "Lektionen",
+    "courseLabel_one": "Lektion",
+    "courseLabel_other": "Lektionen",
+    "coursesCount": "{count} Lektion(en)",
+    "noCourses": "Noch keine Lektionen verfügbar.",
+    "clickClassHint": "Klicke auf eine Klasse, um die Lektionen zu sehen",
+    "joinedOn": "Beigetreten am",
+    "chooseCourse": "Wähle eine Lektion...",
+    "revise": "Lernen",
+    "qa": "F&A",
+    "ranking": "Rangliste",
+    "rankingModal": {
+      "you": "(Du)",
+      "empty": "Bisher hat noch niemand an dieser Lektion teilgenommen.",
+      "beFirst": "Sei die oder der Erste, die oder der lernt!",
+      "correctAnswers": "{correct}/{total} richtige Antworten"
+    },
+    "leaveSession": "Diese Session verlassen",
+    "leaveModalTitle": "Session verlassen?",
+    "leaveModalDesc": "Du hast dann keinen Zugriff mehr auf die Lektionen von „{session}“. Mit dem Code kannst du jederzeit wieder beitreten.",
+    "leaveConfirm": "Verlassen",
+    "progressSaved": "Fortschritt gespeichert",
+    "photoUpdated": "Foto aktualisiert",
+    "photoError": "Fehler beim Aktualisieren des Fotos",
+    "joinModal": {
+      "title": "Einer Session beitreten",
+      "placeholder": "Gib den Code deiner Lehrkraft ein...",
+      "codePlaceholder": "Session-Code (z. B. ABC123)",
+      "join": "Beitreten",
+      "cancel": "Abbrechen",
+      "emptyCode": "Bitte gib einen Session-Code ein.",
+      "notLoggedIn": "Du musst angemeldet sein, um einer Session beizutreten."
+    },
+    "qaModal": {
+      "title": "Fragen & Antworten",
+      "inputPlaceholder": "Schreib deine Frage hier...",
+      "empty": "Es wurden noch keine Fragen gestellt...",
+      "teacherAnswer": "Antwort der Lehrkraft:",
+      "emptyInput": "Bitte gib deine Frage ein.",
+      "send": "Senden",
+      "description": "Stell deiner Lehrkraft eine Frage oder sieh dir die Antworten zu „{course}“ an.",
+      "beFirst": "Stell als Erste oder Erster eine Frage!",
+      "pending": "Warten auf Antwort ({count})",
+      "askedOn": "Gestellt am {date}",
+      "answered": "Beantwortete Fragen ({count})",
+      "answeredOn": "Beantwortet am {date}",
+      "askQuestion": "Frage stellen"
+    }
+  },
+  "selfLearner": {
+    "loading": "Wird geladen...",
+    "myCourses": "Meine Lektionen",
+    "createFirst": "Meine erste Lektion erstellen",
+    "newCourse": "Neue Lektion",
+    "generateWithAI": "Mit KI generieren",
+    "createManually": "Manuell erstellen",
+    "validateAndChat": "Fragen bestätigen und Chatbot öffnen",
+    "noQuestions": "Noch keine Fragen. Generieren Sie welche, um loszulegen!",
+    "emptyTitle": "Noch keine Lektionen",
+    "emptySubtitle": "Erstellen Sie Ihre erste Lektion, um loszulegen.",
+    "heroSubtitle": "Erstellen Sie Ihre Lektionen, generieren Sie Fragen und üben Sie mit KI.",
+    "noCourseFound": "Keine Lektion für „{query}“ gefunden",
+    "courseCount": "{count} Lektion(en) erstellt",
+    "emptyHint": "Erstellen Sie Ihre erste Lektion, um Fragen zu generieren und mit KI zu üben.",
+    "details": "Details",
+    "revise": "Lernen",
+    "createModalTitle": "Neue Lektion erstellen",
+    "createModalDesc": "Fügen Sie Textinhalte und/oder PDF-Dateien hinzu, um Fragen zu generieren.",
+    "titlePlaceholder": "z. B. Einführung in die Philosophie",
+    "creating": "Wird erstellt...",
+    "createCourse": "Lektion erstellen",
+    "manageCourse": "Verwalten Sie Ihre Lektion und generieren Sie Fragen",
+    "fileDeleted": "Datei gelöscht",
+    "generateQuestionsAI": "Fragen mit KI generieren",
+    "mcqHint": "Auswahl aus mehreren Antworten",
+    "openHint": "Freie schriftliche Antwort",
+    "generating": "Wird generiert...",
+    "generateCount": "{count} Fragen generieren",
+    "expectedAnswer": "Erwartete Antwort",
+    "expectedAnswerLabel": "Erwartete Antwort: ",
+    "createQcm": "Multiple-Choice-Frage erstellen",
+    "createOpen": "Offene Frage erstellen",
+    "goodAnswerSelect": "Richtige Antwort (exakter Text einer Antwortoption)",
+    "selectGoodAnswer": "Richtige Antwort auswählen",
+    "enterExpectedAnswer": "Erwartete Antwort eingeben...",
+    "explanationPlaceholder": "Erklärung, die nach der Antwort angezeigt wird...",
+    "createQuestion": "Frage erstellen",
+    "toasts": {
+      "courseCreated": "Lektion erfolgreich erstellt!",
+      "courseUpdated": "Lektion aktualisiert!",
+      "courseDeleted": "Lektion gelöscht.",
+      "questionsGenerated": "Fragen generiert!",
+      "questionsValidated": "Fragen bestätigt!",
+      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "questionGenError": "Die Fragen konnten nicht generiert werden. Bitte versuchen Sie es erneut.",
+      "uploadSuccess": "Datei hochgeladen!",
+      "uploadError": "Fehler beim Hochladen der Datei."
+    },
+    "langueLabels": {
+      "francais": "Französisch",
+      "anglais": "Englisch",
+      "espagnol": "Spanisch",
+      "allemand": "Deutsch"
+    }
+  },
+  "establishment": {
+    "loading": "Wird geladen...",
+    "title": "Administrations-Dashboard",
+    "teachers": "Lehrkräfte",
+    "teachers_one": "Lehrkraft",
+    "teachers_other": "Lehrkräfte",
+    "students": "Schüler/innen",
+    "students_one": "Schüler/in",
+    "students_other": "Schüler/innen",
+    "inviteTeacher": "Lehrkraft einladen",
+    "noInvitations": "Keine Einladungscodes erstellt",
+    "noTeachers": "Ihrer Einrichtung gehören noch keine Lehrkräfte an",
+    "retry": "Erneut versuchen",
+    "logout": "Abmelden",
+    "invitationModal": {
+      "title": "Lehrkraft einladen",
+      "description": "Geben Sie die E-Mail-Adresse der Lehrkraft ein. Es wird ein Einladungscode generiert, der nur für diese Adresse gilt.",
+      "email": "E-Mail-Adresse der Lehrkraft",
+      "emailPlaceholder": "lehrkraft@schule.de",
+      "emailHint": "Der Code ist 7 Tage gültig und kann nur mit dieser E-Mail-Adresse verwendet werden.",
+      "allocatedChatbots": "Zugewiesene Chatbots",
+      "allocatedChatbotsHint": "Anzahl der Sessions/Chatbots, die diese Lehrkraft erstellen kann.",
+      "create": "Einladung erstellen",
+      "creating": "Wird erstellt...",
+      "cancel": "Abbrechen",
+      "emailAlreadyRegistered": "Diese E-Mail-Adresse ist bereits mit einem Lehrkraftkonto verknüpft. Verwenden Sie eine andere Adresse oder bitten Sie die Lehrkraft, sich direkt anzumelden."
+    },
+    "token": {
+      "used": "Verwendet",
+      "expired": "Abgelaufen",
+      "expiresOn": "Läuft am {date} ab"
+    },
+    "teacherRow": {
+      "students": "{{count}} Schüler/in(nen)",
+      "noClasses": "Keine Klassen erstellt"
+    },
+    "sessionCoursesList": {
+      "loading": "Lektionen werden geladen...",
+      "empty": "Keine Lektionen in dieser Klasse",
+      "draft": "Entwurf",
+      "published": "Veröffentlicht"
+    },
+    "sessionStudentModal": {
+      "title": "Schüler/innen in {session}",
+      "empty": "In dieser Session sind keine Schülerinnen oder Schüler angemeldet",
+      "close": "Schließen"
+    },
+    "courseViewModal": {
+      "title": "Lektion",
+      "noQuestions": "Keine Fragen erstellt.",
+      "noStudents": "Noch hat niemand an dieser Lektion gearbeitet.",
+      "close": "Schließen",
+      "textContent": "Textinhalt",
+      "pdfFiles": "PDF-Dateien ({count})",
+      "questions": "Fragen ({count})",
+      "mcq": "MC",
+      "open": "Offen"
+    },
+    "invitationCodes": "Einladungscodes",
+    "newCode": "Neuer Code",
+    "classes": "Klassen",
+    "classes_one": "Klasse",
+    "classes_other": "Klassen",
+    "name": "Name",
+    "email": "E-Mail",
+    "classesCount": "{count} Klasse(n)",
+    "inviteTeachersHint": "Teilen Sie einen Einladungscode, damit Lehrkräfte beitreten können",
+    "createCodeHint": "Erstellen Sie einen Code, damit Lehrkräfte Ihrer Einrichtung beitreten können",
+    "sidebar": {
+      "backToHub": "Zurück zur Übersicht",
+      "establishmentRole": "Einrichtung",
+      "direction": "Schulleitung",
+      "administrator": "Administrator/in",
+      "nav": {
+        "overview": "Überblick",
+        "teachers": "Lehrkräfte",
+        "invitations": "Einladungen"
+      }
+    },
+    "overview": {
+      "stats": {
+        "activeStudents": "Aktive Schüler/innen",
+        "spreadAcrossClasses": "verteilt auf {count} Klassen",
+        "teachers": "Lehrkräfte",
+        "classes": "Klassen"
+      }
+    },
+    "teachersPage": {
+      "countLabel": "{count} Lehrkräfte in der Einrichtung",
+      "columns": {
+        "teacher": "Lehrkraft",
+        "classes": "Klassen",
+        "students": "Schüler/innen",
+        "status": "Status",
+        "actions": "Aktionen"
+      },
+      "status": {
+        "active": "Aktiv",
+        "invited": "Eingeladen"
+      },
+      "empty": {
+        "title": "Noch keine Lehrkräfte",
+        "description": "Laden Sie Ihre Lehrkräfte in die Einrichtung ein, damit sie ihre Klassen erstellen können.",
+        "cta": "Lehrkraft einladen"
+      },
+      "removeLabel": "Lehrkraft entfernen",
+      "removeDialog": {
+        "title": "{name} entfernen?",
+        "description": "Die Lehrkraft hat dann keinen Zugriff mehr auf die Einrichtung. Ihre Klassen und die Ergebnisse ihrer Schülerinnen und Schüler werden von der Einrichtung getrennt.",
+        "cancel": "Abbrechen",
+        "confirm": "Entfernen",
+        "successTitle": "Lehrkraft entfernt",
+        "success": "{name} wurde aus der Einrichtung entfernt.",
+        "errorTitle": "{name} konnte nicht entfernt werden",
+        "error": "Beim Entfernen der Lehrkraft ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+      }
+    }
+  },
+  "dashboard": {
+    "sessionCard": {
+      "code": "Session-Code zum Teilen mit Ihren Schülerinnen und Schülern",
+      "manage": "Lektionen verwalten"
+    },
+    "courseList": {
+      "add": "Lektion hinzufügen",
+      "empty": "Keine Lektionen für diese Session",
+      "emptyHint": "Klicken Sie auf „Lektion hinzufügen“, um zu beginnen."
+    },
+    "courseTester": {
+      "title": "Fragen erstellen – {name}",
+      "validate": "Fragen bestätigen",
+      "validating": "Wird bestätigt...",
+      "ranking": "Rangliste der Schüler/innen",
+      "noStudents": "Bisher hat noch niemand teilgenommen.",
+      "deleteFile": "Diese Datei löschen?",
+      "successGenerated": "{count} Frage(n) erfolgreich generiert!",
+      "errorGenerated": "Die Fragen konnten nicht generiert werden.",
+      "mustGenerateFirst": "Sie müssen zuerst Fragen generieren",
+      "createNewQuestion": "Neue Frage für diese Lektion erstellen ({count}/{max})",
+      "qcmOneAnswer": "Multiple Choice (1 richtige Antwort)",
+      "clickToMarkCorrect": "Klicken Sie auf die Schaltfläche, um die richtige Antwort zu markieren",
+      "expectedAnswer": "Erwartete Antwort",
+      "expectedAnswerPlaceholder": "Die erwartete Antwort...",
+      "explanationPlaceholder": "Erklärung zur Antwort...",
+      "generateOrAdd": "Generieren Sie Fragen für diese Lektion oder fügen Sie sie manuell hinzu",
+      "editBeforeGenerate": "Bearbeiten Sie den Inhalt der Lektion, bevor Sie Fragen generieren",
+      "createOwn": "Erstellen Sie Ihre eigenen Fragen einzeln",
+      "generatedCount": "Generierte Fragen ({count})",
+      "validateHint": "Nach der Bestätigung können Sie den Schüler-Chatbot testen",
+      "contentPlaceholder": "Fügen Sie Textinhalte hinzu, um der KI bei der Fragenerstellung zu helfen...",
+      "noPdfs": "Keine PDF-Dateien. Fügen Sie PDFs hinzu, um die Fragenerstellung zu verbessern.",
+      "deleteFileIrreversible": "Diese Aktion kann nicht rückgängig gemacht werden. Die Datei wird endgültig gelöscht.",
+      "manageContent": "Verwalten Sie den Inhalt der Lektion und nutzen Sie „Chatbot testen“, um die Schüleransicht zu simulieren",
+      "courseContent": "Inhalt der Lektion",
+      "edit": "Bearbeiten",
+      "testChatbot": "Chatbot testen",
+      "viewQuestions": "{count} Fragen ansehen",
+      "fieldTitle": "Titel",
+      "fieldDescription": "Beschreibung",
+      "fieldContent": "Inhalt",
+      "fieldTextContent": "Textinhalt",
+      "refreshRanking": "Rangliste aktualisieren",
+      "correctAnswers": "{correct}/{total} richtige Antworten",
+      "questionLimit": "Limit von {max} Fragen erreicht"
+    },
+    "questionsPanel": {
+      "noQuestions": "Keine Fragen",
+      "noQuestionsHint": "Ihre Schülerinnen und Schüler haben noch keine Fragen gestellt...",
+      "noPendingQuestions": "Keine offenen Fragen",
+      "noAnsweredQuestions": "Noch keine beantworteten Fragen",
+      "answerPlaceholder": "Schreiben Sie Ihre Antwort...",
+      "answer": "Antworten",
+      "deleteQuestion": "Diese Frage löschen?",
+      "answeredCount": "{count} beantwortet",
+      "pendingLabel": "Offen",
+      "answeredLabel": "Beantwortet",
+      "askedBy": "Von {name} am {date} um {time}",
+      "yourAnswer": "Ihre Antwort",
+      "answeredOn": "Beantwortet am {date}",
+      "deleteIrreversible": "Diese Aktion kann nicht rückgängig gemacht werden. Die Frage und eine eventuelle Antwort werden endgültig gelöscht.",
+      "studentFallback": "Schüler/in"
+    }
+  },
+  "billing": {
+    "title": "Wählen Sie Ihren Tarif",
+    "monthly": "Monatlich",
+    "annual": "Jährlich",
+    "recommended": "Empfohlen",
+    "popular": "Beliebt",
+    "perMonth": "/Monat",
+    "perYear": "/Jahr",
+    "orPerYear": "oder {price}/Jahr",
+    "orPerMonth": "oder {price}/Monat",
+    "noCommitment": "Keine Mindestlaufzeit",
+    "easyCancel": "Jederzeit kündbar",
+    "classInfo": "1 Klasse = 1 vollständiges Lernmodul mit KI",
+    "classTooltipTitle": "Was ist eine Klasse?",
+    "classTooltipDesc": "Eine Klasse ist ein vollständiges Lernmodul: mehrere Lektionen möglich, integrierter Gesamttest und unbegrenzt viele Schülerinnen und Schüler.",
+    "subscribe": "Abonnieren",
+    "subscribing": "Weiterleitung...",
+    "currentPlan": "Aktueller Tarif",
+    "activateDesc": "Aktivieren Sie Ihr Abonnement, um alle Funktionen zu nutzen.",
+    "subscriptionInactive": "Ihr Abonnement ist nicht mehr aktiv. Verlängern Sie es, um wieder Zugriff zu erhalten.",
+    "subscriptionCheckError": "Der Abonnementstatus konnte nicht überprüft werden",
+    "contactUs": "Brauchen Sie Hilfe? Kontaktieren Sie uns unter",
+    "blockModal": {
+      "paymentPendingTitle": "Zahlung ausstehend",
+      "inactiveTitle": "Inaktives Abonnement",
+      "requiredTitle": "Abonnement erforderlich",
+      "paymentPendingDesc": "Ihre Zahlung wird bearbeitet oder erfordert eine Aktion. Wenn Sie gerade abonniert haben, warten Sie bitte einen Moment und laden Sie die Seite neu.",
+      "bankHint": "Falls das Problem weiterhin besteht, prüfen Sie, ob Ihre Bank die Zahlung blockiert hat, oder kontaktieren Sie uns.",
+      "managePayment": "Zahlung verwalten",
+      "refreshPage": "Seite neu laden",
+      "new": {
+        "kickerSubscription": "Abonnement",
+        "kickerPayment": "Zahlung",
+        "requiredTitle": "Aktivieren Sie Ihr Abonnement",
+        "requiredDesc": "Wählen Sie einen Tarif, um auf Ihren Edesio-Arbeitsbereich zuzugreifen.",
+        "inactiveTitle": "Inaktives Abonnement",
+        "inactiveDesc": "Ihr Abonnement wurde ausgesetzt. Reaktivieren Sie es, um fortzufahren.",
+        "paymentPendingTitle": "Zahlung ausstehend",
+        "paymentPendingDesc": "Ihre Bank muss die Transaktion noch bestätigen. Dies kann einige Minuten dauern.",
+        "bankHint": "Prüfen Sie Ihre Banking-App, um die Zahlung zu bestätigen.",
+        "subscribe": "Abonnieren",
+        "reactivate": "Mein Abonnement reaktivieren",
+        "managePayment": "Zahlung verwalten",
+        "refreshPage": "Seite neu laden",
+        "contactQuestion": "Haben Sie eine Frage?",
+        "contactStuck": "Kommen Sie nicht weiter?",
+        "periodLabel": "Wählen Sie Ihren Abrechnungszeitraum",
+        "errors": {
+          "checkoutUnavailable": "Der Bezahlvorgang konnte nicht gestartet werden. Bitte versuchen Sie es erneut.",
+          "checkoutFailed": "Beim Bezahlvorgang ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+          "validationError": "Die Rechnungsangaben sind ungültig.",
+          "subscriptionCheckFailed": "Der Abonnementstatus konnte nicht überprüft werden."
+        }
+      }
+    },
+    "planDetails": {
+      "self-learner": {
+        "name": "Edesio Solo",
+        "description": "Für Einzelpersonen und Selbstlernende.",
+        "features": [
+          "1 Klasse inklusive",
+          "Bis zu 50 Lektionen",
+          "KI-Fragengenerierung",
+          "Persönlicher KI-Chatbot",
+          "Fortschrittsverfolgung",
+          "Mobile App"
+        ]
+      },
+      "teacher": {
+        "name": "Edesio Lehrkraft",
+        "description": "Für eine Lehrkraft mit mehreren Klassen.",
+        "features": [
+          "10 Klassen inklusive",
+          "Bis zu 50 Lektionen pro Klasse",
+          "Unbegrenzt viele Schüler/innen",
+          "Detaillierte Statistiken",
+          "Mobile App"
+        ]
+      },
+      "establishment": {
+        "name": "Edesio Einrichtung",
+        "description": "Für Ihre gesamte Einrichtung.",
+        "features": [
+          "150 Klassen inklusive",
+          "Bis zu 50 Lektionen pro Klasse",
+          "Unbegrenzt viele Lehrkräfte",
+          "Unbegrenzt viele Schüler/innen",
+          "Priorisierter Support",
+          "Statistiken für die Einrichtung",
+          "Mobile App"
+        ]
+      }
+    },
+    "cancelModal": {
+      "title": "Abonnement kündigen?",
+      "description": "Am Ende Ihres aktuellen Abrechnungszeitraums verlieren Sie den Zugriff auf alle Edesio-Funktionen.",
+      "confirm": "Kündigung bestätigen",
+      "cancel": "Abonnement behalten"
+    },
+    "subscriptionSection": {
+      "title": "Abonnement",
+      "manage": "Verwalten Sie Ihr Abonnement",
+      "plan": "Tarif",
+      "amount": "Betrag",
+      "perMonth": "Monat",
+      "perYear": "Jahr",
+      "paymentMethod": "Zahlungsmethode",
+      "modify": "Ändern",
+      "active": "Aktiv",
+      "pastDue": "Überfällig",
+      "card": "Karte",
+      "choosePlan": "Tarif wählen",
+      "establishmentSubscription": "Sie nutzen das Abonnement Ihrer Einrichtung.",
+      "accessEndsOn": "Zugriff endet am {date}",
+      "accessEndsLabel": "Zugriff endet am",
+      "retainAccess": "Bis zu diesem Datum behalten Sie den Zugriff.",
+      "noPaymentMethod": "Keine Zahlungsmethode hinterlegt",
+      "addCard": "Karte hinzufügen",
+      "cancelled": "Abonnement gekündigt",
+      "noActive": "Sie haben kein aktives Abonnement.",
+      "nextBilling": "Nächste Abrechnung",
+      "cancel": "Abonnement kündigen",
+      "reactivate": "Abonnement reaktivieren",
+      "reactivating": "Wird reaktiviert...",
+      "cancelling": "Wird gekündigt..."
+    }
+  },
+  "profile": {
+    "title": "Mein Profil",
+    "backToDashboard": "Zurück zum Dashboard",
+    "personalInfo": "Persönliche Daten",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail-Adresse",
+    "save": "Speichern",
+    "saving": "Wird gespeichert...",
+    "successTitle": "Profil aktualisiert",
+    "successDesc": "Ihre Daten wurden gespeichert.",
+    "errorTitle": "Fehler",
+    "errorDesc": "Das Profil konnte nicht aktualisiert werden.",
+    "firstNameRequired": "Vorname ist erforderlich",
+    "lastNameRequired": "Nachname ist erforderlich"
+  },
+  "suggestions": {
+    "title": "Verbesserungsvorschläge",
+    "students": "Schüler/innen",
+    "establishments": "Einrichtungen",
+    "teachers": "Lehrkräfte",
+    "placeholder": "Beschreiben Sie Ihre Idee ausführlich...",
+    "submit": "Absenden",
+    "submitting": "Wird gesendet...",
+    "vote": "Abstimmen",
+    "successTitle": "Vorschlag veröffentlicht",
+    "errorTitle": "Fehler",
+    "emptyError": "Bitte beschreiben Sie Ihren Vorschlag.",
+    "loadError": "Die Vorschläge konnten nicht geladen werden."
+  },
+  "mobileInstall": {
+    "title": "Installieren Sie Edesio auf Ihrem Smartphone!",
+    "ios": {
+      "step1": "Öffnen Sie das Teilen-Menü",
+      "step2": "Wählen Sie „Zum Home-Bildschirm“",
+      "step3": "Tippen Sie auf „Hinzufügen“"
+    },
+    "android": {
+      "step1": "Öffnen Sie das Browsermenü (⋮)",
+      "step2": "Wählen Sie „Zum Startbildschirm hinzufügen“ oder „App installieren“",
+      "step3": "Bestätigen Sie die Installation"
+    },
+    "close": "Schließen"
+  },
+  "blog": {
+    "title": "Blog – News zu KI & Bildung | Edesio",
+    "description": "Entdecken Sie die Artikel von Edesio zu KI im Unterricht, moderner Pädagogik und der digitalen Transformation von Schulen.",
+    "badge": "Blog",
+    "heading": "KI & Bildung",
+    "subtitle": "Unsere Artikel zu KI im Unterricht, Pädagogik und Bildungstechnologie.",
+    "readMore": "Artikel lesen",
+    "viewAll": "Alle Artikel ansehen",
+    "newsletterTitle": "Bleiben Sie auf dem Laufenden",
+    "newsletterSubtitle": "Erhalten Sie unsere neuesten Artikel direkt in Ihr Postfach.",
+    "newsletterPlaceholder": "Ihre E-Mail-Adresse",
+    "newsletterSubmit": "Abonnieren",
+    "newsletterSuccess": "Vielen Dank für Ihr Abonnement!",
+    "newsletterSuccessDesc": "Sie erhalten unsere nächsten Artikel per E-Mail.",
+    "newsletterError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "articleNotFound": "Artikel nicht gefunden",
+    "articleNotFoundDesc": "Der gesuchte Artikel existiert nicht.",
+    "suggestedArticles": "Das könnte Sie auch interessieren",
+    "backToBlog": "Zurück zum Blog",
+    "author": "Autor/in",
+    "sources": "Quellen und Referenzen",
+    "ctaTitle": "Bereit, Ihren Unterricht mit KI zu verändern?",
+    "ctaDesc": "Entdecken Sie, wie Edesio Ihnen hilft, spannende Lernerlebnisse für Ihre Schülerinnen und Schüler zu schaffen.",
+    "viewPricing": "Preise ansehen",
+    "allRights": "Alle Rechte vorbehalten"
+  },
+  "hooks": {
+    "teacher": {
+      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "sessionUpdateError": "Fehler beim Aktualisieren der Session.",
+      "sessionDeleteError": "Fehler beim Löschen der Session.",
+      "courseCreateError": "Fehler beim Erstellen der Lektion.",
+      "courseUpdateError": "Fehler beim Aktualisieren der Lektion.",
+      "courseDeleteError": "Fehler beim Löschen der Lektion.",
+      "questionUpdateError": "Fehler beim Aktualisieren der Frage.",
+      "questionDeleteError": "Fehler beim Löschen der Frage.",
+      "questionCreateError": "Fehler beim Erstellen der Frage.",
+      "generateError": "Fehler beim Generieren der Fragen.",
+      "validateError": "Fehler beim Bestätigen der Fragen.",
+      "uploadError": "Fehler beim Hochladen der Datei.",
+      "sessionRenamed": "Session umbenannt",
+      "sessionRenamedDesc": "Die Session wurde erfolgreich umbenannt.",
+      "sessionDeleted": "Session gelöscht",
+      "courseDeleted": "Lektion gelöscht",
+      "questionDeleted": "Frage gelöscht",
+      "generateSuccess": "Fragen generiert!",
+      "validateSuccess": "Fragen bestätigt!",
+      "answerSuccess": "Antwort gesendet!",
+      "answerError": "Fehler beim Senden der Antwort."
+    },
+    "student": {
+      "notLoggedIn": "Du musst angemeldet sein, um einer Session beizutreten.",
+      "emptyCode": "Bitte gib einen Session-Code ein.",
+      "joinError": "Du konntest der Session nicht beitreten.",
+      "questionEmpty": "Die Frage darf nicht leer sein.",
+      "questionError": "Die Frage konnte nicht gesendet werden.",
+      "questionSent": "Frage gesendet!",
+      "progressError": "Fehler beim Speichern des Fortschritts.",
+      "imageTooLarge": "Das Bild ist zu groß (max. 5 MB)."
+    },
+    "selfLearner": {
+      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "courseCreated": "Lektion erstellt!",
+      "courseUpdated": "Lektion aktualisiert!",
+      "courseDeleted": "Lektion gelöscht.",
+      "generateSuccess": "Fragen generiert!",
+      "generateError": "Die Fragen konnten nicht generiert werden.",
+      "validateSuccess": "Fragen bestätigt!",
+      "uploadSuccess": "Datei hochgeladen!",
+      "uploadError": "Fehler beim Hochladen der Datei."
+    },
+    "establishment": {
+      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "profileError": "Fehler beim Erstellen des Einrichtungsprofils",
+      "invitationCreated": "Einladung erstellt!",
+      "invitationError": "Fehler beim Erstellen der Einladung."
+    }
+  },
+  "export": {
+    "results": "Ergebnisse – {session}",
+    "exportedOn": "Exportiert am {date}",
+    "rank": "Rang",
+    "student": "Schüler/in",
+    "successRate": "Erfolgsquote",
+    "exportError": "Export fehlgeschlagen"
+  },
+  "zod": {
+    "sessionNameRequired": "Der Name der Session ist erforderlich",
+    "courseTitleRequired": "Der Titel der Lektion ist erforderlich",
+    "courseDescriptionMax": "Die Beschreibung darf höchstens 500 Zeichen lang sein",
+    "languageRequired": "Die Sprache ist erforderlich"
+  },
+  "resetPassword": {
+    "title": "Neues Passwort",
+    "subtitle": "Wählen Sie ein neues, sicheres Passwort",
+    "verifying": "Link wird überprüft...",
+    "password": "Neues Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "submit": "Passwort ändern",
+    "submitting": "Wird aktualisiert...",
+    "invalidLinkTitle": "Ungültiger oder abgelaufener Link",
+    "invalidLinkDesc": "Dieser Link zum Zurücksetzen ist nicht mehr gültig. Möglicherweise ist er abgelaufen oder wurde bereits verwendet.",
+    "requestNewLink": "Neuen Link anfordern",
+    "successTitle": "Passwort geändert",
+    "successMessage": "Ihr Passwort wurde erfolgreich geändert. Sie können sich jetzt mit Ihrem neuen Passwort anmelden.",
+    "goToLogin": "Anmelden",
+    "samePasswordError": "Das neue Passwort muss sich vom alten unterscheiden.",
+    "weakPasswordError": "Das Passwort erfüllt nicht alle Anforderungen.",
+    "sessionExpiredError": "Ihre Sitzung ist abgelaufen. Bitte fordern Sie einen neuen Link zum Zurücksetzen an.",
+    "defaultError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+  },
+  "featureFlags": {
+    "title": "Feature-Flags",
+    "description": "Experimentelle Funktionen lokal ein- und ausschalten. Änderungen werden nur in diesem Browser gespeichert.",
+    "openPanel": "Feature-Flags öffnen",
+    "empty": "Noch keine Feature-Flags konfiguriert.",
+    "reset": "Auf Standardwerte zurücksetzen",
+    "overriddenOn": "Manuell aktiviert",
+    "overriddenOff": "Manuell deaktiviert",
+    "flags": {
+      "brandRefresh": {
+        "label": "Edesio-Designrichtlinien",
+        "description": "Tokens, Inter-Schrift, Radien und Logo aus dem Redesign. In der Produktion deaktiviert, bis der Rollout abgeschlossen ist."
+      },
+      "HomepageNewDesign": {
+        "label": "Neues Design der Startseite",
+        "description": "Neues Design der Startseite. In der Produktion deaktiviert, bis der Rollout abgeschlossen ist."
+      },
+      "AuthNewDesign": {
+        "label": "Neues Design der Anmeldeseiten",
+        "description": "Neues Design der Anmeldeseiten. In der Produktion deaktiviert, bis der Rollout abgeschlossen ist."
+      },
+      "EstablishmentDashboardNewDesign": {
+        "label": "Neues Design des Einrichtungs-Dashboards",
+        "description": "Neues Design des Einrichtungs-Dashboards. In der Produktion deaktiviert, bis der Rollout abgeschlossen ist."
+      }
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Diese Seite existiert nicht",
+    "description": "Die gesuchte Seite wurde verschoben, gelöscht oder hat nie existiert.",
+    "backHome": "Zurück zur Startseite",
+    "copyright": "© {year} Edesio"
+  },
+  "errorPage": {
+    "codeLabel": "Fehler {status}",
+    "defaultTitle": "Etwas ist schiefgelaufen",
+    "detailsLabel": "Technische Details",
+    "retry": "Erneut versuchen",
+    "contactHint": "Bestehen die Probleme weiterhin?",
+    "contactEmail": "edesio.founders@gmail.com"
+  },
+  "landing": {
+    "navbar": {
+      "links": {
+        "fonctionnement": "So funktioniert’s",
+        "pourQui": "Für wen?",
+        "benefices": "Vorteile",
+        "tarifs": "Preise",
+        "faq": "FAQ"
+      },
+      "login": "Anmelden",
+      "signup": "Registrieren",
+      "demo": "Demo anfragen"
+    },
+    "hero": {
+      "legacy": {
+        "badge": "Sekundarstufe I, Sekundarstufe II und Hochschulen",
+        "title": "der Chatbot, der trainiert und bewertet",
+        "subtitle": "Lehrkräfte laden ihre Unterrichtsinhalte hoch, {brand} erstellt Fragen, chattet mit den Lernenden und gibt Ihnen eine klare Rückmeldung zu ihren Fortschritten.",
+        "ctaSignup": "Kostenloses Konto erstellen",
+        "ctaLogin": "Anmelden",
+        "poweredBy": "Powered by",
+        "frenchAI": "Französische KI",
+        "institutions": "20+ Einrichtungen",
+        "gdpr": "konform",
+        "chatSimulation": {
+          "title": "Edesio – Lernen",
+          "messages": [
+            "Hallo! Ich bin Edesio. Ich helfe dir, deine Lektion über das Sonnensystem zu wiederholen. Los geht’s!",
+            "Frage 1: Welcher ist der größte Planet im Sonnensystem?\n\nA. Saturn\nB. Jupiter\nC. Neptun",
+            "Ich glaube, es ist Jupiter, also Antwort B!",
+            "Super! Das ist die richtige Antwort! Jupiter ist der größte Planet im Sonnensystem – sein Durchmesser ist 11-mal so groß wie der der Erde."
+          ]
+        }
+      },
+      "new": {
+        "eyebrow": "Sekundarstufe I, Sekundarstufe II und Hochschulen",
+        "title": "Der Chatbot, der Ihre Schülerinnen und Schüler trainiert und bewertet",
+        "subtitle": "Lehrkräfte laden ihre Unterrichtsinhalte hoch, Edesio erstellt Fragen, chattet mit den Lernenden und gibt Ihnen eine klare Rückmeldung zu ihren Fortschritten.",
+        "ctaPrimary": "Kostenloses Konto erstellen",
+        "ctaSecondary": "Anmelden",
+        "trustItems": ["Powered by Mistral AI", "DSGVO-konform"],
+        "speechBubble": "Hallo, ich bin Edesio"
+      }
+    },
+    "functioning": {
+      "legacy": {
+        "badge": "So funktioniert’s",
+        "title": "Ganz einfach in",
+        "titleHighlight": "3 Schritten",
+        "subtitle": "Verwandeln Sie Ihre Unterrichtsinhalte mit wenigen Klicks in interaktive Lernerlebnisse.",
+        "steps": [
+          {
+            "number": "1",
+            "title": "Die Lehrkraft lädt ihre Unterrichtsinhalte hoch",
+            "description": "Importieren Sie Ihre Unterrichtsmaterialien ganz einfach: PDFs, Word-Dokumente, Präsentationen. Edesio analysiert und versteht die Lerninhalte."
+          },
+          {
+            "number": "2",
+            "title": "Die KI erstellt Fragen",
+            "description": "Unsere künstliche Intelligenz analysiert die Inhalte und erstellt automatisch passende Fragen, abgestimmt auf das Niveau Ihrer Klasse."
+          },
+          {
+            "number": "3",
+            "title": "Der Chatbot trainiert die Lernenden",
+            "description": "Schülerinnen und Schüler lernen im Chat mit Edesio. Der Chatbot stellt Fragen, korrigiert Fehler und erklärt Zusammenhänge."
+          }
+        ],
+        "features": [
+          {
+            "title": "Individuelle Inhalte",
+            "description": "Fragen, die aus Ihren eigenen Unterrichtsinhalten entstehen"
+          },
+          {
+            "title": "Intelligente KI",
+            "description": "Passt sich dem Niveau jedes Lernenden an"
+          },
+          {
+            "title": "Gezieltes Lernen",
+            "description": "Festigt die Kernkonzepte Ihres Unterrichts"
+          }
+        ]
+      },
+      "new": {
+        "eyebrow": "So funktioniert’s",
+        "title": "Ganz einfach in 3 Schritten",
+        "steps": [
+          {
+            "title": "Die Lehrkraft lädt ihre Unterrichtsinhalte hoch",
+            "description": "Importieren Sie Ihre Unterrichtsmaterialien ganz einfach: PDFs, Word-Dokumente, Präsentationen. Edesio analysiert und versteht die Lerninhalte."
+          },
+          {
+            "title": "Die KI erstellt Fragen",
+            "description": "Unsere künstliche Intelligenz analysiert die Inhalte und erstellt automatisch passende Fragen, abgestimmt auf das Niveau Ihrer Klasse."
+          },
+          {
+            "title": "Der Chatbot trainiert die Lernenden",
+            "description": "Schülerinnen und Schüler wiederholen den Stoff im Chat mit Edesio. Der Chatbot stellt Fragen, korrigiert Fehler und erklärt Zusammenhänge."
+          }
+        ],
+        "highlights": [
+          {
+            "title": "Individuelle Inhalte",
+            "description": "Fragen, die aus Ihren eigenen Unterrichtsinhalten entstehen."
+          },
+          {
+            "title": "Intelligente KI",
+            "description": "Passt sich dem Niveau jedes Lernenden an."
+          },
+          {
+            "title": "Gezieltes Lernen",
+            "description": "Festigt die Kernkonzepte Ihres Unterrichts."
+          }
+        ]
+      }
+    },
+    "forWho": {
+      "legacy": {
+        "badge": "Für wen?",
+        "title": "Eine Lösung für",
+        "titleHighlight": "alle",
+        "subtitle": "{brand} unterstützt alle Beteiligten im Bildungsbereich – mit konkreten Vorteilen für jede Rolle.",
+        "personas": [
+          {
+            "title": "Lehrkräfte",
+            "description": "Weniger Zeitaufwand für die Erstellung von Übungen",
+            "benefits": [
+              "Automatische Fragenerstellung aus Ihren Unterrichtsinhalten",
+              "Individuelle Fortschrittsverfolgung für jede Schülerin und jeden Schüler",
+              "Mehr Zeit für individuelle Betreuung",
+              "Detaillierte Berichte zu wiederkehrenden Schwierigkeiten"
+            ]
+          },
+          {
+            "title": "Schulleitungen",
+            "description": "Den Lernerfolg gezielt fördern",
+            "benefits": [
+              "Überblick über die Leistungen jeder Klasse",
+              "Ein modernes, innovatives Image für Ihre Einrichtung",
+              "Ein Alleinstellungsmerkmal, das Familien überzeugt",
+              "DSGVO-Konformität und Hosting in Europa"
+            ]
+          },
+          {
+            "title": "Schülerinnen und Schüler",
+            "description": "Interaktiv und effektiv lernen",
+            "benefits": [
+              "Geführtes Lernen im natürlichen Gesprächsformat",
+              "Persönliche Erklärungen, abgestimmt auf das eigene Niveau",
+              "Rund um die Uhr zum Üben verfügbar",
+              "Sofortiges Feedback zu jeder Antwort"
+            ]
+          },
+          {
+            "title": "Selbstlernende",
+            "description": "Im eigenen Tempo lernen, ganz ohne Vorgaben",
+            "benefits": [
+              "Eigene Lektionen und Materialien erstellen",
+              "Fragen mit KI generieren",
+              "Mit dem intelligenten Chatbot trainieren",
+              "Völlig selbstständig vorankommen"
+            ]
+          }
+        ]
+      },
+      "new": {
+        "eyebrow": "Für wen?",
+        "title": "Eine Lösung für alle",
+        "segments": [
+          {
+            "title": "Lehrkräfte",
+            "subtitle": "Weniger Zeitaufwand für die Erstellung von Übungen",
+            "bullets": [
+              "Automatische Fragenerstellung aus Ihren Unterrichtsinhalten",
+              "Individuelle Fortschrittsverfolgung für jede Schülerin und jeden Schüler",
+              "Mehr Zeit für individuelle Betreuung",
+              "Detaillierte Berichte zu wiederkehrenden Schwierigkeiten"
+            ]
+          },
+          {
+            "title": "Schulleitungen",
+            "subtitle": "Den Lernerfolg gezielt fördern",
+            "bullets": [
+              "Überblick über die Leistungen jeder Klasse",
+              "Ein modernes, innovatives Image für Ihre Einrichtung",
+              "Ein Alleinstellungsmerkmal, das Familien überzeugt",
+              "DSGVO-Konformität und Hosting in Europa"
+            ]
+          },
+          {
+            "title": "Schülerinnen und Schüler",
+            "subtitle": "Interaktiv und effektiv wiederholen",
+            "bullets": [
+              "Geführtes Wiederholen im natürlichen Gesprächsformat",
+              "Persönliche Erklärungen, abgestimmt auf das eigene Niveau",
+              "Rund um die Uhr zum Üben verfügbar",
+              "Sofortiges Feedback zu jeder Antwort"
+            ]
+          },
+          {
+            "title": "Selbstlernende",
+            "subtitle": "Im eigenen Tempo lernen, ganz ohne Vorgaben",
+            "bullets": [
+              "Eigene Lektionen und Materialien erstellen",
+              "Fragen mit KI generieren",
+              "Mit dem intelligenten Chatbot trainieren",
+              "Völlig selbstständig vorankommen"
+            ]
+          }
+        ]
+      }
+    },
+    "benefits": {
+      "legacy": {
+        "badge": "Vorteile",
+        "title": "Warum",
+        "titleHighlight": "Edesio",
+        "titleSuffix": "?",
+        "subtitle": "Konkrete Vorteile für Lehrkräfte, Lernende und Ihre Einrichtung.",
+        "items": [
+          {
+            "title": "Automatisierte Übungserstellung",
+            "description": "Verwandeln Sie Ihre Unterrichtsinhalte mit wenigen Klicks in interaktive Übungen – ganz ohne Mehraufwand."
+          },
+          {
+            "title": "Detaillierte Fortschrittsverfolgung",
+            "description": "Behalten Sie individuelle und gemeinsame Leistungen in übersichtlichen Dashboards im Blick."
+          },
+          {
+            "title": "Motivierendes Chat-Format",
+            "description": "Lernende lernen im Gespräch – ein natürliches Format, das zum Mitmachen motiviert."
+          },
+          {
+            "title": "100 % sicher und DSGVO-konform",
+            "description": "Ihre Daten sind geschützt und DSGVO-konform in Europa gehostet."
+          },
+          {
+            "title": "Deutliche Zeitersparnis",
+            "description": "Gewinnen Sie wertvolle Zeit, indem Sie die Erstellung und Korrektur von Übungen automatisieren."
+          },
+          {
+            "title": "Personalisiertes Lernen",
+            "description": "Die KI passt sich dem Niveau jedes Lernenden an und bietet maßgeschneiderte Unterstützung."
+          }
+        ]
+      },
+      "new": {
+        "eyebrow": "Vorteile",
+        "title": "Warum Edesio?",
+        "items": [
+          {
+            "icon": "zap",
+            "title": "Automatisierte Übungserstellung",
+            "description": "Verwandeln Sie Ihre Unterrichtsinhalte mit wenigen Klicks in interaktive Übungen – ganz ohne Mehraufwand."
+          },
+          {
+            "icon": "bar-chart-3",
+            "title": "Detaillierte Fortschrittsverfolgung",
+            "description": "Behalten Sie individuelle und gemeinsame Leistungen in übersichtlichen Dashboards im Blick."
+          },
+          {
+            "icon": "message-circle",
+            "title": "Motivierendes Chat-Format",
+            "description": "Lernende lernen im Gespräch – ein natürliches Format, das zum Mitmachen motiviert."
+          },
+          {
+            "icon": "shield-check",
+            "title": "100 % sicher und DSGVO-konform",
+            "description": "Ihre Daten sind geschützt und DSGVO-konform in Europa gehostet."
+          },
+          {
+            "icon": "clock",
+            "title": "Deutliche Zeitersparnis",
+            "description": "Gewinnen Sie wertvolle Zeit, indem Sie die Erstellung und Korrektur von Übungen automatisieren."
+          },
+          {
+            "icon": "sparkles",
+            "title": "Personalisiertes Lernen",
+            "description": "Die KI passt sich dem Niveau jedes Lernenden an und bietet maßgeschneiderte Unterstützung."
+          }
+        ]
+      }
+    },
+    "stats": {
+      "new": {
+        "items": [
+          {
+            "icon": "shield-check",
+            "value": "DSGVO",
+            "label": "konform"
+          },
+          {
+            "icon": "map-pin",
+            "value": "Europa",
+            "label": "Datenhosting"
+          },
+          {
+            "icon": "cpu",
+            "value": "Mistral AI",
+            "label": "Französische KI"
+          }
+        ]
+      }
+    },
+    "pricing": {
+      "legacy": {
+        "badge": "Einfache Preise",
+        "title": "Klare Preise,",
+        "titleHighlight": "keine Überraschungen",
+        "subtitle": "Wählen Sie den passenden Tarif für Ihre Einrichtung. Alle Tarife beinhalten integrierte KI und Updates.",
+        "monthly": "Monatlich",
+        "annual": "Jährlich",
+        "popular": "Beliebt",
+        "perMonth": "/Monat",
+        "perYear": "/Jahr",
+        "totalPerYear": "also {price}/Jahr",
+        "onQuote": "Individuelles Angebot",
+        "classInfo": "1 Klasse = 1 vollständiges Lernmodul mit KI",
+        "classTooltipTitle": "Was ist eine Klasse?",
+        "classTooltipDesc": "Eine Klasse ist ein vollständiges Lernmodul: mehrere Lektionen möglich, integrierter Gesamttest und unbegrenzt viele Schülerinnen und Schüler.",
+        "noCommitment": "Keine Mindestlaufzeit",
+        "mobileIncluded": "Mobile App inklusive",
+        "statsIncluded": "Statistiken inklusive",
+        "reactiveSupport": "Schneller Support",
+        "plans": [
+          {
+            "name": "Edesio Solo",
+            "description": "Für Einzelpersonen und Selbstlernende.",
+            "target": "Schüler/innen, Prüfungskandidat/innen, Selbstlernende",
+            "cta": "Jetzt starten",
+            "features": [
+              "1 Klasse inklusive",
+              "Bis zu 50 Lektionen",
+              "KI-Fragengenerierung",
+              "Persönlicher KI-Chatbot",
+              "Fortschrittsverfolgung",
+              "Mobile App"
+            ]
+          },
+          {
+            "name": "Edesio Lehrkraft",
+            "description": "Für eine Lehrkraft mit mehreren Klassen.",
+            "target": "Lehrkräfte, Trainer/innen, kleine Bildungszentren",
+            "cta": "Jetzt starten",
+            "features": [
+              "10 Klassen inklusive",
+              "Bis zu 50 Lektionen pro Klasse",
+              "Unbegrenzt viele Schüler/innen",
+              "Detaillierte Statistiken",
+              "Mobile App"
+            ]
+          },
+          {
+            "name": "Edesio Einrichtung",
+            "description": "Für Ihre gesamte Einrichtung.",
+            "target": "Privatschulen, Hochschulen, Berufsbildung",
+            "cta": "Jetzt starten",
+            "features": [
+              "150 Klassen inklusive",
+              "Bis zu 50 Lektionen pro Klasse",
+              "Unbegrenzt viele Lehrkräfte",
+              "Unbegrenzt viele Schüler/innen",
+              "Priorisierter Support",
+              "Statistiken für die Einrichtung",
+              "Mobile App"
+            ]
+          },
+          {
+            "name": "Individueller Tarif",
+            "description": "Maßgeschneiderte Lösung für große Organisationen.",
+            "target": "Universitäten, Elitehochschulen, landesweite Organisationen",
+            "cta": "Angebot anfordern",
+            "features": [
+              "Klassen nach Bedarf",
+              "Bis zu 50 Lektionen pro Klasse",
+              "Unbegrenzt viele Lehrkräfte",
+              "Unbegrenzt viele Schüler/innen",
+              "Persönliche Ansprechperson",
+              "LMS/SIS-Integration verfügbar",
+              "Garantiertes SLA"
+            ]
+          }
+        ],
+        "quoteMailSubject": "Angebotsanfrage Edesio"
+      },
+      "new": {
+        "eyebrow": "Einfache Preise",
+        "title": "Klare Preise, keine Überraschungen",
+        "subtitle": "Wählen Sie den passenden Tarif für Ihre Einrichtung. Alle Tarife beinhalten integrierte KI und Updates.",
+        "subtitleSecondary": "1 Klasse = 1 vollständiges Lernmodul mit KI.",
+        "monthly": "Monatlich",
+        "annual": "Jährlich",
+        "discount": "-15 %",
+        "popular": "Beliebt",
+        "perMonth": "/Monat",
+        "perYear": "/Jahr",
+        "annualNoteBefore": "also ",
+        "annualNoteMiddle": " statt ",
+        "customQuote": "Individuelles Angebot",
+        "quoteMailSubject": "Angebotsanfrage Edesio",
+        "notes": ["Keine Mindestlaufzeit", "Statistiken inklusive", "Schneller Support"],
+        "plans": [
+          {
+            "id": "solo",
+            "name": "Edesio Solo",
+            "description": "Für Einzelpersonen und Selbstlernende.",
+            "monthlyPrice": 4.9,
+            "cta": "Jetzt starten",
+            "popular": false,
+            "features": [
+              "1 Klasse inklusive",
+              "Bis zu 50 Lektionen",
+              "KI-Fragengenerierung",
+              "Persönlicher KI-Chatbot",
+              "Fortschrittsverfolgung",
+              "Mobile App"
+            ]
+          },
+          {
+            "id": "teacher",
+            "name": "Edesio Lehrkraft",
+            "description": "Für eine Lehrkraft mit mehreren Klassen.",
+            "monthlyPrice": 24.9,
+            "cta": "Jetzt starten",
+            "popular": false,
+            "features": [
+              "10 Klassen inklusive",
+              "Bis zu 50 Lektionen pro Klasse",
+              "Unbegrenzt viele Schüler/innen",
+              "Detaillierte Statistiken",
+              "Mobile App"
+            ]
+          },
+          {
+            "id": "establishment",
+            "name": "Edesio Einrichtung",
+            "description": "Für Ihre gesamte Einrichtung.",
+            "monthlyPrice": 299.9,
+            "cta": "Jetzt starten",
+            "popular": true,
+            "features": [
+              "150 Klassen inklusive",
+              "Bis zu 50 Lektionen pro Klasse",
+              "Unbegrenzt viele Lehrkräfte",
+              "Unbegrenzt viele Schüler/innen",
+              "Priorisierter Support",
+              "Statistiken für die Einrichtung",
+              "Mobile App"
+            ]
+          },
+          {
+            "id": "custom",
+            "name": "Individuell",
+            "description": "Maßgeschneiderte Lösung für große Organisationen.",
+            "monthlyPrice": null,
+            "cta": "Angebot anfordern",
+            "popular": false,
+            "features": [
+              "Klassen nach Bedarf",
+              "Bis zu 50 Lektionen pro Klasse",
+              "Unbegrenzt viele Lehrkräfte",
+              "Unbegrenzt viele Schüler/innen",
+              "Persönliche Ansprechperson",
+              "LMS/SIS-Integration verfügbar",
+              "Garantiertes SLA"
+            ]
+          }
+        ]
+      }
+    },
+    "faq": {
+      "legacy": {
+        "title": "Häufig gestellte",
+        "titleHighlight": "Fragen",
+        "subtitle": "Alles, was Sie über {brand} wissen müssen.",
+        "gdprCompliant": "DSGVO-konform",
+        "dataProtected": "Geschützte Daten",
+        "secureHosting": "Sicheres Hosting",
+        "europeanServers": "Server in Europa",
+        "items": [
+          {
+            "question": "Wie werden meine Daten und die meiner Schülerinnen und Schüler geschützt?",
+            "answer": "Edesio hält die DSGVO strikt ein. Alle Daten werden in Europa auf sicheren Servern gehostet. Wir nutzen Daten von Lernenden niemals zu kommerziellen Zwecken. Die Einrichtungen bleiben Eigentümer ihrer Daten und können sie jederzeit löschen."
+          },
+          {
+            "question": "Welche Rolle spielt die Lehrkraft bei Edesio?",
+            "answer": "Die Lehrkraft steht im Mittelpunkt. Sie lädt ihre Unterrichtsinhalte hoch, prüft auf Wunsch die von der KI erstellten Fragen und sieht sich die Fortschrittsberichte ihrer Klasse an. Edesio ist ein unterstützendes Werkzeug, das Zeit für die persönliche Begleitung schafft – und die Lehrkraft niemals ersetzt."
+          },
+          {
+            "question": "Wie erstellt die KI die Fragen?",
+            "answer": "Unsere KI analysiert den Inhalt Ihrer Lektionen (PDFs, Dokumente) und erstellt Fragen, die direkt auf Ihrem Unterricht basieren. Jede Frage stützt sich auf das von Ihnen bereitgestellte Material – für relevantes Üben im Einklang mit Ihrem Lehrplan."
+          },
+          {
+            "question": "Für welche Einrichtungen ist Edesio gedacht?",
+            "answer": "Edesio richtet sich an die Sekundarstufe I, allgemeinbildende, technische und berufliche Schulen der Sekundarstufe II sowie an Hochschulen (Bachelor-Studiengänge, Vorbereitungsklassen, Fachhochschulen). Die Plattform passt sich allen Fächern und Niveaus an."
+          },
+          {
+            "question": "Wie läuft die technische Einrichtung ab?",
+            "answer": "Edesio ist eine SaaS-Lösung, die Sie einfach über den Webbrowser nutzen. Eine Installation ist nicht erforderlich. Wir begleiten Einrichtungen beim Einstieg mit Schulungen für die Lehrerteams. Eine Integration in Ihr bestehendes LMS ist auf Anfrage möglich."
+          },
+          {
+            "question": "Können Schülerinnen und Schüler mit dem Chatbot schummeln?",
+            "answer": "Nein, mit dem Chatbot lässt sich nicht schummeln. Edesio ist zum Üben gedacht: Der Chatbot verrät keine Lösungen, sondern überprüft das Verständnis in einem geführten Dialog. Integrierte Kontrollen – Gesprächsverlauf, Fortschrittsverfolgung, Fragen auf Basis Ihrer Unterrichtsinhalte – ermöglichen es Lehrkräften, die Aktivität jedes Lernenden jederzeit nachzuvollziehen."
+          }
+        ]
+      },
+      "new": {
+        "eyebrow": "FAQ",
+        "title": "Alles, was Sie über Edesio wissen müssen",
+        "items": [
+          {
+            "question": "Wie werden meine Daten und die meiner Schülerinnen und Schüler geschützt?",
+            "answer": "Edesio ist DSGVO-konform und wird sicher in Europa gehostet. Wir setzen auf Mistral AI, eine französische künstliche Intelligenz, um die Souveränität Ihrer Daten zu gewährleisten."
+          },
+          {
+            "question": "Welche Rolle spielt die Lehrkraft bei Edesio?",
+            "answer": "Die Lehrkraft lädt ihre Unterrichtsinhalte hoch (PDF, Word, Präsentationen). Edesio analysiert diese Inhalte und erstellt automatisch passende Fragen, die die Lehrkraft anpassen kann."
+          },
+          {
+            "question": "Wie erstellt die KI die Fragen?",
+            "answer": "Die KI analysiert die hochgeladenen Lerninhalte und erstellt Fragen, die zum Niveau der Lernenden passen – direkt aus Ihren eigenen Unterrichtsinhalten."
+          },
+          {
+            "question": "Für welche Einrichtungen ist Edesio gedacht?",
+            "answer": "Edesio richtet sich an die Sekundarstufe I, die Sekundarstufe II und Hochschulen – und ebenso an Selbstlernende."
+          },
+          {
+            "question": "Wie läuft die technische Einrichtung ab?",
+            "answer": "Keine komplizierte Installation: Sie laden Ihre Unterrichtsinhalte als PDF, Word-Datei oder Folien hoch, und Edesio erledigt den Rest."
+          },
+          {
+            "question": "Können Schülerinnen und Schüler mit dem Chatbot schummeln?",
+            "answer": "Nein, mit dem Chatbot lässt sich nicht schummeln. Edesio ist zum Üben gedacht: Der Chatbot verrät keine Lösungen, sondern überprüft das Verständnis in einem geführten Dialog. Integrierte Kontrollen – Gesprächsverlauf, Fortschrittsverfolgung, Fragen auf Basis Ihrer Unterrichtsinhalte – ermöglichen es Lehrkräften, die Aktivität jedes Lernenden jederzeit nachzuvollziehen."
+          }
+        ]
+      }
+    },
+    "footer": {
+      "legacy": {
+        "tagline": "Die KI-Lösung, die Ihre Unterrichtsinhalte in interaktive Lernerlebnisse für Ihre Schülerinnen und Schüler verwandelt. Entwickelt für die Sekundarstufe I, die Sekundarstufe II und Hochschulen.",
+        "gdpr": "DSGVO-konform",
+        "hostedInEurope": "In Europa gehostet",
+        "navigation": "Navigation",
+        "mobileApp": "Mobile App",
+        "mobileAppDesc": "Installieren Sie Edesio auf Ihrem Smartphone für einen schnellen Zugriff.",
+        "howToInstall": "So installieren Sie die App",
+        "contact": "Kontakt",
+        "allRightsReserved": "Alle Rechte vorbehalten",
+        "legalNotice": "Impressum",
+        "terms": "Nutzungsbedingungen",
+        "privacyPolicy": "Datenschutzerklärung",
+        "links": {
+          "fonctionnement": "So funktioniert’s",
+          "benefices": "Vorteile",
+          "tarifs": "Preise",
+          "faq": "FAQ",
+          "blog": "Blog"
+        }
+      },
+      "new": {
+        "tagline": "Die KI-Lösung, die Ihre Unterrichtsinhalte in interaktive Lernerlebnisse für Ihre Schülerinnen und Schüler verwandelt. Entwickelt für die Sekundarstufe I, die Sekundarstufe II und Hochschulen.",
+        "badges": ["DSGVO-konform", "In Europa gehostet"],
+        "navigation": "Navigation",
+        "contact": "Kontakt",
+        "allRightsReserved": "Alle Rechte vorbehalten",
+        "legalNotice": "Impressum",
+        "terms": "Nutzungsbedingungen",
+        "privacyPolicy": "Datenschutzerklärung",
+        "links": {
+          "fonctionnement": "So funktioniert’s",
+          "pourQui": "Für wen?",
+          "benefices": "Vorteile",
+          "tarifs": "Preise",
+          "faq": "FAQ"
+        }
+      }
+    },
+    "demoForm": {
+      "title": "Demo vereinbaren oder kostenloses Konto erstellen",
+      "subtitle": "Füllen Sie dieses Formular aus – wir melden uns in Kürze bei Ihnen.",
+      "firstName": "Vorname",
+      "firstNamePlaceholder": "Max",
+      "lastName": "Nachname",
+      "lastNamePlaceholder": "Mustermann",
+      "establishment": "Einrichtung",
+      "establishmentPlaceholder": "Goethe-Gymnasium",
+      "email": "Berufliche E-Mail-Adresse",
+      "emailPlaceholder": "max.mustermann@schule.de",
+      "establishmentType": "Art der Einrichtung",
+      "selectType": "Art auswählen",
+      "typeCollege": "Sekundarstufe I",
+      "typeLycee": "Gymnasium / Sekundarstufe II",
+      "typeSuperieur": "Hochschule",
+      "typeAutre": "Sonstige",
+      "message": "Nachricht (optional)",
+      "messagePlaceholder": "Beschreiben Sie Ihr Vorhaben oder stellen Sie uns Ihre Fragen...",
+      "wantsFreeAccount": "Ich möchte ein kostenloses Testkonto erstellen",
+      "wantsDemo": "Ich möchte zuerst eine Demo",
+      "submit": "Anfrage senden",
+      "submitting": "Wird gesendet...",
+      "successTitle": "Vielen Dank für Ihre Anfrage!",
+      "successMessage": "Wir haben Ihnen eine Bestätigungs-E-Mail gesendet. Unser Team meldet sich innerhalb von 24 Stunden bei Ihnen (außer am Wochenende).",
+      "toastErrorTitle": "Fehler",
+      "toastErrorDefault": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "sendError": "Fehler beim Senden"
+    },
+    "blogPreview": {
+      "legacy": {
+        "badge": "Unser Blog",
+        "title": "Neueste Artikel",
+        "subtitle": "Entdecken Sie unsere Analysen, Tipps und News rund um KI in der Bildung",
+        "readArticle": "Artikel lesen",
+        "viewAll": "Alle Artikel ansehen"
+      },
+      "new": {
+        "eyebrow": "Unser Blog",
+        "title": "Neueste Artikel",
+        "subtitle": "Entdecken Sie unsere Analysen, Tipps und News rund um KI in der Bildung",
+        "readArticle": "Artikel lesen",
+        "viewAll": "Alle Artikel ansehen"
+      }
+    },
+    "finalCta": {
+      "new": {
+        "title": "Demo vereinbaren oder kostenloses Konto erstellen",
+        "subtitle": "Keine Mindestlaufzeit. Mobile App inklusive.",
+        "ctaPrimary": "Kostenloses Konto erstellen",
+        "ctaSecondary": "Demo buchen"
+      }
+    }
+  }
+}

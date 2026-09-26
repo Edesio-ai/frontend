@@ -22,8 +22,8 @@ import {
 } from "lucide-react";
 import { Course, EvaluateAnswerRequest, GenerateCompletionFeedbackRequest, Language, Question } from "@/types";
 import { llmService } from "@/services/llm.service";
-import { useTranslations } from "@/lib/i18n/client";
-import type { Dictionary } from "@/lib/i18n/client";
+import { useTranslations, type Dictionary } from "@/lib/i18n/client";
+import { SESSION_LANGUAGE_LOCALES } from "@/lib/i18n/config";
 
 interface StudentChatbotModalProps {
   open: boolean;
@@ -118,11 +118,13 @@ function MessageBubble({
   studentName,
   studentPhotoUrl,
   t,
+  tc,
 }: {
   message: ChatMessage;
   studentName?: string;
   studentPhotoUrl?: string | null;
   t: Dictionary;
+  tc: Dictionary["chatbot"];
 }) {
   const isBot = message.sender === "bot";
 
@@ -227,7 +229,7 @@ function MessageBubble({
                     : "text-red-700 dark:text-red-300"
               }`}
             >
-              {t.chatbot.sessionEnded}
+              {tc.sessionEnded}
             </span>
           </div>
         )}
@@ -239,21 +241,21 @@ function MessageBubble({
                 <div className="p-1 rounded-full bg-emerald-500/20">
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">{t.chatbot.goodAnswer}</span>
+                <span className="text-sm font-semibold">{tc.goodAnswer}</span>
               </div>
             ) : message.isPartial ? (
               <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                 <div className="p-1 rounded-full bg-orange-500/20">
                   <Star className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">{t.chatbot.partialAnswer}</span>
+                <span className="text-sm font-semibold">{tc.partialAnswer}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
                 <div className="p-1 rounded-full bg-red-500/20">
                   <XCircle className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold">{t.chatbot.wrongAnswer}</span>
+                <span className="text-sm font-semibold">{tc.wrongAnswer}</span>
               </div>
             )}
           </div>
@@ -267,18 +269,18 @@ function QCMOptions({
   propositions,
   onSelect,
   disabled,
-  t,
+  tc,
 }: {
   propositions: string[];
   onSelect: (index: number) => void;
   disabled?: boolean;
-  t: Dictionary;
+  tc: Dictionary["chatbot"];
 }) {
   return (
     <div className="py-4 animate-in fade-in slide-in-from-bottom-3 duration-300" data-testid="qcm-options-container">
       <div className="flex items-center justify-center gap-2 mb-4 text-xs text-muted-foreground">
         <Zap className="h-3.5 w-3.5 text-primary" />
-        <span>{t.chatbot.clickAnswer}</span>
+        <span>{tc.clickAnswer}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {propositions.map((prop, i) => (
@@ -306,14 +308,14 @@ function MultiOptions({
   onToggle,
   onValidate,
   disabled,
-  t,
+  tc,
 }: {
   propositions: string[];
   selectedIndices: number[];
   onToggle: (index: number) => void;
   onValidate: () => void;
   disabled?: boolean;
-  t: Dictionary;
+  tc: Dictionary["chatbot"];
 }) {
   return (
     <div
@@ -322,7 +324,7 @@ function MultiOptions({
     >
       <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
         <Star className="h-3.5 w-3.5 text-primary" />
-        <span>{t.chatbot.selectAllCorrect}</span>
+        <span>{tc.selectAllCorrect}</span>
       </div>
       <div className="grid grid-cols-2 gap-3 px-2">
         {propositions.map((prop, i) => {
@@ -360,7 +362,7 @@ function MultiOptions({
           data-testid="button-validate-multi"
         >
           <Check className="h-4 w-4 mr-2" />
-          {t.chatbot.validateSelection
+          {tc.validateSelection
             .replace("{count}", String(selectedIndices.length))
             .replace("{plural}", selectedIndices.length > 1 ? "s" : "")}
         </Button>
@@ -380,9 +382,10 @@ export function StudentChatbotModal({
   onComplete,
 }: StudentChatbotModalProps) {
   const t = useTranslations();
-  const correctFeedbackMessages: string[] = t.chatbot.correctAnswers;
-  const incorrectFeedbackMessages: string[] = t.chatbot.encouragementsAfterWrong;
-  const cheatMessages: string[] = t.chatbot.cheatMessages;
+  const tc = useTranslations(SESSION_LANGUAGE_LOCALES[language]).chatbot;
+  const correctFeedbackMessages: string[] = tc.correctAnswers;
+  const incorrectFeedbackMessages: string[] = tc.encouragementsAfterWrong;
+  const cheatMessages: string[] = tc.cheatMessages;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -448,27 +451,27 @@ export function StudentChatbotModal({
           language,
         };
         const data = await llmService.generateCompletionFeedback(body);
-        const aiFeedback = data.feedback || t.chatbot.completionDefault;
+        const aiFeedback = data.feedback || tc.completionDefault;
 
-        const scoreText = t.chatbot.completionScore
+        const scoreText = tc.completionScore
           .replace("{score}", String(scoreDisplay))
           .replace("{total}", String(finalTotal))
           .replace("{percent}", String(Math.round(ratio * 100)));
         addMessage({
           sender: "bot",
-          text: `${t.chatbot.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
+          text: `${tc.completionTitle}\n\n${scoreText}\n\n${aiFeedback}`,
           type: "completion",
           scoreRatio: ratio,
         });
       } catch (error) {
         console.error("Error fetching completion feedback:", error);
-        const scoreText = t.chatbot.completionScore
+        const scoreText = tc.completionScore
           .replace("{score}", String(scoreDisplay))
           .replace("{total}", String(finalTotal))
           .replace("{percent}", String(Math.round(ratio * 100)));
         addMessage({
           sender: "bot",
-          text: `${t.chatbot.completionTitle}\n\n${scoreText}`,
+          text: `${tc.completionTitle}\n\n${scoreText}`,
           type: "completion",
           scoreRatio: ratio,
         });
@@ -483,7 +486,7 @@ export function StudentChatbotModal({
         }
       }
     },
-    [addMessage, course.title, studentName, language, t, onComplete],
+    [addMessage, course.title, studentName, language, tc, onComplete],
   );
 
   useEffect(() => {
@@ -504,7 +507,7 @@ export function StudentChatbotModal({
       let questionText = `Question ${index + 1}/${shuffledQuestions.length}\n\n${question.questionText}`;
 
       if (question.type === "multiple") {
-        questionText += `\n\n${t.chatbot.multipleAnswersHint}`;
+        questionText += `\n\n${tc.multipleAnswersHint}`;
       }
 
       addMessage({
@@ -515,7 +518,7 @@ export function StudentChatbotModal({
       setSelectedMultiIndices([]);
       setChatState("asking");
     },
-    [addMessage, shuffledQuestions, t],
+    [addMessage, shuffledQuestions, tc],
   );
 
   useEffect(() => {
@@ -546,7 +549,7 @@ export function StudentChatbotModal({
         setChatState("greeting");
         addMessage({
           sender: "bot",
-          text: getRandomMessage(t.chatbot.greetings),
+          text: getRandomMessage(tc.greetings),
           type: "greeting",
         });
 
@@ -556,7 +559,7 @@ export function StudentChatbotModal({
           if (cancelled) return;
           addMessage({
             sender: "bot",
-            text: getRandomMessage(t.chatbot.startQuiz).replace("{count}", String(shuffledQuestions.length)),
+            text: getRandomMessage(tc.startQuiz).replace("{count}", String(shuffledQuestions.length)),
             type: "greeting",
           });
           if (cancelled) return;
@@ -573,7 +576,7 @@ export function StudentChatbotModal({
         setChatState("greeting");
         addMessage({
           sender: "bot",
-          text: t.chatbot.noQuestions.replace("{course}", title),
+          text: tc.noQuestions.replace("{course}", title),
           type: "greeting",
         });
         if (cancelled) return;
@@ -581,7 +584,7 @@ export function StudentChatbotModal({
           if (cancelled) return;
           addMessage({
             sender: "bot",
-            text: t.chatbot.noQuestionsYet,
+            text: tc.noQuestionsYet,
             type: "no_questions",
           });
           setChatState("completed");
@@ -595,7 +598,7 @@ export function StudentChatbotModal({
       clearTimeout(t2);
       clearTimeout(t3);
     };
-  }, [open, course.id, shuffledQuestions.length, conversationNonce, t, addMessage]);
+  }, [open, course.id, shuffledQuestions.length, conversationNonce, tc, addMessage]);
 
   const handleQCMAnswer = (selectedIndex: number) => {
     if (isProcessing || waitingForAcknowledge) return;
@@ -725,7 +728,7 @@ export function StudentChatbotModal({
 
     setTimeout(() => {
       if (isFullyCorrect) {
-        const successMessage = isRetryAttempt ? t.chatbot.goodContinue : feedback;
+        const successMessage = isRetryAttempt ? tc.goodContinue : feedback;
 
         addMessage({
           sender: "bot",
@@ -742,7 +745,7 @@ export function StudentChatbotModal({
         if (!isRetryAttempt) {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\n${t.chatbot.expectedAnswer.replace("{answer}", correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
+            text: `${feedback}\n\n${tc.expectedAnswer.replace("{answer}", correctAnswer)}\n\n${tc.keyElementPrompt}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -752,7 +755,7 @@ export function StudentChatbotModal({
         } else {
           addMessage({
             sender: "bot",
-            text: `${feedback}\n\n${t.chatbot.reviewLater}`,
+            text: `${feedback}\n\n${tc.reviewLater}`,
             type: "feedback",
             isCorrect: false,
           });
@@ -776,7 +779,7 @@ export function StudentChatbotModal({
     setTimeout(() => {
       if (isCorrect) {
         const successMessage = isRetryAttempt
-          ? `${t.chatbot.bravoExact}${explication ? `\n\n${explication}` : ""}`
+          ? `${tc.bravoExact}${explication ? `\n\n${explication}` : ""}`
           : `${getRandomMessage(correctFeedbackMessages)}${explication ? `\n\n${explication}` : ""}`;
 
         addMessage({
@@ -793,7 +796,7 @@ export function StudentChatbotModal({
         // First attempt failed - give them a chance to retry
         addMessage({
           sender: "bot",
-          text: `${getRandomMessage(incorrectFeedbackMessages)} ${t.chatbot.correctIs.replace("{answer}", correctAnswer)}\n\n${t.chatbot.keyElementPrompt}`,
+          text: `${getRandomMessage(incorrectFeedbackMessages)} ${tc.correctIs.replace("{answer}", correctAnswer)}\n\n${tc.keyElementPrompt}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -804,7 +807,7 @@ export function StudentChatbotModal({
         // Second attempt also failed - move on
         addMessage({
           sender: "bot",
-          text: `${t.chatbot.correctWas.replace("{answer}", correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
+          text: `${tc.correctWas.replace("{answer}", correctAnswer)}${explication ? `\n\n${explication}` : ""}`,
           type: "feedback",
           isCorrect: false,
         });
@@ -989,6 +992,7 @@ export function StudentChatbotModal({
               studentName={studentName}
               studentPhotoUrl={studentPhotoUrl}
               t={t}
+              tc={tc}
             />
           ))}
           {(isProcessing || showTyping) && <TypingIndicator />}
@@ -996,7 +1000,7 @@ export function StudentChatbotModal({
 
         {showQCMOptions && currentPropositions && (
           <div className="flex-shrink-0 px-2 border-t bg-muted/30 backdrop-blur-sm">
-            <QCMOptions propositions={currentPropositions} onSelect={handleQCMAnswer} disabled={isProcessing} t={t} />
+            <QCMOptions propositions={currentPropositions} onSelect={handleQCMAnswer} disabled={isProcessing} tc={tc} />
           </div>
         )}
 
@@ -1008,7 +1012,7 @@ export function StudentChatbotModal({
               onToggle={toggleMultiOption}
               onValidate={handleMultiAnswer}
               disabled={isProcessing}
-              t={t}
+              tc={tc}
             />
           </div>
         )}
@@ -1041,12 +1045,12 @@ export function StudentChatbotModal({
                 {currentQuestionIndex + 1 >= shuffledQuestions.length ? (
                   <>
                     <Sparkles className="h-5 w-5 mr-2" />
-                    {t.chatbot.viewResults}
+                    {tc.viewResults}
                   </>
                 ) : (
                   <>
                     <ArrowRight className="h-5 w-5 mr-2" />
-                    {t.chatbot.nextQuestion}
+                    {tc.nextQuestion}
                   </>
                 )}
               </Button>
@@ -1065,7 +1069,7 @@ export function StudentChatbotModal({
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder={t.chatbot.inputPlaceholder}
+                  placeholder={tc.inputPlaceholder}
                   className="min-h-[48px] max-h-[120px] py-3 px-4 rounded-xl bg-background/80 border-border/50 focus-visible:ring-primary/30 text-base resize-none overflow-y-auto"
                   data-testid="input-student-answer"
                   disabled={isProcessing}
@@ -1088,7 +1092,7 @@ export function StudentChatbotModal({
                 <Send className="h-5 w-5" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">{t.chatbot.pressEnter}</p>
+            <p className="text-xs text-muted-foreground mt-2 text-center hidden sm:block">{tc.pressEnter}</p>
           </div>
         )}
 
@@ -1105,7 +1109,7 @@ export function StudentChatbotModal({
                 data-testid="button-restart-session"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                {t.chatbot.restart}
+                {tc.restart}
               </Button>
               <Button
                 className="flex-1 h-12 rounded-xl bg-gradient-to-r from-primary to-violet-600 hover:opacity-90 shadow-lg shadow-primary/25 !ring-0 !ring-offset-0 focus:outline-none border border-violet-700"
@@ -1113,7 +1117,7 @@ export function StudentChatbotModal({
                 data-testid="button-finish-session"
               >
                 <Check className="h-4 w-4 mr-2" />
-                {t.chatbot.finish}
+                {tc.finish}
               </Button>
             </div>
           </div>
