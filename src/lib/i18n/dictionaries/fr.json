@@ -405,6 +405,14 @@
   },
   "teacher": {
     "loading": "Chargement du tableau de bord...",
+    "sidebar": {
+      "backToHub": "Retour au hub",
+      "teacherRole": "Enseignant",
+      "nav": {
+        "sessions": "Classes",
+        "questions": "Questions"
+      }
+    },
     "chatbotTester": {
       "title": "Tester le chatbot - {name}",
       "description": "Simulez l'expérience élève pour ce cours"
@@ -1332,6 +1340,10 @@
       "EstablishmentDashboardNewDesign": {
         "label": "Nouveau design du dashboard établissement",
         "description": "Design du dashboard établissement. Désactivé en production tant que le rollout n'est pas terminé."
+      },
+      "TeacherDashboardNewDesign": {
+        "label": "Nouveau design du dashboard professeur",
+        "description": "Design du dashboard professeur. Désactivé en production tant que le rollout n'est pas terminé."
       }
     }
   },

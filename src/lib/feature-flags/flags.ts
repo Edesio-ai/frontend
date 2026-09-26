@@ -35,6 +35,11 @@ export const FEATURE_FLAGS = {
     envValue: process.env.NEXT_PUBLIC_FF_ESTABLISHMENT_DASHBOARD_NEW_DESIGN,
     htmlAttribute: "data-establishment-dashboard-new-design",
   },
+  TeacherDashboardNewDesign: {
+    defaultEnabled: false,
+    envValue: process.env.NEXT_PUBLIC_FF_TEACHER_DASHBOARD_NEW_DESIGN,
+    htmlAttribute: "data-teacher-dashboard-new-design",
+  },
 } as const satisfies Record<string, FeatureFlagDefinition>;
 
 export type FeatureFlagKey = keyof typeof FEATURE_FLAGS;

@@ -405,6 +405,14 @@
   },
   "teacher": {
     "loading": "Cargando tu panel...",
+    "sidebar": {
+      "backToHub": "Volver al hub",
+      "teacherRole": "Profesor",
+      "nav": {
+        "sessions": "Clases",
+        "questions": "Preguntas"
+      }
+    },
     "chatbotTester": {
       "title": "Probar el chatbot - {name}",
       "description": "Simula la experiencia del alumno para esta lección"
@@ -1332,6 +1340,10 @@
       "EstablishmentDashboardNewDesign": {
         "label": "Nuevo diseño del panel del centro",
         "description": "Nuevo diseño del panel del centro. Desactivado en producción hasta completar el despliegue."
+      },
+      "TeacherDashboardNewDesign": {
+        "label": "Nuevo diseño del panel del profesor",
+        "description": "Nuevo diseño del panel del profesor. Desactivado en producción hasta completar el despliegue."
       }
     }
   },

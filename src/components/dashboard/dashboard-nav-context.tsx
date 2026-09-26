@@ -2,17 +2,17 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-type EstablishmentNavContextValue = {
+type DashboardNavContextValue = {
   mobileNavOpen: boolean;
   openMobileNav: () => void;
   closeMobileNav: () => void;
 };
 
-const EstablishmentNavContext = createContext<EstablishmentNavContextValue | null>(null);
+const DashboardNavContext = createContext<DashboardNavContextValue | null>(null);
 
 const DESKTOP_BREAKPOINT_PX = 860;
 
-export function EstablishmentNavProvider({ children }: { children: React.ReactNode }) {
+export function DashboardNavProvider({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const openMobileNav = useCallback(() => setMobileNavOpen(true), []);
@@ -48,13 +48,13 @@ export function EstablishmentNavProvider({ children }: { children: React.ReactNo
     [mobileNavOpen, openMobileNav, closeMobileNav],
   );
 
-  return <EstablishmentNavContext.Provider value={value}>{children}</EstablishmentNavContext.Provider>;
+  return <DashboardNavContext.Provider value={value}>{children}</DashboardNavContext.Provider>;
 }
 
-export function useEstablishmentNav() {
-  const context = useContext(EstablishmentNavContext);
+export function useDashboardNav() {
+  const context = useContext(DashboardNavContext);
   if (!context) {
-    throw new Error("useEstablishmentNav must be used within EstablishmentNavProvider");
+    throw new Error("useDashboardNav must be used within DashboardNavProvider");
   }
   return context;
 }

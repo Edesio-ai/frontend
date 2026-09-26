@@ -405,6 +405,14 @@
   },
   "teacher": {
     "loading": "Loading your dashboard...",
+    "sidebar": {
+      "backToHub": "Back to hub",
+      "teacherRole": "Teacher",
+      "nav": {
+        "sessions": "Classes",
+        "questions": "Questions"
+      }
+    },
     "chatbotTester": {
       "title": "Test chatbot - {name}",
       "description": "Simulate the student experience for this lesson"
@@ -1332,6 +1340,10 @@
       "EstablishmentDashboardNewDesign": {
         "label": "Establishment dashboard new design",
         "description": "Establishment dashboard new design. Off in production until rollout is complete."
+      },
+      "TeacherDashboardNewDesign": {
+        "label": "Teacher dashboard new design",
+        "description": "Teacher dashboard new design. Off in production until rollout is complete."
       }
     }
   },

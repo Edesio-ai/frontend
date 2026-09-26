@@ -1,14 +1,14 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import { useEstablishmentNav } from "../_contexts/establishment-nav-context";
+import { useDashboardNav } from "./dashboard-nav-context";
 
-type EstablishmentPageHeaderProps = {
+type DashboardPageHeaderProps = {
   title: string;
 };
 
-export function EstablishmentPageHeader({ title }: EstablishmentPageHeaderProps) {
-  const { openMobileNav } = useEstablishmentNav();
+export function DashboardPageHeader({ title }: DashboardPageHeaderProps) {
+  const { openMobileNav } = useDashboardNav();
 
   return (
     <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-border bg-background px-6 py-4 min-[860px]:px-6">
@@ -17,7 +17,7 @@ export function EstablishmentPageHeader({ title }: EstablishmentPageHeaderProps)
         className="inline-flex p-1 text-zinc-700 min-[860px]:hidden"
         onClick={openMobileNav}
         aria-label="Ouvrir le menu"
-        data-testid="button-open-establishment-nav"
+        data-testid="button-open-dashboard-nav"
       >
         <Menu className="size-5" />
       </button>

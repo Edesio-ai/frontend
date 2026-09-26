@@ -405,6 +405,14 @@
   },
   "teacher": {
     "loading": "Ihr Dashboard wird geladen...",
+    "sidebar": {
+      "backToHub": "Zurück zum Hub",
+      "teacherRole": "Lehrkraft",
+      "nav": {
+        "sessions": "Klassen",
+        "questions": "Fragen"
+      }
+    },
     "chatbotTester": {
       "title": "Chatbot testen – {name}",
       "description": "Simulieren Sie die Schüleransicht für diese Lektion"
@@ -1332,6 +1340,10 @@
       "EstablishmentDashboardNewDesign": {
         "label": "Neues Design des Einrichtungs-Dashboards",
         "description": "Neues Design des Einrichtungs-Dashboards. In der Produktion deaktiviert, bis der Rollout abgeschlossen ist."
+      },
+      "TeacherDashboardNewDesign": {
+        "label": "Neues Design des Lehrer-Dashboards",
+        "description": "Neues Design des Lehrer-Dashboards. In der Produktion deaktiviert, bis der Rollout abgeschlossen ist."
       }
     }
   },

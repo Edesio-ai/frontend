@@ -3,7 +3,7 @@
 import { ErrorPage } from "@/components/error/error-page";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { useFeatureFlag, useFeatureFlagsHydrated } from "@/contexts/feature-flags-context";
-import { EstablishmentNavProvider } from "../_contexts/establishment-nav-context";
+import { DashboardNavProvider } from "@/components/dashboard/dashboard-nav-context";
 import { useEstablishmentSubscription } from "../_hooks/use-establishment-subscription";
 import { EstablishmentShell } from "./establishment-shell";
 import { EstablishmentSubscriptionBlock } from "./establishment-subscription-block";
@@ -16,9 +16,9 @@ function EstablishmentNewLayoutGate({ children }: { children: React.ReactNode })
   if (!hasActiveSubscription) return <EstablishmentSubscriptionBlock />;
 
   return (
-    <EstablishmentNavProvider>
+    <DashboardNavProvider>
       <EstablishmentShell>{children}</EstablishmentShell>
-    </EstablishmentNavProvider>
+    </DashboardNavProvider>
   );
 }
 

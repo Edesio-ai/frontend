@@ -1,9 +1,9 @@
 "use client";
 
 import { useDashboardNav } from "@/components/dashboard/dashboard-nav-context";
-import { EstablishmentAside } from "./establishment-aside";
+import { TeacherAside } from "./teacher-aside";
 
-export function EstablishmentShell({ children }: { children: React.ReactNode }) {
+export function TeacherShell({ children }: { children: React.ReactNode }) {
   const { mobileNavOpen, closeMobileNav } = useDashboardNav();
 
   return (
@@ -17,7 +17,7 @@ export function EstablishmentShell({ children }: { children: React.ReactNode }) 
         />
       ) : null}
 
-      <EstablishmentAside mobileOpen={mobileNavOpen} onClose={closeMobileNav} />
+      <TeacherAside mobileOpen={mobileNavOpen} onClose={closeMobileNav} />
       <main className="flex min-w-0 flex-1 flex-col">{children}</main>
     </div>
   );
