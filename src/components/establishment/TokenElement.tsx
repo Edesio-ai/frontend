@@ -67,9 +67,10 @@ export function TokenElement({ token, handleDeleteToken }: TokenElementProps) {
             <Mail className="h-3 w-3" />
             <span>{token.invitedEmail}</span>
           </div>
-          {token.availableChatbots !== undefined && token.availableChatbots! > 0 && (
+          {(token.assignedChatbots ?? token.availableChatbots ?? 0) > 0 && (
             <Badge variant="outline" className="text-xs">
-              {token.availableChatbots} chatbot{token.availableChatbots! > 1 ? "s" : ""}
+              {token.assignedChatbots ?? token.availableChatbots} chatbot
+              {(token.assignedChatbots ?? token.availableChatbots)! > 1 ? "s" : ""}
             </Badge>
           )}
         </div>

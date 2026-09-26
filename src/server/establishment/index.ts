@@ -3,6 +3,7 @@ import type { ApiResponse } from "@/types/teaching/global.type";
 import { authenticatedRequest } from "../http/authenticated-request";
 import { establishmentDashboardSchema } from "./schema";
 import { getCsrfToken } from "../http/cookies";
+import type { CreateInvitationToken } from "@/types/teaching/establishment.type";
 
 export const getEstablishmentDashboard = async (): Promise<ApiResponse<EstablishmentDashboard>> => {
   const response = await authenticatedRequest<unknown>("/establishment/stats", {
@@ -31,5 +32,18 @@ export const deleteTeacher = async (teacherId: string): Promise<ApiResponse<void
     headers: {
       "x-csrf-token": await getCsrfToken(),
     },
+  });
+};
+
+export const sendTeacherInvitation = async (
+  input: CreateInvitationToken,
+): Promise<ApiResponse<{ success: boolean }>> => {
+  return authenticatedRequest<{ success: boolean }>("/invitation-token", {
+    method: "POST",
+    headers: {
+      "x-csrf-token": await getCsrfToken(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
   });
 };

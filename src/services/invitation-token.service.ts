@@ -28,18 +28,4 @@ export const invitationTokenService = {
       method: "GET",
     });
   },
-  async createInvitationToken(body: {
-    establishmentId: string;
-    token: string;
-    invitedEmail: string;
-    expiresAt: string;
-    assignedChatbots: number;
-  }): Promise<InvitationTokenMutationResponse> {
-    const response = await apiFetch<InvitationTokenMutationResponse>("/api/invitation-token", {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-
-    return response;
-  },
 };

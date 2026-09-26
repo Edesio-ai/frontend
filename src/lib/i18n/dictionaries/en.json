@@ -766,6 +766,10 @@
     "invitationModal": {
       "title": "Invite a teacher",
       "description": "Enter the teacher's email address. An invitation code will be generated for that address only.",
+      "firstname": "First name",
+      "firstnamePlaceholder": "Camille",
+      "lastname": "Last name",
+      "lastnamePlaceholder": "Bernard",
       "email": "Teacher's email address",
       "emailPlaceholder": "teacher@school.com",
       "emailHint": "The code is valid for 7 days and can only be used by this email address.",
@@ -864,6 +868,57 @@
         "success": "{name} has been deleted from the institution.",
         "errorTitle": "Unable to delete {name}",
         "error": "An error occurred while deleting the teacher. Please try again."
+      }
+    },
+    "invitationsPage": {
+      "description": "Invite a teacher to join the institution.",
+      "form": {
+        "title": "Invite a teacher",
+        "firstNameLabel": "First name",
+        "firstNamePlaceholder": "Camille",
+        "lastNameLabel": "Last name",
+        "lastNamePlaceholder": "Bernard",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@school.com",
+        "assignedChatbotsLabel": "Assigned chatbots",
+        "submit": "Send invitation",
+        "success": {
+          "title": "Invitation sent",
+          "description": "The invitation has been sent to {email}."
+        },
+        "errors": {
+          "firstnameRequired": "First name is required.",
+          "lastnameRequired": "Last name is required.",
+          "emailRequired": "Email is required.",
+          "emailInvalid": "Invalid email address.",
+          "assignedChatbotsInvalid": "The number of chatbots must be a non-negative integer.",
+          "emailAlreadyRegistered": "An account already exists with this email address.",
+          "defaultError": "Unable to send the invitation. Please try again."
+        }
+      },
+      "pending": {
+        "title": "Pending",
+        "empty": {
+          "title": "No pending invitations",
+          "description": "Invitations you send will appear here until a teacher accepts them."
+        },
+        "sent": "Sent {time}",
+        "expires": "Expires on {date}",
+        "expired": "Expired on {date}",
+        "copy": "Copy registration link",
+        "copied": "Registration link copied",
+        "copyLabel": "Copy the registration link for {name}",
+        "cancel": "Cancel",
+        "cancelLabel": "Cancel the invitation for {name}"
+      },
+      "accepted": {
+        "title": "Accepted",
+        "empty": {
+          "title": "No accepted invitations",
+          "description": "Teachers who join the institution will show up in this list."
+        },
+        "acceptedAt": "Accepted {time}",
+        "status": "Accepted"
       }
     }
   },

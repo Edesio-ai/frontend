@@ -766,6 +766,10 @@
     "invitationModal": {
       "title": "Invitar a un profesor",
       "description": "Introduce el correo electrónico del profesor. Se generará un código de invitación solo para esa dirección.",
+      "firstname": "Nombre",
+      "firstnamePlaceholder": "Lucía",
+      "lastname": "Apellido",
+      "lastnamePlaceholder": "García",
       "email": "Correo electrónico del profesor",
       "emailPlaceholder": "profesor@colegio.es",
       "emailHint": "El código es válido durante 7 días y solo puede usarlo esta dirección de correo electrónico.",
@@ -864,6 +868,57 @@
         "success": "{name} se ha eliminado del centro.",
         "errorTitle": "No se ha podido eliminar a {name}",
         "error": "Se ha producido un error al eliminar al profesor. Inténtalo de nuevo."
+      }
+    },
+    "invitationsPage": {
+      "description": "Invita a un profesor a unirse al centro.",
+      "form": {
+        "title": "Invitar a un profesor",
+        "firstNameLabel": "Nombre",
+        "firstNamePlaceholder": "Lucía",
+        "lastNameLabel": "Apellido",
+        "lastNamePlaceholder": "García",
+        "emailLabel": "Correo electrónico",
+        "emailPlaceholder": "correo@centro.es",
+        "assignedChatbotsLabel": "Chatbots asignados",
+        "submit": "Enviar la invitación",
+        "success": {
+          "title": "Invitación enviada",
+          "description": "La invitación se ha enviado a {email}."
+        },
+        "errors": {
+          "firstnameRequired": "El nombre es obligatorio.",
+          "lastnameRequired": "El apellido es obligatorio.",
+          "emailRequired": "El correo electrónico es obligatorio.",
+          "emailInvalid": "Correo electrónico no válido.",
+          "assignedChatbotsInvalid": "El número de chatbots debe ser un entero mayor o igual que cero.",
+          "emailAlreadyRegistered": "Ya existe una cuenta con este correo electrónico.",
+          "defaultError": "No se pudo enviar la invitación. Inténtalo de nuevo."
+        }
+      },
+      "pending": {
+        "title": "Pendientes",
+        "empty": {
+          "title": "No hay invitaciones pendientes",
+          "description": "Las invitaciones enviadas aparecerán aquí hasta que un profesor las acepte."
+        },
+        "sent": "Enviada {time}",
+        "expires": "Caduca el {date}",
+        "expired": "Caducada el {date}",
+        "copy": "Copiar el enlace de inscripción",
+        "copied": "Enlace de inscripción copiado",
+        "copyLabel": "Copiar el enlace de inscripción de {name}",
+        "cancel": "Cancelar",
+        "cancelLabel": "Cancelar la invitación de {name}"
+      },
+      "accepted": {
+        "title": "Aceptadas",
+        "empty": {
+          "title": "No hay invitaciones aceptadas",
+          "description": "Los profesores que se unan al centro aparecerán en esta lista."
+        },
+        "acceptedAt": "Aceptada {time}",
+        "status": "Aceptada"
       }
     }
   },
