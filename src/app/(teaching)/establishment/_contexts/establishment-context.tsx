@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { useLocale, useTranslations } from "@/lib/i18n/client";
+import { useTranslations } from "@/lib/i18n/client";
 import type {
   CourseBasic,
   Establishment,
@@ -11,15 +11,12 @@ import type {
   TeacherWithStats,
   EstablishmentStats,
 } from "@/types";
-import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { invitationTokenService } from "@/services/invitation-token.service";
 import { sessionService } from "@/services/teaching/session.service";
 import { studentService } from "@/services/teaching/student.service";
 import { courseService } from "@/services/teaching/course.service";
 import { studentSessionService } from "@/services/teaching/student-session.service";
-import { emailService } from "@/services/email.service";
 import { useAuth } from "@/contexts/auth-context";
-import { ApiError } from "@/lib/api-error";
 import { runAuthenticatedAction } from "@/lib/auth/run-authenticated-action";
 import { deleteTeacherAction, getEstablishmentDashboardAction } from "../../_actions/establishment-actions";
 
@@ -27,15 +24,12 @@ interface EstablishmentContextType {
   establishment: Establishment | null;
   teachers: TeacherWithStats[];
   invitationTokens: InvitationToken[];
+  invitationTokensLoading: boolean;
   stats: EstablishmentStats;
   loading: boolean;
   error: string | null;
   refreshData: () => Promise<void>;
-  createInvitationToken: (
-    invitedEmail: string,
-    expiresInDays?: number,
-    assignedChatbots?: number,
-  ) => Promise<boolean | null>;
+  refreshInvitationTokens: () => Promise<void>;
   deleteInvitationToken: (tokenId: string) => Promise<boolean>;
   getStudentSessions: (sessionId: string) => Promise<Student[]>;
   getSessionCourse: (sessionId: string) => Promise<CourseBasic[]>;
@@ -48,10 +42,10 @@ const EstablishmentContext = createContext<EstablishmentContextType | null>(null
 export function EstablishmentProvider({ children }: { children: ReactNode }) {
   const { user, loading: authLoading, logout } = useAuth();
   const t = useTranslations();
-  const locale = useLocale();
   const [establishment, setEstablishment] = useState<Establishment | null>(null);
   const [teachers, setTeachers] = useState<TeacherWithStats[]>([]);
   const [invitationTokens, setInvitationTokens] = useState<InvitationToken[]>([]);
+  const [invitationTokensLoading, setInvitationTokensLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<EstablishmentStats>({
@@ -63,6 +57,8 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
   const fetchEtablissementData = useCallback(async () => {
     if (!user) {
       setEstablishment(null);
+      setInvitationTokens([]);
+      setInvitationTokensLoading(false);
       setLoading(false);
       return;
     }
@@ -91,6 +87,7 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
   const fetchInvitationTokens = useCallback(async () => {
     if (!establishment) {
       setInvitationTokens([]);
+      setInvitationTokensLoading(false);
       return;
     }
 
@@ -100,60 +97,10 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.error("Unexpected error:", err);
       setError(t.hooks.establishment.error);
+    } finally {
+      setInvitationTokensLoading(false);
     }
   }, [establishment, t]);
-
-  const createInvitationToken = useCallback(
-    async (invitedEmail: string, expiresInDays: number = 7, assignedChatbots: number = 0): Promise<boolean | null> => {
-      if (!establishment) return null;
-      if (!invitedEmail || !invitedEmail.includes("@")) {
-        return null;
-      }
-      try {
-        const token = generateInvitationCode();
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + expiresInDays);
-
-        const body = {
-          establishmentId: establishment.id,
-          token,
-          invitedEmail: invitedEmail.toLowerCase().trim(),
-          expiresAt: expiresAt.toISOString(),
-          assignedChatbots,
-        };
-
-        const { success } = await invitationTokenService.createInvitationToken(body);
-
-        if (!success) {
-          throw new ApiError(t.hooks.establishment.invitationError);
-        }
-
-        const sendInvitationBody = {
-          invitedEmail: invitedEmail.toLowerCase().trim(),
-          establishmentName: establishment.name,
-          invitationToken: token,
-          assignedChatbots,
-          locale,
-        };
-
-        const response: { success: boolean } = await emailService.sendInvitationEmail(sendInvitationBody);
-
-        if (!response.success) {
-          throw new ApiError(t.hooks.establishment.invitationError);
-        }
-
-        await fetchInvitationTokens();
-        return true;
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        if (err instanceof ApiError) {
-          throw err;
-        }
-        throw new ApiError(t.hooks.establishment.invitationError);
-      }
-    },
-    [establishment, fetchInvitationTokens, locale, t],
-  );
 
   const deleteInvitationToken = useCallback(
     async (tokenId: string): Promise<boolean> => {
@@ -226,18 +173,24 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (establishment) {
       void fetchInvitationTokens();
+      return;
     }
-  }, [establishment, fetchInvitationTokens]);
+
+    if (!loading) {
+      setInvitationTokensLoading(false);
+    }
+  }, [establishment, fetchInvitationTokens, loading]);
 
   const value: EstablishmentContextType = {
     establishment,
     teachers,
     invitationTokens,
+    invitationTokensLoading,
     stats,
     loading: loading || authLoading,
     error,
     refreshData,
-    createInvitationToken,
+    refreshInvitationTokens: fetchInvitationTokens,
     deleteInvitationToken,
     getStudentSessions,
     getSessionCourse,

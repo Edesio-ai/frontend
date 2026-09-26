@@ -766,6 +766,10 @@
     "invitationModal": {
       "title": "Inviter un professeur",
       "description": "Saisissez l'adresse email du professeur. Un code d'invitation sera généré uniquement pour cette adresse.",
+      "firstname": "Prénom",
+      "firstnamePlaceholder": "Camille",
+      "lastname": "Nom",
+      "lastnamePlaceholder": "Bernard",
       "email": "Adresse email du professeur",
       "emailPlaceholder": "professeur@ecole.fr",
       "emailHint": "Le code est valable 7 jours et ne peut être utilisé que par cette adresse email.",
@@ -864,6 +868,57 @@
         "success": "{name} a bien été supprimé de l'établissement.",
         "errorTitle": "Impossible de supprimer {name}",
         "error": "Une erreur est survenue lors de la suppression de l'enseignant. Veuillez réessayer."
+      }
+    },
+    "invitationsPage": {
+      "description": "Invitez un enseignant à rejoindre l'établissement.",
+      "form": {
+        "title": "Inviter un enseignant",
+        "firstNameLabel": "Prénom",
+        "firstNamePlaceholder": "Camille",
+        "lastNameLabel": "Nom",
+        "lastNamePlaceholder": "Bernard",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@etablissement.fr",
+        "assignedChatbotsLabel": "Chatbots assignés",
+        "submit": "Envoyer l'invitation",
+        "success": {
+          "title": "Invitation envoyée",
+          "description": "L'invitation a été envoyée à {email}."
+        },
+        "errors": {
+          "firstnameRequired": "Le prénom est requis.",
+          "lastnameRequired": "Le nom est requis.",
+          "emailRequired": "L'email est requis.",
+          "emailInvalid": "Adresse email invalide.",
+          "assignedChatbotsInvalid": "Le nombre de chatbots doit être un entier positif ou nul.",
+          "emailAlreadyRegistered": "Un compte existe déjà avec cette adresse email.",
+          "defaultError": "Impossible d'envoyer l'invitation. Veuillez réessayer."
+        }
+      },
+      "pending": {
+        "title": "En attente",
+        "empty": {
+          "title": "Aucune invitation en attente",
+          "description": "Les invitations envoyées apparaîtront ici jusqu'à ce qu'un enseignant les accepte."
+        },
+        "sent": "Envoyée {time}",
+        "expires": "Expire le {date}",
+        "expired": "Expirée le {date}",
+        "copy": "Copier le lien d'inscription",
+        "copied": "Lien d'inscription copié",
+        "copyLabel": "Copier le lien d'inscription de {name}",
+        "cancel": "Annuler",
+        "cancelLabel": "Annuler l'invitation de {name}"
+      },
+      "accepted": {
+        "title": "Acceptées",
+        "empty": {
+          "title": "Aucune invitation acceptée",
+          "description": "Les enseignants qui auront rejoint l'établissement s'afficheront dans cette liste."
+        },
+        "acceptedAt": "Acceptée {time}",
+        "status": "Acceptée"
       }
     }
   },

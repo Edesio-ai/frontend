@@ -13,7 +13,7 @@ import type { InvitationToken } from "@/types";
 
 export function InvitationSection() {
   const [showInvitationModal, setShowInvitationModal] = useState(false);
-  const { invitationTokens, deleteInvitationToken, createInvitationToken } = useEstablishment();
+  const { invitationTokens, deleteInvitationToken } = useEstablishment();
   const t = useTranslations();
 
   return (
@@ -43,11 +43,7 @@ export function InvitationSection() {
           </div>
         )}
       </Card>
-      <InvitationModal
-        isOpen={showInvitationModal}
-        setShowInvitationModal={setShowInvitationModal}
-        createInvitationToken={createInvitationToken}
-      />
+      <InvitationModal isOpen={showInvitationModal} setShowInvitationModal={setShowInvitationModal} />
     </>
   );
 }

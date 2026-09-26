@@ -18,6 +18,11 @@ export function getLegacyRegisterInvitationPath(token: string): string {
   return `/register/teacher-invitation/${token}`;
 }
 
+export function getInvitationRegisterUrl(token: string, isAuthNewDesign: boolean): string {
+  const path = isAuthNewDesign ? getRegisterInvitationPath(token) : getLegacyRegisterInvitationPath(token);
+  return `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
+}
+
 export function isAdmin(role: string | null | undefined): role is typeof USER_ROLE.admin {
   return role === USER_ROLE.admin;
 }

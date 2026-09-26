@@ -766,6 +766,10 @@
     "invitationModal": {
       "title": "Lehrkraft einladen",
       "description": "Geben Sie die E-Mail-Adresse der Lehrkraft ein. Es wird ein Einladungscode generiert, der nur für diese Adresse gilt.",
+      "firstname": "Vorname",
+      "firstnamePlaceholder": "Max",
+      "lastname": "Nachname",
+      "lastnamePlaceholder": "Mustermann",
       "email": "E-Mail-Adresse der Lehrkraft",
       "emailPlaceholder": "lehrkraft@schule.de",
       "emailHint": "Der Code ist 7 Tage gültig und kann nur mit dieser E-Mail-Adresse verwendet werden.",
@@ -864,6 +868,57 @@
         "success": "{name} wurde aus der Einrichtung entfernt.",
         "errorTitle": "{name} konnte nicht entfernt werden",
         "error": "Beim Entfernen der Lehrkraft ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+      }
+    },
+    "invitationsPage": {
+      "description": "Laden Sie eine Lehrkraft ein, der Einrichtung beizutreten.",
+      "form": {
+        "title": "Lehrkraft einladen",
+        "firstNameLabel": "Vorname",
+        "firstNamePlaceholder": "Max",
+        "lastNameLabel": "Nachname",
+        "lastNamePlaceholder": "Mustermann",
+        "emailLabel": "E-Mail",
+        "emailPlaceholder": "email@schule.de",
+        "assignedChatbotsLabel": "Zugewiesene Chatbots",
+        "submit": "Einladung senden",
+        "success": {
+          "title": "Einladung gesendet",
+          "description": "Die Einladung wurde an {email} gesendet."
+        },
+        "errors": {
+          "firstnameRequired": "Der Vorname ist erforderlich.",
+          "lastnameRequired": "Der Nachname ist erforderlich.",
+          "emailRequired": "Die E-Mail-Adresse ist erforderlich.",
+          "emailInvalid": "Ungültige E-Mail-Adresse.",
+          "assignedChatbotsInvalid": "Die Anzahl der Chatbots muss eine nicht negative ganze Zahl sein.",
+          "emailAlreadyRegistered": "Mit dieser E-Mail-Adresse existiert bereits ein Konto.",
+          "defaultError": "Die Einladung konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+        }
+      },
+      "pending": {
+        "title": "Ausstehend",
+        "empty": {
+          "title": "Keine ausstehenden Einladungen",
+          "description": "Gesendete Einladungen erscheinen hier, bis eine Lehrkraft sie annimmt."
+        },
+        "sent": "Gesendet {time}",
+        "expires": "Läuft am {date} ab",
+        "expired": "Abgelaufen am {date}",
+        "copy": "Anmeldelink kopieren",
+        "copied": "Anmeldelink kopiert",
+        "copyLabel": "Anmeldelink von {name} kopieren",
+        "cancel": "Abbrechen",
+        "cancelLabel": "Einladung von {name} abbrechen"
+      },
+      "accepted": {
+        "title": "Angenommen",
+        "empty": {
+          "title": "Keine angenommenen Einladungen",
+          "description": "Lehrkräfte, die der Einrichtung beitreten, erscheinen in dieser Liste."
+        },
+        "acceptedAt": "Angenommen {time}",
+        "status": "Angenommen"
       }
     }
   },

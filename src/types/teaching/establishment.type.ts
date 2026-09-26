@@ -5,6 +5,8 @@ import type {
   establishmentSchema,
   establishmentStatsSchema,
   deleteTeacherSchema,
+  inviteTeacherSchema,
+  createInvitationTokenSchema,
 } from "@/server/establishment/schema";
 import { ESTABLISHMENT_COUNTRIES, ESTABLISHMENT_TYPES } from "@/utils/constants/establishment";
 
@@ -23,3 +25,7 @@ export type EstablishmentStats = z.infer<typeof establishmentStatsSchema>;
 export type EstablishmentDashboard = z.infer<typeof establishmentDashboardSchema>;
 
 export type DeleteTeacher = z.infer<typeof deleteTeacherSchema>;
+
+export type InviteTeacher = z.infer<typeof inviteTeacherSchema>;
+
+export type CreateInvitationToken = z.infer<typeof createInvitationTokenSchema>;
