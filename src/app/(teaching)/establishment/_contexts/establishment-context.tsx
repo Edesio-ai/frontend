@@ -149,12 +149,17 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
         const response = await runAuthenticatedAction(() => deleteTeacherAction({ teacherId }), logout);
         if (!response?.ok) return false;
         setTeachers((state) => state.filter((teacher) => teacher.id !== teacherId));
+        setStats((state) => ({
+          ...state,
+          totalTeachers: Math.max(0, state.totalTeachers - 1),
+        }));
+        await fetchInvitationTokens();
         return true;
       } catch {
         return false;
       }
     },
-    [logout],
+    [fetchInvitationTokens, logout],
   );
 
   const refreshData = useCallback(async () => {
