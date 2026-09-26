@@ -21,6 +21,16 @@ export interface TeacherWithStats {
 
 export type TeacherStatus = "active" | "invited";
 
+export type EstablishmentTeacherListItem = {
+  id: string;
+  name: string;
+  email: string;
+  sessionsCount: number;
+  studentsCount: number;
+  status: TeacherStatus;
+  source: "teacher" | "invitation";
+};
+
 export interface TeacherWithEstablishment extends Teacher {
   establishmentId?: string | null;
 }

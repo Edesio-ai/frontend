@@ -853,6 +853,11 @@
         "active": "Active",
         "invited": "Invited"
       },
+      "cancelInvitationLabel": "Cancel invitation",
+      "cancelInvitationSuccessTitle": "Invitation cancelled",
+      "cancelInvitationSuccess": "The invitation for {name} has been cancelled.",
+      "cancelInvitationErrorTitle": "Unable to cancel the invitation for {name}",
+      "cancelInvitationError": "An error occurred. Please try again.",
       "empty": {
         "title": "No teachers yet",
         "description": "Invite your teachers to join the institution so they can create their classes.",

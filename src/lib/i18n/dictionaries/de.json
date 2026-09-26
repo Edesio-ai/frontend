@@ -853,6 +853,11 @@
         "active": "Aktiv",
         "invited": "Eingeladen"
       },
+      "cancelInvitationLabel": "Einladung abbrechen",
+      "cancelInvitationSuccessTitle": "Einladung abgebrochen",
+      "cancelInvitationSuccess": "Die Einladung von {name} wurde abgebrochen.",
+      "cancelInvitationErrorTitle": "Die Einladung von {name} konnte nicht abgebrochen werden",
+      "cancelInvitationError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
       "empty": {
         "title": "Noch keine Lehrkräfte",
         "description": "Laden Sie Ihre Lehrkräfte in die Einrichtung ein, damit sie ihre Klassen erstellen können.",

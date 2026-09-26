@@ -4,18 +4,20 @@ import { Trash2 } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "@/lib/i18n/client";
-import type { TeacherWithStats } from "@/types";
+import type { EstablishmentTeacherListItem } from "@/types";
 import { getInitials } from "@/utils/functions/string.utils";
 import { TeacherStatusBadge } from "./teacher-status-badge";
 import { CELL_CLASS, ROW_CLASS } from "./teachers-table.styles";
 
 type TeacherTableRowProps = {
-  teacher: TeacherWithStats;
-  onRemove: (teacher: TeacherWithStats) => void;
+  teacher: EstablishmentTeacherListItem;
+  onRemove: (teacher: EstablishmentTeacherListItem) => void;
 };
 
 export function TeacherTableRow({ teacher, onRemove }: TeacherTableRowProps) {
   const t = useTranslations().establishment.teachersPage;
+  const isInvited = teacher.status === "invited";
+  const removeLabel = isInvited ? t.cancelInvitationLabel : t.removeLabel;
 
   return (
     <TableRow className={ROW_CLASS}>
@@ -35,15 +37,15 @@ export function TeacherTableRow({ teacher, onRemove }: TeacherTableRowProps) {
       <TableCell className={cn(CELL_CLASS, "text-[14px] text-zinc-700")}>{teacher.studentsCount}</TableCell>
 
       <TableCell className={CELL_CLASS}>
-        <TeacherStatusBadge status="active" />
+        <TeacherStatusBadge status={teacher.status} />
       </TableCell>
 
       <TableCell className={CELL_CLASS}>
         <button
           type="button"
           onClick={() => onRemove(teacher)}
-          title={t.removeLabel}
-          aria-label={t.removeLabel}
+          title={removeLabel}
+          aria-label={removeLabel}
           className="ml-auto flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-[8px] border border-transparent bg-transparent text-zinc-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
         >
           <Trash2 className="h-[15px] w-[15px]" />

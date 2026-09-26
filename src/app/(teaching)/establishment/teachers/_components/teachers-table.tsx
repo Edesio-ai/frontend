@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "@/lib/i18n/client";
-import type { TeacherWithStats } from "@/types";
+import type { EstablishmentTeacherListItem } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useEstablishment } from "../../_contexts/establishment-context";
+import { buildTeacherListItems } from "../_utils/teacher-list";
 import { RemoveTeacherDialog } from "./remove-teacher-dialog";
 import { TeachersEmptyState } from "./teachers-empty-state";
 import { TeachersTableHeader } from "./teachers-table-header";
@@ -16,8 +17,36 @@ import { TEACHERS_TABLE_COLUMNS_COUNT } from "./teachers-table.styles";
 
 export function TeachersTable() {
   const t = useTranslations().establishment.teachersPage;
-  const { teachers, loading, deleteTeacher } = useEstablishment();
-  const [teacherToRemove, setTeacherToRemove] = useState<TeacherWithStats | null>(null);
+  const { teachers, invitationTokens, invitationTokensLoading, loading, deleteTeacher, deleteInvitationToken } =
+    useEstablishment();
+  const [teacherToRemove, setTeacherToRemove] = useState<EstablishmentTeacherListItem | null>(null);
+  const isLoading = loading || invitationTokensLoading;
+  const rows = useMemo(() => buildTeacherListItems(teachers, invitationTokens), [teachers, invitationTokens]);
+
+  const handleCancelInvitation = async (item: EstablishmentTeacherListItem) => {
+    try {
+      await deleteInvitationToken(item.id);
+      toast({
+        title: t.cancelInvitationSuccessTitle,
+        description: t.cancelInvitationSuccess.replace("{name}", item.name),
+      });
+    } catch {
+      toast({
+        title: t.cancelInvitationErrorTitle.replace("{name}", item.name),
+        description: t.cancelInvitationError,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRemove = (item: EstablishmentTeacherListItem) => {
+    if (item.source === "invitation") {
+      void handleCancelInvitation(item);
+      return;
+    }
+
+    setTeacherToRemove(item);
+  };
 
   const handleRemoveTeacher = async () => {
     if (!teacherToRemove) return;
@@ -42,12 +71,10 @@ export function TeachersTable() {
 
   return (
     <section>
-      {loading ? (
+      {isLoading ? (
         <Skeleton className="mb-[20px] h-[19px] w-[220px]" />
       ) : (
-        <p className="mb-[20px] text-[13px] text-zinc-500">
-          {t.countLabel.replace("{count}", String(teachers.length))}
-        </p>
+        <p className="mb-[20px] text-[13px] text-zinc-500">{t.countLabel.replace("{count}", String(rows.length))}</p>
       )}
 
       <div className="overflow-hidden rounded-[12px] border border-border bg-background">
@@ -55,9 +82,9 @@ export function TeachersTable() {
           <TeachersTableHeader />
 
           <TableBody>
-            {loading && <TeachersTableSkeleton />}
+            {isLoading && <TeachersTableSkeleton />}
 
-            {!loading && teachers.length === 0 && (
+            {!isLoading && rows.length === 0 && (
               <TableRow className="hover:bg-transparent">
                 <TableCell colSpan={TEACHERS_TABLE_COLUMNS_COUNT} className="p-0">
                   <TeachersEmptyState />
@@ -65,10 +92,8 @@ export function TeachersTable() {
               </TableRow>
             )}
 
-            {!loading &&
-              teachers.map((teacher) => (
-                <TeacherTableRow key={teacher.id} teacher={teacher} onRemove={setTeacherToRemove} />
-              ))}
+            {!isLoading &&
+              rows.map((teacher) => <TeacherTableRow key={teacher.id} teacher={teacher} onRemove={handleRemove} />)}
           </TableBody>
         </Table>
       </div>

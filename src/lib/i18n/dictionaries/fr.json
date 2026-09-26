@@ -853,6 +853,11 @@
         "active": "Actif",
         "invited": "Invité"
       },
+      "cancelInvitationLabel": "Annuler l'invitation",
+      "cancelInvitationSuccessTitle": "Invitation annulée",
+      "cancelInvitationSuccess": "L'invitation de {name} a été annulée.",
+      "cancelInvitationErrorTitle": "Impossible d'annuler l'invitation de {name}",
+      "cancelInvitationError": "Une erreur est survenue. Veuillez réessayer.",
       "empty": {
         "title": "Aucun enseignant pour le moment",
         "description": "Invitez vos enseignants à rejoindre l'établissement pour qu'ils puissent créer leurs classes.",

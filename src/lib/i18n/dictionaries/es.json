@@ -853,6 +853,11 @@
         "active": "Activo",
         "invited": "Invitado"
       },
+      "cancelInvitationLabel": "Cancelar la invitación",
+      "cancelInvitationSuccessTitle": "Invitación cancelada",
+      "cancelInvitationSuccess": "Se ha cancelado la invitación de {name}.",
+      "cancelInvitationErrorTitle": "No se pudo cancelar la invitación de {name}",
+      "cancelInvitationError": "Se ha producido un error. Inténtalo de nuevo.",
       "empty": {
         "title": "Todavía no hay profesores",
         "description": "Invita a tus profesores a unirse al centro para que puedan crear sus clases.",
