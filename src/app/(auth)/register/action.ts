@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { USER_ROLE, type PublicRole } from "@/types";
 import { isPublicRole } from "@/utils/functions/role.utils";
-import { login } from "@/server/auth/login";
+import { login } from "@/server/auth";
 import {
   registerEstablishmentInputSchema,
   type EstablishmentInput,
@@ -13,7 +13,7 @@ import {
 } from "@/server/auth/schema";
 import { getLocaleFromCookies } from "@/lib/i18n";
 import { type RegisterFormValues, type RegisterState } from "./state";
-import { register, registerEstablishment } from "@/server/auth/register";
+import { register, registerEstablishment } from "@/server/auth";
 
 function parseFormValues(formData: FormData): RegisterFormValues {
   return {

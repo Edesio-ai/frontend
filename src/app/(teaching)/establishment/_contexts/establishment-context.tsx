@@ -5,13 +5,12 @@ import { useLocale, useTranslations } from "@/lib/i18n/client";
 import type {
   CourseBasic,
   Establishment,
-  EstablishmentStats,
   InvitationToken,
-  TeacherWithStats,
   Student,
   SessionDetails,
+  TeacherWithStats,
+  EstablishmentStats,
 } from "@/types";
-import { establishmentService } from "@/services/teaching/establishment.service";
 import { generateInvitationCode } from "@/utils/functions/establishment.utils";
 import { invitationTokenService } from "@/services/invitation-token.service";
 import { sessionService } from "@/services/teaching/session.service";
@@ -22,6 +21,8 @@ import { emailService } from "@/services/email.service";
 import { useAuth } from "@/contexts/auth-context";
 import { teacherService } from "@/services/teaching/teacher.service";
 import { ApiError } from "@/lib/api-error";
+import { runAuthenticatedAction } from "@/lib/auth/run-authenticated-action";
+import { getEstablishmentDashboardAction } from "../../_actions/establishment-actions";
 
 interface EstablishmentContextType {
   establishment: Establishment | null;
@@ -46,7 +47,7 @@ interface EstablishmentContextType {
 const EstablishmentContext = createContext<EstablishmentContextType | null>(null);
 
 export function EstablishmentProvider({ children }: { children: ReactNode }) {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, logout } = useAuth();
   const t = useTranslations();
   const locale = useLocale();
   const [establishment, setEstablishment] = useState<Establishment | null>(null);
@@ -60,21 +61,6 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
     totalStudents: 0,
   });
 
-  const getEstablishmentStats = useCallback(async () => {
-    try {
-      const response = await establishmentService.getEstablishmentStats();
-      setEstablishment(response.establishment);
-      setTeachers(response.teachers);
-      setStats(response.stats);
-      return response;
-    } catch (err) {
-      const message = err instanceof Error ? err.message : t.hooks.establishment.error;
-      setError(message || t.hooks.establishment.error);
-    } finally {
-      setLoading(false);
-    }
-  }, [t]);
-
   const fetchEtablissementData = useCallback(async () => {
     if (!user) {
       setEstablishment(null);
@@ -83,8 +69,25 @@ export function EstablishmentProvider({ children }: { children: ReactNode }) {
     }
 
     setLoading(true);
-    await getEstablishmentStats();
-  }, [user, getEstablishmentStats]);
+    try {
+      const response = await runAuthenticatedAction(getEstablishmentDashboardAction, logout);
+      if (!response) return;
+
+      if (!response.ok) {
+        setError(t.hooks.establishment.error);
+        return;
+      }
+
+      setEstablishment(response.data.establishment);
+      setTeachers(response.data.teachers);
+      setStats(response.data.stats);
+      setError(null);
+    } catch {
+      setError(t.hooks.establishment.error);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, logout, t]);
 
   const fetchInvitationTokens = useCallback(async () => {
     if (!establishment) {

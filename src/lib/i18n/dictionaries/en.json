@@ -827,6 +827,14 @@
         "teachers": "Teachers",
         "invitations": "Invitations"
       }
+    },
+    "overview": {
+      "stats": {
+        "activeStudents": "Active students",
+        "spreadAcrossClasses": "across {count} classes",
+        "teachers": "Teachers",
+        "classes": "Classes"
+      }
     }
   },
   "dashboard": {

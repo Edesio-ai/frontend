@@ -5,6 +5,7 @@ import { useFeatureFlag, useFeatureFlagsHydrated } from "@/contexts/feature-flag
 import { useTranslations } from "@/lib/i18n/client";
 import { EstablishmentPageHeader } from "../_components/establishment-page-header";
 import EstablishmentTitle from "./_components/establishment-title";
+import { EstablishmentStatsBanner } from "./_components/establishment-stats-banner";
 import { useEstablishment } from "../_contexts/establishment-context";
 
 export default function EstablishmentOverview() {
@@ -24,8 +25,9 @@ export default function EstablishmentOverview() {
   return (
     <>
       <EstablishmentPageHeader title={t.overview} />
-      <main className="flex-1 pt-[28px] px-[24px] pb-[64px] max-w-[1024px] mx-auto">
+      <main className="mx-auto w-full max-w-[1040px] flex-1 px-[24px] pb-[64px] pt-[28px]">
         <EstablishmentTitle establishment={establishment} />
+        <EstablishmentStatsBanner />
       </main>
     </>
   );

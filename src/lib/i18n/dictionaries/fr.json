@@ -827,6 +827,14 @@
         "teachers": "Enseignants",
         "invitations": "Invitations"
       }
+    },
+    "overview": {
+      "stats": {
+        "activeStudents": "Élèves actifs",
+        "spreadAcrossClasses": "répartis dans {count} classes",
+        "teachers": "Enseignants",
+        "classes": "Classes"
+      }
     }
   },
   "dashboard": {
